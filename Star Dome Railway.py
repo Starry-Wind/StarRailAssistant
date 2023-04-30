@@ -318,23 +318,3 @@ print("开始运行，请勿移动鼠标和键盘")
 auto_map_1()  #基座舱段
 auto_map_3()   #支援舱段
 print("完成")
-
-
-
-
-
-
-
-
-
-
-
-#win32api.SetCursorPos((200, 200))
-
-
-#pyautogui.keyDown("w")
-#time.sleep(2)
-#pyautogui.keyUp("w")
-
-#win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 4650, 0)
-#pyautogui.screenshot().save("./screenshot.png")
