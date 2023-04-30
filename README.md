@@ -1,4 +1,4 @@
-# Honkai-Star-Rail
+# Honkai：Star Rail
 # 崩坏：星穹铁道自动锄大地脚本
 <img alt="LOGO" src="./temp/love!.png" width="768" height="1152" />
 
