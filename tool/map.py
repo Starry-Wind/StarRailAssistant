@@ -72,52 +72,37 @@ class map:
         pyautogui.keyUp("m")
         time.sleep(1)
         self.map_init()
-        target = cv.imread('./temp/orientation_1.jpg')
-        while True:
-            result = self.calculated.scan_screenshot(target)
-            if result['max_val'] > 0.98:
-                points = self.calculated.calculated(result, target.shape)
-                print(points)
-                self.calculated.Click(points)
-                break
+        
 
-        target = cv.imread('./temp/orientation_2.jpg')
-        while True:
-            result = self.calculated.scan_screenshot(target)
-            if result['max_val'] > 0.98:
-                points = self.calculated.calculated(result, target.shape)
-                print(points)
-                self.calculated.Click(points)
-                time.sleep(1)
-                self.calculated.Click(points)
-                break
-    
-        target = cv.imread('./temp/map_1.jpg')
-        while True:
-            result = self.calculated.scan_screenshot(target)
-            if result['max_val'] > 0.98:
-                points = self.calculated.calculated(result, target.shape)
-                print(points)
-                self.calculated.Click(points)
-                break
+        points = self.calculated.click_target('./temp/orientation_1.jpg',0.98)
+        if points:
+            self.calculated.Click(points)
+            points = None
 
-        target = cv.imread('./temp/map_1_point.jpg')
-        while True:
-            result = self.calculated.scan_screenshot(target)
-            if result['max_val'] > 0.98:
-                points = self.calculated.calculated(result, target.shape)
-                print(points)
-                self.calculated.Click(points)
-                break
+        points = self.calculated.click_target('./temp/orientation_2.jpg',0.98)
+        if points:
+            self.calculated.Click(points)
+            time.sleep(1)
+            self.calculated.Click(points)
+            points = None
     
-        target = cv.imread('./temp/transfer.jpg')
-        while True:
-            result = self.calculated.scan_screenshot(target)
-            if result['max_val'] > 0.98:
-                points = self.calculated.calculated(result, target.shape)
-                print(points)
-                self.calculated.Click(points)
-                break
+
+        points = self.calculated.click_target('./temp/map_1.jpg',0.98)
+        if points:
+            self.calculated.Click(points)
+            points = None
+
+
+        points = self.calculated.click_target('./temp/map_1_point.jpg',0.98)
+        if points:
+            self.calculated.Click(points)
+            points = None
+    
+
+        points = self.calculated.click_target('./temp/transfer.jpg',0.98)
+        if points:
+            self.calculated.Click(points)
+            points = None
     
         #选择完地图，开始寻路
         print("选择完地图，开始寻路")
@@ -138,59 +123,44 @@ class map:
         pyautogui.keyUp("m")
         time.sleep(1)
         self.map_init()
-        target = cv.imread('./temp/orientation_1.jpg')
-        while True:
-            result = self.calculated.scan_screenshot(target)
-            if result['max_val'] > 0.98:
-                points = self.calculated.calculated(result, target.shape)
-                print(points)
-                self.calculated.Click(points)
-                break
-        #time.sleep(1)
-        target = cv.imread('./temp/orientation_2.jpg')
-        while True:
-            result = self.calculated.scan_screenshot(target)
-            if result['max_val'] > 0.98:
-                points = self.calculated.calculated(result, target.shape)
-                print(points)
-                self.calculated.Click(points)
-                time.sleep(1)
-                self.calculated.Click(points)
-                break
-        
-        target = cv.imread('./temp/map_3.jpg')
-        while True:
-            result = self.calculated.scan_screenshot(target)
-            if result['max_val'] > 0.98:
-                points = self.calculated.calculated(result, target.shape)
-                print(points)
-                self.calculated.Click(points)
-                break
-        target = cv.imread('./temp/map_3_point_1.jpg')
-        while True:
-            result = self.calculated.scan_screenshot(target)
-            if result['max_val'] > 0.98:
-                points = self.calculated.calculated(result, target.shape)
-                print(points)
-                self.calculated.Click(points)
-                break
-        target = cv.imread('./temp/map_3_point_2.jpg')
-        while True:
-            result = self.calculated.scan_screenshot(target)
-            if result['max_val'] > 0.98:
-                points = self.calculated.calculated(result, target.shape)
-                print(points)
-                self.calculated.Click(points)
-                break
 
-        target = cv.imread('./temp/transfer.jpg')
-        while True:
-            result = self.calculated.scan_screenshot(target)
-            if result['max_val'] > 0.98:
-                points = self.calculated.calculated(result, target.shape)
-                print(points)
-                self.calculated.Click(points)
-                break
+
+        points = self.calculated.click_target('./temp/orientation_1.jpg',0.98)
+        if points:
+            self.calculated.Click(points)
+            points = None
+ 
+
+        points = self.calculated.click_target('./temp/orientation_2.jpg',0.98)
+        if points:
+            self.calculated.Click(points)
+            time.sleep(1)
+            self.calculated.Click(points)
+            points = None
+        
+
+        points = self.calculated.click_target('./temp/map_3.jpg',0.98)
+        if points:
+            self.calculated.Click(points)
+            points = None
+
+
+        points = self.calculated.click_target('./temp/map_3_point_1.jpg',0.98)
+        if points:
+            self.calculated.Click(points)
+            points = None
+
+
+        points = self.calculated.click_target('./temp/map_3_point_2.jpg',0.98)
+        if points:
+            self.calculated.Click(points)
+            points = None
+
+
+        points = self.calculated.click_target('./temp/transfer.jpg',0.98)
+        if points:
+            self.calculated.Click(points)
+            points = None
         
         #开始寻路
         time.sleep(3)
@@ -221,23 +191,18 @@ class map:
         print("继续寻路")
         pyautogui.keyDown("m")
         pyautogui.keyUp("m")
-        target = cv.imread('./temp/map_3_point_3.jpg')
-        while True:
-            result = self.calculated.scan_screenshot(target)
-            if result['max_val'] > 0.98:
-                points = self.calculated.calculated(result, target.shape)
-                print(points)
-                self.calculated.Click(points)
-                break
+      
 
-        target = cv.imread('./temp/transfer.jpg')
-        while True:
-            result = self.calculated.scan_screenshot(target)
-            if result['max_val'] > 0.98:
-                points = self.calculated.calculated(result, target.shape)
-                print(points)
-                self.calculated.Click(points)
-                break
+        points = self.calculated.click_target('./temp/map_3_point_3.jpg',0.98)
+        if points:
+            self.calculated.Click(points)
+            points = None
+
+
+        points = self.calculated.click_target('./temp/transfer.jpg',0.98)
+        if points:
+            self.calculated.Click(points)
+            points = None
 
         time.sleep(3)
 
@@ -281,23 +246,18 @@ class map:
         #继续寻路
         pyautogui.keyDown("m")
         pyautogui.keyUp("m")
-        target = cv.imread('./temp/map_3_point_4.jpg')
-        while True:
-            result = self.calculated.scan_screenshot(target)
-            if result['max_val'] > 0.98:
-                points = self.calculated.calculated(result, target.shape)
-                print(points)
-                self.calculated.Click(points)
-                break
 
-        target = cv.imread('./temp/transfer.jpg')
-        while True:
-            result = self.calculated.scan_screenshot(target)
-            if result['max_val'] > 0.98:
-                points = self.calculated.calculated(result, target.shape)
-                print(points)
-                self.calculated.Click(points)
-                break
+
+        points = self.calculated.click_target('./temp/map_3_point_4.jpg',0.98)
+        if points:
+            self.calculated.Click(points)
+            points = None
+
+
+        points = self.calculated.click_target('./temp/transfer.jpg',0.98)
+        if points:
+            self.calculated.Click(points)
+            points = None
         
         time.sleep(3)
         pyautogui.keyDown("w")
