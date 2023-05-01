@@ -67,11 +67,26 @@ def fighting():
             points = calculated(result, target.shape)
             print(points)
             print("完成自动战斗")
+            time.sleep(3)               #等待战斗结束加载
             break
         elif time.time() - start_time > 180: # 如果已经识别了180秒还未找到目标图片，则退出循环
             print("超时")
             Click(points)
             break
+
+def map_init():
+
+    #进行地图初始化，把地图缩小,需要缩小5次
+
+    target = cv.imread('./temp/contraction.jpg')
+    while True:
+        result = scan_screenshot(target)
+        if result['max_val'] > 0.98:
+            points = calculated(result, target.shape)
+            print(points)
+            pyautogui.click(points, clicks=5, interval=0.1)  
+            break
+
 
 def auto_map_1():
 
@@ -79,6 +94,7 @@ def auto_map_1():
     pyautogui.keyDown("m")
     pyautogui.keyUp("m")
     time.sleep(1)
+    map_init()
     target = cv.imread('./temp/orientation_1.jpg')
     while True:
         result = scan_screenshot(target)
@@ -144,6 +160,7 @@ def auto_map_3():
     pyautogui.keyDown("m")
     pyautogui.keyUp("m")
     time.sleep(1)
+    map_init()
     target = cv.imread('./temp/orientation_1.jpg')
     while True:
         result = scan_screenshot(target)
@@ -224,6 +241,7 @@ def auto_map_3():
     fighting()
 
     #继续寻路
+    print("继续寻路")
     pyautogui.keyDown("m")
     pyautogui.keyUp("m")
     target = cv.imread('./temp/map_3_point_3.jpg')
@@ -314,7 +332,7 @@ def auto_map_3():
 
 
 time.sleep(5)
-print("开始运行，请勿移动鼠标和键盘")
+print("开始运行，请勿移动鼠标和键盘\n若脚本运行无反应，请使用管理员权限运行")
 auto_map_1()  #基座舱段
 auto_map_3()   #支援舱段
-print("完成")
+print("脚本已经完成运行")
