@@ -27,10 +27,16 @@
  
  ****如果喜欢，点个星星~****
 
+## 运行前须知
 
-## 更新日志 (beta-1.2)
+1：确保你安装好了正确的python库（所需库：pyautogui、opencv、numpy、pywin32）
+2：安装pywin32库，输入**pip install pywin32**
+3：安装opencv库，输入**pip install opencv-python**
+4：安装pyautogui库，输入**pip install PyAutoGUI**
 
-1：优化了时间轴，防止战斗结束后滞留原地
+## 更新日志 (beta-2.0)
+
+1：重新构建了代码，之后会陆续优化的
 
 2：增加了更多说明
 
