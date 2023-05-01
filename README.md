@@ -1,5 +1,6 @@
-# Star-Dome-Railway
-# 崩坏：星穹轨道自动锄大地脚本
+# Honkai：Star Rail
+# 崩坏：星穹铁道自动锄大地脚本
+<img alt="LOGO" src="./temp/love!.png" width="768" height="1152" />
 
 *****该脚本仍然处于测试阶段，可能会出现奇奇怪怪的BUG*****
 
