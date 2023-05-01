@@ -32,4 +32,13 @@ class calculated:
         y = int((mat_left + mat_left + prepared_height) / 2)
 
         return x,y
+    
+    def click_target(self, target_path, threshold):
+        target = cv.imread(target_path)
+        while True:
+            result = self.scan_screenshot(target)
+            if result['max_val'] > threshold:
+                points = self.calculated(result, target.shape)
+                print(points)
+                return points
 
