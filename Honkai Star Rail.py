@@ -1,6 +1,8 @@
 from tool.map import map
 import time
 
+#beta-2.2
+
 def main():
     map_instance = map()
     time.sleep(5)
