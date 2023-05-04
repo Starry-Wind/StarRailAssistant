@@ -18,7 +18,7 @@
 
 **5：如果脚本无反应，请使用管理员权限运行**
 
-**6：如果脚本寻路时转视角出现差错，请使用get_width.py 来修改 calculated.py 中Mouse_move()函数
+**6：如果脚本寻路时转视角出现差错，请使用get_width.py 来修改 calculated.py 中Mouse_move()函数**
  
  
  ## 注意
