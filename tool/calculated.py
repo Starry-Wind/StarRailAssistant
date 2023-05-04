@@ -2,19 +2,24 @@ import pyautogui
 import cv2 as cv
 import numpy as np
 import time
-import win32api,win32con,win32gui
+import win32api
+import win32con
+import win32gui
+import win32print
+
 
 class calculated:
+
     def __init__(self):
         pass
-    
+
     def Click(self, points):
-        x,y = points
+        x, y = points
         win32api.SetCursorPos((x, y))
-        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x,y, 0, 0)
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
         time.sleep(0.5)
-        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x,y, 0, 0)
-    
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
+
     def scan_screenshot(self, prepared):
         temp = pyautogui.screenshot()
         screenshot = np.array(temp)
@@ -31,8 +36,8 @@ class calculated:
 
         y = int((mat_left + mat_left + prepared_height) / 2)
 
-        return x,y
-    
+        return x, y
+
     def click_target(self, target_path, threshold):
         target = cv.imread(target_path)
         while True:
@@ -42,3 +47,6 @@ class calculated:
                 print(points)
                 return points
 
+    def Mouse_move(self, x):
+        dx = int(x * 1295 / 1295)  # 此处若修改请将除号后面的数字修改为你得到的real_width的值
+        win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, 0)  # 进行视角移动
