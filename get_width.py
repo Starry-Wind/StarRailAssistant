@@ -2,6 +2,8 @@ import win32gui
 import win32print
 import win32con
 import time
+import json
+
 
 print("3秒后开始获取,请确保你的游戏置顶")
 time.sleep(3)
@@ -31,3 +33,6 @@ print("Real resolution: {} x {}".format(
     real_width, real_height))
 
 print("real_width的值为:{}如有需要请将此值更改到calculated.py 中Mouse_move函数里".format(real_width))
+
+with open('./real_width.json', 'w+', encoding='utf8') as f:
+    json.dump({'real_width': real_width}, f, indent=4, ensure_ascii=False)
