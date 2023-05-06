@@ -62,7 +62,7 @@ class calculated:
                 print(points)
                 self.Click(points)
                 break
-            elif time.time() - start_time > 30:  # 如果已经识别了30秒还未找到目标图片，则退出循环
+            elif time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 print("识别超时,此处可能无敌人")
                 break
         time.sleep(5)
@@ -76,7 +76,7 @@ class calculated:
                 self.Click(points)
                 print("开启自动战斗")
                 break
-            elif time.time() - start_time > 30:
+            elif time.time() - start_time > 15:
                 break
 
         start_time = time.time()  # 开始计算战斗时间
@@ -109,5 +109,8 @@ class calculated:
                 self.fighting()
 
     def Mouse_move(self, x):
-        dx = int(x * 1295 / 1295)  # 此处若修改请将除号后面的数字修改为你得到的real_width的值
+        with open('./real_width.json', 'r', encoding='utf8') as f:
+            real_width = json.load(f)['real_width']
+        # 该公式为不同缩放比之间的转化
+        dx = int(x * 1295 / real_width)
         win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, 0)  # 进行视角移动
