@@ -36,14 +36,8 @@
 
 ## 运行前须知
 
-1：确保你安装好了正确的python库（所需库：pyautogui、opencv、numpy、pywin32）
-
-2：安装pywin32库，输入**pip install pywin32**
-
-3：安装opencv库，输入**pip install opencv-python**
-
-4：安装pyautogui库，输入**pip install pyautogui**
-
+1. 确保你安装python（推荐3.9+）
+2. 安装依赖：`pip install -r requirements.txt`
 
 ## 更新日志 (beta-2.4)
 
