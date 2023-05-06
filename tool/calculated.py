@@ -1,11 +1,11 @@
+from pickle import FALSE
 import pyautogui
 import cv2 as cv
 import numpy as np
 import time
 import win32api
 import win32con
-import win32gui
-import win32print
+import json
 
 
 class calculated:
@@ -38,14 +38,75 @@ class calculated:
 
         return x, y
 
-    def click_target(self, target_path, threshold):
+    # flag为true一定要找到
+    def click_target(self, target_path, threshold, flag=True):
         target = cv.imread(target_path)
         while True:
             result = self.scan_screenshot(target)
             if result['max_val'] > threshold:
                 points = self.calculated(result, target.shape)
                 print(points)
-                return points
+                self.Click(points)
+                return
+            if flag == False:
+                return
+
+    def fighting(self):
+        start_time = time.time()
+        target = cv.imread('./temp/attack.jpg')
+        while True:
+            print("识别中")
+            result = self.scan_screenshot(target)
+            if result['max_val'] > 0.98:
+                points = self.calculated(result, target.shape)
+                print(points)
+                self.Click(points)
+                break
+            elif time.time() - start_time > 30:  # 如果已经识别了30秒还未找到目标图片，则退出循环
+                print("识别超时,此处可能无敌人")
+                break
+        time.sleep(5)
+        target = cv.imread('./temp/auto.jpg')
+        start_time = time.time()
+        while True:
+            result = self.scan_screenshot(target)
+            if result['max_val'] > 0.98:
+                points = self.calculated(result, target.shape)
+                print(points)
+                self.Click(points)
+                print("开启自动战斗")
+                break
+            elif time.time() - start_time > 30:
+                break
+
+        start_time = time.time()  # 开始计算战斗时间
+        target = cv.imread('./temp/finish_fighting.jpg')
+        while True:
+            result = self.scan_screenshot(target)
+            if result['max_val'] > 0.95:
+                points = self.calculated(result, target.shape)
+                print(points)
+                print("完成自动战斗")
+                time.sleep(3)
+                break
+
+    def auto_map(self, map):
+        with open(f"map\\{map}.json", 'r', encoding='utf8') as f:
+            map_data = json.load(f)
+        # 开始寻路
+        print("开始寻路")
+        for map in map_data['map']:
+            print(map)
+            key = list(map.keys())[0]
+            value = map[key]
+            if key in ['w', 's', 'a', 'd', 'f']:
+                pyautogui.keyDown(key)
+                time.sleep(value)
+                pyautogui.keyUp(key)
+            elif key == "mouse_move":
+                self.Mouse_move(value)
+            else:
+                self.fighting()
 
     def Mouse_move(self, x):
         dx = int(x * 1295 / 1295)  # 此处若修改请将除号后面的数字修改为你得到的real_width的值
