@@ -34,6 +34,7 @@ class map:
         self.calculated.click_target(
             'temp\\orientation_1.jpg', 0.98)
 
+        time.sleep(1)
         self.calculated.click_target(
             'temp\\orientation_2.jpg', 0.85)
 
@@ -61,6 +62,7 @@ class map:
         self.calculated.click_target(
             'temp\\orientation_1.jpg', 0.98)
 
+        time.sleep(1)
         self.calculated.click_target(
             'temp\\orientation_2.jpg', 0.98)
 
@@ -137,7 +139,7 @@ class map:
 
         self.calculated.click_target(
             'temp\\orientation_1.jpg', 0.98)
-
+        time.sleep(1)
         self.calculated.click_target(
             'temp\\orientation_2.jpg', 0.98)
 
