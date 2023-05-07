@@ -288,3 +288,95 @@ class map:
         # 开始寻路
         time.sleep(3)
         self.calculated.auto_map("map_2-2_3")
+
+    def auto_map_2_3(self):
+        # 选择地图
+        pyautogui.keyDown("m")
+        pyautogui.keyUp("m")
+        time.sleep(1)
+        self.map_init()
+
+        self.calculated.click_target(
+            'temp\\orientation_1.jpg', 0.98)
+
+        time.sleep(1)
+        self.calculated.click_target(
+            'temp\\orientation_3.jpg', 0.85)
+
+        self.calculated.click_target(
+            'temp\\map_2-3.jpg', 0.98)
+
+        self.calculated.click_target(
+            'temp\\map_2-3_point_1.jpg', 0.98)
+
+        self.calculated.click_target(
+            'temp\\transfer.jpg', 0.98)
+
+        # 开始寻路
+        time.sleep(5)
+        print("开始寻路")
+        self.calculated.auto_map("map_2-3_1")
+
+        pyautogui.keyDown("m")
+        pyautogui.keyUp("m")
+        time.sleep(1)
+        self.calculated.click_target(
+            'temp\\map_2-3_point_2.jpg', 0.98)
+
+        self.calculated.click_target(
+            'temp\\map_2-3_point_3.jpg', 0.98)
+
+        self.calculated.click_target(
+            'temp\\transfer.jpg', 0.98)
+
+        # 开始寻路
+        time.sleep(5)
+        print("开始寻路")
+        self.calculated.auto_map("map_2-3_2")
+
+        pyautogui.keyDown("m")
+        pyautogui.keyUp("m")
+        time.sleep(1)
+        self.calculated.click_target(
+            'temp\\map_2-3_point_2.jpg', 0.98)
+
+        self.calculated.click_target(
+            'temp\\map_2-3_point_3.jpg', 0.98)
+
+        self.calculated.click_target(
+            'temp\\transfer.jpg', 0.98)
+
+        # 开始寻路
+        time.sleep(3)
+        print("开始寻路")
+        self.calculated.auto_map("map_2-3_3")
+
+        pyautogui.keyDown("m")
+        pyautogui.keyUp("m")
+        time.sleep(1)
+
+        self.calculated.click_target(
+            'temp\\map_2-3_point_4.jpg', 0.98)
+
+        self.calculated.click_target(
+            'temp\\transfer.jpg', 0.98)
+
+        # 开始寻路
+        time.sleep(3)
+        print("开始寻路")
+        self.calculated.auto_map("map_2-3_4")
+
+        pyautogui.keyDown("m")
+        pyautogui.keyUp("m")
+        time.sleep(1)
+
+        self.calculated.click_target(
+            'temp\\map_2-3_point_5.jpg', 0.98)
+
+        self.calculated.click_target(
+            'temp\\transfer.jpg', 0.98)
+
+        # 开始寻路
+        time.sleep(3)
+        print("开始寻路")
+        self.calculated.auto_map("map_2-3_5")

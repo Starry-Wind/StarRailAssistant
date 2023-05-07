@@ -19,6 +19,7 @@ def main():
     map_instance.auto_map_1_3()  # 支援舱段
     map_instance.auto_map_2_1()  # 城郊雪原
     map_instance.auto_map_2_2()  # 边缘通路
+    map_instance.auto_map_2_3()  # 残响回廊
     print("脚本已经完成运行")
 
 
