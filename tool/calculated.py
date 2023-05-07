@@ -65,12 +65,12 @@ class calculated:
             elif time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 print("识别超时,此处可能无敌人")
                 break
-        time.sleep(5)
+        time.sleep(6)
         target = cv.imread('./temp/auto.jpg')
         start_time = time.time()
         while True:
             result = self.scan_screenshot(target)
-            if result['max_val'] > 0.98:
+            if result['max_val'] > 0.9:
                 points = self.calculated(result, target.shape)
                 print(points)
                 self.Click(points)
