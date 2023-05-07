@@ -32,7 +32,7 @@ real_height = int(height * scale_y)
 print("Real resolution: {} x {}".format(
     real_width, real_height))
 
-print("real_width的值为:{}如有需要请将此值更改到calculated.py 中Mouse_move函数里".format(real_width))
+print("real_width的值为:{},已经成功应用,现在可以运行脚本了".format(real_width))
 
 with open('./real_width.json', 'w+', encoding='utf8') as f:
     json.dump({'real_width': real_width}, f, indent=4, ensure_ascii=False)
