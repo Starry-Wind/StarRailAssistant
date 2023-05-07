@@ -106,3 +106,4 @@ venv.bak/
 # add
 .idea/
 real_width.json
+tool/output.json

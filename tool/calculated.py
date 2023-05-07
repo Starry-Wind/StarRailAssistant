@@ -93,10 +93,11 @@ class calculated:
     def auto_map(self, map):
         with open(f"map\\{map}.json", 'r', encoding='utf8') as f:
             map_data = json.load(f)
+        map_filename = map
         # 开始寻路
         print("开始寻路")
-        for map in map_data['map']:
-            print(map)
+        for map_index, map in enumerate(map_data['map']):
+            print(f"执行map文件:{map_index+1}/{len(map_data['map'])}", map)
             key = list(map.keys())[0]
             value = map[key]
             if key in ['w', 's', 'a', 'd', 'f']:
@@ -105,8 +106,15 @@ class calculated:
                 pyautogui.keyUp(key)
             elif key == "mouse_move":
                 self.Mouse_move(value)
+            elif key == "fighting":
+                if value == 1:      # 进战斗
+                    self.fighting()
+                elif value == 2:    # 障碍物
+                    time.sleep(1)
+                else:
+                    raise Exception(f"map数据错误, fighting参数异常:{map_filename}", map)
             else:
-                self.fighting()
+                raise Exception(f"map数据错误,未匹配对应操作:{map_filename}", map)
 
     def Mouse_move(self, x):
         with open('./real_width.json', 'r', encoding='utf8') as f:
