@@ -5,7 +5,7 @@
 
 *****该脚本仍然处于测试阶段，可能会出现奇奇怪怪的BUG*****
 
-***寻路撞墙？走的路径不对？嫌弃路线太慢？ 现在beta-2.7新增加地图录制功能，可自行录制地图路径，包你走到满意 XD***
+***寻路撞墙？走的路径不对？嫌弃路线太慢？ 现在beta-2.7新增加地图录制功能，你现在可以使用tool目录下的record_v7.2.py自行录制地图路径，包你走到满意 XD***
 
 找到BUG了？，代码问题想吐槽？欢迎加入 技术 & 吹水群：[星穹◇Time(QQ 群)](https://qm.qq.com/cgi-bin/qm/qr?k=xdCO46fHlVcY7D2L7elXzqcxL3nyTGnW&jump_from=webapi&authKey=uWZooQ2szv+nG/re7luCKn8LW1KibSb0vvi0FycA45Mglm5AGM1GP2iJ+SiWmDwg)<br>
 
