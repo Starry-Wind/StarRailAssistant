@@ -1,5 +1,5 @@
 from tool.map import map
-import time
+import time, pyuac
 
 
 # beta-2.5
@@ -24,4 +24,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    if not pyuac.isUserAdmin():
+        pyuac.runAsAdmin()
+    else:        
+        main()  # Already an admin here.
