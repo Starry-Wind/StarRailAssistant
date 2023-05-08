@@ -23,14 +23,12 @@ class calculated:
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
 
     def scan_screenshot(self, prepared):
-        hwnd = win32gui.FindWindow("UnityWndClass", '崩坏：星穹铁道')
-        left, top, right, bottom = win32gui.GetWindowRect(hwnd)
-        temp = ImageGrab.grab((left, top, right, bottom))
+        temp = pyautogui.screenshot()
         screenshot = np.array(temp)
         screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
         result = cv.matchTemplate(screenshot, prepared, cv.TM_CCORR_NORMED)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
-        return {'screenshot': screenshot, 'min_val': min_val, 'max_val': max_val, 'min_loc': (min_loc[0]+left, min_loc[1]+top), 'max_loc': (max_loc[0]+left, max_loc[1]+top)}
+        return {'screenshot': screenshot, 'min_val': min_val, 'max_val': max_val, 'min_loc': min_loc, 'max_loc': max_loc}
 
     def calculated(self, result, shape):
         mat_top, mat_left = result['max_loc']

@@ -3,7 +3,7 @@
 # -*- encoding:utf-8 -*-
 # Created by AlisaCat at 2023/5/7
 
-# 说明：wasd移动，z是进战斗，鼠标左键是打障碍物等，不要用鼠标移动视角，用方向键左右来移动视角（脚本运行后方向键左右会映射成鼠标）
+# 说明：wasd移动，x是进战斗，鼠标左键是打障碍物等，不要用鼠标移动视角，用方向键左右来移动视角（脚本运行后方向键左右会映射成鼠标）
 # F9停止录制并保存
 
 # 优化 输出
@@ -40,7 +40,7 @@ mouse_watch = True
 # mouse_move_hold = False
 # 记录的列表
 # key_list = ['w', 's', 'a', 'd', 'f', 'm']
-key_list = ['w', 's', 'a', 'd', 'f', 'z']  # 匹配锄大地
+key_list = ['w', 's', 'a', 'd', 'f', 'x']  # 匹配锄大地
 # 输出列表
 event_list = []
 # 不同操作间延迟记录
@@ -53,6 +53,7 @@ mouse_move_pos_list = []
 mouse_val = 200  # 每次视角移动距离
 # real_width = None
 
+
 def Click(points):
     x, y = points
     win32api.SetCursorPos((x, y))
@@ -60,7 +61,9 @@ def Click(points):
     time.sleep(0.5)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
 
+
 real_width = read_json_file("config.json")['real_width']
+
 
 def on_press(key):
     global last_time, key_down_time, real_width
@@ -87,8 +90,8 @@ def on_release(key):
             last_time = time.time()
             del key_down_time[key.char]
             print("捕捉:", event_list[-1])
-            if key.char == "z":
-                print("捕捉Z进入战斗")
+            if key.char == "x":
+                print("捕捉X进入战斗")
                 mouse_watch = False
                 Click(cen_mouse_pos)
                 mouse_watch = True
@@ -204,7 +207,7 @@ def save_json():
         if 'key' in element_save:
             if element_save['key'] == "click":
                 normal_save_dict["map"].append({"fighting": 2})
-            elif element_save['key'] == "z":
+            elif element_save['key'] == "x":
                 normal_save_dict["map"].append({"fighting": 1})     # 进战斗
             else:
                 normal_save_dict["map"].append(
