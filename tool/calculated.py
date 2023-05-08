@@ -6,13 +6,15 @@ import time
 import win32api
 import win32con
 import orjson
-from tool.config import read_json_file 
+from tool.config import read_json_file
+from pynput.keyboard import Controller as KeyboardController
 
 
 class calculated:
 
     def __init__(self):
         self.CONFIG = read_json_file("config.json")
+        self.keyboard = KeyboardController()
 
     def Click(self, points):
         x, y = points
@@ -105,9 +107,11 @@ class calculated:
             key = list(map.keys())[0]
             value = map[key]
             if key in ['w', 's', 'a', 'd', 'f']:
-                pyautogui.keyDown(key)
-                time.sleep(value)
-                pyautogui.keyUp(key)
+                self.keyboard.press(key)
+                start_time = time.perf_counter()
+                while time.perf_counter() - start_time < value:
+                    pass
+                self.keyboard.release(key)
             elif key == "mouse_move":
                 self.Mouse_move(value)
             elif key == "fighting":
