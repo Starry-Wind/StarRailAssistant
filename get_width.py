@@ -5,9 +5,6 @@ import time
 import orjson
 from tool.config import modify_json_file
 
-
-print("3秒后开始获取,请确保你的游戏置顶")
-time.sleep(3)
 hwnd = win32gui.GetForegroundWindow()  # 根据当前活动窗口获取句柄
 print(hwnd)
 Text = win32gui.GetWindowText(hwnd)
@@ -31,7 +28,5 @@ real_width = int(width * scale_x)
 real_height = int(height * scale_y)
 
 print(f"Real resolution: {real_width} x {real_height}")
-
-print(f"real_width的值为:{real_width},已经成功应用,现在可以运行脚本了")
 
 modify_json_file('config.json', 'real_width', real_width)
