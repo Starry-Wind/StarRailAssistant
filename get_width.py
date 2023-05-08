@@ -35,4 +35,4 @@ print("Real resolution: {} x {}".format(
 
 print("real_width的值为:{},已经成功应用,现在可以运行脚本了".format(real_width))
 
-modify_json_file('./real_width.json', 'real_width', real_width)
+modify_json_file('real_width.json', 'real_width', real_width)
