@@ -17,7 +17,7 @@ from datetime import datetime
 import win32api
 import win32con
 from pynput.mouse import Controller as mouseController
-import config
+from config import read_json_file
 
 
 def timestamped_print(*args, **kwargs):
@@ -60,15 +60,7 @@ def Click(points):
     time.sleep(0.5)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
 
-
-data = read_json_file('real_width.json')
-if data is not None:
-    print(data)
-else:
-    print('未找到文件')
-
-real_width = read_json_file("real_width.json")['real_width']
-
+real_width = read_json_file("config.json")['real_width']
 
 def on_press(key):
     global last_time, key_down_time, real_width

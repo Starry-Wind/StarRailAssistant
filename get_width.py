@@ -30,9 +30,8 @@ scale_y = dpi_y / 96
 real_width = int(width * scale_x)
 real_height = int(height * scale_y)
 
-print("Real resolution: {} x {}".format(
-    real_width, real_height))
+print(f"Real resolution: {real_width} x {real_height}")
 
-print("real_width的值为:{},已经成功应用,现在可以运行脚本了".format(real_width))
+print(f"real_width的值为:{real_width},已经成功应用,现在可以运行脚本了")
 
-modify_json_file('real_width.json', 'real_width', real_width)
+modify_json_file('config.json', 'real_width', real_width)
