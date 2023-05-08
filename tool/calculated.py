@@ -12,7 +12,7 @@ from tool.config import read_json_file
 class calculated:
 
     def __init__(self):
-        CONFIG = read_json_file("config.json")
+        self.CONFIG = read_json_file("config.json")
 
     def Click(self, points):
         x, y = points
