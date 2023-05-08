@@ -96,8 +96,8 @@ class calculated:
                 break
 
     def auto_map(self, map):
-        with open(f"map\\{map}.json", 'r', encoding='utf8') as f:
-            map_data = orjson.load(f)
+        with open(f"map\\{map}.json", 'rb', encoding='utf8') as f:
+            map_data = orjson.loads(f.read())
         map_filename = map
         # 开始寻路
         print("开始寻路")
@@ -123,8 +123,8 @@ class calculated:
                 raise Exception(f"map数据错误,未匹配对应操作:{map_filename}", map)
 
     def Mouse_move(self, x):
-        with open('./real_width.json', 'r', encoding='utf8') as f:
-            real_width = orjson.load(f)['real_width']
+        with open('./real_width.json', 'rb', encoding='utf8') as f:
+            real_width = orjson.loads(f.read())['real_width']
         # 该公式为不同缩放比之间的转化
         dx = int(x * 1295 / real_width)
         win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, 0)  # 进行视角移动

@@ -18,8 +18,8 @@ def normalize_file_path(filename):
 def read_json_file(filename):
     # 找到文件的绝对路径
     file_path = normalize_file_path(filename)
-    with open(file_path, 'r') as f:
-        data = orjson.load(f)
+    with open(file_path, 'rb') as f:
+        data = orjson.load(f.read())
         return data, file_path
 
 def modify_json_file(filename, key, value):
@@ -28,7 +28,7 @@ def modify_json_file(filename, key, value):
     data[key] = value
     current_dir = os.getcwd()   
     with open(file_path, 'w') as f:
-        orjson.dump(data, f, indent=4, ensure_ascii=False)
+        f.write(orjson.dumps(data, indent=4, ensure_ascii=False))
         return 
 
 
