@@ -15,20 +15,21 @@ def normalize_file_path(filename):
             # 如果上一级目录中也没有该文件，则返回None
             return None
     
-def read_json_file(file_path):
-    file_path = normalize_file_path(file_path)
-    with open(file_path, 'r') as f:
+def read_json_file(filename):
+    # 找到文件的绝对路径
+    file_path = normalize_file_path(filename)
+    with open(filename, 'r') as f:
         data = orjson.load(f)
         return data, file_path
 
 def modify_json_file(filename, key, value):
+    #先读，再写 
     data, file_path = read_json_file(filename)
     data[key] = value
-    current_dir = os.getcwd()
+    current_dir = os.getcwd()   
     with open(file_path, 'w') as f:
         orjson.dump(data, f, indent=4, ensure_ascii=False)
-        return True
-    return False
+        return 
 
 
 
