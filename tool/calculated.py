@@ -16,19 +16,24 @@ class calculated:
         self.CONFIG = read_json_file("config.json")
 
     def Click(self, points):
-        x, y = points
+        real_width = self.CONFIG['real_width']
+        real_height = self.CONFIG['real_height']
+        x, y = int(points[0] * 1295 / real_width), int(points[1] * 757 / real_height)
+        print((x, y))
         win32api.SetCursorPos((x, y))
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
         time.sleep(0.5)
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
 
     def scan_screenshot(self, prepared):
-        temp = pyautogui.screenshot()
+        hwnd = win32gui.FindWindow("UnityWndClass", '崩坏：星穹铁道')
+        left, top, right, bottom = win32gui.GetWindowRect(hwnd)
+        temp = ImageGrab.grab((left, top, right, bottom))
         screenshot = np.array(temp)
         screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
         result = cv.matchTemplate(screenshot, prepared, cv.TM_CCORR_NORMED)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
-        return {'screenshot': screenshot, 'min_val': min_val, 'max_val': max_val, 'min_loc': min_loc, 'max_loc': max_loc}
+        return {'screenshot': screenshot, 'min_val': min_val, 'max_val': max_val, 'min_loc': (min_loc[0]+left, min_loc[1]+top), 'max_loc': (max_loc[0]+left, max_loc[1]+top)}
 
     def calculated(self, result, shape):
         mat_top, mat_left = result['max_loc']
@@ -47,7 +52,6 @@ class calculated:
             result = self.scan_screenshot(target)
             if result['max_val'] > threshold:
                 points = self.calculated(result, target.shape)
-                print(points)
                 self.Click(points)
                 return
             if flag == False:
@@ -62,12 +66,11 @@ class calculated:
             result = self.scan_screenshot(target)
             if result['max_val'] > 0.98:
                 points = self.calculated(result, target.shape)
-                print(points)
                 self.Click(points)
                 break
-            elif time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
+            elif time.time() - start_time > 5:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 print("识别超时,此处可能无敌人")
-                break
+                return
         time.sleep(6)
         target = cv.imread('./temp/auto.jpg')
         start_time = time.time()
@@ -76,7 +79,6 @@ class calculated:
                 result = self.scan_screenshot(target)
                 if result['max_val'] > 0.9:
                     points = self.calculated(result, target.shape)
-                    print(points)
                     self.Click(points)
                     print("开启自动战斗")
                     break
