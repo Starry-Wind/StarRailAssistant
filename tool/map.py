@@ -31,17 +31,18 @@ class map:
         time.sleep(1)
         self.map_init()
 
-        map_click = [
-            (951, 1263),
-            (1964, 414),
-            (667, 936),
-            (1877, 702),
-            (1163, 634),
-            (1979, 1248)
-        ]
-        for points in map_click:
-            self.calculated.Click(points)
-            time.sleep(1.5)
+        self.calculated.click_target(
+            'temp\\orientation_1.jpg', 0.98)
+
+        time.sleep(1)
+        self.calculated.click_target(
+            'temp\\orientation_2.jpg', 0.85)
+
+        self.calculated.click_target(
+            'temp\\map_1.jpg', 0.98)
+
+        self.calculated.click_target(
+            'temp\\map_1_point.jpg', 0.98)
 
         self.calculated.click_target(
             'temp\\transfer.jpg', 0.98)
