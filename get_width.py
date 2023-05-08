@@ -2,7 +2,8 @@ import win32gui
 import win32print
 import win32con
 import time
-import json
+import orjson
+from tool.config import modify_json_file
 
 
 print("3秒后开始获取,请确保你的游戏置顶")
@@ -29,10 +30,8 @@ scale_y = dpi_y / 96
 real_width = int(width * scale_x)
 real_height = int(height * scale_y)
 
-print("Real resolution: {} x {}".format(
-    real_width, real_height))
+print(f"Real resolution: {real_width} x {real_height}")
 
-print("real_width的值为:{},已经成功应用,现在可以运行脚本了".format(real_width))
+print(f"real_width的值为:{real_width},已经成功应用,现在可以运行脚本了")
 
-with open('./real_width.json', 'w+', encoding='utf8') as f:
-    json.dump({'real_width': real_width}, f, indent=4, ensure_ascii=False)
+modify_json_file('config.json', 'real_width', real_width)

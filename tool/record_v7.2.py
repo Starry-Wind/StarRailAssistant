@@ -11,13 +11,13 @@ import os
 from pynput import keyboard
 from pynput import mouse
 import time
-import json
+import orjson
 import builtins
 from datetime import datetime
-
 import win32api
 import win32con
 from pynput.mouse import Controller as mouseController
+from config import read_json_file
 
 
 def timestamped_print(*args, **kwargs):
@@ -53,28 +53,6 @@ mouse_move_pos_list = []
 mouse_val = 200  # 每次视角移动距离
 # real_width = None
 
-
-def read_json_file(filename):
-    # 尝试在当前目录下读取文件
-    current_dir = os.getcwd()
-    file_path = os.path.join(current_dir, filename)
-    if os.path.exists(file_path):
-        with open(file_path, 'r') as f:
-            data = json.load(f)
-            return data
-    else:
-        # 如果当前目录下没有该文件，则尝试在上一级目录中查找
-        parent_dir = os.path.dirname(current_dir)
-        file_path = os.path.join(parent_dir, filename)
-        if os.path.exists(file_path):
-            with open(file_path, 'r') as f:
-                data = json.load(f)
-                return data
-        else:
-            # 如果上一级目录中也没有该文件，则返回None
-            return None
-
-
 def Click(points):
     x, y = points
     win32api.SetCursorPos((x, y))
@@ -82,15 +60,7 @@ def Click(points):
     time.sleep(0.5)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
 
-
-data = read_json_file('real_width.json')
-if data is not None:
-    print(data)
-else:
-    print('未找到文件')
-
-real_width = read_json_file("real_width.json")['real_width']
-
+real_width = read_json_file("config.json")['real_width']
 
 def on_press(key):
     global last_time, key_down_time, real_width
@@ -243,8 +213,8 @@ def save_json():
             normal_save_dict["map"].append(
                 {"mouse_move": element_save['mouse_move_dxy'][0]})
 
-    with open('output.json', 'w') as f:
-        json.dump(normal_save_dict, f, indent=4)
+    with open('output.json', 'wb') as f:
+        f.write(orjson.dumps(normal_save_dict))
 
 
 mouse_listener = mouse.Listener(on_click=on_click)  # , on_move=on_move
