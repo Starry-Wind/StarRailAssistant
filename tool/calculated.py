@@ -5,13 +5,14 @@ import numpy as np
 import time
 import win32api
 import win32con
-import json
+import orjson
+from tool.config import read_json_file 
 
 
 class calculated:
 
     def __init__(self):
-        pass
+        CONFIG = read_json_file("../config.json")
 
     def Click(self, points):
         x, y = points
@@ -50,7 +51,8 @@ class calculated:
                 return
             if flag == False:
                 return
-
+        
+    
     def fighting(self):
         start_time = time.time()
         target = cv.imread('./temp/attack.jpg')
@@ -68,16 +70,19 @@ class calculated:
         time.sleep(6)
         target = cv.imread('./temp/auto.jpg')
         start_time = time.time()
-        while True:
-            result = self.scan_screenshot(target)
-            if result['max_val'] > 0.9:
-                points = self.calculated(result, target.shape)
-                print(points)
-                self.Click(points)
-                print("开启自动战斗")
-                break
-            elif time.time() - start_time > 15:
-                break
+        if self.CONFIG["auto_battle_persistence"] == False:
+            while True:
+                result = self.scan_screenshot(target)
+                if result['max_val'] > 0.9:
+                    points = self.calculated(result, target.shape)
+                    print(points)
+                    self.Click(points)
+                    print("开启自动战斗")
+                    break
+                elif time.time() - start_time > 15:
+                    break
+        else: 
+            print("跳过开启自动战斗（沿用设置）")
 
         start_time = time.time()  # 开始计算战斗时间
         target = cv.imread('./temp/finish_fighting.jpg')
@@ -92,7 +97,7 @@ class calculated:
 
     def auto_map(self, map):
         with open(f"map\\{map}.json", 'r', encoding='utf8') as f:
-            map_data = json.load(f)
+            map_data = orjson.load(f)
         map_filename = map
         # 开始寻路
         print("开始寻路")
@@ -119,7 +124,7 @@ class calculated:
 
     def Mouse_move(self, x):
         with open('./real_width.json', 'r', encoding='utf8') as f:
-            real_width = json.load(f)['real_width']
+            real_width = orjson.load(f)['real_width']
         # 该公式为不同缩放比之间的转化
         dx = int(x * 1295 / real_width)
         win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, 0)  # 进行视角移动

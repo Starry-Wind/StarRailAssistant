@@ -2,7 +2,8 @@ import win32gui
 import win32print
 import win32con
 import time
-import json
+import orjson
+from tool.config import modify_json_file
 
 
 print("3秒后开始获取,请确保你的游戏置顶")
@@ -34,5 +35,4 @@ print("Real resolution: {} x {}".format(
 
 print("real_width的值为:{},已经成功应用,现在可以运行脚本了".format(real_width))
 
-with open('./real_width.json', 'w+', encoding='utf8') as f:
-    json.dump({'real_width': real_width}, f, indent=4, ensure_ascii=False)
+modify_json_file('./real_width.json', 'real_width', real_width)

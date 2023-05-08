@@ -11,13 +11,13 @@ import os
 from pynput import keyboard
 from pynput import mouse
 import time
-import json
+import orjson
 import builtins
 from datetime import datetime
-
 import win32api
 import win32con
 from pynput.mouse import Controller as mouseController
+import config
 
 
 def timestamped_print(*args, **kwargs):
@@ -52,28 +52,6 @@ mouse_move_pos_list = []
 
 mouse_val = 200  # 每次视角移动距离
 # real_width = None
-
-
-def read_json_file(filename):
-    # 尝试在当前目录下读取文件
-    current_dir = os.getcwd()
-    file_path = os.path.join(current_dir, filename)
-    if os.path.exists(file_path):
-        with open(file_path, 'r') as f:
-            data = json.load(f)
-            return data
-    else:
-        # 如果当前目录下没有该文件，则尝试在上一级目录中查找
-        parent_dir = os.path.dirname(current_dir)
-        file_path = os.path.join(parent_dir, filename)
-        if os.path.exists(file_path):
-            with open(file_path, 'r') as f:
-                data = json.load(f)
-                return data
-        else:
-            # 如果上一级目录中也没有该文件，则返回None
-            return None
-
 
 def Click(points):
     x, y = points
