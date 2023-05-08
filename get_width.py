@@ -2,7 +2,6 @@ import win32gui
 import win32print
 import win32con
 import time
-import orjson
 from tool.config import modify_json_file
 
 hwnd = win32gui.GetForegroundWindow()  # 根据当前活动窗口获取句柄
