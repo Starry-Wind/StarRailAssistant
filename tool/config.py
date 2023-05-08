@@ -3,14 +3,12 @@ def normalize_file_path(filename):
     # 尝试在当前目录下读取文件
     current_dir = os.getcwd()
     file_path = os.path.join(current_dir, filename)
-    print(file_path)
     if os.path.exists(file_path):
         return file_path
     else:
         # 如果当前目录下没有该文件，则尝试在上一级目录中查找
         parent_dir = os.path.dirname(current_dir)
         file_path = os.path.join(parent_dir, filename)
-        print(parent_dir)
         if os.path.exists(file_path):
             return file_path
         else:
@@ -33,5 +31,5 @@ def modify_json_file(filename, key, value):
     data[key] = value
     current_dir = os.getcwd()   
     with open(file_path, 'wb') as f:
-        f.write(orjson.dumps(data, indent=4, ensure_ascii=False))
+        f.write(orjson.dumps(data))
         return 

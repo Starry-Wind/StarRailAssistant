@@ -214,7 +214,7 @@ def save_json():
                 {"mouse_move": element_save['mouse_move_dxy'][0]})
 
     with open('output.json', 'wb') as f:
-        f.write(orjson.dumps(normal_save_dict, indent=4))
+        f.write(orjson.dumps(normal_save_dict))
 
 
 mouse_listener = mouse.Listener(on_click=on_click)  # , on_move=on_move
