@@ -5,9 +5,10 @@ import numpy as np
 import time
 import win32api
 import win32con
+import win32gui
+from PIL import ImageGrab
 import orjson
 from tool.config import read_json_file 
-
 
 class calculated:
 
