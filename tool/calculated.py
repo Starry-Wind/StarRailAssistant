@@ -123,7 +123,7 @@ class calculated:
                 raise Exception(f"map数据错误,未匹配对应操作:{map_filename}", map)
 
     def Mouse_move(self, x):
-        self.CONFIG['real_width']
+        real_width = self.CONFIG['real_width']
         # 该公式为不同缩放比之间的转化
         dx = int(x * 1295 / real_width)
         win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, 0)  # 进行视角移动
