@@ -18,7 +18,7 @@ def normalize_file_path(filename):
 def read_json_file(filename):
     # 找到文件的绝对路径
     file_path = normalize_file_path(filename)
-    with open(filename, 'r') as f:
+    with open(file_path, 'r') as f:
         data = orjson.load(f)
         return data, file_path
 
