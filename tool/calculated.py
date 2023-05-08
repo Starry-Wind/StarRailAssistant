@@ -70,7 +70,7 @@ class calculated:
         time.sleep(6)
         target = cv.imread('./temp/auto.jpg')
         start_time = time.time()
-        if self.CONFIG["auto_battle_persistence"] == False:
+        if self.CONFIG["auto_battle_persistence"] == 0:
             while True:
                 result = self.scan_screenshot(target)
                 if result['max_val'] > 0.9:
@@ -96,8 +96,7 @@ class calculated:
                 break
 
     def auto_map(self, map):
-        with open(f"map\\{map}.json", 'rb', encoding='utf8') as f:
-            map_data = orjson.loads(f.read())
+        map_data = read_json_file(f"map\\{map}.json")
         map_filename = map
         # 开始寻路
         print("开始寻路")
