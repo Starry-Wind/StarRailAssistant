@@ -2,6 +2,7 @@ from get_width import get_width
 import time
 import os
 from tool.log import log
+from tool.exceptions import Exception
 
 def main():
     start = input('请输入起始地图（如果从头开始请输入0）：')
@@ -20,4 +21,8 @@ def main():
     log.info("脚本已经完成运行")
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as err:
+        log.error('出错了，错误类型为：{}'.format(err))
+
