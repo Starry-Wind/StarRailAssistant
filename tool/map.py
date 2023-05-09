@@ -26,8 +26,8 @@ class map:
 
     def auto_map(self, start):
         map_list = get_file('./map', 'old')
-        if f'map_{start}' in map_list:
-            map_list = map_list[map_list.index(f'map_{start}'):len(map_list)]
+        if f'map_{start}.json' in map_list:
+            map_list = map_list[map_list.index(f'map_{start}.json'):len(map_list)]
             for map in map_list:
                 # 选择地图
                 pyautogui.keyDown("m")
