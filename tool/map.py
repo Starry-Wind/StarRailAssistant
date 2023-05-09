@@ -1,7 +1,9 @@
-from .calculated import *
+import time
+
 import cv2 as cv
 import pyautogui
-import time
+
+from .calculated import *
 from .config import get_file
 from .log import log
 
@@ -25,7 +27,7 @@ class map:
                 break
 
     def auto_map(self, start):
-        map_list = get_file('./map', 'old')
+        map_list = get_file('./map', 'old')  # 从'./map'目录获取地图文件列表（排除'old'）
         if f'map_{start}.json' in map_list:
             map_list = map_list[map_list.index(f'map_{start}.json'):len(map_list)]
             for map in map_list:

@@ -13,6 +13,7 @@ from pynput.keyboard import Controller as KeyboardController
 from .log import log
 from .exceptions import Exception
 
+
 class calculated:
 
     def __init__(self):
@@ -24,8 +25,7 @@ class calculated:
         log.debug((x, y))
         win32api.SetCursorPos((x, y))
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
-        time.sleep(0.5)
-        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
+
 
     def Relative_click(self, points):
         hwnd = win32gui.FindWindow("UnityWndClass", '崩坏：星穹铁道')
@@ -33,7 +33,6 @@ class calculated:
         real_width = self.CONFIG['real_width']
         real_height = self.CONFIG['real_height']
         x, y = int(left + points[0]), int(top + points[1])
-        log.info((x, y))
         log.debug((x, y))
         win32api.SetCursorPos((x, y))
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
@@ -71,8 +70,7 @@ class calculated:
                 return
             if flag == False:
                 return
-        
-    
+
     def fighting(self):
         start_time = time.time()
         target = cv.imread('./temp/attack.jpg')
@@ -113,13 +111,15 @@ class calculated:
                 time.sleep(3)
                 break
 
-    def auto_map(self, map, old = True):
-        map_data = read_json_file(f"map\\old\\{map}.json") if old else read_json_file(f"map\\{map}.json")
+    def auto_map(self, map, old=True):
+        map_data = read_json_file(
+            f"map\\old\\{map}.json") if old else read_json_file(f"map\\{map}.json")
         map_filename = map
         # 开始寻路
         log.info("开始寻路")
         for map_index, map in enumerate(map_data['map']):
-            log.info(f"执行{map_filename}文件:{map_index+1}/{len(map_data['map'])} {map}")
+            log.info(
+                f"执行{map_filename}文件:{map_index+1}/{len(map_data['map'])} {map}")
             key = list(map.keys())[0]
             value = map[key]
             if key in ['w', 's', 'a', 'd', 'f']:
@@ -146,4 +146,4 @@ class calculated:
         # 该公式为不同缩放比之间的转化
         dx = int(x * 1295 / real_width)
         win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, 0)  # 进行视角移动
-        time.sleep(0.5)
+        time.sleep(0.3)
