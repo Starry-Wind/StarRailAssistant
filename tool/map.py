@@ -5,6 +5,7 @@ import time
 from .config import get_file
 from .log import log
 
+
 class map:
     def __init__(self):
         self.calculated = calculated()
@@ -27,7 +28,8 @@ class map:
     def auto_map(self, start):
         map_list = get_file('./map', 'old')
         if f'map_{start}.json' in map_list:
-            map_list = map_list[map_list.index(f'map_{start}.json'):len(map_list)]
+            map_list = map_list[map_list.index(
+                f'map_{start}.json'):len(map_list)]
             for map in map_list:
                 # 选择地图
                 pyautogui.keyDown("m")
@@ -36,9 +38,9 @@ class map:
                 self.map_init()
                 map = map.split('.')[0]
                 map_data = read_json_file(f"map\\{map}.json")
-                name=map_data['name']
-                author=map_data['author']
-                start_dict=map_data['start']
+                name = map_data['name']
+                author = map_data['author']
+                start_dict = map_data['start']
                 log.info(f"开始\033[0;34;40m{name}\033[0m锄地")
                 log.info(f"改路线导航作者：\033[0;31;40m{author}\033[0m")
                 log.info(f"感谢每一位无私奉献的作者")
@@ -46,7 +48,7 @@ class map:
                     key = list(start.keys())[0]
                     value = start[key]
                     time.sleep(value)
-                    self.calculated.click_target(key, 0.98)
+                    self.calculated.click_target(key, 0.85)
                 time.sleep(5)
                 self.calculated.auto_map(map, False)
         else:

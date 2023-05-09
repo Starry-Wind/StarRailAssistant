@@ -11,6 +11,8 @@ import orjson
 from tool.config import read_json_file
 from pynput.keyboard import Controller as KeyboardController
 from .log import log
+
+
 class calculated:
 
     def __init__(self):
@@ -18,21 +20,26 @@ class calculated:
         self.keyboard = KeyboardController()
 
     def Click(self, points):
-        real_width = self.CONFIG['real_width']
-        real_height = self.CONFIG['real_height']
-        x, y = int(points[0] * 1295 / real_width), int(points[1] * 757 / real_height)
-        log.debug((x, y))
-        win32api.SetCursorPos((x, y))
-        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
-        time.sleep(0.5)
-        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
+        # real_width = self.CONFIG['real_width']
+        # real_height = self.CONFIG['real_height']
+        # x, y = int(points[0] * 1295 / real_width), int(points[1] * 757 / real_height)
+        # log.debug((x, y))
+        # win32api.SetCursorPos((x, y))
+        # win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
+        # time.sleep(0.5)
+        # win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
+        pyautogui.moveTo(points)
+        pyautogui.mouseDown()
+        time.sleep(0.3)
+        pyautogui.mouseUp()
 
     def Relative_click(self, points):
         hwnd = win32gui.FindWindow("UnityWndClass", '崩坏：星穹铁道')
         left, top, right, bottom = win32gui.GetWindowRect(hwnd)
         real_width = self.CONFIG['real_width']
         real_height = self.CONFIG['real_height']
-        x, y = int((left + points[0]) * 1295 / real_width), int((top + points[1]) * 757 / real_height)
+        x, y = int((left + points[0]) * 1295 /
+                   real_width), int((top + points[1]) * 757 / real_height)
         log.debug((x, y))
         win32api.SetCursorPos((x, y))
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
@@ -70,8 +77,7 @@ class calculated:
                 return
             if flag == False:
                 return
-        
-    
+
     def fighting(self):
         start_time = time.time()
         target = cv.imread('./temp/attack.jpg')
@@ -98,7 +104,7 @@ class calculated:
                     break
                 elif time.time() - start_time > 15:
                     break
-        else: 
+        else:
             log.info("跳过开启自动战斗（沿用设置）")
 
         start_time = time.time()  # 开始计算战斗时间
@@ -112,14 +118,16 @@ class calculated:
                 time.sleep(3)
                 break
 
-    def auto_map(self, map, old = True):
+    def auto_map(self, map, old=True):
         map_name = map
-        map_data = read_json_file(f"map\\old\\{map}.json") if old else read_json_file(f"map\\{map}.json")
+        map_data = read_json_file(
+            f"map\\old\\{map}.json") if old else read_json_file(f"map\\{map}.json")
         map_filename = map
         # 开始寻路
         log.info("开始寻路")
         for map_index, map in enumerate(map_data['map']):
-            log.info(f"执行{map_name}文件:{map_index+1}/{len(map_data['map'])}", map)
+            log.info(
+                f"执行{map_name}文件:{map_index+1}/{len(map_data['map'])}", map)
             key = list(map.keys())[0]
             value = map[key]
             if key in ['w', 's', 'a', 'd', 'f']:
