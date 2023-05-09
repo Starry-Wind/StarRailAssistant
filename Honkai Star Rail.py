@@ -1,21 +1,23 @@
 from get_width import get_width
 import time
+import os
+from tool.log import log
 
 def main():
-    print("脚本将于5秒后运行,请确保你的游戏置顶")
-    time.sleep(5)
-    get_width()
-    from tool.map import map
-    map_instance = map()
-    print("开始运行，请勿移动鼠标和键盘\n若脚本运行无反应,请使用管理员权限运行")
-    map_instance.auto_map_1_1()  # 基座舱段
-    map_instance.auto_map_1_2()  # 收容舱段
-    map_instance.auto_map_1_3()  # 支援舱段
-    map_instance.auto_map_2_1()  # 城郊雪原
-    map_instance.auto_map_2_2()  # 边缘通路
-    map_instance.auto_map_2_3()  # 残响回廊
-    print("脚本已经完成运行")
-
+    start = input('请输入起始地图（如果从头开始请输入0）：')
+    if "-" in start and "_" in start or start == '0':
+        log.info("脚本将于5秒后运行,请确保你的游戏置顶")
+        time.sleep(5)
+        get_width()
+        from tool.map import map
+        map_instance = map()
+        log.info("开始运行，请勿移动鼠标和键盘")
+        log.info("若脚本运行无反应,请使用管理员权限运行")
+        start = '1-1_1' if start == '0' else start
+        map_instance.auto_map(start)  # 读取配置
+    else:
+        log.info("错误编号")
+    log.info("脚本已经完成运行")
 
 if __name__ == '__main__':
     main()

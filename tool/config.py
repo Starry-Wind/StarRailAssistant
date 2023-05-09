@@ -33,3 +33,14 @@ def modify_json_file(filename, key, value):
     with open(file_path, 'wb') as f:
         f.write(orjson.dumps(data))
         return 
+ 
+def get_file(path,exclude):
+    '''
+    获取文件夹下的文件
+    '''
+    file_list = []
+    for root, dirs, files in os.walk(path):
+        if exclude not in root:
+            for file in files:
+                    file_list.append(file)
+    return file_list

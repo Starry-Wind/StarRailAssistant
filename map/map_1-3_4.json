@@ -1,4 +1,10 @@
 {
+    "name": "支援舱段-4",
+    "author": "Starry-Wind",
+    "start": [
+        {"temp\\map_1-3_point_4.jpg": 1.5},
+        {"temp\\transfer.jpg": 1.5}
+    ],
     "map": [
         {
             "w": 5.9

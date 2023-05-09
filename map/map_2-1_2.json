@@ -1,4 +1,10 @@
 {
+    "name": "城郊雪原-2",
+    "author": "Starry-Wind",
+    "start": [
+        {"temp\\map_2-1_point_2.jpg": 1.5},
+        {"temp\\transfer.jpg": 1.5}
+    ],
     "map": [
         {
             "mouse_move": -2800

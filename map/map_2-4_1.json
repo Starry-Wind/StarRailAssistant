@@ -1,0 +1,62 @@
+{
+    "name": "永东邻-1",
+    "author": "夜里无星",
+    "start": [
+        {"temp\\orientation_1.jpg": 1.5},
+        {"temp\\orientation_3.jpg": 1.5},
+        {"temp\\map_2-4.png": 2},
+        {"temp\\map_2-4_point_1.png": 1.5},
+        {"temp\\map_2-4_point_2.png": 1.5},
+        {"temp\\transfer.jpg": 1.5}
+    ],
+    "map": [
+        {
+            "w": 7.471299409866333
+        },
+        {
+            "mouse_move": -1600
+        },
+        {
+            "w": 1.9419140815734863
+        },
+        {
+            "mouse_move": -800
+        },
+        {
+            "w": 2.170729160308838
+        },
+        {
+            "mouse_move": 400
+        },
+        {
+            "w": 1.8843047618865967
+        },
+        {
+            "mouse_move": -600
+        },
+        {
+            "w": 2.340815544128418
+        },
+        {
+            "fighting": 1
+        },
+        {
+            "fighting": 2
+        },
+        {
+            "w": 2.825272560119629
+        },
+        {
+            "mouse_move": 1200
+        },
+        {
+            "w": 1.115868091583252
+        },
+        {
+            "fighting": 1
+        },
+        {
+            "fighting": 2
+        }
+    ]
+}

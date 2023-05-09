@@ -1,4 +1,13 @@
 {
+    "name": "乌拉乌拉-1",
+    "author": "Starry-Wind",
+    "start": [
+        {"temp\\orientation_1.jpg": 1.5},
+        {"temp\\orientation_2.jpg": 1.5},
+        {"temp\\map_1-2.jpg": 2},
+        {"temp\\map_1-2_point_1.jpg": 1.5},
+        {"temp\\transfer.jpg": 1.5}
+    ],
     "map": [
         {
             "mouse_move": 2200

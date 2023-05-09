@@ -33,11 +33,11 @@
  
  ## 注意
  
- 1：识图继续屏幕截图为截取电脑屏幕全部画面，（句柄我不会emmmmm...），所以可能识图有可能出现一点点差错。。。
+ 1：识图为截取游戏画面。
  
- 2：该脚本暂时只支持**空间站【黑塔】**以及**雅利洛部分地图**，后续会更新（只要我不卡关）
+ 2：该脚本暂时只支持**空间站【黑塔】以及雅利洛仙舟部分地图**，持续更新中
  
- 3：代码是屎山，后续会优化，暂时是这个框架了
+ 3：强烈建议用三月七开图和录图
  
  ****如果喜欢，点个星星~****
 
@@ -55,3 +55,16 @@
 3:后续将会新增找宝箱、锄大地顺带捡垃圾等功能
 
 4：更新了新的地图json，解决的大部分撞墙问题
+
+## 贡献者
+
+感谢以下贡献者对本项目做出的贡献
+
+<a href="https://github.com/Starry-Wind/Honkai-Star-Rail/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Starry-Wind/Honkai-Star-Rail" />
+
+</a>
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Starry-Wind/Honkai-Star-Rail&type=Date)](https://star-history.com/#Starry-Wind/Honkai-Star-Rail&Date)

@@ -1,4 +1,10 @@
 {
+    "name": "边缘道路-3",
+    "author": "Starry-Wind",
+    "start": [
+        {"temp\\map_2-2_point_2.jpg": 1.5},
+        {"temp\\transfer.jpg": 1.5}
+    ],
     "map": [
         {
             "mouse_move": -3200
