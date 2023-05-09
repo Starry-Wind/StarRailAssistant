@@ -11,6 +11,7 @@ import orjson
 from tool.config import read_json_file
 from pynput.keyboard import Controller as KeyboardController
 from .log import log
+
 class calculated:
 
     def __init__(self):
@@ -70,8 +71,8 @@ class calculated:
                 return
             if flag == False:
                 return
-        
-    
+
+
     def fighting(self):
         start_time = time.time()
         target = cv.imread('./temp/attack.jpg')
