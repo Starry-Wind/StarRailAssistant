@@ -1,4 +1,10 @@
 {
+    "name": "残响回廊-4",
+    "author": "Starry-Wind",
+    "start": [
+        {"temp\\map_2-3_point_4.jpg": 1.5},
+        {"temp\\transfer.jpg": 1.5}
+    ],
     "map": [
         {
             "w": 1.818481683731079

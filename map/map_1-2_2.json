@@ -1,4 +1,10 @@
 {
+    "name": "收容舱段-2",
+    "author": "Starry-Wind",
+    "start": [
+        {"temp\\map_1-2_point_2.jpg": 1.5},
+        {"temp\\transfer.jpg": 1.5}
+    ],
     "map": [
         {
             "mouse_move": 4600
