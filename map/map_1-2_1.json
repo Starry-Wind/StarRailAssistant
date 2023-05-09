@@ -2,6 +2,7 @@
     "name": "乌拉乌拉-1",
     "author": "Starry-Wind",
     "start": [
+        {"map": 1},
         {"temp\\orientation_1.jpg": 1.5},
         {"temp\\orientation_2.jpg": 1.5},
         {"temp\\map_1-2.jpg": 2},

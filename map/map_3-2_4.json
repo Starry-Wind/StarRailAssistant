@@ -2,6 +2,7 @@
     "name": "迥星港-4",
     "author": "夜里无星",
     "start": [
+        {"map": 1},
         {"temp\\map_3-2_point_4.png": 1.5},
         {"temp\\transfer.jpg": 1.5}
     ],

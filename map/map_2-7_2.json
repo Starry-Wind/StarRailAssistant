@@ -2,6 +2,7 @@
     "name": "机器聚落-2",
     "author": "夜里无星",
     "start": [
+        {"map": 1},
         {"temp\\map_2-7_point_2.png": 1.5},
         {"temp\\transfer.jpg": 1.5}
     ],
