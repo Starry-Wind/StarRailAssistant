@@ -3,7 +3,7 @@
     "author": "夜里无星",
     "start": [
         {"temp\\orientation_1.jpg": 1.5},
-        {"temp\\orientation_4.jpg": 1.5},
+        {"temp\\orientation_4.png": 1.5},
         {"temp\\map_3-2.png": 2},
         {"temp\\map_3-3_point_1.png": 1.5},
         {"temp\\map_3-3_point_2.png": 1.5},
