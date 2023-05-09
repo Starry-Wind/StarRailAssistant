@@ -11,7 +11,7 @@ import orjson
 from tool.config import read_json_file
 from pynput.keyboard import Controller as KeyboardController
 from .log import log
-
+from .exceptions import Exception
 
 class calculated:
 
@@ -118,19 +118,17 @@ class calculated:
                 time.sleep(3)
                 break
 
-    def auto_map(self, map, old=True):
-        map_name = map
-        map_data = read_json_file(
-            f"map\\old\\{map}.json") if old else read_json_file(f"map\\{map}.json")
+    def auto_map(self, map, old = True):
+        map_data = read_json_file(f"map\\old\\{map}.json") if old else read_json_file(f"map\\{map}.json")
         map_filename = map
         # 开始寻路
         log.info("开始寻路")
         for map_index, map in enumerate(map_data['map']):
-            log.info(
-                f"执行{map_name}文件:{map_index+1}/{len(map_data['map'])}", map)
+            log.info(f"执行{map_filename}文件:{map_index+1}/{len(map_data['map'])}", map)
+
             key = list(map.keys())[0]
             value = map[key]
-            if key in ['w', 's', 'a', 'd', 'f']:
+            if key in ['w', 's', 'a', 'd']:
                 self.keyboard.press(key)
                 start_time = time.perf_counter()
                 while time.perf_counter() - start_time < value:
@@ -138,6 +136,13 @@ class calculated:
                 self.keyboard.release(key)
             elif key == "mouse_move":
                 self.Mouse_move(value)
+            elif key == "f":
+                self.keyboard.press(key)
+                start_time = time.perf_counter()
+                while time.perf_counter() - start_time < value:
+                    pass
+                self.keyboard.release(key)
+                time.sleep(3) # 防止因为传送导致脚本卡死
             elif key == "fighting":
                 if value == 1:      # 进战斗
                     self.fighting()

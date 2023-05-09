@@ -46,6 +46,7 @@ class map:
                 log.info(f"感谢每一位无私奉献的作者")
                 for start in start_dict:
                     key = list(start.keys())[0]
+                    log.debug(key)
                     value = start[key]
                     time.sleep(value)
                     self.calculated.click_target(key, 0.85)
