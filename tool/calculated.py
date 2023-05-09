@@ -9,6 +9,7 @@ import win32gui
 from PIL import ImageGrab
 import orjson
 from tool.config import read_json_file
+
 from pynput.keyboard import Controller as KeyboardController
 from .log import log
 
