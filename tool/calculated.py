@@ -20,26 +20,21 @@ class calculated:
         self.keyboard = KeyboardController()
 
     def Click(self, points):
-        # real_width = self.CONFIG['real_width']
-        # real_height = self.CONFIG['real_height']
-        # x, y = int(points[0] * 1295 / real_width), int(points[1] * 757 / real_height)
-        # log.debug((x, y))
-        # win32api.SetCursorPos((x, y))
-        # win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
-        # time.sleep(0.5)
-        # win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
-        pyautogui.moveTo(points)
-        pyautogui.mouseDown()
-        time.sleep(0.3)
-        pyautogui.mouseUp()
+        real_width = self.CONFIG['real_width']
+        real_height = self.CONFIG['real_height']
+        x, y = int(points[0] * 1295 / real_width), int(points[1] * 757 / real_height)
+        log.debug((x, y))
+        win32api.SetCursorPos((x, y))
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
+        time.sleep(0.5)
+        win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
 
     def Relative_click(self, points):
         hwnd = win32gui.FindWindow("UnityWndClass", '崩坏：星穹铁道')
         left, top, right, bottom = win32gui.GetWindowRect(hwnd)
         real_width = self.CONFIG['real_width']
         real_height = self.CONFIG['real_height']
-        x, y = int((left + points[0]) * 1295 /
-                   real_width), int((top + points[1]) * 757 / real_height)
+        x, y = int((left + points[0]) * 1295 / real_width), int((top + points[1]) * 757 / real_height)
         log.debug((x, y))
         win32api.SetCursorPos((x, y))
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
@@ -77,7 +72,8 @@ class calculated:
                 return
             if flag == False:
                 return
-
+        
+    
     def fighting(self):
         start_time = time.time()
         target = cv.imread('./temp/attack.jpg')
@@ -124,8 +120,7 @@ class calculated:
         # 开始寻路
         log.info("开始寻路")
         for map_index, map in enumerate(map_data['map']):
-            log.info(f"执行{map_filename}文件:{map_index+1}/{len(map_data['map'])}", map)
-
+            log.info(f"执行{map_filename}文件:{map_index+1}/{len(map_data['map'])} {map}")
             key = list(map.keys())[0]
             value = map[key]
             if key in ['w', 's', 'a', 'd']:
