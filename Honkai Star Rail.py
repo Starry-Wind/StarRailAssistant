@@ -5,7 +5,7 @@ from tool.log import log
 
 def main():
     start = input('请输入起始地图（如果从头开始请输入0）：')
-    if "-" in start and "_" in start:
+    if "-" in start and "_" in start or start == '0':
         log.info("脚本将于5秒后运行,请确保你的游戏置顶")
         time.sleep(5)
         get_width()
