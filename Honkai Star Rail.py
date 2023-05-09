@@ -13,7 +13,7 @@ def main():
         map_instance = map()
         log.info("开始运行，请勿移动鼠标和键盘")
         log.info("若脚本运行无反应,请使用管理员权限运行")
-        start = '1-1_1' if start == 0 else start
+        start = '1-1_1' if start == '0' else start
         map_instance.auto_map(start)  # 读取配置
     else:
         log.info("错误编号")
