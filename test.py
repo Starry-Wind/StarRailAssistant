@@ -4,15 +4,15 @@ import os
 import ctypes
 import traceback
 from tool.log import log
-from tool.calculated import calculated
 
 def main():
     if isadmin() == 1:
         log.info("脚本将于5秒后运行,请确保你的游戏置顶")
         time.sleep(5)
         get_width()
+        from tool.calculated import calculated
         calculat = calculated()
-        calculat.Relative_click((1875,104))
+        calculat.Relative_click((96,9))
         log.info("脚本已经完成运行")
     else:
          log.info("请以管理员权限运行")
