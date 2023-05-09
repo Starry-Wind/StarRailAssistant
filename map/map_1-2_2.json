@@ -2,6 +2,7 @@
     "name": "收容舱段-2",
     "author": "Starry-Wind",
     "start": [
+        {"map": 1},
         {"temp\\map_1-2_point_2.jpg": 1.5},
         {"temp\\transfer.jpg": 1.5}
     ],
@@ -16,7 +17,7 @@
             "fighting": 1
         },
         {
-            "mouse_move": 4800
+            "mouse_move": 5000
         },
         {
             "w": 2.150001049041748

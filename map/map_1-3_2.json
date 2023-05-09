@@ -2,6 +2,7 @@
     "name": "支援舱段-2",
     "author": "Starry-Wind",
     "start": [
+        {"map": 1},
         {"temp\\map_1-3_point_3.jpg": 1.5},
         {"temp\\transfer.jpg": 1.5}
     ],

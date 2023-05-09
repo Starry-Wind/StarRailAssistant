@@ -2,6 +2,7 @@
     "name": "永东邻-2",
     "author": "夜里无星",
     "start": [
+        {"map": 1},
         {"temp\\map_2-4_point_3.png": 1.5},
         {"temp\\transfer.jpg": 1.5}
     ],
@@ -16,7 +17,7 @@
             "mouse_move": 2400
         },
         {
-            "w": 6.481100797653198
+            "w": 5.481100797653198
         },
         {
             "mouse_move": 2400

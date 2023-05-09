@@ -2,6 +2,7 @@
     "name": "大矿区-4",
     "author": "夜里无星",
     "start": [
+        {"map": 1},
         {"temp\\map_2-5_point_4.png": 1.5},
         {"temp\\map_2-5_point_5.png": 1.5},
         {"temp\\transfer.jpg": 1.5}

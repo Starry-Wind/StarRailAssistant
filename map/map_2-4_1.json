@@ -2,6 +2,7 @@
     "name": "永东邻-1",
     "author": "夜里无星",
     "start": [
+        {"map": 1},
         {"temp\\orientation_1.jpg": 1.5},
         {"temp\\orientation_3.jpg": 1.5},
         {"temp\\map_2-4.png": 2},
@@ -11,7 +12,7 @@
     ],
     "map": [
         {
-            "w": 7.471299409866333
+            "w": 6.471299409866333
         },
         {
             "mouse_move": -1600

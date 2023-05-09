@@ -2,6 +2,7 @@
     "name": "残响回廊-3",
     "author": "Starry-Wind",
     "start": [
+        {"map": 1},
         {"temp\\map_2-3_point_2.jpg": 1.5},
         {"temp\\map_2-3_point_3.jpg": 1.5},
         {"temp\\transfer.jpg": 1.5}

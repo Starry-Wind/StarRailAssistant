@@ -2,6 +2,7 @@
     "name": "城郊雪原-1",
     "author": "Starry-Wind",
     "start": [
+        {"map": 1},
         {"temp\\orientation_1.jpg": 1.5},
         {"temp\\orientation_3.jpg": 1.5},
         {"temp\\map_2-1.jpg": 2},

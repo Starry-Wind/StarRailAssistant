@@ -2,6 +2,7 @@
     "name": "城郊雪原-2",
     "author": "Starry-Wind",
     "start": [
+        {"map": 1},
         {"temp\\map_2-1_point_2.jpg": 1.5},
         {"temp\\transfer.jpg": 1.5}
     ],
