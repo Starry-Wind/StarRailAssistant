@@ -11,8 +11,7 @@ import win32gui
 from PIL import ImageGrab
 from pynput.keyboard import Controller as KeyboardController
 
-from .config import read_json_file
-from .config import CONFIG_FILE_NAME
+from .config import read_json_file, CONFIG_FILE_NAME
 
 from .exceptions import Exception
 from .log import log
