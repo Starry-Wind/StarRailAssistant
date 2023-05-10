@@ -15,6 +15,7 @@ on:
     types:
       - submitted
   status: {}
+  workflow_dispatch:
 
 jobs:
   # 合并发布版本的 pr 到 master
