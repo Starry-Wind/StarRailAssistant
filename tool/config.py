@@ -1,9 +1,11 @@
 import os
-
 import orjson
+import hashlib
+import asyncio
 
 from tool.constants import CONFIG_FILE_NAME
-
+from tool.requests import *
+from tool.log import log
 
 def normalize_file_path(filename):
     # 尝试在当前目录下读取文件
@@ -66,3 +68,28 @@ def get_file(path, exclude):
             for file in files:
                 file_list.append(file)
     return file_list
+
+async def check_file(github_proxy, filename = 'map'):
+    try:
+        map_list = await get(
+            f'{github_proxy}https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/map/{filename}_list.json',
+            follow_redirects=True)
+        map_list = map_list.json()
+    except Exception:
+        log.warning('读取资源列表失败，请尝试更换github资源地址')
+        return
+    flag = False
+    for map in map_list:
+        file_path = Path() / map['path']
+        if os.path.exists(file_path):
+            if hashlib.md5(file_path.read_bytes()).hexdigest() == map['hash']:
+                continue
+        try:
+            await download(
+                url=f'{github_proxy}https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/map/{map["path"]}',
+                save_path=file_path)
+            await asyncio.sleep(0.2)
+            flag = True
+        except Exception:
+            log.warning(f'下载{map["path"]}时出错，请尝试更换github资源地址')
+    log.info('资源下载完成' if flag else '资源完好，无需下载')
