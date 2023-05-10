@@ -106,3 +106,7 @@ venv.bak/
 
 # add
 .idea/
+.vscode/
+
+# custom 
+config.json

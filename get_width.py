@@ -1,9 +1,12 @@
+import time
+
+import win32con
 import win32gui
 import win32print
-import win32con
-import time
-from tool.config import modify_json_file
+
+from tool.config import init_config_file, modify_json_file, normalize_file_path, CONFIG_FILE_NAME
 from tool.log import log
+
 
 def get_width():
     hwnd = win32gui.GetForegroundWindow()  # 根据当前活动窗口获取句柄
@@ -28,7 +31,10 @@ def get_width():
     real_width = int(width * scale_x)
     real_height = int(height * scale_y)
 
+    if not normalize_file_path(CONFIG_FILE_NAME):
+        init_config_file(real_width=real_width, real_height=real_height)
+
     log.info(f"Real resolution: {real_width} x {real_height}")
 
-    modify_json_file('config.json', 'real_width', real_width)
-    modify_json_file('config.json', 'real_height', real_height)
+    modify_json_file(CONFIG_FILE_NAME, "real_width", real_width)
+    modify_json_file(CONFIG_FILE_NAME, "real_height", real_height)
