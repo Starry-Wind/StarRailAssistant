@@ -1,7 +1,11 @@
 {
-  "name": "地图-编号",
-  "author": "作者",
-  "start": [],
+  "name": "边缘道路-2",
+  "author": "Starry-Wind",
+  "start": [
+      {"map": 1},
+      {"temp\\map_2-2_point_1.jpg": 1.5},
+      {"temp\\transfer.jpg": 1.5}
+  ],
   "map": [
     {
       "s": 8.144832134246826
