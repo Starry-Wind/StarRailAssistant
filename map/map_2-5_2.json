@@ -1,45 +1,29 @@
 {
-    "name": "大矿区-2",
-    "author": "夜里无星",
-    "start": [
-        {"map": 1},
-        {"temp\\map_2-5_point_2.png": 1.5},
-        {"temp\\map_2-5_point_3.png": 1.5},
-        {"temp\\transfer.jpg": 1.5}
-    ],
-    "map": [
-        {
-            "mouse_move": 3600
-        },
-        {
-            "w": 2.398714065551758
-        },
-        {
-            "mouse_move": -1200
-        },
-        {
-            "w": 1.5439801216125488
-        },
-        {
-            "fighting": 1
-        },
-        {
-            "fighting": 2
-        },
-        {
-            "w": 3.1985461711883545
-        },
-        {
-            "mouse_move": -1200
-        },
-        {
-            "w": 0.918461799621582
-        },
-        {
-            "fighting": 1
-        },
-        {
-            "fighting": 2
-        }
-    ]
+  "name": "大矿区-2",
+  "author": "Starry-Wind",
+  "start": [
+    {
+      "map": 1
+    },
+    {
+      "temp\\map_2-5_point_2.png": 1.5
+    },
+    {
+      "temp\\map_2-5_point_3.png": 1.5
+    },
+    {
+      "temp\\transfer.jpg": 1.5
+    }
+  ],
+  "map": [
+    {
+      "s": 2.349982738494873
+    },
+    {
+      "d": 7.891154766082764
+    },
+    {
+      "fighting": 1
+    }
+  ]
 }
