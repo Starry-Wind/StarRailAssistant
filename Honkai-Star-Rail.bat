@@ -19,5 +19,5 @@ CD /D "%~dp0"
 :: Your codes should start from the following line
 python --version
 pip install -r requirements.txt
-"Honkai Star Rail.py"
+"main.py"
 pause
