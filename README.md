@@ -1,6 +1,6 @@
 <div align="center">
 
-[嗨！点点我！点点我！点点我！](#注意)
+[嗨！点点我！点点我！点点我！](#使用说明)
 
 <img alt="LOGO" src="https://github.com/Starry-Wind/Honkai-Star-Rail/blob/318c2c19c45d7c26f6b663a57018519f367a09a5/temp/love!.png" style="border-radius:50%">
 
