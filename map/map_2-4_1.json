@@ -3,6 +3,9 @@
   "author": "Starry-Wind",
   "start": [
     {
+      "map": 1
+    },
+    {
       "temp\\orientation_1.jpg": 1.5
     },
     {
