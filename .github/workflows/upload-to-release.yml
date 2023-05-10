@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - master
+      - beta-2.7_test
   workflow_dispatch:
 
 name: Release
