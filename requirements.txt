@@ -12,3 +12,4 @@ pywin32==306
 Pillow==9.4.0
 orjson==3.6.6
 loguru
+pynput
