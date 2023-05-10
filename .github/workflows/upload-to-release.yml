@@ -1,85 +1,34 @@
-name: Go Release
-
 on:
 
-  release:
+  push:
 
-    types: [master]
-    
+    branches:
+
+      - master
+      
   workflow_dispatch:
-  
+    
+name: Release
+
 jobs:
 
-  release:
+  release-please:
 
-    if: github.repository == 'PasteUs/HelloCI'
-
-    name: Build with go ${{ matrix.go_version }} on ${{ matrix.os }} and upload
-
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-
-      matrix:
-
-        go_version: [1.13]
-
-        os: [ubuntu-latest]
+    runs-on: ubuntu-latest
 
     steps:
 
-      - name: Set up Go ${{ matrix.go_version }}
+      - uses: GoogleCloudPlatform/release-please-action@v3
 
-        uses: actions/setup-go@v1
-
-        with:
-
-          go-version: ${{ matrix.go_version }}
-
-        id: go
-
-      - name: Check out code into the Go module directory
-
-        uses: actions/checkout@v1
-
-      - name: Get dependencies
-
-        run: |
-
-          go get -v -t -d ./...
-
-          if [ -f Gopkg.toml ]; then
-
-              curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-
-              dep ensure
-
-          fi
-
-      - name: Build
-
-        run: |
-
-          go build -v -o main .
-
-      - name: Gzip
-
-        run: |
-
-          mkdir hello-word-${{ matrix.os }}
-
-          cp main hello-word-${{ matrix.os }}
-
-          tar -czvf hello-word-${{ matrix.os }}.tar.gz hello-word-${{ matrix.os }}
-
-      - name: Upload to release
-
-        uses: JasonEtco/upload-to-release@master
+        id: release
 
         with:
 
-          args: hello-word-${{ matrix.os }}.tar.gz application/octet-stream
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-        env:
+          release-type: node
 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          package-name: standard-version
+
+          changelog-types: '[{"type": "types", "section":"Types", "hidden": false},{"type": "revert", "section":"Reverts", "hidden": false},{"type": "feat", "section": "Features", "hidden": false},{"type": "fix", "section": "Bug Fixes", "hidden": false},{"type": "improvement", "section": "Feature Improvements", "hidden": false},{"type": "docs", "section":"Docs", "hidden": false},{"type": "style", "section":"Styling", "hidden": false},{"type": "refactor", "section":"Code Refactoring", "hidden": false},{"type": "perf", "section":"Performance Improvements", "hidden": false},{"type": "test", "section":"Tests", "hidden": false},{"type": "build", "section":"Build System", "hidden": false},{"type": "ci", "section":"CI", "hidden":false}]' 
+
