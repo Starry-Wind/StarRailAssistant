@@ -3,9 +3,14 @@ import orjson
 import hashlib
 import asyncio
 
-from tool.constants import CONFIG_FILE_NAME
-from tool.requests import *
-from tool.log import log
+try:
+    from .requests import *
+    from .log import log
+except:
+    from requests import *
+    from log import log
+
+CONFIG_FILE_NAME = "config.json"
 
 def normalize_file_path(filename):
     # 尝试在当前目录下读取文件
