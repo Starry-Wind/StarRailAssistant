@@ -3,6 +3,9 @@
   "author": "Starry-Wind",
   "start": [
     {
+      "map": 1
+    },
+    {
       "temp\\map_2-4_point_3.png": 1.5
     },
     {

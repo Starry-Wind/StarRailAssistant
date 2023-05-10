@@ -2,9 +2,15 @@
     "name": "残响回廊-5",
     "author": "Starry-Wind",
     "start": [
-        {"map": 1},
-        {"temp\\map_2-3_point_5.jpg": 1.5},
-        {"temp\\transfer.jpg": 1.5}
+        {
+            "map": 1
+        },
+        {
+            "temp\\map_2-3_point_5.jpg": 1.5
+        },
+        {
+            "temp\\transfer.jpg": 1.5
+        }
     ],
     "map": [
         {
@@ -23,7 +29,7 @@
             "mouse_move": 200
         },
         {
-            "w": 0.7478172779083252
+            "w": 0.9478172779083252
         },
         {
             "fighting": 1
@@ -56,7 +62,7 @@
             "mouse_move": 600
         },
         {
-            "w": 3.1262047290802
+            "w": 3.5262047290802
         },
         {
             "mouse_move": -2200
