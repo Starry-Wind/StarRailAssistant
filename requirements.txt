@@ -14,3 +14,4 @@ orjson==3.6.6
 loguru
 httpx
 tqdm
+pynput
