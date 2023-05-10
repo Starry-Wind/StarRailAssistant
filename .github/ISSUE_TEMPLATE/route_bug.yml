@@ -18,3 +18,11 @@ body:
       options:
         - label: 是
         - label: 否
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志
+      description: 日志在logs文件夹下。
+      placeholder: 点击文本框下面小长条可以上传文件
+    validations:
+      required: true
