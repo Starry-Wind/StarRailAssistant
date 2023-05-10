@@ -5,7 +5,9 @@ on:
   release:
 
     types: [master]
-
+    
+  workflow_dispatch:
+  
 jobs:
 
   release:
