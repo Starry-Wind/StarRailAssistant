@@ -18,7 +18,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  # 合并发布版本的 pr 到 master
   auto-merge:
     runs-on: ubuntu-latest
     steps:
@@ -27,4 +26,3 @@ jobs:
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
           MERGE_LABELS: 'autorelease: pending'
-          MERGE_FILTER_AUTHOR: 'github-actions[bot]'
