@@ -1,3 +1,5 @@
+[嗨！点点我！点点我！点点我！](#注意)
+
 <img alt="LOGO" src="./temp/love!.png" style="border-radius:50%">
 
 <div align="center">
