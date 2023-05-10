@@ -4,8 +4,7 @@ import win32con
 import win32gui
 import win32print
 
-from tool.config import init_config_file, modify_json_file, normalize_file_path
-from tool.constants import CONFIG_FILE_NAME
+from tool.config import init_config_file, modify_json_file, normalize_file_path, CONFIG_FILE_NAME
 from tool.log import log
 
 
