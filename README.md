@@ -1,6 +1,6 @@
 # Honkai：Star Rail
 # 崩坏：星穹铁道自动锄大地脚本地图库
-<img alt="LOGO" src="./temp/love!.png" width="768" height="1152" />
+<img alt="LOGO" src="./temp/love!.png" style="border-radius:50%">
 
 
 ## | 文件结构
