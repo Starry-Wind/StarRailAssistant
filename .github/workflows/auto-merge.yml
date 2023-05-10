@@ -1,0 +1,29 @@
+name: Automerge
+
+on:
+  pull_request:
+    types:
+      - labeled
+      - unlabeled
+      - synchronize
+      - opened
+      - edited
+      - ready_for_review
+      - reopened
+      - unlocked
+  pull_request_review:
+    types:
+      - submitted
+  status: {}
+
+jobs:
+  # 合并发布版本的 pr 到 master
+  auto-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Automerge
+        uses: 'pascalgn/automerge-action@v0.15.6'
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          MERGE_LABELS: ''
+          MERGE_FILTER_AUTHOR: 'github-actions'
