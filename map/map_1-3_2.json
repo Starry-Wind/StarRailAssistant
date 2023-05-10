@@ -2,9 +2,15 @@
     "name": "支援舱段-2",
     "author": "Starry-Wind",
     "start": [
-        {"map": 1},
-        {"temp\\map_1-3_point_3.jpg": 1.5},
-        {"temp\\transfer.jpg": 1.5}
+        {
+            "map": 1
+        },
+        {
+            "temp\\map_1-3_point_3.jpg": 1.5
+        },
+        {
+            "temp\\transfer.jpg": 1.5
+        }
     ],
     "map": [
         {
@@ -17,10 +23,10 @@
             "mouse_move": -2200
         },
         {
-            "w": 1.1710174083709717
+            "w": 1.3010174083709717
         },
         {
-            "f": 0.06617331504821777
+            "f": 0.6
         }
     ]
 }
