@@ -1,7 +1,19 @@
-# Honkai：Star Rail
-# 崩坏：星穹铁道自动锄大地脚本
-<img alt="LOGO" src="./temp/love!.png" width="768" height="1152" />
+<img alt="LOGO" src="./temp/love!.png" style="border-radius:50%">
 
+<div align="center">
+
+<h1 align="center">
+
+崩坏：星穹铁道自动锄大地脚本
+
+</h1>
+ 
+[![GitHub Stars](https://img.shields.io/github/stars/Starry-Wind/Honkai-Star-Rail?style=flat-square)](https://github.com/Starry-Wind/Honkai-Star-Rail/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/Starry-Wind/Honkai-Star-Rail?style=flat-square)](https://github.com/Starry-Wind/Honkai-Star-Rail/network)
+[![GitHub Issues](https://img.shields.io/github/issues/Starry-Wind/Honkai-Star-Rail?style=flat-square)](https://github.com/Starry-Wind/Honkai-Star-Rail/issues)
+[![GitHub Contributors](https://img.shields.io/github/contributors/Starry-Wind/Honkai-Star-Rail?style=flat-square)](https://github.com/Starry-Wind/Honkai-Star-Rail/graphs/contributors)
+[![GitHub License](https://img.shields.io/github/license/Starry-Wind/Honkai-Star-Rail?style=flat-square)](https://github.com/Starry-Wind/Honkai-Star-Rail/blob/main/LICENSE)
+</div>
 
 *****该脚本仍然处于测试阶段，可能会出现奇奇怪怪的BUG*****
 
@@ -31,11 +43,11 @@
  
  ## 注意
  
- 1：识图继续屏幕截图为截取电脑屏幕全部画面，（句柄我不会emmmmm...），所以可能识图有可能出现一点点差错。。。
+ 1：识图为截取游戏画面
  
- 2：该脚本暂时只支持**空间站【黑塔】**以及**雅利洛部分地图**，后续会更新（只要我不卡关）
- 
- 3：代码是屎山，后续会优化，暂时是这个框架了
+ 2：支持地图**空间站【黑塔】、雅利洛、仙舟**
+
+ 3: $\color{#FF0000}{ 请使用三月七跑图}$
  
  ****如果喜欢，点个星星~****
 
