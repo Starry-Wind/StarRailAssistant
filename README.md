@@ -1,7 +1,7 @@
 # Honkai：Star Rail
 # 崩坏：星穹铁道自动锄大地脚本地图库
-<img alt="LOGO" src="./temp/love!.png" width="768" height="1152" />
 
+<img alt="LOGO" src="https://github.com/Starry-Wind/Honkai-Star-Rail/blob/318c2c19c45d7c26f6b663a57018519f367a09a5/temp/love!.png" style="border-radius:50%">
 
 ## | 文件结构
 `map`文件夹为崩坏：星穹铁道自动锄大地脚本的导航文件。
