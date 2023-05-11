@@ -24,7 +24,7 @@
  ***尋路撞牆？ 走的路徑不對？ 嫌棄路線太慢？ 現在beta-2.7新增加地圖錄製功能***<br>
  ***你現在可以使用tool目錄下的record_v7.2.py自行錄製地圖路徑，包你走到滿意 XD***
 
- 找到BUG了？代碼問題想吐槽？ 歡迎加入 技術 & 吹水群：[星穹◇Time(QQ 群)](https://qm.qq.com/cgi-bin/qm/qr?k=xdCO46fHlVcY7D2L7elXzqcxL3nyTGnW&jump_from=webapi&authKey=uWZooQ2szv+nG/re7luCKn8LW1KibSb0vvi0FycA45Mglm5AGM1GP2iJ+SiWmDwg)<br>
+ 找到BUG了？ 代碼問題想吐槽？ 歡迎加入 技術 & 吹水群：[QQ 群](https://qm.qq.com/cgi-bin/qm/qr?k=xdCO46fHlVcY7D2L7elXzqcxL3nyTGnW&jump_from=webapi&authKey=uWZooQ2szv+nG/re7luCKn8LW1KibSb0vvi0FycA45Mglm5AGM1GP2iJ+SiWmDwg)|[Telegram Group](https://t.me/+yeQEhnuT9O41NDM1)<br>
 
  ~~該腳本當前版本僅支持 縮放150%，屏幕分辨率2560x1440，現在在大改動中，盡快解決屏幕旋轉適配問題~~
 
@@ -72,11 +72,12 @@
 
  ## 更新日誌 (Release-v1.0.0)
 
- 1：新增bat執行檔一鍵開啟
+ 1：新增exe執行檔一鍵開啟 感謝[@apple050620312
+ ](https://github.com/apple050620312)
 
  2：新增地圖自動更新功能
 
- 3：完善requirements.txt的依賴列表
+ 3：將pynput重新加入依賴列表
 
  4：新增更多後台提示信息
 

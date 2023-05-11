@@ -1,0 +1,20 @@
+name: abnormal route
+description: Automatic navigation does not follow the normal route
+labels: [路线错误]
+title: "[路线错误] "
+body:
+  - type: textarea
+    id: bug
+    attributes:
+      label: Problem Description
+      description: Describe the routing problem you are having
+    validations:
+      required: true
+  - type: checkboxes
+    id: role
+    attributes:
+      label: 是否使用三月七跑图
+      description: 未使用三月七跑图的反馈不会别受理
+      options:
+        - label: 是
+        - label: 否
