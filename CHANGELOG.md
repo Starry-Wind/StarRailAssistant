@@ -8,6 +8,14 @@
 * 版本更新 ([a766779](https://github.com/Starry-Wind/Honkai-Star-Rail/commit/a7667792f8df10bb451a8b429c47965904e6c18f))
 * 版本更新 ([a766779](https://github.com/Starry-Wind/Honkai-Star-Rail/commit/a7667792f8df10bb451a8b429c47965904e6c18f))
 
+## [1.1.0](https://github.com/Starry-Wind/Honkai-Star-Rail/compare/v1.0.1...v1.1.0) (2023-05-11)
+
+
+### Features
+
+* 版本更新 ([a766779](https://github.com/Starry-Wind/Honkai-Star-Rail/commit/a7667792f8df10bb451a8b429c47965904e6c18f))
+* 版本更新 ([a766779](https://github.com/Starry-Wind/Honkai-Star-Rail/commit/a7667792f8df10bb451a8b429c47965904e6c18f))
+
 ## [1.0.1](https://github.com/Starry-Wind/Honkai-Star-Rail/compare/v1.0.0...v1.0.1) (2023-05-11)
 
 
