@@ -24,7 +24,7 @@
 ***寻路撞墙？走的路径不对？嫌弃路线太慢？现在beta-2.7新增加地图录制功能***<br>
 ***你现在可以使用tool目录下的record_v7.2.py自行录制地图路径，包你走到满意 XD***
 
-找到BUG了？ ，代码问题想吐槽？欢迎加入 技术 & 吹水群：[星穹◇Time(QQ 群)](https://qm.qq.com/cgi-bin/qm/qr?k=xdCO46fHlVcY7D2L7elXzqcxL3nyTGnW&jump_from=webapi&authKey=uWZooQ2szv+nG/re7luCKn8LW1KibSb0vvi0FycA45Mglm5AGM1GP2iJ+SiWmDwg)<br>
+找到BUG了？代码问题想吐槽？欢迎加入 技术 & 吹水群：[星穹◇Time(QQ 群)](https://qm.qq.com/cgi-bin/qm/qr?k=xdCO46fHlVcY7D2L7elXzqcxL3nyTGnW&jump_from=webapi&authKey=uWZooQ2szv+nG/re7luCKn8LW1KibSb0vvi0FycA45Mglm5AGM1GP2iJ+SiWmDwg)<br>
 
 ~~该脚本当前版本仅支持 缩放150%，屏幕分辨率2560x1440，现在在大改动中，尽快解决屏幕旋转适配问题~~
 
@@ -37,7 +37,7 @@
 3：如果你的电脑分辨率为2560\*1440，请将游戏分辨率调为1920\*1080（窗口化）<br>
    如果你的电脑分辨率为1920\*1080，请将游戏分辨率调为1920\*1080（全屏幕）
    
-4：战斗为游戏自带的自动战斗，确保你的队伍有足够实力平推小怪**<br>
+4：战斗为游戏自带的自动战斗，确保你的队伍有足够实力平推小怪<br>
    (如启用了沿用自动战斗设定，请把config.json里的 "auto_battle_persistence" 改成 1) 
 
 5：建议不要在地图上追踪任何东西，并且人物初始位置最好在**观景车厢**
@@ -52,11 +52,11 @@
 
 10：程序运行期间，**请勿移动**键盘及鼠标，如果移动了极有可能造成**偏离**或**撞墙**的问题
 
-## 脚本录制 **感谢**[@AlisaCat](https://github.com/AlisaCat-S)
+## 脚本录制 感谢[@AlisaCat](https://github.com/AlisaCat-S)
 
-1：WASD移动，X是进战斗，鼠标左键是打障碍物等，不要用鼠标移动视角，用方向键左右来移动视角（脚本运行后方向键左右会映射成鼠标），F9停止录制并保存**
+1：WASD移动，X是进战斗，鼠标左键是打障碍物等，不要用鼠标移动视角，用方向键左右来移动视角（脚本运行后方向键左右会映射成鼠标），F9停止录制并保存
 
-2：完成后将会生成output.json文件，请把他重命名替换成你要更改的地图json即可使用** （原地图json将执行的路线将会在5月8日详细更新介绍）
+2：完成后将会生成output.json文件，请把他重命名替换成你要更改的地图json即可使用 （原地图json将执行的路线将会在5月8日详细更新介绍）
  
 ## 注意事项
  
@@ -68,7 +68,7 @@
 
 4：请使用**三月七**或**艾丝妲**来跑图
 
-****如果喜欢，点个星星~****
+⭐**如果喜欢，点个星星~**⭐
 
 ## 更新日志 (Release-v1.0.0)
 
