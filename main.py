@@ -13,7 +13,7 @@ def main():
     if isadmin() == 1:
         start = input('请输入起始地图（如果从头开始请输入0）：')
         if "-" in start and "_" in start or start == '0':
-            log.info("脚本将于5秒后运行,请确保你的游戏置顶")
+            log.info("脚本将于5秒后运行,请确保你的游戏置顶1")
             time.sleep(5)
             get_width()
             from tool.map import map
