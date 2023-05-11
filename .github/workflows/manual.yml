@@ -6,7 +6,7 @@ name: Auto sync your fork upstream
 
 uses: rovast/sync-upstream-repo@v0.0.1
 
-  with:
+    with: 
 
     # URL of gitHub public upstream repo
 
