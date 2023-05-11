@@ -1,41 +1,42 @@
-name: Auto sync your fork upstream
+
+name: Fork Sync
 
   # You may pin to the exact commit or the version.
 
-  # uses: rovast/sync-upstream-repo@f87d4f3467cc312809e50ebfc8a1977b2b518ad1
+  # uses: tgymnich/fork-sync@0cc6ac48fd51415e7c34e5b8823021bc952a5f5f
 
-uses: rovast/sync-upstream-repo@v0.0.1
+uses: tgymnich/fork-sync@v1.2.1
 
-    with: 
+with:
 
-    # URL of gitHub public upstream repo
+  # Owner of the forked repository
 
-    upstream_repo: 
+  owner: # optional
 
-    # Branch to merge from upstream (defaults to downstream branch)
+  # Token for the github API
 
-    upstream_branch: # optional, default is main
+  github_token: 
 
-    # Branch to merge into downstream
+  # Branch to track
 
-    downstream_branch: # optional, default is 
+  head: # optional, default is master
 
-    # GitHub Bot token
+  # Branch to keep updated
 
-    token: 
+  base: # optional, default is master
 
-    # Git fetch arguments
+  # Merge method to use
 
-    fetch_args: # optional, default is 
+  merge_method: # optional, default is merge
 
-    # Git merge arguments
+  # The title of the pull request
 
-    merge_args: # optional, default is 
+  pr_title: # optional, default is Fork Sync
 
-    # Git push arguments
+  # The message in the pull request
 
-    push_args: # optional, default is 
+  pr_message: # optional
 
-    # Toggle to spawn `sync-upstream-repo` with time logs
+  # ignore Exceptions
 
-    spawn_logs: 
+  ignore_fail: # optional
