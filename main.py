@@ -11,7 +11,7 @@ from tool.update_file import update_file_main
 
 def main():
     if not read_json_file(CONFIG_FILE_NAME).get('map_debug', False):
-        ghproxy = "https://ghproxy.com/"
+        ghproxy = "https://github.moeyy.xyz/"
         # asyncio.run(check_file(ghproxy, "map"))
         # asyncio.run(check_file(ghproxy, "temp"))
         update_file_main(url_proxy=ghproxy)
