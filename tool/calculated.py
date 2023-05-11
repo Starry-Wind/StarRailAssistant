@@ -93,7 +93,7 @@ class calculated:
                 points = self.calculated(result, target.shape)
                 self.Click(points)
                 break
-            elif time.time() - start_time > 5:  # 如果已经识别了10秒还未找到目标图片，则退出循环
+            elif time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info("识别超时,此处可能无敌人")
                 return
         time.sleep(6)
@@ -111,6 +111,7 @@ class calculated:
                     break
         else:
             log.info("跳过开启自动战斗（沿用设置）")
+            time.sleep(5)
 
         start_time = time.time()  # 开始计算战斗时间
         target = cv.imread("./temp/finish_fighting.jpg")
