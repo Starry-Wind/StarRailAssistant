@@ -4,7 +4,7 @@ name: Auto sync your fork upstream
 
   # uses: rovast/sync-upstream-repo@f87d4f3467cc312809e50ebfc8a1977b2b518ad1
 
-  uses: rovast/sync-upstream-repo@v0.0.1
+uses: rovast/sync-upstream-repo@v0.0.1
 
   with:
 
