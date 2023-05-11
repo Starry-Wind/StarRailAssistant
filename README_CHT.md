@@ -65,14 +65,18 @@
     "author": "Starry-Wind",   （作者名，第二作者不能覆蓋第一作者名稱）
     
     "start": [           （開局傳送地圖識別圖片，並將鼠標移動至圖片中間並按下按鍵）
-       
+
+
         {"map": 1},         （按下m鍵打開地圖）
         
         {"temp\\orientation_1.jpg": 1.5},     （識別到orientation_1.jpg圖片後，將鼠標移動至圖片中間並按下按鍵）
-        
+
+
         {"temp\\orientation_2.jpg": 1.5},      （識別到orientation_2.jpg圖片後，將鼠標移動至圖片中間並按下按鍵）
         
+
         {"temp\\map_1.jpg": 2},               （具體圖片自己看，一般為該區域名"烏拉烏拉"的地圖文字）
+      
        
         {"temp\\map_1_point_1.jpg": 1.5},       （第一個傳送點的圖片）
         

@@ -66,14 +66,18 @@
     
     "start": [           （开局传送地图识别图片，并将鼠标移动至图片中间并按下按键）
    
+   
         {"map": 1},         （按下m键打开地图）
    
         {"temp\\orientation_1.jpg": 1.5},     （识别到orientation_1.jpg图片后，将鼠标移动至图片中间并按下按键）
-   
+
+
         {"temp\\orientation_2.jpg": 1.5},      （识别到orientation_2.jpg图片后，将鼠标移动至图片中间并按下按键）
    
+
         {"temp\\map_1.jpg": 2},               （具体图片自己看，一般为该区域名"乌拉乌拉"的地图文字）
    
+
         {"temp\\map_1_point_1.jpg": 1.5},       （第一个传送点的图片）
    
         {"temp\\map_1_point_2.jpg": 1.5},       （第二个传送点的图片）
