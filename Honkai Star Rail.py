@@ -5,13 +5,16 @@ import ctypes
 import asyncio
 import traceback
 from tool.log import log
-from tool.config import check_file, read_json_file, CONFIG_FILE_NAME
+from tool.config import read_json_file, CONFIG_FILE_NAME
+from tool.update_file import update_file_main
+
 
 def main():
     if not read_json_file(CONFIG_FILE_NAME).get('map_debug', False):
         ghproxy = "https://ghproxy.com/"
-        asyncio.run(check_file(ghproxy, "map"))
-        asyncio.run(check_file(ghproxy, "temp"))
+        # asyncio.run(check_file(ghproxy, "map"))
+        # asyncio.run(check_file(ghproxy, "temp"))
+        update_file_main(url_proxy=ghproxy)
     if isadmin() == 1:
         start = input('请输入起始地图（如果从头开始请输入0）：')
         if "-" in start and "_" in start or start == '0':
