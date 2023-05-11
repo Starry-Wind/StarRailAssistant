@@ -9,13 +9,10 @@ name: Release
 jobs:
   publish-npm:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
     steps:
       - name: 1. 检查master分支
         uses: actions/checkout@master
-      - name: 创建GitHub Release
+      - name: 2. 创建GitHub Release
         id: create_release
         uses: actions/create-release@latest
         env:
