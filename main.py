@@ -9,7 +9,7 @@ from tool.config import check_file, read_json_file, CONFIG_FILE_NAME
 
 def main():
     if not read_json_file(CONFIG_FILE_NAME).get('map_debug', False):
-        ghproxy = "https://ghproxy.com/"
+        ghproxy = ""#"https://ghproxy.com/"
         asyncio.run(check_file(ghproxy, "map"))
         asyncio.run(check_file(ghproxy, "temp"))
     if isadmin() == 1:
