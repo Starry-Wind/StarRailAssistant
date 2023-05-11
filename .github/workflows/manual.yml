@@ -1,41 +1,35 @@
-- name: Fork Sync
+name: Sync Fork
 
-  # You may pin to the exact commit or the version.
+on:
 
-  # uses: tgymnich/fork-sync@0cc6ac48fd51415e7c34e5b8823021bc952a5f5f
+  schedule:
 
-  uses: tgymnich/fork-sync@v1.2.1
+    - cron: '*/30 * * * *' # every 30 minutes
 
-  with:
+  workflow_dispatch: # on button click
 
-    # Owner of the forked repository
+jobs:
 
-    owner: # optional
+  sync:
 
-    # Token for the github API
+    runs-on: ubuntu-latest
 
-    github_token: 
+    steps:
 
-    # Branch to track
+      - uses: tgymnich/fork-sync@v1.8
 
-    head: # optional, default is master
+        with:
 
-    # Branch to keep updated
+          owner: llvm
 
-    base: # optional, default is master
+          base: master
 
-    # Merge method to use
+          head: master
 
-    merge_method: # optional, default is merge
 
-    # The title of the pull request
 
-    pr_title: # optional, default is Fork Sync
 
-    # The message in the pull request
 
-    pr_message: # optional
 
-    # ignore Exceptions
 
-    ignore_fail: # optional
+
