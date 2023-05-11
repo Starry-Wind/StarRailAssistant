@@ -2,7 +2,7 @@ import os
 import sys
 from loguru import logger
 
-VER = "2.8"
+VER = "2.9"
 log = logger
 dir_log = "logs"
 path_log = os.path.join(dir_log, '日志文件.log')
