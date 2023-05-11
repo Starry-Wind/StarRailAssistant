@@ -72,11 +72,12 @@
 
 ## 更新日志 (Release-v1.0.0)
 
-1：新增bat执行档一键开启
+1：新增exe执行档一键开启 感謝[@apple050620312
+](https://github.com/apple050620312)
 
 2：新增地图自动更新功能
 
-3：完善requirements.txt的依赖列表
+3：將pynput重新加入依赖列表
 
 4：新增更多后台提示信息
 
