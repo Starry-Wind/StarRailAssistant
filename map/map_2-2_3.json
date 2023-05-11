@@ -1,0 +1,32 @@
+{
+    "name": "边缘道路-3",
+    "author": "Starry-Wind",
+    "start": [
+        {"map": 1},
+        {"temp\\map_2-2_point_2.jpg": 1.5},
+        {"temp\\transfer.jpg": 1.5}
+    ],
+    "map": [
+        {
+            "mouse_move": -3200
+        },
+        {
+            "w": 1.7194280624389648
+        },
+        {
+            "mouse_move": 1000
+        },
+        {
+            "w": 2.602262496948242
+        },
+        {
+            "mouse_move": -1200
+        },
+        {
+            "w": 2.8656022548675537
+        },
+        {
+            "fighting": 1
+        }
+    ]
+}

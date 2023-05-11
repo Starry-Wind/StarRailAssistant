@@ -1,0 +1,53 @@
+{
+  "name": "城郊雪原-1",
+  "author": "Starry-Wind",
+  "start": [
+    {
+      "map": 1
+    },
+    {
+      "temp\\orientation_1.jpg": 1.5
+    },
+    {
+      "temp\\orientation_3.jpg": 1.5
+    },
+    {
+      "temp\\map_2-1.jpg": 2
+    },
+    {
+      "temp\\map_2-1_point_1.jpg": 1.5
+    },
+    {
+      "temp\\transfer.jpg": 1.5
+    }
+  ],
+  "map": [
+    {
+      "mouse_move": -3000
+    },
+    {
+      "w": 5.924200534820557
+    },
+    {
+      "fighting": 1
+    },
+    {
+      "w": 5.216192722320557
+    },
+    {
+      "mouse_move": 2600
+    },
+    {
+      "w": 7.828953742980957
+    },
+    {
+      "mouse_move": 2400
+    },
+    {
+      "w": 2.4891059398651123
+    },
+    {
+      "fighting": 1
+    }
+  ]
+}

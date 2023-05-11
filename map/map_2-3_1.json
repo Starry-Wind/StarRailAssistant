@@ -1,0 +1,38 @@
+{
+    "name": "残响回廊-1",
+    "author": "Starry-Wind",
+    "start": [
+        {"map": 1},
+        {"temp\\orientation_1.jpg": 1.5},
+        {"temp\\orientation_3.jpg": 1.5},
+        {"temp\\map_2-3.jpg": 2},
+        {"temp\\map_2-3_point_1.jpg": 1.5},
+        {"temp\\transfer.jpg": 1.5}
+    ],
+    "map": [
+        {
+            "w": 1.3443315029144287
+        },
+        {
+            "mouse_move": 1600
+        },
+        {
+            "w": 1.5763235092163086
+        },
+        {
+            "mouse_move": -1600
+        },
+        {
+            "w": 7.420758485794067
+        },
+        {
+            "mouse_move": -1200
+        },
+        {
+            "w": 1.4647655487060547
+        },
+        {
+            "fighting": 1
+        }
+    ]
+}
