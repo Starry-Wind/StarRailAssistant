@@ -34,3 +34,4 @@ jobs:
           add: |
             'map_list.json'
             'temp_list.json'
+            'version.json'
