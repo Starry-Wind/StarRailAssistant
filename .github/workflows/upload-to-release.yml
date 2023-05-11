@@ -20,7 +20,7 @@ jobs:
         uses: actions/create-release@latest
         env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-	      with:
+        with:
           tag_name: tag的名称
           release_name: 发布的名字
           body: 发布的内容
