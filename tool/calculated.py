@@ -158,5 +158,5 @@ class calculated:
         real_width = self.CONFIG["real_width"]
         # 该公式为不同缩放比之间的转化
         dx = int(x * 1295 / real_width)
-        win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, 0)  # 进行视角移动
+        win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, i, 0)  # 进行视角移动
         time.sleep(0.5)
