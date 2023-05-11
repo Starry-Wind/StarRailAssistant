@@ -11,3 +11,6 @@ on:
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
