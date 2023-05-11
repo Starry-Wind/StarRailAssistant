@@ -1,8 +1,9 @@
+
 {
     "name": "柳钉镇-1",
     "author": "夜里无星",
     "start": [
-        {"map": 1},
+        {"map":1},
         {"temp\\orientation_1.jpg": 1.5},
         {"temp\\orientation_3.jpg": 1.5},
         {"temp\\map_2-6.png": 1.5},
@@ -75,3 +76,4 @@
         }
     ]
 }
+
