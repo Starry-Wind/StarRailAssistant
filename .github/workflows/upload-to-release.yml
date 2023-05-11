@@ -4,29 +4,36 @@ on:
 
   push:
 
-    tags:
+    branches:
 
-      - 'v*'
-  workflow_dispatch:
+      - "master"
 
 jobs:
 
-  build:
+  pre-release:
 
-    runs-on: ubuntu-latest
+    name: "Pre Release"
+
+    runs-on: "ubuntu-latest"
 
     steps:
 
-    - uses: actions/checkout@v3
+      # ...
 
-    - name: Create a Release
+      - name: "Build & test"
 
-      uses: elgohr/Github-Release-Action@v4
+        run: |
 
-      env:
+          echo "done!"
 
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: "marvinpinto/action-automatic-releases@latest"
 
-      with:
+        with:
 
-        title: MyReleaseMessage
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+
+          automatic_release_tag: "latest"
+
+          prerelease: true
+
+          title: "Development Build"
