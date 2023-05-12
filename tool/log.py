@@ -2,7 +2,7 @@ import os
 import sys
 from requests import post 
 from loguru import logger
-from config import read_json_file
+import config # Circular import
 
 VER = "2.9"
 log = logger
@@ -22,7 +22,7 @@ logger.add(path_log,
 
 def webhook_and_log(message):
     log.info(message)
-    url = read_json_file("config.json", False).get("webhook_url")
+    url = config.read_json_file("config.json", False).get("webhook_url")
     if url == "" or url == None:
         return
     try:
