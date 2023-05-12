@@ -20,6 +20,7 @@ from tool.log import log
 
 
 async def download_file(url, local_path, session):
+
     async with session.get(url) as response:
         with open(local_path, 'wb') as f:
             async for data in response.content.iter_chunked(1024):

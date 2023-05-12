@@ -53,7 +53,9 @@ async def post(url: str,
 
 async def download(url: str, save_path: Path):
     """
-    下载文件(带进度条)
+    说明：
+        下载文件(带进度条)
+    参数：
         :param url: url
         :param save_path: 保存路径
     """

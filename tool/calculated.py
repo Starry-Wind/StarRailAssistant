@@ -23,6 +23,12 @@ class calculated:
         self.keyboard = KeyboardController()
 
     def Click(self, points):
+        """
+        说明：
+            点击坐标
+        参数：
+            :param points: 坐标
+        """
         x, y = int(points[0]), int(points[1])
         log.debug((x, y))
         win32api.SetCursorPos((x, y))
@@ -31,6 +37,12 @@ class calculated:
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
 
     def Relative_click(self, points):
+        """
+        说明：
+            点击相对坐标
+        参数：
+            :param points: 百分比坐标
+        """
         hwnd = win32gui.FindWindow("UnityWndClass", "崩坏：星穹铁道")
         left, top, right, bottom = win32gui.GetWindowRect(hwnd)
         real_width = self.CONFIG["real_width"]
@@ -45,7 +57,13 @@ class calculated:
         time.sleep(0.5)
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
 
-    def scan_screenshot(self, prepared):
+    def scan_screenshot(self, prepared) -> dict:
+        """
+        说明：
+            比对图片
+        参数：
+            :param prepared: 比对图片地址
+        """
         hwnd = win32gui.FindWindow("UnityWndClass", "崩坏：星穹铁道")
         left, top, right, bottom = win32gui.GetWindowRect(hwnd)
         temp = ImageGrab.grab((left, top, right, bottom))
@@ -159,5 +177,14 @@ class calculated:
         real_width = self.CONFIG["real_width"]
         # 该公式为不同缩放比之间的转化
         dx = int(x * 1295 / real_width)
-        win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, 0)  # 进行视角移动
+        i = int(dx/200)
+        last = dx - i*200
+        for ii in range(abs(i)):
+            if dx >0:
+                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 200, 0)  # 进行视角移动
+            else:
+                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, -200, 0)  # 进行视角移动
+            time.sleep(0.1)
+        if last != 0:
+            win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, last, 0)  # 进行视角移动
         time.sleep(0.5)
