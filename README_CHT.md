@@ -110,6 +110,19 @@
 
 2：後續將會新增找寶箱、鋤大地順帶撿垃圾等功能
 
+## 貢獻者
+
+感謝以下貢獻者對本項目做出的貢獻
+
+<a href="https://github.com/Starry-Wind/Honkai-Star-Rail/graphs/contributors">
+
+  <img src="https://contrib.rocks/image?repo=Starry-Wind/Honkai-Star-Rail" />
+
+</a>
+
+![Alt](https://repobeats.axiom.co/api/embed/79d87540c597fc0b30893860e7b92da60c555fa9.svg "Repobeats analytics image")
+
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Starry-Wind/Honkai-Star-Rail&type=Date)](https://star-history.com/#Starry-Wind/Honkai-Star-Rail&Date)
