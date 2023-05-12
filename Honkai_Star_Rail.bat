@@ -1,5 +1,4 @@
-@echo off
-:: BatchGotAdmin (Run as Admin code starts)
+ï»¿:: BatchGotAdmin (Run as Admin code starts)
 REM --> Check for permissions
 >nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
 REM --> If error flag set, we do not have admin.
@@ -18,41 +17,28 @@ pushd "%CD%"
 CD /D "%~dp0"
 :: BatchGotAdmin (Run as Admin code ends)
 :: Your codes should start from the following line
+
+@echo off
 cd /d %~dp0
 
-echo Pythonª©¥»
+chcp 65001
+echo å·²è®¾å®šæ­¤ç»ˆç«¯ç¼–ç ä¸ºUTF-8
+echo.
+
+echo Pythonç‰ˆæœ¬
 python --version
+echo å¦‚æžœæ²¡å‡ºçŽ°ç‰ˆæœ¬å·ä»£è¡¨ä½ æ²¡æœ‰å®‰è£…Python
 echo.
 
-echo ¥¿¦bÀË¬d¨Ã§ó·s¨Ì¿à
+echo æ­£åœ¨æ£€æŸ¥å¹¶æ›´æ–°ä¾èµ–
 pip install -r requirements.txt
-echo ¦Û°Ê¨Ì¿àÀË¬d¤w§¹¦¨
+echo è‡ªåŠ¨ä¾èµ–æ£€æŸ¥å·²å®Œæˆ
 echo.
 
-echo ¥¿¦b¦Û°Ê§ó·s¦a¹ÏÀÉ
-python "main.py"
-echo §A¨S¦³¦w¸ËPython!!!!!!!!!!!!!!!!!!!!!½Ð¸Ô²Ó¾\ÅªGithubªº¨Ï¥Î»¡©ú¦w¸Ë§¹Python«á¦A±Ò°Ê!!!!!!!!!!!!!!!!!!!!!
-echo ³o¤£¬O¸}¥»ªº°ÝÃD!!!!!!!!!!!!!!!!!!!!!½Ð¤£­n¥hQQ¸s°Ý³o­Ó°ÝÃD©Î¥hGithub¶}issue³£¤£­n!!!!!!!!!!!!!!!!!!!!!
-echo §A¨S¦³¦w¸ËPython!!!!!!!!!!!!!!!!!!!!!½Ð¸Ô²Ó¾\ÅªGithubªº¨Ï¥Î»¡©ú¦w¸Ë§¹Python«á¦A±Ò°Ê!!!!!!!!!!!!!!!!!!!!!
-echo ³o¤£¬O¸}¥»ªº°ÝÃD!!!!!!!!!!!!!!!!!!!!!½Ð¤£­n¥hQQ¸s°Ý³o­Ó°ÝÃD©Î¥hGithub¶}issue³£¤£­n!!!!!!!!!!!!!!!!!!!!!
-echo §A¨S¦³¦w¸ËPython!!!!!!!!!!!!!!!!!!!!!½Ð¸Ô²Ó¾\ÅªGithubªº¨Ï¥Î»¡©ú¦w¸Ë§¹Python«á¦A±Ò°Ê!!!!!!!!!!!!!!!!!!!!!
-echo ³o¤£¬O¸}¥»ªº°ÝÃD!!!!!!!!!!!!!!!!!!!!!½Ð¤£­n¥hQQ¸s°Ý³o­Ó°ÝÃD©Î¥hGithub¶}issue³£¤£­n!!!!!!!!!!!!!!!!!!!!!
-echo §A¨S¦³¦w¸ËPython!!!!!!!!!!!!!!!!!!!!!½Ð¸Ô²Ó¾\ÅªGithubªº¨Ï¥Î»¡©ú¦w¸Ë§¹Python«á¦A±Ò°Ê!!!!!!!!!!!!!!!!!!!!!
-echo ³o¤£¬O¸}¥»ªº°ÝÃD!!!!!!!!!!!!!!!!!!!!!½Ð¤£­n¥hQQ¸s°Ý³o­Ó°ÝÃD©Î¥hGithub¶}issue³£¤£­n!!!!!!!!!!!!!!!!!!!!!
-echo §A¨S¦³¦w¸ËPython!!!!!!!!!!!!!!!!!!!!!½Ð¸Ô²Ó¾\ÅªGithubªº¨Ï¥Î»¡©ú¦w¸Ë§¹Python«á¦A±Ò°Ê!!!!!!!!!!!!!!!!!!!!!
-echo ³o¤£¬O¸}¥»ªº°ÝÃD!!!!!!!!!!!!!!!!!!!!!½Ð¤£­n¥hQQ¸s°Ý³o­Ó°ÝÃD©Î¥hGithub¶}issue³£¤£­n!!!!!!!!!!!!!!!!!!!!!
-echo §A¨S¦³¦w¸ËPython!!!!!!!!!!!!!!!!!!!!!½Ð¸Ô²Ó¾\ÅªGithubªº¨Ï¥Î»¡©ú¦w¸Ë§¹Python«á¦A±Ò°Ê!!!!!!!!!!!!!!!!!!!!!
-echo ³o¤£¬O¸}¥»ªº°ÝÃD!!!!!!!!!!!!!!!!!!!!!½Ð¤£­n¥hQQ¸s°Ý³o­Ó°ÝÃD©Î¥hGithub¶}issue³£¤£­n!!!!!!!!!!!!!!!!!!!!!
-echo §A¨S¦³¦w¸ËPython!!!!!!!!!!!!!!!!!!!!!½Ð¸Ô²Ó¾\ÅªGithubªº¨Ï¥Î»¡©ú¦w¸Ë§¹Python«á¦A±Ò°Ê!!!!!!!!!!!!!!!!!!!!!
-echo ³o¤£¬O¸}¥»ªº°ÝÃD!!!!!!!!!!!!!!!!!!!!!½Ð¤£­n¥hQQ¸s°Ý³o­Ó°ÝÃD©Î¥hGithub¶}issue³£¤£­n!!!!!!!!!!!!!!!!!!!!!
-echo §A¨S¦³¦w¸ËPython!!!!!!!!!!!!!!!!!!!!!½Ð¸Ô²Ó¾\ÅªGithubªº¨Ï¥Î»¡©ú¦w¸Ë§¹Python«á¦A±Ò°Ê!!!!!!!!!!!!!!!!!!!!!
-echo ³o¤£¬O¸}¥»ªº°ÝÃD!!!!!!!!!!!!!!!!!!!!!½Ð¤£­n¥hQQ¸s°Ý³o­Ó°ÝÃD©Î¥hGithub¶}issue³£¤£­n!!!!!!!!!!!!!!!!!!!!!
-echo §A¨S¦³¦w¸ËPython!!!!!!!!!!!!!!!!!!!!!½Ð¸Ô²Ó¾\ÅªGithubªº¨Ï¥Î»¡©ú¦w¸Ë§¹Python«á¦A±Ò°Ê!!!!!!!!!!!!!!!!!!!!!
-echo ³o¤£¬O¸}¥»ªº°ÝÃD!!!!!!!!!!!!!!!!!!!!!½Ð¤£­n¥hQQ¸s°Ý³o­Ó°ÝÃD©Î¥hGithub¶}issue³£¤£­n!!!!!!!!!!!!!!!!!!!!!
-echo §A¨S¦³¦w¸ËPython!!!!!!!!!!!!!!!!!!!!!½Ð¸Ô²Ó¾\ÅªGithubªº¨Ï¥Î»¡©ú¦w¸Ë§¹Python«á¦A±Ò°Ê!!!!!!!!!!!!!!!!!!!!!
-echo ³o¤£¬O¸}¥»ªº°ÝÃD!!!!!!!!!!!!!!!!!!!!!½Ð¤£­n¥hQQ¸s°Ý³o­Ó°ÝÃD©Î¥hGithub¶}issue³£¤£­n!!!!!!!!!!!!!!!!!!!!!
-echo §A¨S¦³¦w¸ËPython!!!!!!!!!!!!!!!!!!!!!½Ð¸Ô²Ó¾\ÅªGithubªº¨Ï¥Î»¡©ú¦w¸Ë§¹Python«á¦A±Ò°Ê!!!!!!!!!!!!!!!!!!!!!
-echo ³o¤£¬O¸}¥»ªº°ÝÃD!!!!!!!!!!!!!!!!!!!!!½Ð¤£­n¥hQQ¸s°Ý³o­Ó°ÝÃD©Î¥hGithub¶}issue³£¤£­n!!!!!!!!!!!!!!!!!!!!!
+echo æ­£åœ¨è‡ªåŠ¨æ›´æ–°åœ°å›¾æ¡£
+py Honkai_Star_Rail.py
+echo åœ¨åˆšå¼€å¯ç¨‹åºå°±çœ‹åˆ°è¿™æ¡ä¿¡æ¯? ä½ å¯èƒ½æ²¡æœ‰å®‰è£…Python? æˆ–æ˜¯Pythonå®‰è£…æ—¶æ²¡æœ‰å‹¾é€‰"Add Python to PATH"?
+echo å¦‚æžœæœ‰å¯èƒ½æ˜¯ä¸Šé¢é‚£äº›é—®é¢˜ è¯·ä¸è¦åŽ»Githubå›žæŠ¥issueæˆ–æ˜¯æ¥QQç¾¤é—®è¿™ä¸ªé—®é¢˜ å»ºè®®é‡æ–°é˜…è¯»Githubé¡µé¢çš„ä½¿ç”¨æ•™å­¦
+echo.
 
 pause
-
