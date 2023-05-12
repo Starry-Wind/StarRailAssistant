@@ -1,0 +1,74 @@
+[
+  {
+    "path": "Honkai_Star_Rail.py",
+    "hash": "5fbce7d68880b824f22e6637df217d3e"
+  },
+  {
+    "path": "get_width.py",
+    "hash": "aeb49fba2f76501a786a6a840b7273c9"
+  },
+  {
+    "path": "README_CHT.md",
+    "hash": "6f37b39b16002a60b687c58771e8c0c6"
+  },
+  {
+    "path": "README.md",
+    "hash": "17034004d7b517de15a24976e970d177"
+  },
+  {
+    "path": "config.json",
+    "hash": "c939971bb52e90cd63ac3e33dd2a57d3"
+  },
+  {
+    "path": "requirements.txt",
+    "hash": "00cbf14b9c84287c19f930123db85aaa"
+  },
+  {
+    "path": "Honkai_Star_Rail.bat",
+    "hash": "33b53108fb1a3bb8cc8a5a4996f326df"
+  },
+  {
+    "path": "test.py",
+    "hash": "26b374a8bd370d4f07696460c8c617ec"
+  },
+  {
+    "path": "LICENSE",
+    "hash": "8ceeca78b817cc0e6ae98824381ea098"
+  },
+  {
+    "path": "map_res_list.py",
+    "hash": "5e6d81ec2c54ecf8f5830ea9cfc2f1b3"
+  },
+  {
+    "path": "tool/update_file.py",
+    "hash": "dcfcede16e06da0283210989adeb30ac"
+  },
+  {
+    "path": "tool/config.py",
+    "hash": "70b976531346e953f65291aa61d6673b"
+  },
+  {
+    "path": "tool/requests.py",
+    "hash": "8a218459934957622eea306edbb32ff4"
+  },
+  {
+    "path": "tool/exceptions.py",
+    "hash": "6e9537f3cdd33585a96419ad27fbf1ee"
+  },
+  {
+    "path": "tool/calculated.py",
+    "hash": "23bdf98159c569edc231fb634a020a80"
+  },
+  {
+    "path": "tool/record_v7.2.py",
+    "hash": "0269fe20d8c756d90838003a39aa919c"
+  },
+  {
+    "path": "tool/map.py",
+    "hash": "7388c4727b05162949b38644bd03438f"
+  },
+  {
+    "path": "tool/log.py",
+    "hash": "a92789cf670edd0c5871edb45dea98e1"
+  }
+]
