@@ -1,6 +1,6 @@
 import os
 import sys
-from requests import post 
+from .requests import post 
 from loguru import logger
 
 VER = "2.9"
