@@ -2,7 +2,7 @@ from get_width import get_width
 import time
 import os
 import ctypes
-import asyncio, uvloop
+import asyncio
 import traceback
 from tool.log import log, webhook_and_log
 from tool.config import read_json_file, CONFIG_FILE_NAME
@@ -38,7 +38,6 @@ def isadmin():
 
 if __name__ == '__main__':
     try:
-        uvloop.install()
         main()
     except:
         log.error(traceback.format_exc())
