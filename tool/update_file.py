@@ -110,8 +110,8 @@ async def update_file(url_proxy: str="",
     tmp_zip = Path() / tmp_dir / f'{type}.zip'
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
-    if not os.path.exists(type):
-        os.makedirs(type)
+    if not os.path.exists(unzip_path):
+        os.makedirs(unzip_path)
         modify_json_file(CONFIG_FILE_NAME, f"{type}_version", "0")
 
     log.info(f'[资源文件更新]正在检查远程版本是否有更新...')
@@ -211,6 +211,20 @@ def update_file_main(url_proxy="",
                     keep_folder=[],
                     keep_file=[],
                     zip_path=""):
+    """
+    说明：
+        更新文件
+    参数：
+        :param url_proxy: github代理
+        :param skip_verify: 是否跳过检验
+        :param type: 更新文件的类型 map\temp
+        :param version: 版本验证地址 map
+        :param url_zip: zip下载链接
+        :param unzip_path: 解压地址（删除用）
+        :param keep_folder: 保存的文件夹
+        :param keep_file: 保存的文件
+        :param zip_path: 需要移动的文件地址
+    """
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     log.info(f'[资源文件更新]即将资源文件更新，本操作会覆盖本地地图文件..')
     check_file_status = asyncio.run(update_file(url_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path))

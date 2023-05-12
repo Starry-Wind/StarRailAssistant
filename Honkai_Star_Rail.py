@@ -28,13 +28,13 @@ def main():
         # asyncio.run(check_file(ghproxy, "temp"))
         update_file_main(url_proxy=ghproxy,
                     skip_verify=False,
-                    type="temp",
-                    version="map",
-                    url_zip="https://github.com/Starry-Wind/Honkai-Star-Rail/archive/refs/heads/map.zip",
-                    unzip_path="temp",
-                    keep_folder=[],
-                    keep_file=[],
-                    zip_path="Honkai-Star-Rail-map/temp/")
+                    type="star",
+                    version="beta-2.7_test",
+                    url_zip="https://github.com/Starry-Wind/Honkai-Star-Rail/archive/refs/heads/beta-2.7_test.zip",
+                    unzip_path=".",
+                    keep_folder=['.git','logs','temp','map'],
+                    keep_file=['config.json'],
+                    zip_path="Honkai-Star-Rail-beta-2.7_test/")
     if isadmin() == 1:
         start = input('请输入起始地图（如果从头开始请输入0）：')
         if "-" in start and "_" in start or start == '0':
