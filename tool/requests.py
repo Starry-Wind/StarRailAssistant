@@ -1,13 +1,3 @@
-'''
-Author: Night-stars-1 nujj1042633805@gmail.com
-Date: 2023-05-10 12:44:14
-LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-13 01:09:34
-FilePath: \Honkai-Star-Rail-beta-2.4h:\Download\Zip\Honkai-Star-Rail-beta-2.7\tool\requests.py
-Description: 
-
-Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
-'''
 import httpx
 import tqdm.asyncio
 from pathlib import Path

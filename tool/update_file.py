@@ -9,6 +9,7 @@ import shutil
 import asyncio
 import hashlib
 
+from pathlib import Path
 from tqdm import tqdm as tq
 from zipfile import ZipFile, BadZipFile
 from typing import Dict, Optional, Any, Union, Tuple, List
@@ -19,7 +20,7 @@ from tool.config import normalize_file_path, modify_json_file, read_json_file, C
 
 tmp_dir = 'tmp'
 
-async def verify_file_hash(json_path: str) -> bool:
+async def verify_file_hash(json_path: Path, keep_file: Optional[List[str]] = []) -> bool:
     """
     说明：
         校验文件
@@ -28,28 +29,27 @@ async def verify_file_hash(json_path: str) -> bool:
     返回:
         :return bool
     """
-    print(json_path)
     for data in json_path:
         file_path = Path() / data['path']
         if not os.path.exists(file_path):
             return False, file_path
-        if os.path.isfile(file_path):
+        if os.path.isfile(file_path) and str(file_path) not in keep_file:
             if hashlib.md5(file_path.read_bytes()).hexdigest() != data['hash']:
                 return False, file_path
     return True, None
 
-async def unzip(zip, zip_name):
+async def unzip(zip, zip_path: Path):
     global tmp_dir
     try:
         with ZipFile(zip, 'r') as zf:
             for member in tq(zf.infolist(), desc='解压中'):
-                if member.filename.startswith(zip_name):
+                if member.filename.startswith(zip_path):
                     zf.extract(member, tmp_dir)
                     log.debug(f'[资源文件更新]正在提取{member.filename}')
     except BadZipFile:
         log.info(f'[资源文件更新]下载压缩包失败, 重试中: BadZipFile')
 
-async def remove_file(folder_path, keep_folder, keep_file):
+async def remove_file(folder_path: Path,keep_folder: Optional[List[str]] = [],keep_file: Optional[List[str]] = []) -> None:
     if os.path.exists(folder_path):
         for item in os.listdir(folder_path):
             item_path = os.path.join(folder_path, item)
@@ -58,7 +58,7 @@ async def remove_file(folder_path, keep_folder, keep_file):
             elif os.path.isfile(item_path) and item not in keep_file:
                 os.remove(item_path)
 
-async def move_file(src_folder, dst_folder, keep_folder, keep_file):
+async def move_file(src_folder: Path, dst_folder,keep_folder: Optional[List[str]] = [],keep_file: Optional[List[str]] = []) -> None:
     
     # 创建目标文件夹（如果不存在）
     if not os.path.exists(dst_folder):
@@ -152,15 +152,14 @@ async def update_file(url_proxy: str="",
         await unzip(tmp_zip, zip_path)
 
         #shutil.rmtree('..\Honkai-Star-Rail-beta-2.7')
-        await remove_file(unzip_path, keep_folder,keep_file)
+        await remove_file(unzip_path, keep_folder, keep_file)
         await move_file(os.path.join(tmp_dir, zip_path), unzip_path, [], keep_file)
 
         log.info(f'[资源文件更新]正在校验资源文件')
 
         map_list = await get(url_list)
         map_list = map_list.json()
-        print(map_list)
-        verify, path = await verify_file_hash(map_list)
+        verify, path = await verify_file_hash(map_list, keep_file)
         if not verify:
             raise Exception(f"[资源文件更新]{path}校验失败, 程序退出")
 
@@ -193,7 +192,7 @@ async def update_file(url_proxy: str="",
 
             map_list = await get(url_list)
             map_list = map_list.json()
-            verify, path = await verify_file_hash(map_list)
+            verify, path = await verify_file_hash(map_list, keep_file)
             if not verify:
                 log.error(f"[资源文件更新]{path}发现文件缺失, 3秒后将使用远程版本覆盖本地版本")
                 return "rm_all"
