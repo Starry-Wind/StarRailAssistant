@@ -9,6 +9,17 @@ async def get(url: str,
                 params: Optional[Dict[str, Any]] = None,
                 timeout: Optional[int] = 20,
                 **kwargs) -> httpx.Response:
+    """
+    说明：
+        httpx的get请求封装
+    参数：
+        :param url: url
+        :param headers: 请求头
+        :param params: params
+        :param data: data
+        :param json: json
+        :param timeout: 超时时间
+    """
     async with httpx.AsyncClient() as client:
         return await client.get(url,
                                 headers=headers,
@@ -16,7 +27,38 @@ async def get(url: str,
                                 timeout=timeout,
                                 **kwargs)
 
+async def post(url: str,
+                *,
+                headers: Optional[Dict[str, str]] = None,
+                params: Optional[Dict[str, Any]] = None,
+                timeout: Optional[int] = 20,
+                **kwargs) -> httpx.Response:
+    """
+    说明：
+        httpx的post请求封装
+    参数：
+        :param url: url
+        :param headers: 请求头
+        :param params: params
+        :param data: data
+        :param json: json
+        :param timeout: 超时时间
+    """
+    async with httpx.AsyncClient() as client:
+        return await client.post(url,
+                                headers=headers,
+                                params=params,
+                                timeout=timeout,
+                                **kwargs)
+
 async def download(url: str, save_path: Path):
+    """
+    说明：
+        下载文件(带进度条)
+    参数：
+        :param url: url
+        :param save_path: 保存路径
+    """
     save_path.parent.mkdir(parents=True, exist_ok=True)
     async with httpx.AsyncClient().stream(method='GET', url=url, follow_redirects=True) as datas:
         size = int(datas.headers['Content-Length'])

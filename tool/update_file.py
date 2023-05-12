@@ -13,14 +13,14 @@ from zipfile import ZipFile, BadZipFile
 
 import aiohttp
 from tqdm import tqdm
+from typing import Dict, Optional, Any, Union, Tuple
 
 from tool.config import normalize_file_path, modify_json_file
 from tool.log import log
 
 
-
-
 async def download_file(url, local_path, session):
+
     async with session.get(url) as response:
         with open(local_path, 'wb') as f:
             async for data in response.content.iter_chunked(1024):
@@ -51,7 +51,7 @@ def verify_file_hash(path, expected_hash):
         return False
 
 
-async def update_file(url_proxy="", rm_all=False, skip_verify=True):
+async def update_file(url_proxy: str="", rm_all: bool=False, skip_verify: bool=True) -> bool:
     if rm_all:
         shutil.rmtree(os.path.join('.', 'map'), ignore_errors=True)
         shutil.rmtree(os.path.join('.', 'temp'), ignore_errors=True)

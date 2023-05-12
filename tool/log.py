@@ -1,7 +1,11 @@
 import os
 import sys
-from requests import post 
 from loguru import logger
+
+try:
+    from .requests import post
+except:
+    from requests import post
 
 VER = "2.9"
 log = logger

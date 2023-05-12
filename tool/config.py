@@ -79,6 +79,13 @@ def get_file(path, exclude):
     return file_list
 
 async def check_file(github_proxy, filename = 'map'):
+    """
+    说明：
+        检测文件是否完整
+    参数：
+        :param github_proxy: github代理
+        :param filename: 文件名称
+    """
     try:
         map_list = await get(
             f'{github_proxy}https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/map/{filename}_list.json',
