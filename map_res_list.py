@@ -1,5 +1,5 @@
 import hashlib
-import json
+import orjson
 import zipfile
 from pathlib import Path
 
@@ -23,8 +23,8 @@ for file in temp_path.rglob('*'):
         'hash': hashlib.md5(file.read_bytes()).hexdigest()
     })
 
-with open('map_list.json', 'w', encoding='utf-8') as f:
-    json.dump(map_list, f, ensure_ascii=False, indent=2)
+with open('map_list.json', 'wb', encoding='utf-8') as f:
+    f.write(orjson.dumps(map_list, option=orjson.OPT_INDENT_2))
 
-with open('temp_list.json', 'w', encoding='utf-8') as f:
-    json.dump(temp_list, f, ensure_ascii=False, indent=2)
+with open('temp_list.json', 'wb', encoding='utf-8') as f:
+    f.write(orjson.dumps(temp_list, option=orjson.OPT_INDENT_2))

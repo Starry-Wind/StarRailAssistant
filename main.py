@@ -4,14 +4,14 @@ import os
 import ctypes
 import asyncio
 import traceback
-from tool.log import log
+from tool.log import log, webhook_and_log
 from tool.config import read_json_file, CONFIG_FILE_NAME
 from tool.update_file import update_file_main
 
 
 def main():
-    if not read_json_file(CONFIG_FILE_NAME).get('map_debug', False):
-        ghproxy = "https://github.moeyy.xyz/"
+    if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
+        ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy')
         # asyncio.run(check_file(ghproxy, "map"))
         # asyncio.run(check_file(ghproxy, "temp"))
         update_file_main(url_proxy=ghproxy)
@@ -29,7 +29,7 @@ def main():
             map_instance.auto_map(start)  # 读取配置
         else:
             log.info("错误编号")
-        log.info("脚本已经完成运行")
+        webhook_and_log("脚本已经完成运行")
     else:
          log.info("请以管理员权限运行")
 

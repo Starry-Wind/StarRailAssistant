@@ -1,5 +1,6 @@
 import os
 import sys
+from requests import post 
 from loguru import logger
 
 VER = "2.9"
@@ -17,3 +18,14 @@ logger.add(path_log,
                     "{level}\t| "
                     "{module}.{function}:{line} - "+f"<cyan>{VER}</cyan> - "+" {message}",
             rotation='0:00', enqueue=True, serialize=False, encoding="utf-8", retention="10 days")
+
+def webhook_and_log(message):
+    log.info(message)
+    from tool.config import read_json_file # Circular import
+    url = read_json_file("config.json", False).get("webhook_url")
+    if url == "" or url == None:
+        return
+    try:
+        post(url, json={"content": message})
+    except Exception as e:
+        log.error(f"Webhook发送失败: {e}")

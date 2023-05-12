@@ -5,7 +5,7 @@ import pyautogui
 
 from .calculated import *
 from .config import get_file
-from .log import log
+from .log import log, webhook_and_log
 
 class map:
     def __init__(self):
@@ -38,7 +38,7 @@ class map:
                 name=map_data['name']
                 author=map_data['author']
                 start_dict=map_data['start']
-                log.info(f"开始\033[0;34;40m{name}\033[0m锄地")
+                webhook_and_log(f"开始\033[0;34;40m{name}\033[0m锄地")
                 log.info(f"该路线导航作者：\033[0;31;40m{author}\033[0m")
                 log.info(f"感谢每一位无私奉献的作者")
                 for start in start_dict:
