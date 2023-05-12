@@ -28,21 +28,6 @@
 
 ~~该脚本当前版本仅支持 缩放150%，屏幕分辨率2560x1440，现在在大改动中，尽快解决屏幕旋转适配问题~~
 
-## 小白警告
-
-如果你是零Python基础的小白，建议你不要用这个脚本，还是很想用的话，请先去自学Python相关基础
-
-## 安装Python
-
-1.至网页底部下载[Python 3.9](https://www.python.org/downloads/release/python-390/)(图片圈起来的那个)(其他版本安装依赖项时会有很多问题)<br>
-<img alt="LOGO" src="https://github.com/Starry-Wind/Honkai-Star-Rail/blob/map/temp/Python1.png" style="border-radius:50%">
-
-2.开启安装档，**图片中圈起来的要勾选**，之后点选**Install Now**<br>
-<img alt="LOGO" src="https://github.com/Starry-Wind/Honkai-Star-Rail/blob/map/temp/Python2.png" style="border-radius:50%">
-
-3.等待安装完成后，如果有出现这个按钮，就给他按一下，后续相容比较没问题<br>
-<img alt="LOGO" src="https://github.com/Starry-Wind/Honkai-Star-Rail/blob/map/temp/Python3.png" style="border-radius:50%">
-
 ## 使用说明
 
 1.安装最新版的[Python](https://www.python.org) 安装时注意勾选"Add Python to PATH"
