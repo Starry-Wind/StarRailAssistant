@@ -33,7 +33,7 @@
   },
   {
     "path": "map/map_3-3_3.json",
-    "hash": "9f94ca097e1cc06267a3cc8c62191227"
+    "hash": "46c3aa2df4af3d94168a48ba20428744"
   },
   {
     "path": "map/map_3-1_2.json",
@@ -94,6 +94,10 @@
   {
     "path": "map/map_3-2_1.json",
     "hash": "0b25deca64537060d614ee2826c9bc1a"
+  },
+  {
+    "path": "map/map_3-3_4.json",
+    "hash": "d43d39e59d427ebfd77b37c9fbf5a3dc"
   },
   {
     "path": "map/map_2-3_3.json",
