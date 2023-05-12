@@ -5,7 +5,7 @@ on:
     branches:
       - beta-2.7_test
     paths:
-      - 'beta-2.7_test/**'
+      - '**'
 
   workflow_dispatch:
   
