@@ -30,7 +30,7 @@
 
 ## 使用說明
 
-1：安裝[Python 3.11]([https://www.python.org/downloads/release/python-390/](https://www.microsoft.com/store/productId/9NRWMJP3717K)) (其他版本安裝依賴項時會有很多問題)
+1：安裝[Python 3.11](https://www.microsoft.com/store/productId/9NRWMJP3717K) (其他版本安裝依賴項時會有很多問題)
 
 2：確認遊戲語言為**簡體中文**，按鍵配置皆為默認，靈敏度皆為默認值
 
