@@ -13,7 +13,6 @@ changelog:
         - breaking-change
     - title: Exciting New Features 🎉
       labels:
-        - Semver-Minor1
         - enhancement
     - title: Other Changes
       labels:
