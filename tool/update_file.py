@@ -210,7 +210,8 @@ def update_file_main(url_proxy="",
                     unzip_path="",
                     keep_folder=[],
                     keep_file=[],
-                    zip_path=""):
+                    zip_path="",
+                    name=""):
     """
     说明：
         更新文件
@@ -224,9 +225,10 @@ def update_file_main(url_proxy="",
         :param keep_folder: 保存的文件夹
         :param keep_file: 保存的文件
         :param zip_path: 需要移动的文件地址
+        :param name: 更新的文件名称
     """
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    log.info(f'[资源文件更新]即将资源文件更新，本操作会覆盖本地地图文件..')
+    log.info(f'[资源文件更新]即将资源文件更新，本操作会覆盖本地{name}文件..')
     check_file_status = asyncio.run(update_file(url_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path))
     while True:
         if check_file_status == "rm_all":
