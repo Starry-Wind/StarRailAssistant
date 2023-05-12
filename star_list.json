@@ -21,7 +21,7 @@
   },
   {
     "path": "version.json",
-    "hash": "87556dd18879f978d5817f2b83b12259"
+    "hash": "70e355cddfe4418241230a27039f3d51"
   },
   {
     "path": "requirements.txt",
@@ -29,7 +29,7 @@
   },
   {
     "path": "Honkai_Star_Rail.bat",
-    "hash": "33b53108fb1a3bb8cc8a5a4996f326df"
+    "hash": "4a07d5fa896d53136894fd4b448b2760"
   },
   {
     "path": "test.py",
@@ -37,7 +37,7 @@
   },
   {
     "path": "star_list.json",
-    "hash": "111b28c148f38aac4655ae7f25ab4af3"
+    "hash": "1af7ee9a66fd0606f995002596dfad0a"
   },
   {
     "path": "LICENSE",
