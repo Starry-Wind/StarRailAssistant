@@ -1,6 +1,6 @@
 <div align="center">
 
-[嗨！点点我！点点我！点点我！](#使用说明)
+[嗨！点点我！点点我！点点我！ ](#使用说明)
 
 [简体中文](README.md) | [繁体中文](README_CHT.md)
  
@@ -30,22 +30,22 @@
 
 ## 小白警告
 
-如果你是零Python基礎的小白，建議你不要用這個腳本，還是很想用的話，請先去自學Python相關基礎
+如果你是零Python基础的小白，建议你不要用这个脚本，还是很想用的话，请先去自学Python相关基础
 
-## 安裝Python
+## 安装Python
 
-1.至網頁底部下載[Python 3.9](https://www.python.org/downloads/release/python-390/)(圖片圈起來的那個)(其他版本安装依赖项时会有很多问题)<br>
+1.至网页底部下载[Python 3.9](https://www.python.org/downloads/release/python-390/)(图片圈起来的那个)(其他版本安装依赖项时会有很多问题)<br>
 <img alt="LOGO" src="https://github.com/Starry-Wind/Honkai-Star-Rail/blob/map/temp/Python1.png" style="border-radius:50%">
 
-2.開啟安裝檔，**圖片中圈起來的要勾選**，之後點選**Install Now**<br>
+2.开启安装档，**图片中圈起来的要勾选**，之后点选**Install Now**<br>
 <img alt="LOGO" src="https://github.com/Starry-Wind/Honkai-Star-Rail/blob/map/temp/Python2.png" style="border-radius:50%">
 
-3.等待安裝完成後，如果有出現這個按鈕，就給他按一下，後續相容比較沒問題<br>
+3.等待安装完成后，如果有出现这个按钮，就给他按一下，后续相容比较没问题<br>
 <img alt="LOGO" src="https://github.com/Starry-Wind/Honkai-Star-Rail/blob/map/temp/Python3.png" style="border-radius:50%">
 
 ## 使用说明
 
-1.安裝最新版的[Python](https://www.python.org) 安裝時注意勾選"Add Python to PATH"
+1.安装最新版的[Python](https://www.python.org) 安装时注意勾选"Add Python to PATH"
 
 2.确认游戏语言为**简体中文**，按键配置皆为默认，灵敏度皆为默认值
 
