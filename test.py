@@ -20,8 +20,11 @@ def main():
 def isadmin():
 	return ctypes.windll.shell32.IsUserAnAdmin()
 
+def test():
+    pass
+
 if __name__ == '__main__':
     try:
-        main()
+        test()
     except:
         log.error(traceback.format_exc())
