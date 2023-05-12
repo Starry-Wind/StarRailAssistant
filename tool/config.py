@@ -60,7 +60,8 @@ def init_config_file(real_width, real_height):
                     "real_height": real_height,
                     "map_debug": False,
                     "github_proxy": "",
-                    "webhook_url": ""
+                    "webhook_url": "",
+                    "start": False,
                 }
             )
         )
