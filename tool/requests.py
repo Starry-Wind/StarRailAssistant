@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-10 12:44:14
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-12 20:29:49
+LastEditTime: 2023-05-13 01:09:34
 FilePath: \Honkai-Star-Rail-beta-2.4h:\Download\Zip\Honkai-Star-Rail-beta-2.7\tool\requests.py
 Description: 
 
@@ -12,6 +12,7 @@ import httpx
 import tqdm.asyncio
 from pathlib import Path
 from typing import Dict, Optional, Any, Union, Tuple
+
 
 async def get(url: str,
                 *,
