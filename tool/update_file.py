@@ -5,7 +5,7 @@
 
 import asyncio
 import hashlib
-import json
+import orjson
 import os
 import shutil
 import time
@@ -29,13 +29,13 @@ async def download_file(url, local_path, session):
 
 async def fetch_version(url, session):
     async with session.get(url) as response:
-        response_data = json.loads(await response.text())
+        response_data = orjson.loads(await response.text())
         return response_data['version']
 
 
 async def fetch_data(url, session):
     async with session.get(url) as response:
-        response_data = json.loads(await response.text())
+        response_data = orjson.loads(await response.text())
         return response_data
 
 
@@ -90,8 +90,8 @@ async def update_file(url_proxy="", rm_all=False, skip_verify=True):
 
         log.info(f'[资源文件更新]获取远程版本成功: {remote_version}')
 
-        with open(config_path, 'r') as f:
-            data = json.load(f)
+        with open(config_path, 'rb') as f:
+            data = orjson.load(f)
             local_version = data['map_version']
 
         if remote_version != local_version:
@@ -134,10 +134,10 @@ async def update_file(url_proxy="", rm_all=False, skip_verify=True):
             temp_json_path = os.path.join(os.path.join(tmp_dir, 'Honkai-Star-Rail-map'), 'temp_list.json')
 
             # 读取json文件
-            with open(map_json_path, 'r') as f:
-                map_list = json.load(f)
-            with open(temp_json_path, 'r') as f:
-                temp_list = json.load(f)
+            with open(map_json_path, 'rb') as f:
+                map_list = orjson.loads(f.read())
+            with open(temp_json_path, 'rb') as f:
+                temp_list = orjson.loads(f.read())
 
             # 遍历列表进行校验
             total_files = len(map_list + temp_list)
@@ -153,8 +153,8 @@ async def update_file(url_proxy="", rm_all=False, skip_verify=True):
             log.info(f'[资源文件更新]校验完成, 更新本地地图文件版本号 {local_version} -> {remote_version}')
             # 更新版本号
             data['map_version'] = remote_version
-            with open(config_path, 'w') as f:
-                f.write(json.dumps(data))
+            with open(config_path, 'wb') as f:
+                f.write(orjson.dumps(data, option=orjson.OPT_INDENT_2))
 
             log.info(f'[资源文件更新]删除临时文件{tmp_dir}')
             shutil.rmtree(tmp_dir, ignore_errors=True)
@@ -207,8 +207,8 @@ async def update_file(url_proxy="", rm_all=False, skip_verify=True):
                         if not verify_file_hash(path, expected_hash):
                             log.error(f"[资源文件更新][{progress}]{path}校验失败 文件损坏, 3秒后将使用远程版本覆盖本地版本")
                             data['map_version'] = "0"
-                            with open(config_path, 'w') as f:
-                                f.write(json.dumps(data))
+                            with open(config_path, 'wb') as f:
+                                f.write(orjson.dumps(data, option=orjson.OPT_INDENT_2))
                             return "rm_all"
                     except FileNotFoundError:
                         log.error(f"[资源文件更新][{progress}]{path}发现文件缺失, 3秒后将使用远程版本覆盖本地版本")
