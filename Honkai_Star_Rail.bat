@@ -37,7 +37,7 @@ echo 自动依赖检查已完成
 echo.
 
 echo 正在自动更新地图档
-py Honkai_Star_Rail.py
+python Honkai_Star_Rail.py
 echo 在刚开启程序就看到这条信息? 你可能没有安装Python? 或是Python安装时没有勾选"Add Python to PATH"?
 echo 如果有可能是上面那些问题 请不要去Github回报issue或是来QQ群问这个问题 建议重新阅读Github页面的使用教学
 echo.
