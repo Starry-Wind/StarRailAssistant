@@ -30,7 +30,7 @@
 
 ## 使用说明
 
-1：安装[Python 3.9](https://www.python.org/downloads/release/python-390/) (其他版本安装依赖项时会有很多问题)
+1：安装[Python >=3.11](https://www.python.org/downloads/)
 
 2：确认游戏语言为**简体中文**，按键配置皆为默认，灵敏度皆为默认值
 
