@@ -14,6 +14,11 @@ def main():
         title = "请选择代理地址："
         options = ['https://github.moeyy.xyz/', 'https://ghproxy.com/', '不使用代理']
         option, index = pick(options, title, indicator='=>', default_index=0)
+        modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
+        title = "你游戏里开启了自动战斗吗？："
+        options = ['没打开', '打开了', '这是什么']
+        option, index = pick(options, title, indicator='=>', default_index=0)
+        modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", option)
         modify_json_file(CONFIG_FILE_NAME, "start", True)
         if option == "不使用代理":
             option = ""
