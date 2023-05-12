@@ -133,7 +133,7 @@ async def update_file(url_proxy: str="",
 
     log.info(f'[资源文件更新]获取远程版本成功: {remote_version}')
 
-    local_version = read_json_file(CONFIG_FILE_NAME)[f'{type}_version']
+    local_version = read_json_file(CONFIG_FILE_NAME).get(f'{type}_version', '0')
 
     if remote_version != local_version:
         log.info(f'[资源文件更新]本地版本与远程版本不符，开始更新资源文件->{url_zip}')
