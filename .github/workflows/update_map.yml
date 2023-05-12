@@ -33,5 +33,5 @@ jobs:
           author_email: github-actions[bot]@users.noreply.github.com
           message: ':wrench: 自动更新资源列表'
           add: |
-            'start_list.json'
+            'star_list.json'
             'version.json'
