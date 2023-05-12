@@ -24,7 +24,7 @@ from tool.update_file import update_file_main
 def main():
     if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
         title = "请选择代理地址："
-        options = ['https://github.moeyy.xyz/', 'https://ghproxy.com/', '不使用代理']
+        options = ['https://github.moeyy.xyz/', 'https://ghproxy.com/', '']
         option, index = pick(options, title, indicator='=>', default_index=0)
         if option == "不使用代理":
             option = ""
