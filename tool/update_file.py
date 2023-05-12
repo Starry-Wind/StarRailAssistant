@@ -91,7 +91,7 @@ async def update_file(url_proxy="", rm_all=False, skip_verify=True):
         log.info(f'[资源文件更新]获取远程版本成功: {remote_version}')
 
         with open(config_path, 'rb') as f:
-            data = orjson.load(f)
+            data = orjson.loads(f.read())
             local_version = data['map_version']
 
         if remote_version != local_version:
