@@ -1,7 +1,7 @@
 [
   {
     "path": "map/map_1-3_1.json",
-    "hash": "f2189f11214501aa05da6a913ac6b379"
+    "hash": "098978554c3fb272a1dd5c9897767705"
   },
   {
     "path": "map/map_3-1_4.json",
@@ -9,7 +9,7 @@
   },
   {
     "path": "map/map_3-3_1.json",
-    "hash": "3dec3692b78b2c16a4725ad06dbebe07"
+    "hash": "537cb176ea65481a52b84aed29c64eb9"
   },
   {
     "path": "map/map_2-4_1.json",
@@ -25,7 +25,7 @@
   },
   {
     "path": "map/map_3-2_5.json",
-    "hash": "a8afb4e6656004690c5ef39b2c955916"
+    "hash": "473670b192083f246c4bd1a73e8c2747"
   },
   {
     "path": "map/map_2-6_2.json",
@@ -41,11 +41,15 @@
   },
   {
     "path": "map/map_3-2_2.json",
-    "hash": "97e334150aae093c70234274a1363b66"
+    "hash": "a7a25c4e36a9d47ba4e229f8520a3fc3"
   },
   {
     "path": "map/map_2-2_2.json",
     "hash": "17bad3b690bbc93c796648ac52e46e86"
+  },
+  {
+    "path": "map/orientation_2.png",
+    "hash": "83d48c3e976d458ee56ed50c30fffd1b"
   },
   {
     "path": "map/map_2-7_2.json",
@@ -54,10 +58,6 @@
   {
     "path": "map/map_2-5_4.json",
     "hash": "9b7a61aaf629fe5c07fba4e76b62e95b"
-  },
-  {
-    "path": "map/map_3-2_6.json",
-    "hash": "8c5166ba35af5888bdc39f6319c6623e"
   },
   {
     "path": "map/map_2-3_2.json",
@@ -93,7 +93,7 @@
   },
   {
     "path": "map/map_1-1_1.json",
-    "hash": "b453624f93f3228a75898775795f079d"
+    "hash": "d981c186af39e36e1be380dc2bb21eb7"
   },
   {
     "path": "map/map_3-2_1.json",
@@ -149,7 +149,7 @@
   },
   {
     "path": "map/map_3-3_2.json",
-    "hash": "f1104f5ca372764132829794b5687766"
+    "hash": "d7973461c74b9a5a641c703255148aa9"
   },
   {
     "path": "map/map_2-2_1.json",
@@ -165,7 +165,7 @@
   },
   {
     "path": "map/map_1-2_1.json",
-    "hash": "28b38e59f5f5ec0e55d50f146a00209f"
+    "hash": "1177c80f7f1b36a975063bbf7ae723b9"
   },
   {
     "path": "map/map_1-3_4.json",
