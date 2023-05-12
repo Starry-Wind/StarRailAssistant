@@ -168,6 +168,7 @@ class calculated:
                     self.fighting()
                 elif value == 2:  # 障碍物
                     self.Click((0, 0))
+                    time.sleep(1)
                 else:
                     raise Exception(f"map数据错误, fighting参数异常:{map_filename}", map)
             else:
