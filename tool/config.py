@@ -29,7 +29,14 @@ def normalize_file_path(filename):
             return None
 
 
-def read_json_file(filename, path=False):
+def read_json_file(filename: str, path=False):
+    """
+    说明：
+        读取文件
+    参数：
+        :param filename: 文件名称
+        :param path: 是否返回路径
+    """
     # 找到文件的绝对路径
     file_path = normalize_file_path(filename)
     with open(file_path, "rb") as f:
@@ -40,14 +47,20 @@ def read_json_file(filename, path=False):
             return data
 
 
-def modify_json_file(filename, key, value):
+def modify_json_file(filename: str, key, value):
+    """
+    说明：
+        写入文件
+    参数：
+        :param filename: 文件名称
+        :param key: key
+        :param value: value
+    """
     # 先读，再写
     data, file_path = read_json_file(filename, path=True)
     data[key] = value
-    current_dir = os.getcwd()
     with open(file_path, "wb") as f:
         f.write(orjson.dumps(data))
-        return
 
 
 def init_config_file(real_width, real_height):
