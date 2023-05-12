@@ -185,7 +185,7 @@ class calculated:
                 win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 200, 0)  # 进行视角移动
             else:
                 win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, -200, 0)  # 进行视角移动
-            #time.sleep(0.1)
+            time.sleep(0.1)
         if last != 0:
             win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, last, 0)  # 进行视角移动
         time.sleep(0.5)
