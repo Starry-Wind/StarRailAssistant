@@ -9,14 +9,14 @@ star_list = []
 
 this_path = str(Path(__file__).parent)
 
-for file in map_path.rglob('*'):
-    map_list.append({
+for file in star_path.rglob('*'):
+    star_list.append({
         'path': str(file).replace(this_path, '').replace('\\', '/').lstrip('/'),
         'hash': hashlib.md5(file.read_bytes()).hexdigest()
     })
 
 with open('star_list.json', 'w', encoding='utf-8') as f:
-    json.dump(map_list, f, ensure_ascii=False, indent=2)
+    json.dump(star_list, f, ensure_ascii=False, indent=2)
 
 # 获取当前时间（UTC+8）
 current_time = datetime.datetime.utcnow() + datetime.timedelta(hours=8)
@@ -32,3 +32,4 @@ version_dict = {
 # 写入到version.json文件
 with open("version.json", "w") as file:
     json.dump(version_dict, file)
+
