@@ -22,7 +22,7 @@ def main():
         title = "你游戏里开启了自动战斗吗？："
         options = ['没打开', '打开了', '这是什么']
         option, index = pick(options, title, indicator='=>', default_index=0)
-        modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", option)
+        modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", index)
         modify_json_file(CONFIG_FILE_NAME, "start", True)
     if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
         ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy')
