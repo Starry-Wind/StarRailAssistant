@@ -22,7 +22,7 @@ def main():
         modify_json_file(CONFIG_FILE_NAME, "start", True)
         if option == "不使用代理":
             option = ""
-        modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
+            modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
     if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
         ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy')
         # asyncio.run(check_file(ghproxy, "map"))
