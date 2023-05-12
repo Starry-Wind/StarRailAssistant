@@ -1,25 +1,24 @@
-try:
-    from tool.log import log, webhook_and_log
+import time
+import ctypes
+import traceback
+from pick import pick
 
-    import traceback
-    import time
-    import ctypes
-    from pick import pick
-
-    from get_width import get_width
-    from tool.config import read_json_file, modify_json_file, CONFIG_FILE_NAME
-    from tool.update_file import update_file_main
-except:
-    pass
+from get_width import get_width
+from tool.log import log, webhook_and_log
+from tool.config import read_json_file, modify_json_file, CONFIG_FILE_NAME
+from tool.update_file import update_file_main
 
 
 def main():
     if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
         title = "请选择代理地址："
-        options = ['https://github.moeyy.xyz/', 'https://ghproxy.com/', '']
+        options = ['https://github.moeyy.xyz/', 'https://ghproxy.com/', '不使用代理']
         option, index = pick(options, title, indicator='=>', default_index=0)
-        modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
         modify_json_file(CONFIG_FILE_NAME, "start", True)
+        if option == "不使用代理":
+            option == ""
+        else:
+            modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
     if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
         ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy')
         # asyncio.run(check_file(ghproxy, "map"))
@@ -49,9 +48,5 @@ def isadmin():
 if __name__ == '__main__':
     try:
         main()
-    except ModuleNotFoundError as e:
-        print("请输入: pip install -r requirements.txt")
-    except NameError as e:
-        print("请输入: pip install -r requirements.txt")
     except:
         log.error(traceback.format_exc())
