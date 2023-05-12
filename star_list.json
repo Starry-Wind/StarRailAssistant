@@ -1,7 +1,7 @@
 [
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "cdbf9c08037221ea7dc3cb3e7fa0c425"
+    "hash": "61d22ac69c4a16020736e1b49c7412bc"
   },
   {
     "path": "get_width.py",
@@ -17,11 +17,11 @@
   },
   {
     "path": "config.json",
-    "hash": "afec4d1cb537e8bf9312a5d8f168642a"
+    "hash": "9c2f6baa9555554be4cb8c84ea71c048"
   },
   {
     "path": "version.json",
-    "hash": "52f1696ba79898199abef9569503ab84"
+    "hash": "420b9c0b18e2904d63b30084bca4c809"
   },
   {
     "path": "requirements.txt",
@@ -37,7 +37,7 @@
   },
   {
     "path": "star_list.json",
-    "hash": "00bfd1b28f400e1f28241eae9b960244"
+    "hash": "1bcd1f9963624ba650fb69d7ef8c1000"
   },
   {
     "path": "LICENSE",
