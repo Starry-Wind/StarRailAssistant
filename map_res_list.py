@@ -10,10 +10,11 @@ star_list = []
 this_path = str(Path(__file__).parent)
 
 for file in star_path.rglob('*'):
-    star_list.append({
-        'path': str(file).replace(this_path, '').replace('\\', '/').lstrip('/'),
-        'hash': hashlib.md5(file.read_bytes()).hexdigest()
-    })
+    if '.git' not in file:
+        star_list.append({
+            'path': str(file).replace(this_path, '').replace('\\', '/').lstrip('/'),
+            'hash': hashlib.md5(file.read_bytes()).hexdigest()
+        })
 
 with open('star_list.json', 'w', encoding='utf-8') as f:
     json.dump(star_list, f, ensure_ascii=False, indent=2)
