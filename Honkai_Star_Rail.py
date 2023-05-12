@@ -48,7 +48,7 @@ def main():
                 'unzip_path': "temp",
                 'keep_folder': [],
                 'keep_file': [],
-                'zip_path': "Honkai-Star-Rail-beta-2.7_test/temp",
+                'zip_path': "Honkai-Star-Rail-beta-map/temp",
                 'name': "图片"
             },
             {
