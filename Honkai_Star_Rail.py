@@ -12,7 +12,7 @@ from tool.update_file import update_file_main
 def main():
     if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
         title = "请选择代理地址："
-        options = ['https://github.moeyy.xyz/', 'https://ghproxy.com/', '不使用代理']
+        options = ['https://github.moeyy.xyz/', 'https://ghproxy.com/', '']
         option, index = pick(options, title, indicator='=>', default_index=0)
         modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
         title = "你游戏里开启了自动战斗吗？："
@@ -20,9 +20,6 @@ def main():
         option, index = pick(options, title, indicator='=>', default_index=0)
         modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", index)
         modify_json_file(CONFIG_FILE_NAME, "start", True)
-        if option == "不使用代理":
-            option = ""
-        modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
     if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
         ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy')
         # asyncio.run(check_file(ghproxy, "map"))
