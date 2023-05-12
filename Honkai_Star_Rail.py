@@ -64,7 +64,8 @@ def main():
                 'name': "脚本"
             },
         ]
-        update_file_main(**up_data)
+        for up in up_data:
+            update_file_main(**up)
     if isadmin() == 1:
         start = input('请输入起始地图（如果从头开始请输入0）：')
         if "-" in start and "_" in start or start == '0':
