@@ -1,6 +1,7 @@
 import datetime
 import hashlib
 import json
+import os
 from pathlib import Path
 
 star_path = Path(__file__).parent
@@ -9,8 +10,9 @@ star_list = []
 
 this_path = str(Path(__file__).parent)
 
+
 for file in star_path.rglob('*'):
-    if '.git' not in file:
+    if '.git' not in str(file) and '__' not in str(file) and os.path.isfile(file):
         star_list.append({
             'path': str(file).replace(this_path, '').replace('\\', '/').lstrip('/'),
             'hash': hashlib.md5(file.read_bytes()).hexdigest()
@@ -33,4 +35,3 @@ version_dict = {
 # 写入到version.json文件
 with open("version.json", "w") as file:
     json.dump(version_dict, file)
-
