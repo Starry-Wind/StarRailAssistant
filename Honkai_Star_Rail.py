@@ -32,7 +32,7 @@ def main():
                     version="beta-2.7_test",
                     url_zip="https://github.com/Starry-Wind/Honkai-Star-Rail/archive/refs/heads/beta-2.7_test.zip",
                     unzip_path=".",
-                    keep_folder=['.git','logs','temp','map'],
+                    keep_folder=['.git','logs','temp','map','tmp'],
                     keep_file=['config.json'],
                     zip_path="Honkai-Star-Rail-beta-2.7_test/")
     if isadmin() == 1:
