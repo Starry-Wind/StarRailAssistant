@@ -75,6 +75,8 @@ def init_config_file(real_width, real_height):
                     "github_proxy": "",
                     "webhook_url": "",
                     "start": False,
+                    "temp_version": "0",
+                    "star_version": "0"
                 }
             )
         )
