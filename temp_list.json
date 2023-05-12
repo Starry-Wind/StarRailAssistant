@@ -100,6 +100,14 @@
     "hash": "99e22279a1c3af6014a858bdc0ca8239"
   },
   {
+    "path": "temp/map_3-4_point_2.png",
+    "hash": "77b4687ec0c9593f357e84a2d3f7314a"
+  },
+  {
+    "path": "temp/map_3-4_point_1.png",
+    "hash": "f95e6aab69c8471c4163ea894131f746"
+  },
+  {
     "path": "temp/map_2-5_point_2.png",
     "hash": "ed5df5214e80f5a300f6d8c715ffbd42"
   },
@@ -114,6 +122,10 @@
   {
     "path": "temp/map_2-2.jpg",
     "hash": "a97e7d9d1376059db696c9968a3130c5"
+  },
+  {
+    "path": "temp/map_3-4.png",
+    "hash": "edeb0ef58598c151359aa53c91c23cee"
   },
   {
     "path": "temp/map_2-2_point_1.jpg",
@@ -138,6 +150,10 @@
   {
     "path": "temp/map_2-3.jpg",
     "hash": "9878a901d2ed9bca71f138f0fffefede"
+  },
+  {
+    "path": "temp/map_3-4_point_3.png",
+    "hash": "e72b421994d59b5f6f7af0a121c7d66f"
   },
   {
     "path": "temp/map_2-4_point_1.png",
