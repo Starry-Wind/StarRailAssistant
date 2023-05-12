@@ -1,12 +1,16 @@
-import time
-import ctypes
-import traceback
-from pick import pick
+try:
+    from tool.log import log, webhook_and_log
 
-from get_width import get_width
-from tool.log import log, webhook_and_log
-from tool.config import read_json_file, modify_json_file, CONFIG_FILE_NAME
-from tool.update_file import update_file_main
+    import traceback
+    import time
+    import ctypes
+    from pick import pick
+
+    from get_width import get_width
+    from tool.config import read_json_file, modify_json_file, CONFIG_FILE_NAME
+    from tool.update_file import update_file_main
+except:
+    pass
 
 
 def main():
@@ -45,5 +49,9 @@ def isadmin():
 if __name__ == '__main__':
     try:
         main()
+    except ModuleNotFoundError as e:
+        print("请输入: pip install -r requirements.txt")
+    except NameError as e:
+        print("请输入: pip install -r requirements.txt")
     except:
         log.error(traceback.format_exc())
