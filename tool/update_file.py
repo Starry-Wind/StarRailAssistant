@@ -33,8 +33,9 @@ async def verify_file_hash(json_path: str) -> bool:
         file_path = Path() / data['path']
         if not os.path.exists(file_path):
             return False, file_path
-        if hashlib.md5(file_path.read_bytes()).hexdigest() != data['hash']:
-            return False, file_path
+        if os.path.isfile(file_path):
+            if hashlib.md5(file_path.read_bytes()).hexdigest() != data['hash']:
+                return False, file_path
     return True, None
 
 async def unzip(zip, zip_name):
