@@ -2,7 +2,9 @@ name: 更新地图文件
 
 on:
   push:
-    branches: [ map ]
+    branches:
+      - map
+      - beta-2.7_test
     paths:
       - 'map/**'
 
