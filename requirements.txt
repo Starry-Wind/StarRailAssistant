@@ -16,3 +16,4 @@ httpx
 tqdm
 pynput
 aiohttp
+uvloop
