@@ -200,4 +200,4 @@ class calculated:
             :param clicks 滚动单位，正数为向上滚动
         """
         pyautogui.scroll(clicks)
-        time.sleep(.5)
+        time.sleep(0.5)
