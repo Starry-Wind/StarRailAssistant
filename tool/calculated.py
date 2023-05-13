@@ -171,6 +171,8 @@ class calculated:
                     time.sleep(1)
                 else:
                     raise Exception(f"map数据错误, fighting参数异常:{map_filename}", map)
+            elif key == "scroll":
+                self.scroll(value)
             else:
                 raise Exception(f"map数据错误,未匹配对应操作:{map_filename}", map)
 
@@ -189,3 +191,13 @@ class calculated:
         if last != 0:
             win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, last, 0)  # 进行视角移动
         time.sleep(0.5)
+       
+    def scroll(self, clicks: float):
+        """
+        说明：
+            控制鼠标滚轮滚动
+        参数：
+            :param clicks 滚动单位，正数为向上滚动
+        """
+        pyautogui.scroll(clicks)
+        time.sleep(.5)
