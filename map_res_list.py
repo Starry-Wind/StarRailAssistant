@@ -1,8 +1,20 @@
+'''
+Author: Night-stars-1 nujj1042633805@gmail.com
+Date: 2023-05-13 03:08:07
+LastEditors: Night-stars-1 nujj1042633805@gmail.com
+LastEditTime: 2023-05-13 13:16:27
+FilePath: \Honkai-Star-Rail-beta-2.4h:\Download\Zip\Honkai-Star-Rail-beta-2.7\map_res_list.py
+Description: 
+
+Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+'''
 import datetime
 import hashlib
 import json
 import os
 from pathlib import Path
+
+from tool.config import read_json_file, modify_json_file
 
 star_path = Path(__file__).parent
 
@@ -35,3 +47,5 @@ version_dict = {
 # 写入到version.json文件
 with open("version.json", "w") as file:
     json.dump(version_dict, file)
+
+modify_json_file('config.json', 'start', False)
