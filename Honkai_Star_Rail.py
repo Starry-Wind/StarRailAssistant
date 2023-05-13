@@ -13,14 +13,14 @@ except:
 
 def main():
     if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
-        title = "请选择代理地址："
-        options = ['https://github.moeyy.xyz/', 'https://ghproxy.com/', '不使用代理']
+        title = "请 选 择 代 理 地 址 ："
+        options = ['https://github.moeyy.xyz/', 'https://ghproxy.com/', '不 使 用 代 理']
         option, index = pick(options, title, indicator='=>', default_index=0)
-        if option == "不使用代理":
+        if option == "不 使 用 代 理":
             option = ""
         modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
-        title = "你游戏里开启了自动战斗吗？："
-        options = ['没打开', '打开了', '这是什么']
+        title = "你 游 戏 里 开 启 了 自 动 战 斗 吗 ？ ："
+        options = ['没 打 开', '打 开 了', '这 是 什 么']
         option, index = pick(options, title, indicator='=>', default_index=0)
         modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", index)
         modify_json_file(CONFIG_FILE_NAME, "start", True)
