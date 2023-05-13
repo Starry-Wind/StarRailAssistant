@@ -14,9 +14,10 @@ from tqdm import tqdm as tq
 from zipfile import ZipFile, BadZipFile
 from typing import Dict, Optional, Any, Union, Tuple, List
 
-from tool.log import log
-from tool.requests import *
-from tool.config import normalize_file_path, modify_json_file, read_json_file, CONFIG_FILE_NAME
+from .log import log
+from .requests import *
+from .exceptions import Exception
+from .config import normalize_file_path, modify_json_file, read_json_file, CONFIG_FILE_NAME
 
 tmp_dir = 'tmp'
 

@@ -62,7 +62,7 @@ async def download(url: str, save_path: Path):
     """
     save_path.parent.mkdir(parents=True, exist_ok=True)
     async with httpx.AsyncClient().stream(method='GET', url=url, follow_redirects=True) as datas:
-        size = int(datas.headers['Content-Length'])
+        size = int(datas.headers.get('Content-Length', 0))
         f = save_path.open('wb')
         async for chunk in tqdm.asyncio.tqdm(iterable=datas.aiter_bytes(1),
                                                 desc=url.split('/')[-1],
