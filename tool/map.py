@@ -7,6 +7,8 @@ from .calculated import *
 from .config import get_file
 from .log import log, webhook_and_log
 
+map_key = read_json_file(CONFIG_FILE_NAME).get("map_key")
+
 class map:
     def __init__(self):
         self.calculated = calculated()
@@ -25,6 +27,8 @@ class map:
                 log.debug(points)
                 pyautogui.click(points, clicks=5, interval=0.1)
                 break
+
+
 
     def auto_map(self, start):
         map_list = get_file('./map', 'old')  # 从'./map'目录获取地图文件列表（排除'old'）
@@ -46,8 +50,8 @@ class map:
                     log.debug(key)
                     value = start[key]
                     if key == 'map':
-                        pyautogui.keyDown("m")
-                        pyautogui.keyUp("m")
+                        pyautogui.keyDown(map_key)
+                        pyautogui.keyUp(map_key)
                         time.sleep(1)
                         self.map_init()
                     else:
