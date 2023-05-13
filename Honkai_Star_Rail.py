@@ -14,7 +14,7 @@ except:
 def main():
     if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
         title = "请选择代理地址："
-        options = ['https://github.moeyy.xyz/', 'https://ghproxy.com/', '']
+        options = ['https://github.moeyy.xyz/', 'https://ghproxy.com/', '不使用代理']
         option, index = pick(options, title, indicator='=>', default_index=0)
         modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
         title = "你游戏里开启了自动战斗吗？："
