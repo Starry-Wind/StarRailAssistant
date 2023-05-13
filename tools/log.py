@@ -17,7 +17,7 @@ try:
 except:
     from requests import post
 
-VER = "3.0"
+VER = "2.9"
 log = logger
 dir_log = "logs"
 path_log = os.path.join(dir_log, '日志文件.log')
