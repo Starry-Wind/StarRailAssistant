@@ -1,82 +1,12 @@
-[
-  {
-    "path": "Honkai_Star_Rail.py",
-    "hash": "992274baf946c5e97890c276f4b3ce76"
-  },
-  {
-    "path": "get_width.py",
-    "hash": "aeb49fba2f76501a786a6a840b7273c9"
-  },
-  {
-    "path": "README_CHT.md",
-    "hash": "6f37b39b16002a60b687c58771e8c0c6"
-  },
-  {
-    "path": "README.md",
-    "hash": "17034004d7b517de15a24976e970d177"
-  },
-  {
-    "path": "config.json",
-    "hash": "0bcaa3371a1d8d72ce71e0c2210a2a52"
-  },
-  {
-    "path": "version.json",
-    "hash": "b44ca201b1594116f4d77eccbeb9238e"
-  },
-  {
-    "path": "requirements.txt",
-    "hash": "00cbf14b9c84287c19f930123db85aaa"
-  },
-  {
-    "path": "Honkai_Star_Rail.bat",
-    "hash": "4a07d5fa896d53136894fd4b448b2760"
-  },
-  {
-    "path": "test.py",
-    "hash": "26b374a8bd370d4f07696460c8c617ec"
-  },
-  {
-    "path": "star_list.json",
-    "hash": "5ad078740ac2fa1a0b0a7fe0e16355e3"
-  },
-  {
-    "path": "LICENSE",
-    "hash": "8ceeca78b817cc0e6ae98824381ea098"
-  },
-  {
-    "path": "map_res_list.py",
-    "hash": "5e6d81ec2c54ecf8f5830ea9cfc2f1b3"
-  },
-  {
-    "path": "tool/update_file.py",
-    "hash": "dd1aa6f9876cfaf980c7111bbc3961c9"
-  },
-  {
-    "path": "tool/config.py",
-    "hash": "58bd4f4c77c5fdc41cde710b0d0b86a3"
-  },
-  {
-    "path": "tool/requests.py",
-    "hash": "8b3e24396a1f8be5251e13aac7bae960"
-  },
-  {
-    "path": "tool/exceptions.py",
-    "hash": "a0e5847b4e5fe94a87041932434ea38c"
-  },
-  {
-    "path": "tool/calculated.py",
-    "hash": "0a1a02505b27d72ba3c51a47ebee3bd7"
-  },
-  {
-    "path": "tool/record_v7.2.py",
-    "hash": "0269fe20d8c756d90838003a39aa919c"
-  },
-  {
-    "path": "tool/map.py",
-    "hash": "7388c4727b05162949b38644bd03438f"
-  },
-  {
-    "path": "tool/log.py",
-    "hash": "3a0bef8c39b6771430c1a432e23f1ec6"
-  }
-]
+{
+  "real_width": 1295,
+  "auto_battle_persistence": 0,
+  "real_height": 757,
+  "map_debug": false,
+  "github_proxy": "",
+  "webhook_url": "",
+  "map_version": "0",
+  "start": false,
+  "temp_version": "0",
+  "star_version": "0"
+}
