@@ -2,8 +2,8 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-12 23:22:54
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-13 01:00:33
-FilePath: \Honkai-Star-Rail-beta-2.4h:\Download\Zip\Honkai-Star-Rail-beta-2.7\tool\log.py
+LastEditTime: 2023-05-14 01:22:36
+FilePath: \Honkai-Star-Rail-beta-2.4h:\Download\Zip\Honkai-Star-Rail-beta-2.7\tools\log.py
 Description: 
 
 Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -35,7 +35,7 @@ logger.add(path_log,
 
 def webhook_and_log(message):
     log.info(message)
-    from tool.config import read_json_file # Circular import
+    from tools.config import read_json_file # Circular import
     url = read_json_file("config.json", False).get("webhook_url")
     if url == "" or url == None:
         return
