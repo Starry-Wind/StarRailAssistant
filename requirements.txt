@@ -1,9 +1,7 @@
-MouseInfo
 numpy
 opencv-python
 PyAutoGUI
 PyGetWindow
-PyMsgBox
 pyperclip
 PyRect
 PyScreeze

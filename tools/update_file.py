@@ -44,7 +44,7 @@ async def unzip(zip, zip_path: Path):
     with ZipFile(zip, 'r') as zf:
         for member in tq(zf.infolist(), desc='解压中'):
             if member.filename.startswith(zip_path):
-                zf.extract(member+"1", tmp_dir)
+                zf.extract(member, tmp_dir)
                 log.debug(f'[资源文件更新]正在提取{member.filename}')
 
 async def remove_file(folder_path: Path,keep_folder: Optional[List[str]] = [],keep_file: Optional[List[str]] = []) -> None:
@@ -109,8 +109,10 @@ async def update_file(url_proxy: str="",
     tmp_zip = Path() / tmp_dir / f'{type}.zip'
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
-    if not os.path.exists(unzip_path) or rm_all:
+    if not os.path.exists(unzip_path):
         os.makedirs(unzip_path)
+        modify_json_file(CONFIG_FILE_NAME, f"{type}_version", "0")
+    elif rm_all:
         modify_json_file(CONFIG_FILE_NAME, f"{type}_version", "0")
 
     log.info(f'[资源文件更新]正在检查远程版本是否有更新...')
