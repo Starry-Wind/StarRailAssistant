@@ -1,6 +1,6 @@
 {
     "name": "支援舱段-4",
-    "author": "Starry-Wind",
+    "author": "Starry-Wind,小明",
     "start": [
         {"map": 1},
         {"temp\\map_1-3_point_4.jpg": 1.5},
@@ -12,6 +12,9 @@
         },
         {
             "fighting": 1
+        },
+        {
+            "fighting": 2
         }
     ]
 }

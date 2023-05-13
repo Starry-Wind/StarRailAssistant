@@ -1,6 +1,6 @@
 {
-    "name": "乌拉乌拉-1",
-    "author": "Starry-Wind",
+    "name": "基座舱段-1",
+    "author": "Starry-Wind,小明",
     "start": [
         {"map": 1},
         {"temp\\orientation_1.jpg": 1.5},
@@ -11,10 +11,7 @@
     ],
     "map": [
         {
-            "mouse_move": 4650
-        },
-        {
-            "w": 2
+            "s": 3
         },
         {
             "fighting": 1
