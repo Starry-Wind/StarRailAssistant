@@ -1,6 +1,6 @@
+import traceback
 try:
     from tool.log import log, webhook_and_log
-    import traceback
     import time
     import ctypes
     from pick import pick
@@ -83,6 +83,7 @@ def main():
         webhook_and_log("脚本已经完成运行")
     else:
          log.info("请以管理员权限运行")
+
 
 def isadmin():
 	return ctypes.windll.shell32.IsUserAnAdmin()
