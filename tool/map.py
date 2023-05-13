@@ -4,7 +4,7 @@ import cv2 as cv
 import pyautogui
 
 from .calculated import *
-from .config import get_file
+from .config import get_file, read_json_file, CONFIG_FILE_NAME
 from .log import log, webhook_and_log
 
 class map:
@@ -12,6 +12,7 @@ class map:
         self.calculated = calculated()
         self.win32api = win32api
         self.win32con = win32con
+        self.open_map = read_json_file(CONFIG_FILE_NAME).get("open_map", "m")
 
     def map_init(self):
 
@@ -46,8 +47,8 @@ class map:
                     log.debug(key)
                     value = start[key]
                     if key == 'map':
-                        pyautogui.keyDown("m")
-                        pyautogui.keyUp("m")
+                        pyautogui.keyDown(self.open_map)
+                        pyautogui.keyUp(self.open_map)
                         time.sleep(1)
                         self.map_init()
                     else:
