@@ -75,7 +75,7 @@ def main():
         elif "-" in start and "_" not in start:
             start = (start)+'_1'
         elif "-" in start and "_" in start:
-            start = start
+            pass
         else:
             log.info("错误编号")
             webhook_and_log("脚本已经完成运行")
