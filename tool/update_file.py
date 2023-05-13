@@ -14,9 +14,10 @@ from tqdm import tqdm as tq
 from zipfile import ZipFile, BadZipFile
 from typing import Dict, Optional, Any, Union, Tuple, List
 
-from tool.log import log
-from tool.requests import *
-from tool.config import normalize_file_path, modify_json_file, read_json_file, CONFIG_FILE_NAME
+from .log import log
+from .requests import *
+from .exceptions import Exception
+from .config import normalize_file_path, modify_json_file, read_json_file, CONFIG_FILE_NAME
 
 tmp_dir = 'tmp'
 
@@ -100,8 +101,6 @@ async def update_file(url_proxy: str="",
         :param zip_path: 需要移动的文件地址
     """
     global tmp_dir
-    if rm_all:
-        shutil.rmtree(os.path.join('.', 'map'), ignore_errors=True)
 
     url_version = f'{url_proxy}https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/{version}/version.json'
     url_zip = url_proxy+url_zip
@@ -111,7 +110,7 @@ async def update_file(url_proxy: str="",
     tmp_zip = Path() / tmp_dir / f'{type}.zip'
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
-    if not os.path.exists(unzip_path):
+    if not os.path.exists(unzip_path) or rm_all:
         os.makedirs(unzip_path)
         modify_json_file(CONFIG_FILE_NAME, f"{type}_version", "0")
 
