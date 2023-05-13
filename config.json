@@ -1,1 +1,12 @@
-{"real_width":0,"auto_battle_persistence":0,"real_height":0,"map_debug":false,"github_proxy":"","webhook_url":"","map_version":"0","start":false}
+{
+  "real_width": 0,
+  "auto_battle_persistence": 0,
+  "real_height": 0,
+  "map_auto_update": true,
+  "github_proxy": "",
+  "webhook_url": "",
+  "map_version": "0",
+  "start": false,
+  "temp_version": "0",
+  "star_version": "0"
+}
