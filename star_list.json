@@ -17,11 +17,11 @@
   },
   {
     "path": "config.json",
-    "hash": "82b37571423989ac4271d4a0be0eb0f0"
+    "hash": "ff34a49e0620d2fe4c846e983df147ac"
   },
   {
     "path": "version.json",
-    "hash": "21d43937e92056a20d93ccb74f2c8176"
+    "hash": "217d2c3e86269ec1f211bdbef9c11a52"
   },
   {
     "path": "requirements.txt",
@@ -37,7 +37,7 @@
   },
   {
     "path": "star_list.json",
-    "hash": "1332c4263dcbe048b5ffe2ed03e62119"
+    "hash": "5b825a9bd4e58e3eb7afb0fcc184a488"
   },
   {
     "path": "LICENSE",
