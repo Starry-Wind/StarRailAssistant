@@ -126,6 +126,8 @@ async def update_file(url_proxy: str="",
                 log.info(f'[资源文件更新]获取远程版本失败, 正在重试: {e}')
             else:
                 log.info(f'[资源文件更新]获取远程版本失败: {e}')
+            await asyncio.sleep(10)
+            log.info("将在10秒后重试")
     else:
         log.info(f'[资源文件更新]重试次数已达上限，退出程序')
         raise Exception(f'[资源文件更新]重试次数已达上限，退出程序')
@@ -142,6 +144,8 @@ async def update_file(url_proxy: str="",
                 break
             except Exception as e:
                 log.info(f'[资源文件更新]下载压缩包失败: {e}')
+            await asyncio.sleep(10)
+            log.info("将在10秒后重试")
         else:
             log.info(f'[资源文件更新]重试次数已达上限，退出程序')
             raise Exception(f'[资源文件更新]重试次数已达上限，退出程序')
@@ -183,6 +187,8 @@ async def update_file(url_proxy: str="",
                         log.info(f'[资源文件更新]获取地图文件列表失败, 正在重试: {e}')
                     else:
                         log.info(f'[资源文件更新]获取地图文件列表失败: {e}')
+                    await asyncio.sleep(10)
+                    log.info("将在10秒后重试")
             else:
                 log.info(f'[资源文件更新]获取地图文件列表重试次数已达上限，退出程序')
                 raise Exception(f'[资源文件更新]获取地图文件列表重试次数已达上限，退出程序')
@@ -229,11 +235,8 @@ def update_file_main(url_proxy="",
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     log.info(f'[资源文件更新]即将资源文件更新，本操作会覆盖本地{name}文件..')
     check_file_status = asyncio.run(update_file(url_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path))
-    while True:
-        if check_file_status == "rm_all":
-            time.sleep(3)
-            check_file_status = asyncio.run(update_file(url_proxy,True,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path))
-        elif check_file_status == "download_error":
-            check_file_status = asyncio.run(update_file(url_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path))
-        else:
-            break
+    if check_file_status == "rm_all":
+        time.sleep(3)
+        check_file_status = asyncio.run(update_file(url_proxy,True,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path))
+    elif check_file_status == "download_error":
+        check_file_status = asyncio.run(update_file(url_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path))
