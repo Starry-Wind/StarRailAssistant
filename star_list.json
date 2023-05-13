@@ -17,11 +17,11 @@
   },
   {
     "path": "config.json",
-    "hash": "eb27234b6d768391b68fe69c7d66fb76"
+    "hash": "82b37571423989ac4271d4a0be0eb0f0"
   },
   {
     "path": "version.json",
-    "hash": "5b6df4d70779adbe929153427a29dff5"
+    "hash": "c24628afe420ef86ae29b5d8646f0f05"
   },
   {
     "path": "requirements.txt",
@@ -37,7 +37,7 @@
   },
   {
     "path": "star_list.json",
-    "hash": "b19aa6038fede6fd98f934e1aab2f134"
+    "hash": "4addf99d449046bb338e8bc54234403a"
   },
   {
     "path": "LICENSE",
@@ -65,7 +65,7 @@
   },
   {
     "path": "tool/calculated.py",
-    "hash": "0a1a02505b27d72ba3c51a47ebee3bd7"
+    "hash": "39ba13f64b8d89ed88b02b4eb8e666cc"
   },
   {
     "path": "tool/record_v7.2.py",
