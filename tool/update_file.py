@@ -84,7 +84,8 @@ async def update_file(url_proxy: str="",
                       unzip_path: str="",
                       keep_folder: Optional[List[str]] = [],
                       keep_file: Optional[List[str]] = [],
-                      zip_path: str="") -> bool:
+                      zip_path: str="",
+                      name: str="") -> bool:
     """
     说明：
         更新文件
@@ -99,6 +100,7 @@ async def update_file(url_proxy: str="",
         :param keep_folder: 保存的文件夹
         :param keep_file: 保存的文件
         :param zip_path: 需要移动的文件地址
+        :param name: 更新的文件名称
     """
     global tmp_dir
 
@@ -121,13 +123,13 @@ async def update_file(url_proxy: str="",
             remote_version = await get(url_version)
             remote_version = remote_version.json()['version']
             break
-        except Exception as e:
+        except BaseException as e:
             if index < 2:
                 log.info(f'[资源文件更新]获取远程版本失败, 正在重试: {e}')
             else:
                 log.info(f'[资源文件更新]获取远程版本失败: {e}')
-            await asyncio.sleep(10)
             log.info("将在10秒后重试")
+            await asyncio.sleep(10)
     else:
         log.info(f'[资源文件更新]重试次数已达上限，退出程序')
         raise Exception(f'[资源文件更新]重试次数已达上限，退出程序')
@@ -141,32 +143,41 @@ async def update_file(url_proxy: str="",
         for _ in range(3):
             try:
                 await download(url_zip, tmp_zip)
+                log.info(f'[资源文件更新]下载更新包成功, 正在覆盖本地文件: {local_version} -> {remote_version}')
+                await unzip(tmp_zip, zip_path)
                 break
-            except Exception as e:
+            except BaseException as e:
                 log.info(f'[资源文件更新]下载压缩包失败: {e}')
-            await asyncio.sleep(10)
             log.info("将在10秒后重试")
+            await asyncio.sleep(10)
         else:
             log.info(f'[资源文件更新]重试次数已达上限，退出程序')
             raise Exception(f'[资源文件更新]重试次数已达上限，退出程序')
 
-        log.info(f'[资源文件更新]下载更新包成功, 正在覆盖本地文件: {local_version} -> {remote_version}')
-        #shutil.rmtree(os.path.join('.', 'map'), ignore_errors=True)
-        await unzip(tmp_zip, zip_path)
 
         #shutil.rmtree('..\Honkai-Star-Rail-beta-2.7')
         await remove_file(unzip_path, keep_folder, keep_file)
         await move_file(os.path.join(tmp_dir, zip_path), unzip_path, [], keep_file)
 
         log.info(f'[资源文件更新]正在校验资源文件')
-
-        map_list = await get(url_list)
-        map_list = map_list.json()
+        for _ in range(3):
+            try:
+                map_list = await get(url_list)
+                map_list = map_list.json()
+                break
+            except BaseException as e:
+                log.info(f'[资源文件更新]校验文件下载失败: {e}')
+            log.info("将在10秒后重试")
+            await asyncio.sleep(10)
+        else:
+            log.info(f'[资源文件更新]重试次数已达上限，退出程序')
+            raise Exception(f'[资源文件更新]重试次数已达上限，退出程序')
+        
         verify, path = await verify_file_hash(map_list, keep_file)
         if not verify:
             raise Exception(f"[资源文件更新]{path}校验失败, 程序退出")
 
-        log.info(f'[资源文件更新]校验完成, 更新本地地图文件版本号 {local_version} -> {remote_version}')
+        log.info(f'[资源文件更新]校验完成, 更新本地{name}文件版本号 {local_version} -> {remote_version}')
 
         # 更新版本号
         modify_json_file(CONFIG_FILE_NAME, f"{type}_version", remote_version)
@@ -182,22 +193,21 @@ async def update_file(url_proxy: str="",
                     remote_map_list = await get(url_list)
                     remote_map_list = remote_map_list.json()
                     break
-                except Exception as e:
+                except BaseException as e:
                     if index < 2:
-                        log.info(f'[资源文件更新]获取地图文件列表失败, 正在重试: {e}')
+                        log.info(f'[资源文件更新]获取{name}文件列表失败, 正在重试: {e}')
                     else:
-                        log.info(f'[资源文件更新]获取地图文件列表失败: {e}')
-                    await asyncio.sleep(10)
+                        log.info(f'[资源文件更新]获取{name}文件列表失败: {e}')
                     log.info("将在10秒后重试")
+                    await asyncio.sleep(10)
             else:
-                log.info(f'[资源文件更新]获取地图文件列表重试次数已达上限，退出程序')
-                raise Exception(f'[资源文件更新]获取地图文件列表重试次数已达上限，退出程序')
+                log.info(f'[资源文件更新]获取{name}文件列表重试次数已达上限，退出程序')
+                raise Exception(f'[资源文件更新]获取{name}文件列表重试次数已达上限，退出程序')
 
-            log.debug(f'[资源文件更新]获取地图文件列表成功.')
+            log.debug(f'[资源文件更新]获取{name}文件列表成功.')
 
-            map_list = await get(url_list)
-            map_list = map_list.json()
-            verify, path = await verify_file_hash(map_list, keep_file)
+
+            verify, path = await verify_file_hash(remote_map_list, keep_file)
             if not verify:
                 log.error(f"[资源文件更新]{path}发现文件缺失, 3秒后将使用远程版本覆盖本地版本")
                 return "rm_all"
@@ -234,9 +244,9 @@ def update_file_main(url_proxy="",
     """
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     log.info(f'[资源文件更新]即将资源文件更新，本操作会覆盖本地{name}文件..')
-    check_file_status = asyncio.run(update_file(url_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path))
+    check_file_status = asyncio.run(update_file(url_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name))
     if check_file_status == "rm_all":
         time.sleep(3)
-        check_file_status = asyncio.run(update_file(url_proxy,True,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path))
+        check_file_status = asyncio.run(update_file(url_proxy,True,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name))
     elif check_file_status == "download_error":
-        check_file_status = asyncio.run(update_file(url_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path))
+        check_file_status = asyncio.run(update_file(url_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name))
