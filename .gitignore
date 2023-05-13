@@ -110,3 +110,6 @@ venv.bak/
 
 # custom 
 config.json
+map/
+temp/
+tmp/
