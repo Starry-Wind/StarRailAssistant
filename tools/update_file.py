@@ -41,14 +41,11 @@ async def verify_file_hash(json_path: Path, keep_file: Optional[List[str]] = [])
 
 async def unzip(zip, zip_path: Path):
     global tmp_dir
-    try:
-        with ZipFile(zip, 'r') as zf:
-            for member in tq(zf.infolist(), desc='解压中'):
-                if member.filename.startswith(zip_path):
-                    zf.extract(member, tmp_dir)
-                    log.debug(f'[资源文件更新]正在提取{member.filename}')
-    except BadZipFile:
-        log.info(f'[资源文件更新]下载压缩包失败, 重试中: BadZipFile')
+    with ZipFile(zip, 'r') as zf:
+        for member in tq(zf.infolist(), desc='解压中'):
+            if member.filename.startswith(zip_path):
+                zf.extract(member, tmp_dir)
+                log.debug(f'[资源文件更新]正在提取{member.filename}')
 
 async def remove_file(folder_path: Path,keep_folder: Optional[List[str]] = [],keep_file: Optional[List[str]] = []) -> None:
     if os.path.exists(folder_path):
@@ -146,6 +143,8 @@ async def update_file(url_proxy: str="",
                 log.info(f'[资源文件更新]下载更新包成功, 正在覆盖本地文件: {local_version} -> {remote_version}')
                 await unzip(tmp_zip, zip_path)
                 break
+            except BadZipFile:
+                log.info(f'[资源文件更新]下载压缩包失败, 重试中: BadZipFile')
             except BaseException as e:
                 log.info(f'[资源文件更新]下载压缩包失败: {e}')
             log.info("将在10秒后重试")
