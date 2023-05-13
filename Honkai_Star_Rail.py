@@ -72,7 +72,7 @@ def main():
             log.info("脚本将于5秒后运行,请确保你的游戏置顶")
             time.sleep(5)
             get_width()
-            from tool.map import map
+            from tools.map import map
             map_instance = map()
             log.info("开始运行，请勿移动鼠标和键盘")
             log.info("若脚本运行无反应,请使用管理员权限运行")
