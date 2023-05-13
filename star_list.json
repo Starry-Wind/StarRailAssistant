@@ -1,11 +1,11 @@
 [
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "7e1b16d01120edd2b6483e2538ecdd70"
+    "hash": "992274baf946c5e97890c276f4b3ce76"
   },
   {
     "path": "get_width.py",
-    "hash": "c653de12e2bf694dea8e8249651188ce"
+    "hash": "aeb49fba2f76501a786a6a840b7273c9"
   },
   {
     "path": "README_CHT.md",
@@ -17,11 +17,11 @@
   },
   {
     "path": "config.json",
-    "hash": "a0331a392206f53e4771721e87cc6dd5"
+    "hash": "82b37571423989ac4271d4a0be0eb0f0"
   },
   {
     "path": "version.json",
-    "hash": "87bd7f4c0b003bf997f0a292b26dfba3"
+    "hash": "e05d77b5ba4f9c26b70b23d80e92a252"
   },
   {
     "path": "requirements.txt",
@@ -33,11 +33,11 @@
   },
   {
     "path": "test.py",
-    "hash": "c4b536ba0b12ee44b9c3af22a68aa9b8"
+    "hash": "26b374a8bd370d4f07696460c8c617ec"
   },
   {
     "path": "star_list.json",
-    "hash": "d3e662352cd848f572c0b61d076ac2f5"
+    "hash": "334c550bf810cabc525a6e7c75f217fc"
   },
   {
     "path": "LICENSE",
@@ -48,35 +48,35 @@
     "hash": "8716411a9d3626e0c30234c871c0d2a5"
   },
   {
-    "path": "tools/update_file.py",
-    "hash": "fbc43760df7d7b2d96d62d793d523ce1"
+    "path": "tool/update_file.py",
+    "hash": "dd1aa6f9876cfaf980c7111bbc3961c9"
   },
   {
-    "path": "tools/config.py",
-    "hash": "06a6568a9597bb3a1a15911875100e39"
+    "path": "tool/config.py",
+    "hash": "58bd4f4c77c5fdc41cde710b0d0b86a3"
   },
   {
-    "path": "tools/requests.py",
+    "path": "tool/requests.py",
     "hash": "8b3e24396a1f8be5251e13aac7bae960"
   },
   {
-    "path": "tools/exceptions.py",
+    "path": "tool/exceptions.py",
     "hash": "a0e5847b4e5fe94a87041932434ea38c"
   },
   {
-    "path": "tools/calculated.py",
-    "hash": "39ba13f64b8d89ed88b02b4eb8e666cc"
+    "path": "tool/calculated.py",
+    "hash": "0a1a02505b27d72ba3c51a47ebee3bd7"
   },
   {
-    "path": "tools/record_v7.2.py",
+    "path": "tool/record_v7.2.py",
     "hash": "0269fe20d8c756d90838003a39aa919c"
   },
   {
-    "path": "tools/map.py",
-    "hash": "bedf31154bf0d28d924682e84a6f0d3a"
+    "path": "tool/map.py",
+    "hash": "7388c4727b05162949b38644bd03438f"
   },
   {
-    "path": "tools/log.py",
-    "hash": "3b7b01b2c7f069ded77fcd5cb14ef796"
+    "path": "tool/log.py",
+    "hash": "3a0bef8c39b6771430c1a432e23f1ec6"
   }
 ]

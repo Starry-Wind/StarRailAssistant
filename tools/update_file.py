@@ -109,8 +109,10 @@ async def update_file(url_proxy: str="",
     tmp_zip = Path() / tmp_dir / f'{type}.zip'
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
-    if not os.path.exists(unzip_path) or rm_all:
+    if not os.path.exists(unzip_path):
         os.makedirs(unzip_path)
+        modify_json_file(CONFIG_FILE_NAME, f"{type}_version", "0")
+    elif rm_all:
         modify_json_file(CONFIG_FILE_NAME, f"{type}_version", "0")
 
     log.info(f'[资源文件更新]正在检查远程版本是否有更新...')
