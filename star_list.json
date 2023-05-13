@@ -17,11 +17,11 @@
   },
   {
     "path": "config.json",
-    "hash": "0bcaa3371a1d8d72ce71e0c2210a2a52"
+    "hash": "82b37571423989ac4271d4a0be0eb0f0"
   },
   {
     "path": "version.json",
-    "hash": "c501906f74941d6b3bea5888c3d51de3"
+    "hash": "e05d77b5ba4f9c26b70b23d80e92a252"
   },
   {
     "path": "requirements.txt",
@@ -37,7 +37,7 @@
   },
   {
     "path": "star_list.json",
-    "hash": "cf36d7b67a8a5d7505513b860f66c6a7"
+    "hash": "334c550bf810cabc525a6e7c75f217fc"
   },
   {
     "path": "LICENSE",
@@ -45,11 +45,11 @@
   },
   {
     "path": "map_res_list.py",
-    "hash": "5e6d81ec2c54ecf8f5830ea9cfc2f1b3"
+    "hash": "8716411a9d3626e0c30234c871c0d2a5"
   },
   {
     "path": "tool/update_file.py",
-    "hash": "f66f0eb4d8c51757d1193b0575f22874"
+    "hash": "dd1aa6f9876cfaf980c7111bbc3961c9"
   },
   {
     "path": "tool/config.py",
@@ -57,15 +57,15 @@
   },
   {
     "path": "tool/requests.py",
-    "hash": "0324bf4f14cdeff4a8ff583f7023a281"
+    "hash": "8b3e24396a1f8be5251e13aac7bae960"
   },
   {
     "path": "tool/exceptions.py",
-    "hash": "6e9537f3cdd33585a96419ad27fbf1ee"
+    "hash": "a0e5847b4e5fe94a87041932434ea38c"
   },
   {
     "path": "tool/calculated.py",
-    "hash": "23bdf98159c569edc231fb634a020a80"
+    "hash": "0a1a02505b27d72ba3c51a47ebee3bd7"
   },
   {
     "path": "tool/record_v7.2.py",
