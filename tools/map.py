@@ -7,8 +7,6 @@ from .calculated import *
 from .config import get_file, read_json_file, CONFIG_FILE_NAME
 from .log import log, webhook_and_log
 
-map_key = read_json_file(CONFIG_FILE_NAME).get("map_key")
-
 class map:
     def __init__(self):
         self.calculated = calculated()
