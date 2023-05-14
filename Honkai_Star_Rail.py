@@ -11,76 +11,9 @@ try:
 except:
     pass
 
-up_data = [
-    {
-        'url_proxy': ghproxy,
-        'raw_proxy': rawghproxy,
-        'skip_verify': False,
-        'type': "star",
-        'version': "beta-2.7_test",
-        'url_zip': "https://github.com/Starry-Wind/Honkai-Star-Rail/archive/refs/heads/beta-2.7_test.zip",
-        'unzip_path': ".",
-        'keep_folder': ['.git','logs','temp','map','tmp'],
-        'keep_file': ['config.json','version.json','Honkai_Star_Rail.py','star_list.json'],
-        'zip_path': "Honkai-Star-Rail-beta-2.7_test/",
-        'name': "脚本"
-    },
-    {
-        'url_proxy': ghproxy,
-        'raw_proxy': rawghproxy,
-        'skip_verify': False,
-        'type': "map",
-        'version': "map",
-        'url_zip': "https://github.com/Starry-Wind/Honkai-Star-Rail/archive/refs/heads/map.zip",
-        'unzip_path': "map",
-        'keep_folder': [],
-        'keep_file': [],
-        'zip_path': "Honkai-Star-Rail-map/map",
-        'name': "地图"
-    },
-    {
-        'url_proxy': ghproxy,
-        'raw_proxy': rawghproxy,
-        'skip_verify': False,
-        'type': "temp",
-        'version': "map",
-        'url_zip': "https://github.com/Starry-Wind/Honkai-Star-Rail/archive/refs/heads/map.zip",
-        'unzip_path': "temp",
-        'keep_folder': [],
-        'keep_file': [],
-        'zip_path': "Honkai-Star-Rail-map/temp",
-        'name': "图片"
-    },
-]
-
 def main():
-    global up_data
-    if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
-        title = "请选择下载代理地址：（不使用代理选空白选项）"
-        options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
-        option, index = pick(options, title, indicator='=>', default_index=0)
-        modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
-        title = "请选择代理地址：（不使用代理选空白选项）"
-        options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', '']
-        option, index = pick(options, title, indicator='=>', default_index=0)
-        modify_json_file(CONFIG_FILE_NAME, "rawgithub_proxy", option)
-        title = "你游戏里开启了连续自动战斗吗？："
-        options = ['没打开', '打开了', '这是什么']
-        option, index = pick(options, title, indicator='=>', default_index=0)
-        modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", index)
-        modify_json_file(CONFIG_FILE_NAME, "start", True)
-    if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
-        ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
-        if "rawgithub_proxy" not in read_json_file(CONFIG_FILE_NAME, False):
-            log.info("未检测到必要更新，强制更新脚本，请重新运行脚本")
-            init_config_file(0,0)
-            raise Exception("未检测到必要更新，强制更新脚本，请重新运行脚本")
-
-        rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
-        # asyncio.run(check_file(ghproxy, "map"))
-        # asyncio.run(check_file(ghproxy, "temp"))
-        for up in up_data:
-            update_file_main(**up)
+    main_start()
+    up_data()
     if isadmin() == 1:
         start = input('请输入起始地图（如果从头开始请输入0）：')
         if "-" in start and "_" in start or start == '0':
@@ -99,6 +32,75 @@ def main():
     else:
          log.info("请以管理员权限运行")
 
+def main_start():
+    if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
+        title = "请选择下载代理地址：（不使用代理选空白选项）"
+        options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
+        option, index = pick(options, title, indicator='=>', default_index=0)
+        modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
+        title = "请选择代理地址：（不使用代理选空白选项）"
+        options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', '']
+        option, index = pick(options, title, indicator='=>', default_index=0)
+        modify_json_file(CONFIG_FILE_NAME, "rawgithub_proxy", option)
+        title = "你游戏里开启了连续自动战斗吗？："
+        options = ['没打开', '打开了', '这是什么']
+        option, index = pick(options, title, indicator='=>', default_index=0)
+        modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", index)
+        modify_json_file(CONFIG_FILE_NAME, "start", True)
+
+def up_data():
+    if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
+        ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
+        if "rawgithub_proxy" not in read_json_file(CONFIG_FILE_NAME, False):
+            log.info("未检测到必要更新，强制更新脚本，请重新运行脚本")
+            init_config_file(0,0)
+
+        rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
+        # asyncio.run(check_file(ghproxy, "map"))
+        # asyncio.run(check_file(ghproxy, "temp"))
+        up_data = [
+            {
+                'url_proxy': ghproxy,
+                'raw_proxy': rawghproxy,
+                'skip_verify': False,
+                'type': "star",
+                'version': "beta-2.7_test",
+                'url_zip': "https://github.com/Starry-Wind/Honkai-Star-Rail/archive/refs/heads/beta-2.7_test.zip",
+                'unzip_path': ".",
+                'keep_folder': ['.git','logs','temp','map','tmp'],
+                'keep_file': ['config.json','version.json','Honkai_Star_Rail.py','star_list.json'],
+                'zip_path': "Honkai-Star-Rail-beta-2.7_test/",
+                'name': "脚本"
+            },
+            {
+                'url_proxy': ghproxy,
+                'raw_proxy': rawghproxy,
+                'skip_verify': False,
+                'type': "map",
+                'version': "map",
+                'url_zip': "https://github.com/Starry-Wind/Honkai-Star-Rail/archive/refs/heads/map.zip",
+                'unzip_path': "map",
+                'keep_folder': [],
+                'keep_file': [],
+                'zip_path': "Honkai-Star-Rail-map/map",
+                'name': "地图"
+            },
+            {
+                'url_proxy': ghproxy,
+                'raw_proxy': rawghproxy,
+                'skip_verify': False,
+                'type': "temp",
+                'version': "map",
+                'url_zip': "https://github.com/Starry-Wind/Honkai-Star-Rail/archive/refs/heads/map.zip",
+                'unzip_path': "temp",
+                'keep_folder': [],
+                'keep_file': [],
+                'zip_path': "Honkai-Star-Rail-map/temp",
+                'name': "图片"
+            },
+        ]
+        for up in up_data:
+            update_file_main(**up)
 
 def isadmin():
 	return ctypes.windll.shell32.IsUserAnAdmin()
