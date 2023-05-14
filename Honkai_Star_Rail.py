@@ -27,8 +27,8 @@ def main():
         modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", index)
         modify_json_file(CONFIG_FILE_NAME, "start", True)
     if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
-        ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy')
-        rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy')
+        ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
+        rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
         # asyncio.run(check_file(ghproxy, "map"))
         # asyncio.run(check_file(ghproxy, "temp"))
         up_data = [
