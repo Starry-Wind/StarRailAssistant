@@ -13,12 +13,12 @@ import time
 
 
 
-def get_farest_point(points):
+def get_furthest_point(points):
 	# 计算中心点坐标
 	center = np.mean(points, axis=0)
 	# 初始化最大距离为 0，最远点为第一个点
 	max_distance = 0
-	farthest_point = points[0]
+	furthest_point = points[0]
 	# 枚举每个点
 	for point in points:
 		# 计算该点到中心点的距离
@@ -26,8 +26,8 @@ def get_farest_point(points):
 		# 如果该点到中心点的距离大于当前最大距离，则更新最大距离和最远点
 		if distance > max_distance:
 			max_distance = distance
-			farthest_point = point
-	return farthest_point
+			furthest_point = point
+	return furthest_point
 
 def get_angle(debug=False, use_sample_image=False):
 	
