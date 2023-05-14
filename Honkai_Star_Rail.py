@@ -51,11 +51,11 @@ def main_start():
         modify_json_file(CONFIG_FILE_NAME, "start", True)
 
 def up_data():
-	if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
-        	ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
-        	if "rawgithub_proxy" not in read_json_file(CONFIG_FILE_NAME, False):
-            		init_config_file(0,0)
-            		raise Exception(f"未检测到必要更新，强制更新脚本，请重新运行脚本")
+if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
+        ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
+        if "rawgithub_proxy" not in read_json_file(CONFIG_FILE_NAME, False):
+            	init_config_file(0,0)
+            	raise Exception(f"未检测到必要更新，强制更新脚本，请重新运行脚本")
 
       	rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
         # asyncio.run(check_file(ghproxy, "map"))
