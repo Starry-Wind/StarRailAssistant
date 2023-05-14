@@ -3,14 +3,14 @@ import time
 import os
 import ctypes
 import traceback
-from tool.log import log, webhook_and_log
+from tools.log import log, webhook_and_log
 
 def main():
     if isadmin() == 1:
         log.info("脚本将于5秒后运行,请确保你的游戏置顶")
         time.sleep(5)
         get_width()
-        from tool.calculated import calculated
+        from tools.calculated import calculated
         calculat = calculated()
         calculat.Relative_click((96,9))
         webhook_and_log("脚本已经完成运行")
