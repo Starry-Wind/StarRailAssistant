@@ -47,7 +47,7 @@ def read_json_file(filename: str, path=False):
             else:
                 return data
     else:
-        init_config_file()
+        init_config_file(0,0)
         return read_json_file(filename, path)
 
 def modify_json_file(filename: str, key, value):
