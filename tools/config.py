@@ -71,7 +71,7 @@ def init_config_file(real_width, real_height):
                     "real_width": real_width,
                     "auto_battle_persistence": 0,
                     "real_height": real_height,
-                    "map_debug": False,
+                    "auto_update": True,
                     "github_proxy": "",
                     "webhook_url": "",
                     "start": False,
