@@ -1,80 +1,36 @@
 {
   "name": "永冬岭-1",
-  "author": "Starry-Wind",
+  "author": "Starry-Wind,小明",
   "start": [
-    {
-      "map": 1
-    },
-    {
-      "temp\\orientation_1.jpg": 1.5
-    },
-    {
-      "temp\\orientation_3.jpg": 1.5
-    },
-    {
-      "temp\\map_2-4.png": 2
-    },
-    {
-      "temp\\map_2-4_point_1.png": 1.5
-    },
-    {
-      "temp\\map_2-4_point_2.png": 1.5
-    },
-    {
-      "temp\\transfer.jpg": 1.5
-    }
+    {"map": 1},
+    {"temp\\orientation_1.jpg": 1.5},
+    {"temp\\orientation_3.jpg": 1.5},
+    {"temp\\map_2-4.png": 2},
+    {"temp\\map_2-4_point_1.png": 1.5},
+    {"temp\\map_2-4_point_2.png": 1.5},
+    {"temp\\transfer.jpg": 1.5}
   ],
   "map": [
     {
-      "mouse_move": 200
+      "w": 8.401215362548828
     },
     {
-      "w": 4.601215362548828
-    },
-    {
-      "mouse_move": -600
-    },
-    {
-      "w": 1.9643025398254395
-    },
-    {
-      "mouse_move": -800
-    },
-    {
-      "w": 0.8410015106201172
-    },
-    {
-      "mouse_move": -1000
-    },
-    {
-      "w": 5.234416484832764
-    },
-    {
-      "mouse_move": -200
-    },
-    {
-      "w": 1.8353869915008545
+      "a": 6.834416484832764
     },
     {
       "fighting": 1
     },
     {
-      "mouse_move": -600
+      "s": 0.6010779857635498
     },
     {
-      "w": 0.9010779857635498
+      "a": 4.4010779857635498
     },
     {
-      "mouse_move": 200
+      "w": 0.6010779857635498
     },
     {
-      "w": 1.2919600009918213
-    },
-    {
-      "mouse_move": 1000
-    },
-    {
-      "w": 1.9971654415130615
+      "a": 1.9010779857635498
     },
     {
       "fighting": 1
