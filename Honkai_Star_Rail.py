@@ -13,7 +13,7 @@ try:
 except:
     pass
 
-def read_config():
+def read_configs():
     """
     说明：
         读取配置文件
@@ -46,7 +46,8 @@ def main():
          log.info("请以管理员权限运行")
 
 def main_start():
-    if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
+    configs = read_configs()
+    if not configs.get('start'):
         title = "请选择下载代理地址：（不使用代理选空白选项）"
         options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
         option, index = pick(options, title, indicator='=>', default_index=0)
@@ -62,13 +63,14 @@ def main_start():
         modify_json_file(CONFIG_FILE_NAME, "start", True)
 
 def up_data():
-    if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
-        ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
-        if "rawgithub_proxy" not in read_json_file(CONFIG_FILE_NAME, False):
+    configs = read_configs()
+    if not configs.get('map_debug'):
+        ghproxy = configs.get('github_proxy', "")
+        if "rawgithub_proxy" not in configs:
             init_config_file(0,0)
             raise Exception(f"未检测到必要更新，强制更新脚本，请重新运行脚本")
 
-        rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
+        rawghproxy = configs.get('rawgithub_proxy', "")
         # asyncio.run(check_file(ghproxy, "map"))
         # asyncio.run(check_file(ghproxy, "temp"))
         up_data = [
