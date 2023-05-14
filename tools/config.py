@@ -69,7 +69,7 @@ def init_config_file(real_width, real_height):
             orjson.dumps(
                 {
                     "real_width": real_width,
-                    "auto_battle_persistence": 0,
+                    "auto_battle_persistence": False,
                     "real_height": real_height,
                     "auto_update": True,
                     "github_proxy": "",

@@ -117,7 +117,7 @@ class calculated:
         time.sleep(6)
         target = cv.imread("./temp/auto.jpg")
         start_time = time.time()
-        if self.CONFIG["auto_battle_persistence"] != 1:
+        if self.CONFIG["auto_battle_persistence"] != True:
             while True:
                 result = self.scan_screenshot(target)
                 if result["max_val"] > 0.9:
