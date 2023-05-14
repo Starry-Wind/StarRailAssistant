@@ -34,7 +34,7 @@ def main():
          log.info("请以管理员权限运行")
 
 def main_start():
-    if not read_json_file(CONFIG_FILE_NAME, False).get('start')
+    if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
         title = "请选择下载代理地址：（不使用代理选空白选项）"
         options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
         option, index = pick(options, title, indicator='=>', default_index=0)

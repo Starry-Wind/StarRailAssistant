@@ -39,13 +39,16 @@ def read_json_file(filename: str, path=False):
     """
     # 找到文件的绝对路径
     file_path = normalize_file_path(filename)
-    with open(file_path, "rb") as f:
-        data = orjson.loads(f.read())
-        if path == True:
-            return data, file_path
-        else:
-            return data
-
+    if file_path:
+        with open(file_path, "rb") as f:
+            data = orjson.loads(f.read())
+            if path == True:
+                return data, file_path
+            else:
+                return data
+    else:
+        init_config_file()
+        return read_json_file(filename, path)
 
 def modify_json_file(filename: str, key, value):
     """
