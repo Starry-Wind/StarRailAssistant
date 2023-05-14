@@ -45,10 +45,11 @@ version_dict = {
 # 写入到version.json文件
 with open("version.json", "w") as file:
     json.dump(version_dict, file)
-
+'''
 with open('config.json','r') as f:
     config = json.load(f)
     config['start'] = False
 
 with open('config.json', 'w', encoding='utf-8') as f:
     json.dump(config, f, ensure_ascii=False, indent=2)
+'''
