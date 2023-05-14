@@ -13,10 +13,14 @@ except:
 
 def main():
     if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
-        title = "请选择代理地址：（不使用代理选第三条空选项）"
-        options = ['https://github.moeyy.xyz/', 'https://ghproxy.com/', '']
+        title = "请选择下载代理地址：（不使用代理选空白选项）"
+        options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
         option, index = pick(options, title, indicator='=>', default_index=0)
         modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
+        title = "请选择代理地址：（不使用代理选空白选项）"
+        options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', '']
+        option, index = pick(options, title, indicator='=>', default_index=0)
+        modify_json_file(CONFIG_FILE_NAME, "rawgithub_proxy", option)
         title = "你游戏里开启了连续自动战斗吗？："
         options = ['没打开', '打开了', '这是什么']
         option, index = pick(options, title, indicator='=>', default_index=0)
@@ -24,11 +28,13 @@ def main():
         modify_json_file(CONFIG_FILE_NAME, "start", True)
     if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
         ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy')
+        rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy')
         # asyncio.run(check_file(ghproxy, "map"))
         # asyncio.run(check_file(ghproxy, "temp"))
         up_data = [
             {
                 'url_proxy': ghproxy,
+                'raw_proxy': rawghproxy,
                 'skip_verify': False,
                 'type': "map",
                 'version': "map",
@@ -41,6 +47,7 @@ def main():
             },
             {
                 'url_proxy': ghproxy,
+                'raw_proxy': rawghproxy,
                 'skip_verify': False,
                 'type': "temp",
                 'version': "map",
@@ -53,6 +60,7 @@ def main():
             },
             {
                 'url_proxy': ghproxy,
+                'raw_proxy': rawghproxy,
                 'skip_verify': False,
                 'type': "star",
                 'version': "beta-2.7_test",
