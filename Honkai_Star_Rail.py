@@ -1,3 +1,4 @@
+import os
 import traceback
 try:
     from tools.log import log, webhook_and_log
@@ -6,13 +7,25 @@ try:
     from pick import pick
 
     from get_width import get_width
-    from tools.config import read_json_file, modify_json_file, CONFIG_FILE_NAME
+    from tools.config import init_config_file, read_json_file, modify_json_file, CONFIG_FILE_NAME
     from tools.update_file import update_file_main
 except:
     pass
 
+def read_config():
+    """
+    说明：
+        读取配置文件
+        如果配置文件不存在则会创造一个
+    """
+    if not os.path.exists(CONFIG_FILE_NAME):
+        init_config_file(0, 0)
+    return read_json_file(CONFIG_FILE_NAME)
+
+
 def main():
-    if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
+    configs = read_config()
+    if not configs.get('start'):
         title = "请选择代理地址：（不使用代理选第三条空选项）"
         options = ['https://github.moeyy.xyz/', 'https://ghproxy.com/', '']
         option, index = pick(options, title, indicator='=>', default_index=0)
@@ -22,8 +35,8 @@ def main():
         option, index = pick(options, title, indicator='=>', default_index=0)
         modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", index)
         modify_json_file(CONFIG_FILE_NAME, "start", True)
-    if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
-        ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy')
+    if not configs.get('map_debug'):
+        ghproxy = configs.get('github_proxy')
         # asyncio.run(check_file(ghproxy, "map"))
         # asyncio.run(check_file(ghproxy, "temp"))
         up_data = [
