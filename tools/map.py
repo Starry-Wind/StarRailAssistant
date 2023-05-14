@@ -29,8 +29,6 @@ class map:
                 pyautogui.click(points, clicks=5, interval=0.1)
                 break
 
-
-
     def auto_map(self, start):
         map_list = get_file('./map', 'old')  # 从'./map'目录获取地图文件列表（排除'old'）
         log.debug(map_list)
