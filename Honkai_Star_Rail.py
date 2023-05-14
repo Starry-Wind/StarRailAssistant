@@ -8,6 +8,7 @@ try:
     from get_width import get_width
     from tools.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
     from tools.update_file import update_file_main
+    from tools.exceptions import Exception
 except:
     pass
 
@@ -52,8 +53,8 @@ def up_data():
     if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
         ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
         if "rawgithub_proxy" not in read_json_file(CONFIG_FILE_NAME, False):
-            log.info("未检测到必要更新，强制更新脚本，请重新运行脚本")
             init_config_file(0,0)
+            raise Exception(f"未检测到必要更新，强制更新脚本，请重新运行脚本")
 
         rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
         # asyncio.run(check_file(ghproxy, "map"))
