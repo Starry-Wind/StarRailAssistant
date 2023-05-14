@@ -72,7 +72,8 @@ async def move_file(src_folder: Path, dst_folder,keep_folder: Optional[List[str]
         elif os.path.isfile(src_path) and item not in keep_file:
             shutil.move(src_path, dst_path)
 
-async def update_file(url_proxy: str="", 
+async def update_file(url_proxy: str="",
+                      raw_proxy: str="",
                       rm_all: bool=False, 
                       skip_verify: bool=True,
                       type: str="",
@@ -88,6 +89,7 @@ async def update_file(url_proxy: str="",
         更新文件
     参数：
         :param url_proxy: github代理
+        :param raw_proxy: rawgithub代理
         :param rm_all: 是否强制删除文件
         :param skip_verify: 是否跳过检验
         :param type: 更新文件的类型 map\temp
@@ -101,9 +103,9 @@ async def update_file(url_proxy: str="",
     """
     global tmp_dir
 
-    url_version = f'{url_proxy}https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/{version}/version.json'
-    url_zip = url_proxy+url_zip
-    url_list = f'{url_proxy}https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/{version}/{type}_list.json'
+    url_version = f'{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/{version}/version.json' if 'http' in raw_proxy else f'https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/{version}/version.json'.replace('raw.githubusercontent.com', raw_proxy)
+    url_zip = url_proxy+url_zip if 'http' in url_proxy else url_zip.replace('github.com', url_proxy)
+    url_list = f'{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/{version}/{type}_list.json' if 'http' in raw_proxy else f'https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/{version}/{type}_list.json'.replace('raw.githubusercontent.com', raw_proxy)
     
     #tmp_zip = os.path.join(tmp_dir, f'{type}.zip')
     tmp_zip = Path() / tmp_dir / f'{type}.zip'
@@ -218,21 +220,24 @@ async def update_file(url_proxy: str="",
     return True
 
 
-def update_file_main(url_proxy="",
-                    skip_verify=False,
-                    type="",
-                    version="",
-                    url_zip="",
-                    unzip_path="",
-                    keep_folder=[],
-                    keep_file=[],
-                    zip_path="",
-                    name=""):
+def update_file_main(url_proxy: str="",
+                    raw_proxy: str="",
+                    rm_all: bool=False, 
+                    skip_verify: bool=True,
+                    type: str="",
+                    version: str="",
+                    url_zip: str="",
+                    unzip_path: str="",
+                    keep_folder: Optional[List[str]] = [],
+                    keep_file: Optional[List[str]] = [],
+                    zip_path: str="",
+                    name: str=""):
     """
     说明：
         更新文件
     参数：
         :param url_proxy: github代理
+        :param raw_proxy: rawgithub代理
         :param skip_verify: 是否跳过检验
         :param type: 更新文件的类型 map\temp
         :param version: 版本验证地址 map
@@ -245,9 +250,9 @@ def update_file_main(url_proxy="",
     """
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     log.info(f'[资源文件更新]即将资源文件更新，本操作会覆盖本地{name}文件..')
-    check_file_status = asyncio.run(update_file(url_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name))
+    check_file_status = asyncio.run(update_file(url_proxy,raw_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name))
     if check_file_status == "rm_all":
         time.sleep(3)
-        check_file_status = asyncio.run(update_file(url_proxy,True,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name))
+        check_file_status = asyncio.run(update_file(url_proxy,raw_proxy,True,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name))
     elif check_file_status == "download_error":
-        check_file_status = asyncio.run(update_file(url_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name))
+        check_file_status = asyncio.run(update_file(url_proxy,raw_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name))
