@@ -1,13 +1,16 @@
+import os
 import traceback
 try:
     from tools.log import log, webhook_and_log
     import time
     import ctypes
+    import pyuac
     from pick import pick
 
     from get_width import get_width
     from tools.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
     from tools.update_file import update_file_main
+    from tools.switch_window import switch_window
     from tools.exceptions import Exception
 except:
     pass
@@ -15,23 +18,21 @@ except:
 def main():
     main_start()
     up_data()
-    if isadmin() == 1:
-        start = input('请输入起始地图（如果从头开始请输入0）：')
-        if "-" in start and "_" in start or start == '0':
-            log.info("脚本将于5秒后运行,请确保你的游戏置顶")
-            time.sleep(5)
-            get_width()
-            from tools.map import map
-            map_instance = map()
-            log.info("开始运行，请勿移动鼠标和键盘")
-            log.info("若脚本运行无反应,请使用管理员权限运行")
-            start = '1-1_1' if start == '0' else start
-            map_instance.auto_map(start)  # 读取配置
-        else:
-            log.info("错误编号")
-        webhook_and_log("脚本已经完成运行")
+    start = input('请输入起始地图（如果从头开始请输入0）：')
+    if "-" in start and "_" in start or start == '0':
+        log.info("脚本将自动切换至游戏窗口，请保持游戏窗口激活")
+        switch_window()
+        time.sleep(0.5)
+        get_width()
+        from tools.map import map
+        map_instance = map()
+        log.info("开始运行，请勿移动鼠标和键盘")
+        log.info("若脚本运行无反应,请使用管理员权限运行")
+        start = '1-1_1' if start == '0' else start
+        map_instance.auto_map(start)  # 读取配置
     else:
-         log.info("请以管理员权限运行")
+        log.info("错误编号")
+        webhook_and_log("脚本已经完成运行")
 
 def main_start():
     if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
@@ -68,7 +69,7 @@ def up_data():
                 'version': "beta-2.7_test",
                 'url_zip': "https://github.com/Starry-Wind/Honkai-Star-Rail/archive/refs/heads/beta-2.7_test.zip",
                 'unzip_path': ".",
-                'keep_folder': ['.git','logs','temp','map','tmp'],
+                'keep_folder': ['.git','logs','temp','map','tmp','venv'],
                 'keep_file': ['config.json','version.json','Honkai_Star_Rail.py','star_list.json'],
                 'zip_path': "Honkai-Star-Rail-beta-2.7_test/",
                 'name': "脚本"
@@ -103,17 +104,19 @@ def up_data():
         for up in up_data:
             update_file_main(**up)
 
-def isadmin():
-	return ctypes.windll.shell32.IsUserAnAdmin()
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
-        main()
+        if not pyuac.isUserAdmin():
+            pyuac.runAsAdmin()
+        else:        
+            main()
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
+        os.system("pip install -r requirements.txt")
         print("请输入: pip install -r requirements.txt")
     except NameError as e:
         print(traceback.format_exc())
+        os.system("pip install -r requirements.txt")
         print("请输入: pip install -r requirements.txt")
     except:
         log.error(traceback.format_exc())
