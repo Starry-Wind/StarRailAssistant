@@ -5,7 +5,7 @@ try:
     import ctypes
     import pyuac
     from pick import pick
-    
+
     from get_width import get_width
     from tools.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
     from tools.update_file import update_file_main
