@@ -1,7 +1,7 @@
 [
   {
     "path": "get_width.py",
-    "hash": "834a019cdfcb67bdb4795fa8eee55c69"
+    "hash": "8d59850a8ca4b3de0303efed41bdab4d"
   },
   {
     "path": "Honkai_Star_Rail.py",
@@ -29,7 +29,7 @@
   },
   {
     "path": "star_list.json",
-    "hash": "8dfd0d52f289ca7a1df637e433480917"
+    "hash": "c58324ac49e79c64dd6e5de64e8670a9"
   },
   {
     "path": "test.py",
@@ -37,7 +37,7 @@
   },
   {
     "path": "version.json",
-    "hash": "a7c0029a72c1ab2a91fca43b9f31296e"
+    "hash": "a0bb935eec831a1e8c7632ff1a7a9235"
   },
   {
     "path": "tools/calculated.py",
