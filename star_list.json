@@ -17,7 +17,7 @@
   },
   {
     "path": "version.json",
-    "hash": "0b47a968ac507bc22072bae6cc9f65b3"
+    "hash": "dc125ce14afc2c888b12013c8a26335c"
   },
   {
     "path": "requirements.txt",
@@ -29,7 +29,7 @@
   },
   {
     "path": "star_list.json",
-    "hash": "ed63b17d7629460e5998ca4ef5fddce5"
+    "hash": "e7a03cf47ad158a1f45bef1f3cc90317"
   },
   {
     "path": "LICENSE",
@@ -57,7 +57,7 @@
   },
   {
     "path": "tools/calculated.py",
-    "hash": "77825a85507f4e91295cb0dddd5da706"
+    "hash": "c7e23d981896eb336aadbb6982771057"
   },
   {
     "path": "tools/get_angle.py",
