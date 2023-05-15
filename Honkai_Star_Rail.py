@@ -4,6 +4,7 @@ try:
     import time
     import ctypes
     import pyuac
+    import os
     from pick import pick
 
     from get_width import get_width
@@ -35,9 +36,11 @@ def main():
             webhook_and_log("脚本已经完成运行")
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
+        os.system("pip install -r requirements.txt")
         print("请输入: pip install -r requirements.txt")
     except NameError as e:
         print(traceback.format_exc())
+        os.system("pip install -r requirements.txt")
         print("请输入: pip install -r requirements.txt")
     except:
         log.error(traceback.format_exc())
