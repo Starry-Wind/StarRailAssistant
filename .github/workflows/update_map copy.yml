@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - beta-2.7_test
-      - main
+      - master
     paths:
       - '**'
 
@@ -34,6 +34,5 @@ jobs:
           author_name: github-actions[bot]
           author_email: github-actions[bot]@users.noreply.github.com
           message: ':wrench: 自动更新资源列表'
-          add: |
-            'star_list.json'
-            'version.json'
+          add: 'Honkai_Star_Rail.* --force'
+          cwd: './Honkai_Star_Rail.dist/'
