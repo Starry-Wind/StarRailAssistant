@@ -68,9 +68,9 @@ async def move_file(src_folder: Path, dst_folder,keep_folder: Optional[List[str]
         src_path = os.path.join(src_folder, item)
         dst_path = os.path.join(dst_folder, item)
         if os.path.isdir(src_path) and item not in keep_folder:
-            shutil.move(src_path, dst_path)
+            shutil.copy(src_path, dst_path)
         elif os.path.isfile(src_path) and item not in keep_file:
-            shutil.move(src_path, dst_path)
+            shutil.copy(src_path, dst_path)
 
 async def update_file(url_proxy: str="",
                       raw_proxy: str="",
@@ -159,7 +159,7 @@ async def update_file(url_proxy: str="",
 
 
         #shutil.rmtree('..\Honkai-Star-Rail-beta-2.7')
-        await remove_file(unzip_path, keep_folder, keep_file)
+        #await remove_file(unzip_path, keep_folder, keep_file)
         await move_file(os.path.join(tmp_dir, zip_path), unzip_path, [], keep_file)
 
         log.info(f'[资源文件更新]正在校验资源文件')
