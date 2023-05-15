@@ -58,15 +58,16 @@ async def remove_file(folder_path: Path,keep_folder: Optional[List[str]] = [],ke
                 os.remove(item_path)
 
 async def move_file(src_folder: Path, dst_folder,keep_folder: Optional[List[str]] = [],keep_file: Optional[List[str]] = []) -> None:
-    
-    # 创建目标文件夹（如果不存在）
-    if not os.path.exists(dst_folder):
-        os.makedirs(dst_folder)
+
 
     for item in get_file(src_folder,keep_folder,keep_file, True):
         dst_path = item.replace(src_folder, "./")
+    # 创建目标文件夹（如果不存在）
+        dst_path = ''
+        if not os.path.exists(dst_path.rsplit("/",1)[0]):
+            os.makedirs(dst_folder)
         #dst_path = os.path.join(dst_folder, item)
-        shutil.copy("./"+item, dst_path)
+        shutil.copy(item, dst_path)
     # 遍历源文件夹中的所有文件和文件夹
     '''
     for item in os.listdir(src_folder):
