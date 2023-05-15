@@ -16,35 +16,23 @@ except:
     pass
 
 def main():
-    try:
-        main_start()
-        up_data()
-        start = input('请输入起始地图（如果从头开始请输入0）：')
-        if "-" in start and "_" in start or start == '0':
-            log.info("脚本将自动切换至游戏窗口，请保持游戏窗口激活")
-            switch_window()
-            time.sleep(0.5)
-            get_width()
-            from tools.map import map
-            map_instance = map()
-            log.info("开始运行，请勿移动鼠标和键盘")
-            log.info("若脚本运行无反应,请使用管理员权限运行")
-            start = '1-1_1' if start == '0' else start
-            map_instance.auto_map(start)  # 读取配置
-        else:
-            log.info("错误编号")
-            webhook_and_log("脚本已经完成运行")
-    except ModuleNotFoundError as e:
-        print(traceback.format_exc())
-        os.system("pip install -r requirements.txt")
-        print("请输入: pip install -r requirements.txt")
-    except NameError as e:
-        print(traceback.format_exc())
-        os.system("pip install -r requirements.txt")
-        print("请输入: pip install -r requirements.txt")
-    except:
-        log.error(traceback.format_exc())
-
+    main_start()
+    up_data()
+    start = input('请输入起始地图（如果从头开始请输入0）：')
+    if "-" in start and "_" in start or start == '0':
+        log.info("脚本将自动切换至游戏窗口，请保持游戏窗口激活")
+        switch_window()
+        time.sleep(0.5)
+        get_width()
+        from tools.map import map
+        map_instance = map()
+        log.info("开始运行，请勿移动鼠标和键盘")
+        log.info("若脚本运行无反应,请使用管理员权限运行")
+        start = '1-1_1' if start == '0' else start
+        map_instance.auto_map(start)  # 读取配置
+    else:
+        log.info("错误编号")
+        webhook_and_log("脚本已经完成运行")
 
 def main_start():
     if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
@@ -117,7 +105,18 @@ def up_data():
             update_file_main(**up)
 
 if __name__ == "__main__":
-    if not pyuac.isUserAdmin():
-        pyuac.runAsAdmin()
-    else:        
-        main()
+    try:
+        if not pyuac.isUserAdmin():
+            pyuac.runAsAdmin()
+        else:        
+            main()
+    except ModuleNotFoundError as e:
+        print(traceback.format_exc())
+        os.system("pip install -r requirements.txt")
+        print("请输入: pip install -r requirements.txt")
+    except NameError as e:
+        print(traceback.format_exc())
+        os.system("pip install -r requirements.txt")
+        print("请输入: pip install -r requirements.txt")
+    except:
+        log.error(traceback.format_exc())
