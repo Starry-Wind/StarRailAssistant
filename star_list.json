@@ -17,7 +17,7 @@
   },
   {
     "path": "version.json",
-    "hash": "71ffa2a4965cb720282fe4c3ae555935"
+    "hash": "14da12a5aefd59f5cf14a4ea9ea801dd"
   },
   {
     "path": "requirements.txt",
@@ -29,7 +29,7 @@
   },
   {
     "path": "star_list.json",
-    "hash": "9d0dd9983f698d1f666915a357ccb3e9"
+    "hash": "61a73400a17614b15e7ee6678b888d60"
   },
   {
     "path": "LICENSE",
@@ -41,7 +41,7 @@
   },
   {
     "path": "tools/update_file.py",
-    "hash": "c7055c4247b8267b8486c2d503aacb67"
+    "hash": "af15531ea821fb52b065698bf2876ada"
   },
   {
     "path": "tools/config.py",
