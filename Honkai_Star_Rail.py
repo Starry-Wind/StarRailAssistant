@@ -4,6 +4,7 @@ try:
     import time
     import ctypes
     import pyuac
+    import os
     from pick import pick
 
     from get_width import get_width
@@ -16,6 +17,7 @@ except:
 
 def main():
     try:
+        os.system("pip install -r requirements.txt")
         main_start()
         up_data()
         start = input('请输入起始地图（如果从头开始请输入0）：')
