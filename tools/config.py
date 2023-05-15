@@ -105,8 +105,9 @@ def get_file(path, exclude, exclude_file = [], get_path = False):
                         add = False
                 if add:
                     print(file)
-                    if get_path and:
-                        file_list.append(root+"/"+file.replace("//","/"))
+                    if get_path:
+                        path = root+"/"+file
+                        file_list.append(path.replace("//","/"))
                     else:
                         file_list.append(file)
     return file_list
