@@ -25,6 +25,8 @@ jobs:
 
       - name: Update Map
         run: |
+          pip install pipreqs
+          pipreqs . --encoding=utf8 --force
           python map_res_list.py
       - name: Commit changes
         uses: EndBug/add-and-commit@v9.1.3
@@ -35,3 +37,4 @@ jobs:
           add: |
             'star_list.json'
             'version.json'
+            'requirements.txt'
