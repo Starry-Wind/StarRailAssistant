@@ -63,7 +63,7 @@ async def move_file(src_folder: Path, dst_folder,keep_folder: Optional[List[str]
     for item in get_file(src_folder,keep_folder,keep_file, True):
         dst_path = item.replace(src_folder, "./")
     # 创建目标文件夹（如果不存在）
-        dst_path = ''
+        print(dst_path.rsplit("/",1)[0])
         if not os.path.exists(dst_path.rsplit("/",1)[0]):
             os.makedirs(dst_folder)
         #dst_path = os.path.join(dst_folder, item)
