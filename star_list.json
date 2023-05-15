@@ -29,7 +29,7 @@
   },
   {
     "path": "star_list.json",
-    "hash": "33db9cc3e9881e65ba803f5c1f345677"
+    "hash": "a5e4d3077c51c7b0f57d50d764f8c5f7"
   },
   {
     "path": "test.py",
@@ -37,7 +37,7 @@
   },
   {
     "path": "version.json",
-    "hash": "7442e6742c3d18bbb30badf7abecb6df"
+    "hash": "d77553ded893fb1b0d112915bcb82e68"
   },
   {
     "path": "tools/calculated.py",
@@ -77,6 +77,6 @@
   },
   {
     "path": "tools/update_file.py",
-    "hash": "8930e5e50235cd25739531f51dd4b0c2"
+    "hash": "94e761f6038f38451ceb3136b1600e28"
   }
 ]
