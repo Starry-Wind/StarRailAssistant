@@ -1,10 +1,10 @@
+import os
 import traceback
 try:
     from tools.log import log, webhook_and_log
     import time
     import ctypes
     import pyuac
-    import os
     from pick import pick
 
     from get_width import get_width
