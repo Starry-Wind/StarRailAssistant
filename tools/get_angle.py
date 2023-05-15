@@ -61,7 +61,7 @@ def get_angle(debug=False, use_sample_image=False):
 	contour = contours[0]
 	peri = cv2.arcLength(contour, True)
 	approx = cv2.approxPolyDP(contour, 0.03 * peri, True)
-	fp = get_farest_point(approx[:,0,:])
+	fp = get_furthest_point(approx[:,0,:])
 
 
 	# 获取角度
