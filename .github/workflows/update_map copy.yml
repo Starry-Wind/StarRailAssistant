@@ -1,0 +1,39 @@
+name: 测试
+
+on:
+  push:
+    branches:
+      - beta-2.7_test
+      - main
+    paths:
+      - '**'
+
+  workflow_dispatch:
+  
+
+jobs:
+  update:
+    name: Update Map
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
+
+      - name: Setup python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+
+      - name: Update Map
+        run: |
+          pip install nuitka
+          python -m nuitka Honkai_Star_Rail.py --standalone --mingw64
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9.1.3
+        with:
+          author_name: github-actions[bot]
+          author_email: github-actions[bot]@users.noreply.github.com
+          message: ':wrench: 自动更新资源列表'
+          add: |
+            'star_list.json'
+            'version.json'
