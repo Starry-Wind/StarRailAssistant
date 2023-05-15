@@ -70,7 +70,7 @@ def up_data():
                 'url_zip': "https://github.com/Starry-Wind/Honkai-Star-Rail/archive/refs/heads/beta-2.7_test.zip",
                 'unzip_path': ".",
                 'keep_folder': ['.git','logs','temp','map','tmp','venv'],
-                'keep_file': ['config.json','version.json','star_list.json'],
+                'keep_file': ['config.json','version.json','Honkai_Star_Rail.py','star_list.json'],
                 'zip_path': "Honkai-Star-Rail-beta-2.7_test/",
                 'name': "脚本"
             },
