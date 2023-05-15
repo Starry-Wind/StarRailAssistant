@@ -87,15 +87,28 @@ def init_config_file(real_width, real_height):
         )
 
 
-def get_file(path, exclude):
+def get_file(path, exclude, exclude_file = [], get_path = False):
     """
     获取文件夹下的文件
     """
     file_list = []
     for root, dirs, files in os.walk(path):
-        if exclude not in root:
+        add = True
+        for i in exclude:
+            if i in root:
+                add = False
+        if add:
             for file in files:
-                file_list.append(file)
+                add = True
+                for ii in exclude_file:
+                    if ii in file:
+                        add = False
+                if add:
+                    if get_path:
+                        path = root+"/"+file
+                        file_list.append(path.replace("//","/"))
+                    else:
+                        file_list.append(file)
     return file_list
 
 async def check_file(github_proxy, filename = 'map'):
