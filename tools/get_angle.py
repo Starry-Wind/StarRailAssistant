@@ -7,7 +7,6 @@
 import cv2
 import numpy as np
 import pyautogui
-# import win32api, win32con
 from switch_window import switch_window
 import time
 
@@ -30,9 +29,6 @@ def get_furthest_point(points):
 	return furthest_point
 
 def get_angle(debug=False, use_sample_image=False):
-	
-	# x,y = [47,58]
-	# w,h = [187,187]
 	x,y = [117,128]
 	w,h = [47,47]
 
@@ -48,8 +44,6 @@ def get_angle(debug=False, use_sample_image=False):
 	# 定义青色掩膜
 	lower_cyan = np.array([78, 200, 200]) # 使用较高饱和度下界，过滤掉摄像头圆弧
 	upper_cyan = np.array([99, 255, 255])
-	# lower_blue = np.array([100, 50, 50])
-	# upper_blue = np.array([130, 255, 255])
 	cyan_mask = cv2.inRange(hsv, lower_cyan, upper_cyan)
 
 	# 查找轮廓
@@ -61,7 +55,7 @@ def get_angle(debug=False, use_sample_image=False):
 	contour = contours[0]
 	peri = cv2.arcLength(contour, True)
 	approx = cv2.approxPolyDP(contour, 0.03 * peri, True)
-	fp = get_farest_point(approx[:,0,:])
+	fp = get_furthest_point(approx[:,0,:])
 
 
 	# 获取角度
