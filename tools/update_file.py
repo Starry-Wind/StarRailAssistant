@@ -17,7 +17,7 @@ from typing import Dict, Optional, Any, Union, Tuple, List
 from .log import log
 from .requests import *
 from .exceptions import Exception
-from .config import normalize_file_path, modify_json_file, read_json_file, CONFIG_FILE_NAME
+from .config import normalize_file_path, modify_json_file, read_json_file, get_file, CONFIG_FILE_NAME
 
 tmp_dir = 'tmp'
 
@@ -62,15 +62,21 @@ async def move_file(src_folder: Path, dst_folder,keep_folder: Optional[List[str]
     if not os.path.exists(dst_folder):
         os.makedirs(dst_folder)
 
+    for item in get_file(src_folder,keep_folder,keep_file, True):
+        src_path = item.replace(src_folder, '')
+        dst_path = os.path.join(dst_folder, item)
+        shutil.copy(src_path, dst_path)
     # 遍历源文件夹中的所有文件和文件夹
+    '''
     for item in os.listdir(src_folder):
         # 构造源文件路径和目标文件路径
         src_path = os.path.join(src_folder, item)
         dst_path = os.path.join(dst_folder, item)
         if os.path.isdir(src_path) and item not in keep_folder:
             shutil.copy(src_path, dst_path)
-        elif os.path.isfile(src_path) and item not in keep_file:
+        if os.path.isfile(src_path) and item not in keep_file:
             shutil.copy(src_path, dst_path)
+    '''
 
 async def update_file(url_proxy: str="",
                       raw_proxy: str="",
