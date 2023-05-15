@@ -82,7 +82,7 @@ def init_config_file(real_width, real_height):
                     "temp_version": "0",
                     "star_version": "0",
                     "open_map": "m",
-                    "star_rail_debug": False
+                    "script_debug": False
                 }
             )
         )

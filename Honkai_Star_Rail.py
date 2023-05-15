@@ -102,7 +102,7 @@ def up_data():
             },
         ]
         for up in up_data:
-            if up["name"] == "脚本" and not read_json_file(CONFIG_FILE_NAME, False).get('star_rail_debug', False):
+            if up["name"] == "脚本" and not read_json_file(CONFIG_FILE_NAME, False).get('script_debug', False):
                 continue
             update_file_main(**up)
 
