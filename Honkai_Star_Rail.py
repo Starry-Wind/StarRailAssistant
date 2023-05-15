@@ -102,6 +102,8 @@ def up_data():
             },
         ]
         for up in up_data:
+            if up["name"] == "脚本" and not read_json_file(CONFIG_FILE_NAME, False).get('script_debug', False):
+                continue
             update_file_main(**up)
 
 if __name__ == "__main__":
@@ -113,10 +115,10 @@ if __name__ == "__main__":
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
         os.system("pip install -r requirements.txt")
-        print("请输入: pip install -r requirements.txt")
+        print("请重新运行")
     except NameError as e:
         print(traceback.format_exc())
         os.system("pip install -r requirements.txt")
-        print("请输入: pip install -r requirements.txt")
+        print("请重新运行")
     except:
         log.error(traceback.format_exc())

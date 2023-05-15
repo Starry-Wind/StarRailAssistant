@@ -81,7 +81,8 @@ def init_config_file(real_width, real_height):
                     "start": False,
                     "temp_version": "0",
                     "star_version": "0",
-                    "open_map": "m"
+                    "open_map": "m",
+                    "script_debug": False
                 }
             )
         )
