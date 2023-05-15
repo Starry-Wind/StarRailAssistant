@@ -104,7 +104,7 @@ def get_file(path, exclude, exclude_file = [], get_path = False):
                     if ii in file:
                         add = False
                 if add:
-                    if get_path:
+                    if get_path and file[0] != '/':
                         file_list.append(root+"/"+file)
                     else:
                         file_list.append(file)

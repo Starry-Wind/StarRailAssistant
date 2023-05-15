@@ -64,9 +64,9 @@ async def move_file(src_folder: Path, dst_folder,keep_folder: Optional[List[str]
 
     for item in get_file(src_folder,keep_folder,keep_file, True):
         dst_path = item.replace(src_folder, './')
-        print(dst_path)
+        print(item)
         #dst_path = os.path.join(dst_folder, item)
-        shutil.copy(item, dst_path)
+        #shutil.copy(item, dst_path)
     # 遍历源文件夹中的所有文件和文件夹
     '''
     for item in os.listdir(src_folder):
