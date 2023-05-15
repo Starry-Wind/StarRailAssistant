@@ -17,11 +17,11 @@
   },
   {
     "path": "version.json",
-    "hash": "771e72fc0138249ab723f2f6ecbfe4ad"
+    "hash": "cd24c19b9c13cd7e263493e7c2beb92e"
   },
   {
     "path": "requirements.txt",
-    "hash": "18666ec65dd69d431120e5613c4d2d1e"
+    "hash": "b9f43f1b34f85605a91113c26c9faf8a"
   },
   {
     "path": "test.py",
@@ -29,7 +29,7 @@
   },
   {
     "path": "star_list.json",
-    "hash": "362cfd568c9923acf88896bb8dd34549"
+    "hash": "0a97c4d2f34da344ee9da326ef632d27"
   },
   {
     "path": "LICENSE",
