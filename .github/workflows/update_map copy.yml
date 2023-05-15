@@ -18,7 +18,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@master
-
+      - name: bash
+        run: cd C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads
       - name: Setup python
         uses: actions/setup-python@v1
         with:
