@@ -18,8 +18,7 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@master
-      - name: bash
-        run: cd C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads
+
       - name: Setup python
         uses: actions/setup-python@v1
         with:
@@ -28,7 +27,11 @@ jobs:
       - name: Update Map
         run: |
           pip install nuitka
-          python -m nuitka Honkai_Star_Rail.py --standalone --mingw64
+      - name: bash
+
+        run: cd C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads
+
+
       - name: Commit changes
         uses: EndBug/add-and-commit@v9.1.3
         with:
