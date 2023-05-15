@@ -8,6 +8,7 @@ import pyautogui
 import win32api
 import win32con
 import win32gui
+import ctypes
 from PIL import ImageGrab
 from pynput.keyboard import Controller as KeyboardController
 
@@ -21,6 +22,12 @@ class calculated:
     def __init__(self):
         self.CONFIG = read_json_file(CONFIG_FILE_NAME)
         self.keyboard = KeyboardController()
+        if hex(ctypes.windll.kernel32.GetSystemDefaultUILanguage()) == "0x804":
+            self.windowname = "崩坏：星穹铁道"
+        elif hex(ctypes.windll.kernel32.GetSystemDefaultUILanguage()) == "0x404":
+            self.windowname = "崩壞：星穹鐵道"
+        print(self.windowname)
+
 
     def Click(self, points):
         """
@@ -44,7 +51,7 @@ class calculated:
         参数：
             :param points: 百分比坐标
         """
-        hwnd = win32gui.FindWindow("UnityWndClass", "崩坏：星穹铁道")
+        hwnd = win32gui.FindWindow("UnityWndClass", self.windowname)
         left, top, right, bottom = win32gui.GetWindowRect(hwnd)
         real_width = self.CONFIG["real_width"]
         real_height = self.CONFIG["real_height"]
@@ -65,7 +72,7 @@ class calculated:
         参数：
             :param prepared: 比对图片地址
         """
-        hwnd = win32gui.FindWindow("UnityWndClass", "崩坏：星穹铁道")
+        hwnd = win32gui.FindWindow("UnityWndClass", self.windowname)
         left, top, right, bottom = win32gui.GetWindowRect(hwnd)
         temp = ImageGrab.grab((left, top, right, bottom))
         screenshot = np.array(temp)

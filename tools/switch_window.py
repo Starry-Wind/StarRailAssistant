@@ -1,6 +1,10 @@
 import pyautogui
-
-def switch_window(title = '崩坏：星穹铁道'):
+import ctypes
+if hex(ctypes.windll.kernel32.GetSystemDefaultUILanguage()) == "0x804":
+	windowname = "崩坏：星穹铁道"
+elif hex(ctypes.windll.kernel32.GetSystemDefaultUILanguage()) == "0x404":
+	windowname = "崩壞：星穹鐵道"
+def switch_window(title = windowname):
 
 	ws = pyautogui.getWindowsWithTitle(title)
 	
