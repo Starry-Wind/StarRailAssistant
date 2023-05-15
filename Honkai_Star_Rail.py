@@ -1,28 +1,28 @@
 import traceback
 try:
     from tools.log import log, webhook_and_log
+    import os
     import time
-    import ctypes
     import pyuac
+    import ctypes
     from pick import pick
-
+    
     from get_width import get_width
     from tools.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
     from tools.update_file import update_file_main
-    from tools.switch_window import switch_window
     from tools.exceptions import Exception
 except:
     pass
 
 def main():
     try:
+        os.system("pip install -r requirements.txt")
         main_start()
         up_data()
         start = input('请输入起始地图（如果从头开始请输入0）：')
         if "-" in start and "_" in start or start == '0':
-            log.info("脚本将自动切换至游戏窗口，请保持游戏窗口激活")
-            switch_window()
-            time.sleep(0.5)
+            log.info("脚本将于5秒后运行,请确保你的游戏置顶")
+            time.sleep(5)
             get_width()
             from tools.map import map
             map_instance = map()
@@ -118,3 +118,4 @@ if __name__ == "__main__":
         pyuac.runAsAdmin()
     else:        
         main()
+
