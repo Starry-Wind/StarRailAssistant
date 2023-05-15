@@ -35,6 +35,7 @@ async def verify_file_hash(json_path: Path, keep_file: Optional[List[str]] = [])
         if not os.path.exists(file_path):
             return False, file_path
         if os.path.isfile(file_path) and str(file_path) not in keep_file:
+            log.debug(hashlib.md5(file_path.read_bytes()).hexdigest())
             if hashlib.md5(file_path.read_bytes()).hexdigest() != data['hash']:
                 return False, file_path
     return True, None
@@ -166,7 +167,7 @@ async def update_file(url_proxy: str="",
 
 
         #shutil.rmtree('..\Honkai-Star-Rail-beta-2.7')
-        #await remove_file(unzip_path, keep_folder, keep_file)
+        await remove_file(unzip_path, keep_folder, keep_file)
         await move_file(os.path.join(tmp_dir, zip_path), unzip_path, [], keep_file)
 
         log.info(f'[资源文件更新]正在校验资源文件')

@@ -1,13 +1,3 @@
-'''
-Author: Night-stars-1 nujj1042633805@gmail.com
-Date: 2023-05-13 23:45:35
-LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-14 01:18:24
-FilePath: \Honkai-Star-Rail-beta-2.4h:\Download\Zip\Honkai-Star-Rail-beta-2.7\get_width.py
-Description: 
-
-Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
-'''
 import time
 
 
