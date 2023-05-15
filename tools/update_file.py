@@ -61,12 +61,14 @@ async def move_file(src_folder: Path, dst_folder,keep_folder: Optional[List[str]
 
 
     for item in get_file(src_folder,keep_folder,keep_file, True):
-        dst_path = item.replace(src_folder, "./")
-        # 创建目标文件夹（如果不存在）
-        if not os.path.exists(dst_path.rsplit("/",1)[0]) and dst_path.rsplit("/",1)[0] != '.':
-            os.makedirs(dst_path.rsplit("/",1)[0])
-        #dst_path = os.path.join(dst_folder, item)
-        shutil.copy(item, dst_path)
+        if keep_folder in item:
+            dst_path = item.replace(src_folder, "./")
+
+            # 创建目标文件夹（如果不存在）
+            if not os.path.exists(dst_path.rsplit("/",1)[0]) and dst_path.rsplit("/",1)[0] != '.':
+                os.makedirs(dst_path.rsplit("/",1)[0])
+            #dst_path = os.path.join(dst_folder, item)
+            shutil.copy(item, dst_path)
     # 遍历源文件夹中的所有文件和文件夹
     '''
     for item in os.listdir(src_folder):
@@ -166,7 +168,7 @@ async def update_file(url_proxy: str="",
 
 
         #shutil.rmtree('..\Honkai-Star-Rail-beta-2.7')
-        await remove_file(unzip_path, keep_folder, keep_file)
+        #await remove_file(unzip_path, keep_folder, keep_file)
         await move_file(os.path.join(tmp_dir, zip_path), unzip_path, [], keep_file)
 
         log.info(f'[资源文件更新]正在校验资源文件')
