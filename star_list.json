@@ -25,11 +25,11 @@
   },
   {
     "path": "requirements.txt",
-    "hash": "6efd0f13c07fb7b90ecb1a9f6f1fa0d4"
+    "hash": "0f62d0da080f0a3f92a4a41663efabe1"
   },
   {
     "path": "star_list.json",
-    "hash": "d1e09b9fe5ed3a4a2d21c18d63ba0bb0"
+    "hash": "8dfd0d52f289ca7a1df637e433480917"
   },
   {
     "path": "test.py",
@@ -37,7 +37,7 @@
   },
   {
     "path": "version.json",
-    "hash": "834f8fb42902356602b25905d37917ee"
+    "hash": "a7c0029a72c1ab2a91fca43b9f31296e"
   },
   {
     "path": "tools/calculated.py",
