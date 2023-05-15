@@ -5,7 +5,7 @@
   },
   {
     "path": "get_width.py",
-    "hash": "c653de12e2bf694dea8e8249651188ce"
+    "hash": "5c3ba1f9c631abd41644a4e77e7cb724"
   },
   {
     "path": "README_CHT.md",
@@ -17,11 +17,11 @@
   },
   {
     "path": "version.json",
-    "hash": "d70c96ee0654b6222e2a5c0a7c9dc1e6"
+    "hash": "e8603c8a0dc6c6acc123f23c20c02891"
   },
   {
     "path": "requirements.txt",
-    "hash": "55a72542fb52b371d9161c324cd394aa"
+    "hash": "bfd5d3da0073fb6e0c0c928472831bb1"
   },
   {
     "path": "test.py",
@@ -29,7 +29,7 @@
   },
   {
     "path": "star_list.json",
-    "hash": "e8761c4b18ed4630f3676d179dd4a202"
+    "hash": "79bcad2bc3eda14a7272cec34fcae032"
   },
   {
     "path": "LICENSE",
@@ -41,7 +41,7 @@
   },
   {
     "path": "tools/update_file.py",
-    "hash": "2536fe072dd91f8192cd4885ee833e56"
+    "hash": "4f6c64c6eb9c5c7287d02bcc1e980223"
   },
   {
     "path": "tools/config.py",
