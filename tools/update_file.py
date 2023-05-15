@@ -35,6 +35,7 @@ async def verify_file_hash(json_path: Path, keep_file: Optional[List[str]] = [])
         if not os.path.exists(file_path):
             return False, file_path
         if os.path.isfile(file_path) and str(file_path) not in keep_file:
+            log.debug(hashlib.md5(file_path.read_bytes()).hexdigest())
             if hashlib.md5(file_path.read_bytes()).hexdigest() != data['hash']:
                 return False, file_path
     return True, None
