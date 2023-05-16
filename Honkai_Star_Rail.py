@@ -5,7 +5,7 @@ try:
     import time
     import ctypes
     import pyuac
-    from pick import pick
+    import questionary
 
     from get_width import get_width
     from tools.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
@@ -38,16 +38,16 @@ def main_start():
     if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
         title = "请选择下载代理地址：（不使用代理选空白选项）"
         options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
-        option, index = pick(options, title, indicator='=>', default_index=0)
+        option = questionary.select(title, options).ask()
         modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
         title = "请选择代理地址：（不使用代理选空白选项）"
         options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', '']
-        option, index = pick(options, title, indicator='=>', default_index=0)
+        option = questionary.select(title, options).ask()
         modify_json_file(CONFIG_FILE_NAME, "rawgithub_proxy", option)
         title = "你游戏里开启了连续自动战斗吗？："
         options = ['没打开', '打开了', '这是什么']
-        option, index = pick(options, title, indicator='=>', default_index=0)
-        modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", index)
+        option = questionary.select(title, options).ask()
+        modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", options.index(option))
         modify_json_file(CONFIG_FILE_NAME, "start", True)
 
 def up_data():
