@@ -22,7 +22,7 @@ this_path = str(Path(__file__).parent)
 
 
 for file in star_path.rglob('*'):
-    if '.git' not in str(file) and '__' not in str(file) and os.path.isfile(file):
+    if '.git' not in str(file) and '__' not in str(file) and 'version.json' not in str(file) and 'star_list.json' not in str(file) and os.path.isfile(file):
         star_list.append({
             'path': str(file).replace(this_path, '').replace('\\', '/').lstrip('/'),
             'hash': hashlib.md5(file.read_bytes()).hexdigest()
