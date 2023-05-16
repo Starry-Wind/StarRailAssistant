@@ -16,10 +16,6 @@
     "hash": "a3113833169f0c95e5fb33d498bf5f53"
   },
   {
-    "path": "version.json",
-    "hash": "5cd11b3d56f50ef7fcf2175366e24e83"
-  },
-  {
     "path": "requirements.txt",
     "hash": "7502806ac3ae9c6af4e202a2f9e976a2"
   },
@@ -28,16 +24,12 @@
     "hash": "c4b536ba0b12ee44b9c3af22a68aa9b8"
   },
   {
-    "path": "star_list.json",
-    "hash": "2a051be0d40204fd95a8401209791d7a"
-  },
-  {
     "path": "LICENSE",
     "hash": "8ceeca78b817cc0e6ae98824381ea098"
   },
   {
     "path": "map_res_list.py",
-    "hash": "029f01a133a85cab43e037d7bc96c93e"
+    "hash": "323c0e575a81613aae07a454bc8d4cb0"
   },
   {
     "path": "tools/update_file.py",
