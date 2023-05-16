@@ -49,7 +49,7 @@
   },
   {
     "path": "tools/calculated.py",
-    "hash": "ed24c08523be3401f4878711d00cd1dd"
+    "hash": "c7e23d981896eb336aadbb6982771057"
   },
   {
     "path": "tools/get_angle.py",
@@ -61,7 +61,7 @@
   },
   {
     "path": "tools/switch_window.py",
-    "hash": "00bac14bb2a2e5b2f7dc99c497896f3f"
+    "hash": "de228971b7a7a89267bf3e7efa77db5d"
   },
   {
     "path": "tools/map.py",
