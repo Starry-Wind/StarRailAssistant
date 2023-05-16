@@ -57,7 +57,8 @@ class calculated:
         time.sleep(0.5)
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
 
-    def scan_screenshot(self, prepared) -> dict:
+    @staticmethod
+    def scan_screenshot(prepared) -> dict:
         """
         说明：
             比对图片
@@ -79,7 +80,8 @@ class calculated:
             "max_loc": (max_loc[0] + left, max_loc[1] + top),
         }
 
-    def calculated(self, result, shape):
+    @staticmethod
+    def calculated(result, shape):
         mat_top, mat_left = result["max_loc"]
         prepared_height, prepared_width, prepared_channels = shape
 
