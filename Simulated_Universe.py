@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+# Created by Xe-No at 2023/5/16
+# 模拟宇宙自动脚本试作，基于群文件demo修改而成，感谢前人贡献
+
 from tools.calculated import *
 from tools.switch_window import *
 from tools.route_helper import *

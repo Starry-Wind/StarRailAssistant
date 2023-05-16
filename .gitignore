@@ -111,6 +111,6 @@ venv.bak/
 # custom 
 logs/
 map/
-temp/
+# temp/
 tmp/
 config.json
