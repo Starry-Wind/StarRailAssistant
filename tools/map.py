@@ -54,7 +54,10 @@ class map:
                     else:
                         time.sleep(value)
                         self.calculated.click_target(key, 0.98)
-                time.sleep(5)
+                time.sleep(3)
+                while self.calculated.is_blackscreen():
+                    time.sleep(1)
+                
                 self.calculated.auto_map(map, False)
         else:
             log.info('错误编号')
