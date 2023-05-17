@@ -23,10 +23,13 @@ import keyboard
 # print('觉得拼音麻烦可以在 temp\\Simulated_Universe\\role 目录下自行修改对应角色头像文件名')
 # 有些buff的图没截取，可以手动截 buff_1.jpg
 
+# 世界序号
 World_num = '6'
+# 世界难度
 difficulty = 1
+# 命途序号
 buff_num = '5'
-
+# 阵容，填角色对应头像文件名
 role_list = ['xier', 'natasha', 'jiepade', 'tingyun']
 
 
@@ -644,6 +647,7 @@ class SimulatedUniverse:
 		wait(5)
 
 if __name__ == '__main__':
+	
 	if 0:
 		wait(0.5)
 		switch_window()
@@ -671,6 +675,7 @@ if __name__ == '__main__':
 
 
 	# start_index = 3
+	print('阵容难度需要在 Simulated_Universe.py 中手动调整，目前有些判定只对第六宇宙生效')
 	start_index = int(input('请输入当前关，不在模拟宇宙里填0：'))
 	
 	wait(0.5)
