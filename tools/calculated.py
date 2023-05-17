@@ -65,7 +65,7 @@ class calculated:
         temp = ImageGrab.grab((left, top, right, bottom))
         screenshot = np.array(temp)
         screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
-        return screenshot
+        return (screenshot, left, top, right, bottom)
 
     def scan_screenshot(self, prepared) -> dict:
         """
@@ -74,7 +74,7 @@ class calculated:
         参数：
             :param prepared: 比对图片地址
         """
-        screenshot = self.take_screenshot()
+        screenshot, left, top, right, bottom = self.take_screenshot()
         result = cv.matchTemplate(screenshot, prepared, cv.TM_CCORR_NORMED)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
         return {
@@ -210,7 +210,7 @@ class calculated:
 
     def is_blackscreen(self, threshold = 30):
         # 判断是否为黑屏，避免光标、加载画面或其他因素影响，不设为0，threshold范围0-255
-        screenshot = cv.cvtColor(self.take_screenshot(), cv.COLOR_BGR2GRAY)
+        screenshot = cv.cvtColor(self.take_screenshot()[0], cv.COLOR_BGR2GRAY)
         return cv.mean(screenshot)[0] < threshold
 
 

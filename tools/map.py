@@ -55,8 +55,11 @@ class map:
                         time.sleep(value)
                         self.calculated.click_target(key, 0.98)
                 time.sleep(3)
+                count = 0
                 while self.calculated.is_blackscreen():
+                    count += 1
                     time.sleep(1)
+                log.info(f'地图加载完毕，加载时间为 {count} 秒')
                 
                 self.calculated.auto_map(map, False)
         else:
