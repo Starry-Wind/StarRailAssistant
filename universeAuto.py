@@ -2,7 +2,7 @@ import pyautogui
 import win32api
 import time
 import win32con
-
+# from switch_window import switch_window
 
 class Pathfinder:
     def guide(self, mapName):
@@ -127,6 +127,13 @@ class Pathfinder:
         self.runningFron(2.4)
         self.click()
 
+    def universe_F1(self):
+        self.runningFron(2)
+        self.click()
+
+
+
+
     def runningFron(self, t):
         pyautogui.keyDown("w")
         pyautogui.keyDown("shift")
@@ -143,3 +150,9 @@ class Pathfinder:
         x, y = win32api.GetCursorPos()
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
+
+# if __name__ == '__main__':
+#     switch_window()
+#     pf= Pathfinder()
+#     time.sleep(0.5)    
+#     pf.universe_F1(self)

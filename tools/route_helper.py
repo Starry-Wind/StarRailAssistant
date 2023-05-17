@@ -107,13 +107,15 @@ def move_to_atlas(atlas_path,  post_action = 'F'):
 	theta = np.arctan2(ry,rx)
 	angle = np.rad2deg(theta) 
 
-	turn_to_precise(angle)
+	turn_to(angle)
 	move( distance/speed)        
 
 	if post_action == 'F':
 		pyautogui.press('F')
 	if post_action == 'A':
 		pyautogui.click(600, 600)
+
+	return True
 
 def solve_route(route):
 	# 依照路线行动，路线为[x,y, point_type ]的数组

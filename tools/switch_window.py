@@ -14,5 +14,3 @@ def switch_window(title = '崩坏：星穹铁道'):
 	else:
 		print(f'没找到窗口{title}')
 
-if __name__ == '__main__':
-	switch_window()
