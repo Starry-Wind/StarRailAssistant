@@ -50,6 +50,7 @@ def main_start():
         modify_json_file(CONFIG_FILE_NAME, "start", True)
 
 def up_data():
+    main_start()    # 无config直接更新时初始化config文件
     if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
         ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
         if "rawgithub_proxy" not in read_json_file(CONFIG_FILE_NAME, False):
