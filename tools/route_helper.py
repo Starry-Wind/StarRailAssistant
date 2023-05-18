@@ -12,13 +12,18 @@ import cv2
 # 速度，正常情况下，跑动速度为25小地图像素/秒（停稳后），？大地图像素/秒
 
 # ================基础操作
-def turn_by(angle):
+def turn_by(angle, speed_factor=1.0):
 	print(f'转{angle}度')
 
-	x = (angle / 90.0) * 1500.0
-	win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, int(x), 0, 0, 0)
-	time.sleep(0.5)
-	
+	i = int(5140*angle/360)
+	if i >0: f = 1
+	else: f = -1
+	i = abs(i)
+	for _ in range(i):
+		win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, f, 0, 0, 0)
+		time.sleep(0.001/speed_factor)
+
+
 
 def move(t, run=True):
 	print(f'前进{t}秒')

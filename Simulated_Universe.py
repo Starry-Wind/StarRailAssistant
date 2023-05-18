@@ -6,6 +6,7 @@
 from tools.calculated import *
 from tools.switch_window import *
 from tools.route_helper import *
+from cv_tools import *
 import os
 import cv2 as cv
 import numpy as np
@@ -13,7 +14,10 @@ import pyautogui
 import time
 import win32api
 import win32con
+import questionary
 from universeAuto import Pathfinder
+
+# from pathfinder import PathfinderV1
 import keyboard
 
 # World_num = input('请输入数字!!!\n第()世界:')
@@ -51,7 +55,7 @@ def wait(t=1.0):
 	time.sleep(t)
 
 class SimulatedUniverse:
-	def __init__(self, level_index=0):
+	def __init__(self, level_index=0, mode=1):
 		self.calculated = calculated()
 		self.win32api = win32api
 		self.win32con = win32con
@@ -61,7 +65,8 @@ class SimulatedUniverse:
 		self.select = [35, 21, 120, 80]
 		self.battle = [1700, 1030, 200, 50]
 		self.event_rect = [45, 15, 45+140, 15+60]
-		self.level_rect = [56, 17, 56+110, 17+24]
+		# self.level_rect = [56, 17, 56+110, 17+24]
+		self.level_rect = [120, 15, 40, 25]
 		self.scene_rect = [1758, 1033, 115, 39]
 		self.object = [1550, 40, 150, 45]
 		# 1长战 2？？ 3？？ 4精英 5休整 
@@ -73,6 +78,8 @@ class SimulatedUniverse:
 		# self.event_levels= [11]
 		self.pf = Pathfinder()
 		self.level_index = level_index
+		self.mode = mode
+		self.prefix = './temp/Simulated_Universe/'
 
 
 	def start_init(self):
@@ -81,10 +88,10 @@ class SimulatedUniverse:
 		wait(1)
 
 		# self.calculated.click_target(
-		#     'temp\\Simulated_Universe\\Interastral_Guide.jpg', 0.98)
+		#     f'{self.prefix}Interastral_Guide.jpg', 0.98)
 
 		self.calculated.click_target(
-			'temp\\Simulated_Universe\\transfer.jpg', 0.98)
+			f'{self.prefix}transfer.jpg', 0.98)
 
 		# 初始化模拟宇宙界面
 		wait(1)
@@ -102,51 +109,51 @@ class SimulatedUniverse:
 
 	def start(self):
 		self.calculated.click_target(
-			f'temp\\Simulated_Universe\\World_{World_num}.jpg', 0.98)
+			f'{self.prefix}World_{World_num}.jpg', 0.98)
 		
 		wait(0.4)
 		# 选择难度
 		pyautogui.click(x=130, y=55 + 110* difficulty)
 		wait(1)
 		self.calculated.click_target(
-			'temp\\Simulated_Universe\\start_1.jpg', 0.98)
+			f'{self.prefix}start_1.jpg', 0.98)
 
 		wait(2)
 		for role in role_list:
 			self.calculated.click_target(
-				f'temp\\Simulated_Universe\\role\\{role}.jpg', 0.95)  # 选择角色
-			wait(1)
+				f'{self.prefix}role\\{role}.jpg', 0.95)  # 选择角色
+			wait(0.1)
 
 		self.calculated.click_target(
-			'temp\\Simulated_Universe\\start_2.jpg', 0.98)
+			f'{self.prefix}start_2.jpg', 0.98)
 
 		wait(1)
-		target = cv.imread('temp\\Simulated_Universe\\tips.jpg')  # 解决角色等级\数量不足弹窗
+		target = cv.imread(f'{self.prefix}tips.jpg')  # 解决角色等级\数量不足弹窗
 		result = self.calculated.scan_screenshot(target)
 		if result['max_val'] > 0.95:
 			self.calculated.click_target(
-				'temp\\Simulated_Universe\\yes.jpg', 0.98)
+				f'{self.prefix}yes.jpg', 0.98)
 
 		wait(2)
 		self.calculated.click_target(
-			f'temp\\Simulated_Universe\\path\\path_{buff_num}.jpg', 0.90)  # 自选命途回响
+			f'{self.prefix}path\\path_{buff_num}.jpg', 0.90)  # 自选命途回响
 		wait(1)
 		self.calculated.click_target(
-			'temp\\Simulated_Universe\\choose_2.jpg', 0.95)
+			f'{self.prefix}choose_2.jpg', 0.95)
 
 		wait(2)
-		target = cv.imread('temp\\Simulated_Universe\\choose_3.jpg')
+		target = cv.imread(f'{self.prefix}choose_3.jpg')
 		result = self.calculated.scan_screenshot(target)
 		if result['max_val'] > 0.9:
 			self.calculated.click_target(
-				'temp\\Simulated_Universe\\choose_3.jpg', 0.98)
+				f'{self.prefix}choose_3.jpg', 0.98)
 			wait(1)
 
-			target = cv.imread('temp\\Simulated_Universe\\choose_4.jpg')
+			target = cv.imread(f'{self.prefix}choose_4.jpg')
 			result = self.calculated.scan_screenshot(target)
 			if result['max_val'] > 0.9:
 				self.calculated.click_target(
-					'temp\\Simulated_Universe\\choose_4.jpg', 0.98)
+					f'{self.prefix}choose_4.jpg', 0.98)
 			print("进入地图")
 		wait(5)
 
@@ -230,7 +237,7 @@ class SimulatedUniverse:
 		return '未知'
 
 	def state_handler(self, init_state=''):
-		print(f'状态处理器已经启动，目前状态为：【{init_state}】')
+		print(f'状态处理器已经启动，初始状态为：【{init_state}】')
 		unknown = 0
 		max = 60
 		if init_state == '':
@@ -244,12 +251,12 @@ class SimulatedUniverse:
 			print(f'目前状态{state}')
 			if state == '祝福':
 				# 丢弃祝福
-				if self.verify('temp\\Simulated_Universe\\wish_drop.jpg', [830,98,262,34], 0.9):
+				if self.verify(f'{self.prefix}wish_drop.jpg', [830,98,262,34], 0.9):
 					print('需要丢弃祝福')
 					self.click(806, 473) #选中间
-					self.calculated.click_target('temp\\Simulated_Universe\\drop.jpg', 0.9)
+					self.calculated.click_target(f'{self.prefix}drop.jpg', 0.9)
 					wait()
-					self.calculated.click_target('temp\\Simulated_Universe\\claim_reward_confirm.jpg', 0.9)
+					self.calculated.click_target(f'{self.prefix}claim_reward_confirm.jpg', 0.9)
 					return
 
 
@@ -274,7 +281,7 @@ class SimulatedUniverse:
 				
 				
 
-				# self.calculated.click_target('temp\\Simulated_Universe\\object_confirm.jpg', 0.70, True)
+				# self.calculated.click_target(f'{self.prefix}object_confirm.jpg', 0.70, True)
 			elif state == '事件':
 				self.handle_event()
 				return '事件完成'
@@ -285,26 +292,31 @@ class SimulatedUniverse:
 					return 
 
 				print('完成本关任务，回到场景，寻找传送门')
-				if move_to_atlas('temp\\Simulated_Universe\\atlas_portal.jpg'):
-					print('正在传送')
-					if self.level_type in  ['精英', '首领']:
+				for _ in range(3):
+					if move_to_atlas(f'{self.prefix}atlas_portal.jpg'):
+						print('正在传送')
+						if self.level_type in  ['精英', '首领']:
+							wait(3)
+							self.calculated.click_target(f'{self.prefix}claim_reward_confirm.jpg', 0.90)
+						return
+					else:
+						pyautogui.keyDown('s')
+						wait(1)
+						pyautogui.keyUp('s')
 						wait(3)
-						self.calculated.click_target('temp\\Simulated_Universe\\claim_reward_confirm.jpg', 0.90)
-					return
-					# if self.level_type == '首领':
 
-				else:
-					print('没找打传送门，暂时挂起，F8继续')
-					self.hang()
-					return
+				
+				print('没找到传送门，暂时挂起，F8继续')
+				self.hang()
+				return
 
 			elif (state == '未知') :
 				unknown += 1
 				if unknown > 10:
 					print('尝试一些少见的情况')
-					self.find_and_click('temp\\Simulated_Universe\\object_confirm.jpg', 0.70)
-					self.find_and_click('temp\\Simulated_Universe\\confirm2.jpg', 0.70)
-					self.find_and_click('temp\\Simulated_Universe\\confirm3.jpg', 0.70)
+					self.find_and_click(f'{self.prefix}object_confirm.jpg', 0.70)
+					self.find_and_click(f'{self.prefix}confirm2.jpg', 0.70)
+					self.find_and_click(f'{self.prefix}confirm3.jpg', 0.70)
 				if unknown > 20:
 					state = '失败'
 
@@ -326,32 +338,28 @@ class SimulatedUniverse:
 			self.start()
 			self.state_handler('start')
 		elif self.level_type in ['长战','战斗','精英','首领']:
-			# move_to_atlas('temp\\Simulated_Universe\\atlas_elite.jpg', 'A')
+			# move_to_atlas(f'{self.prefix}atlas_elite.jpg', 'A')
 			if self.level_type == '长战':
-				self.handle_long_level()
+				if self.mode == 1:
+					print('长战，直接挂起，进入与看门敌人的战斗后按F8')
+					self.hang()
+				if self.mode == 2:
+					self.handle_long_level()
+
 			else:
 				move(2) 
 				pyautogui.click(600,600)   
 			wait(2)
 			if self.sceneVerify(90):
-				print('攻击失败，尝试小地图攻击')
-				if move_to_atlas('temp\\Simulated_Universe\\atlas_elite.jpg', 'F'):
-					wait(2)
-					if not self.sceneVerify(90):
-						pass
-					else:
-						self.state_handler('失败')
-				else:
-					self.state_handler('失败')
-
-
+				print('尝试攻击后还在主场景中，进入战斗后按F8')
+				self.hang()
 				
 			print('已经发动攻击，10秒后将控制权移交给状态处理器')
 			wait(8)
 			self.state_handler('战斗')
 
 		elif self.level_type in ['事件', '遭遇', '交易']:
-			move_to_atlas('temp\\Simulated_Universe\\atlas_event.jpg')
+			move_to_atlas(f'{self.prefix}atlas_event.jpg')
 			self.state_handler()
 
 		elif self.level_type == '休整':
@@ -376,10 +384,10 @@ class SimulatedUniverse:
 		# 事件，暂时暴力点几下
 		for i in range(30):
 			print(f'事件点击循环{i}')
-			self.find_and_click('temp\\Simulated_Universe\\event_selector.jpg', 0.90)
-			self.find_and_click('temp\\Simulated_Universe\\event_selector2.jpg', 0.90)
-			self.find_and_click('temp\\Simulated_Universe\\event_clicker.jpg', 0.90)
-			self.find_and_click('temp\\Simulated_Universe\\event_confirm.jpg', 0.90)     
+			self.find_and_click(f'{self.prefix}event_selector.jpg', 0.90)
+			self.find_and_click(f'{self.prefix}event_selector2.jpg', 0.90)
+			self.find_and_click(f'{self.prefix}event_clicker.jpg', 0.90)
+			self.find_and_click(f'{self.prefix}event_confirm.jpg', 0.90)     
 			if not self.eventVerify(90):
 				print('完成事件')
 				return 0
@@ -399,7 +407,7 @@ class SimulatedUniverse:
 		return 0
 		   
 	def eventVerify(self, threshold):
-		path = 'temp\\Simulated_Universe\\eventVerify.jpg'
+		path = f'{self.prefix}eventVerify.jpg'
 		image_s = pyautogui.screenshot(region=(self.event_rect[0], self.event_rect[1], self.event_rect[2], self.event_rect[3])) #
 		# image_s = pyautogui.screenshot(region=(0, 0, 300, 300)) #
 		image = cv.imread(path)
@@ -409,7 +417,7 @@ class SimulatedUniverse:
 		return 0
 
 	def sceneVerify(self, threshold):
-		path = 'temp\\Simulated_Universe\\sceneVerify.jpg'
+		path = f'{self.prefix}sceneVerify.jpg'
 		image_s = pyautogui.screenshot(region=(self.scene_rect[0], self.scene_rect[1], self.scene_rect[2], self.scene_rect[3]))
 		image = cv.imread(path)
 		similarity = self.pic_similarity(image_s, image, -1)
@@ -419,7 +427,7 @@ class SimulatedUniverse:
 		return 0
 
 	def battleVerify(self, threshold):
-		path = 'temp\\Simulated_Universe\\battleVerify.jpg'
+		path = f'{self.prefix}battleVerify.jpg'
 		image_s = pyautogui.screenshot(region=(self.battle[0], self.battle[1], self.battle[2], self.battle[3]))
 		image = cv.imread(path)
 		similarity = self.pic_similarity(image_s, image, -1)
@@ -428,7 +436,7 @@ class SimulatedUniverse:
 		return 0
 
 	def objVerify(self, threshold):
-		path = 'temp\\Simulated_Universe\\objVerify.jpg'
+		path = f'{self.prefix}objVerify.jpg'
 		image_s = pyautogui.screenshot(region=(self.object[0], self.object[1], self.object[2], self.object[3]))
 		image = cv.imread(path)
 		similarity = self.pic_similarity(image_s, image, -1)
@@ -438,7 +446,7 @@ class SimulatedUniverse:
 		return 0
 
 	def selectVerify(self, threshold):
-		path = 'temp\\Simulated_Universe\\selectVerify.jpg'
+		path = f'{self.prefix}selectVerify.jpg'
 		image_s = pyautogui.screenshot(region=(self.select[0], self.select[1], self.select[2], self.select[3]))
 		image = cv.imread(path)
 		similarity = self.pic_similarity(image_s, image, -1)
@@ -449,7 +457,7 @@ class SimulatedUniverse:
 
 	def wishVerify(self, threshold) -> int:
 		image_s = pyautogui.screenshot(region=(self.wishV1[0], self.wishV1[1], self.wishV1[2], self.wishV1[3]))
-		path_wish = 'temp\\Simulated_Universe\\wishVerify1.jpg'
+		path_wish = f'{self.prefix}wishVerify1.jpg'
 		image = cv.imread(path_wish)
 		similarity = self.pic_similarity(image_s, image, -1)
 		if similarity > threshold:
@@ -462,7 +470,7 @@ class SimulatedUniverse:
 		# rect = [x,y,x+w,y+h]
 		rect = [x,y,w,h]
 		image_s = pyautogui.screenshot(region=(rect[0], rect[1], rect[2], rect[3]))
-		path = f'temp\\Simulated_Universe\\level\\level_{level_type}.jpg'
+		path = f'{self.prefix}level\\level_{level_type}.jpg'
 		image = cv.imread(path)
 		similarity = self.pic_similarity(image_s, image, -1)
 		print(f'{level_type} : {similarity}')
@@ -471,12 +479,20 @@ class SimulatedUniverse:
 		return 0
 
 	def is_level2(self, level_type, threshold=90):
-		[x,y,w,h] = [60, 15,120,25]
+		[x,y,w,h] = [120, 15,40,25]
 		# rect = [x,y,x+w,y+h]
-		image_s = pyautogui.screenshot(region=[x,y,w,h] )
-		path = f'temp\\Simulated_Universe\\level\\{level_type}.jpg'
-		image = cv.imread(path)
-		similarity = self.pic_similarity(image_s, image, -1)
+		img = take_screenshot(rect=[x,y,w,h] )
+
+		img_hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
+		img_s = get_mask(img_hsv,np.array([[0,0,100],[255,60,255]]))
+
+		path = f'{self.prefix}level\\{level_type}.jpg'
+		img2 = cv.imread(path)
+		img2_hsv = cv.cvtColor(img2, cv.COLOR_BGR2HSV)
+		img2_s = get_mask(img2_hsv,np.array([[0,0,100],[255,60,255]]))
+
+
+		similarity = self.pic_similarity(img2_s, img_s, -1)
 		print(f'{level_type} : {similarity}')
 		if similarity > threshold:
 			return 1
@@ -493,7 +509,7 @@ class SimulatedUniverse:
 			
 			if self.is_level2('battle', 80):  return '战斗'  
 			elif self.is_level2('event', 80):  return '事件'
-			elif self.is_level2('elite', 95):  return '精英'
+			elif self.is_level2('elite', 80):  return '精英'
 			elif self.is_level2('encounter', 80):  return '遭遇'
 			elif self.is_level2('relax', 80):  return '休整'   
 			elif self.is_level2('trade', 80): return '交易'
@@ -502,13 +518,13 @@ class SimulatedUniverse:
 			print('左上ui未识别，按m仔细识别')
 			pyautogui.press('m')
 			wait(3)
-			if self.is_level('battle', 90):  ret = '战斗'  
-			elif self.is_level('event', 90):  ret = '事件'
-			elif self.is_level('elite', 90):  ret = '精英'
-			elif self.is_level('encounter', 90):  ret = '遭遇'
-			elif self.is_level('relax', 90):  ret = '休整'   
-			elif self.is_level('trade', 90): ret = '交易'
-			elif self.is_level('boss', 90):  ret = '首领'			
+			if self.is_level('battle', 80):  ret = '战斗'  
+			elif self.is_level('event', 80):  ret = '事件'
+			elif self.is_level('elite', 80):  ret = '精英'
+			elif self.is_level('encounter', 80):  ret = '遭遇'
+			elif self.is_level('relax', 80):  ret = '休整'   
+			elif self.is_level('trade', 80): ret = '交易'
+			elif self.is_level('boss', 80):  ret = '首领'			
 			else: ret = '未识别'
 			pyautogui.press('esc')
 			wait(3)
@@ -570,10 +586,10 @@ class SimulatedUniverse:
 		return 0
 
 	def goto_portal(self):
-		ret = move_to_atlas('temp\\Simulated_Universe\\atlas_portal.jpg')
+		ret = move_to_atlas(f'{self.prefix}atlas_portal.jpg')
 		if level_index in self.elite_levels:
 			wait(2)
-			self.calculated.click_target('temp\\Simulated_Universe\\claim_reward_confirm.jpg', 0.90)    
+			self.calculated.click_target(f'{self.prefix}claim_reward_confirm.jpg', 0.90)    
 
 		print(ret)
 		if not ret:
@@ -615,13 +631,13 @@ class SimulatedUniverse:
 			wait(2)
 			# 选择最好的祝福，
 			
-			if self.find_and_click('temp\\Simulated_Universe\\new_buff.jpg', 0.96): 
+			if self.find_and_click(f'{self.prefix}new_buff.jpg', 0.96): 
 				print('选择新祝福')
 				break
-			elif self.find_and_click(f'temp\\Simulated_Universe\\buff_{buff_num}.jpg', 0.96): 
+			elif self.find_and_click(f'{self.prefix}buff_{buff_num}.jpg', 0.96): 
 				print(f'选择命途{buff_num}祝福')
 				break
-			elif self.find_and_click('temp\\Simulated_Universe\\refresh_buff.jpg', 0.96):
+			elif self.find_and_click(f'{self.prefix}refresh_buff.jpg', 0.96):
 				print('刷新一次')
 			else:
 				print('不能刷新了，选个中间的')
@@ -629,7 +645,7 @@ class SimulatedUniverse:
 				break
 		wait(0.3)
 		# 确认
-		self.calculated.click_target('temp\\Simulated_Universe\\choose_4.jpg', 0.90)
+		self.calculated.click_target(f'{self.prefix}choose_4.jpg', 0.90)
 
 	def choose_object(self):
 		# 奇物
@@ -643,37 +659,41 @@ class SimulatedUniverse:
 
 	def end(self):
 		print('结算完成，确认模拟完成')
-		self.calculated.click_target('temp\\Simulated_Universe\\simulation_end.jpg', 0.90)
+		self.calculated.click_target(f'{self.prefix}simulation_end.jpg', 0.90)
 		wait(5)
 
-if __name__ == '__main__':
-	
-	if 0:
-		wait(0.5)
-		switch_window()
-		wait(0.5)
+def single_run():
+	wait(0.5)
+	switch_window()
+	wait(0.5)
+	while 1:
 		su = SimulatedUniverse()
-		# su.verify('temp\\Simulated_Universe\\wish_drop.jpg', [830,98,262,34], 0.9)
-		# print(su.sceneVerify(70))
-		# sys.exit()
-		# su.handle_level()
-		# print(su.check_state())
-		# su.handle_battle()
-		# su.state_handler('')
-		
-		# print(su.is_level2('relax'))
-		# su.choose_object()
-		# su.choose_buff()
-		# su.handle_long_level()
+		su.start_init()
+		su.start()
+		su.state_handler('start')
+		su.handle_long_level()
+		wait(4)
+		su.state_handler('战斗')
+		su.quit()
+		wait(1)
 
-		# target = cv.imread(f'temp\\Simulated_Universe\\buff_5.jpg')
-		# result = su.calculated.scan_screenshot(target)
-		# print(result)
-		# point = result['min_loc']
-		# su.click(point[0],point[1])
-		sys.exit()
+def semi_run():
+	# start_index = 3
+	print('阵容难度需要在 Simulated_Universe.py 中手动调整，目前有些判定只对第六宇宙生效')
+	start_index = int(input('请输入当前关，不在模拟宇宙里填0：'))
+	
+	wait(0.5)
+	switch_window()
+	wait(0.5)
 
+	su = SimulatedUniverse(start_index)
+	for i in range(start_index,14):
 
+		su.handle_level()
+		wait(0.3)
+	su.end()	
+
+def auto_run():
 	# start_index = 3
 	print('阵容难度需要在 Simulated_Universe.py 中手动调整，目前有些判定只对第六宇宙生效')
 	start_index = int(input('请输入当前关，不在模拟宇宙里填0：'))
@@ -687,3 +707,51 @@ if __name__ == '__main__':
 		su.handle_level()
 		wait(0.3)
 	su.end()
+
+if __name__ == '__main__':
+	# 9 选项设定todo
+	if 0:
+
+		su = SimulatedUniverse(-1)
+		wait(0.5)
+		switch_window()
+		wait(0.5)		
+		move_to_atlas(f'{su.prefix}atlas_portal.jpg')
+		# su.verify(f'{self.prefix}wish_drop.jpg', [830,98,262,34], 0.9)
+		# print(su.battleVerify(70))
+		# sys.exit()
+		# su.handle_level()
+		print(su.check_level())
+		# print(su.check_state())
+		# su.handle_battle()
+		# su.state_handler('')
+		
+		# print(su.is_level2('relax'))
+		# su.choose_object()
+		# su.choose_buff()
+		# su.handle_long_level()
+
+		# target = cv.imread(f'{self.prefix}buff_5.jpg')
+		# result = su.calculated.scan_screenshot(target)
+		# print(result)
+		# point = result['min_loc']
+		# su.click(point[0],point[1])
+		sys.exit()
+
+	title = '请选择模式 : '
+	options = [ 
+		'半自动模式（推荐使用，接管除了第一关和第六关跑图和传送之外的一切，根据提示按F8继续）',
+		'自动模式（暂时禁用，软体不稳定，根据提示按F8继续）',
+		'单图模式（暂时禁用，打完第一图退出，然后循环）'
+	]
+	option = questionary.select(title, options).ask()
+	index = options.index(option)
+
+
+	if index == 0:
+		semi_run()
+	if index == 1:
+		auto_run()
+	if index == 2:
+		single_run()
+
