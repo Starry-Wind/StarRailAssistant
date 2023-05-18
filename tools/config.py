@@ -4,13 +4,14 @@ import hashlib
 import asyncio
 
 try:
-    from .requests import *
-    from .log import log
+    from tools.requests import *
+    from tools.log import log
 except:
     from requests import *
     from log import log
 
 CONFIG_FILE_NAME = "config.json"
+
 
 def normalize_file_path(filename):
     # 尝试在当前目录下读取文件
@@ -42,13 +43,14 @@ def read_json_file(filename: str, path=False):
     if file_path:
         with open(file_path, "rb") as f:
             data = orjson.loads(f.read())
-            if path == True:
+            if path:
                 return data, file_path
             else:
                 return data
     else:
-        init_config_file(0,0)
+        init_config_file(0, 0)
         return read_json_file(filename, path)
+
 
 def modify_json_file(filename: str, key, value):
     """
@@ -88,10 +90,12 @@ def init_config_file(real_width, real_height):
         )
 
 
-def get_file(path, exclude, exclude_file = [], get_path = False):
+def get_file(path, exclude, exclude_file=None, get_path=False):
     """
     获取文件夹下的文件
     """
+    if exclude_file is None:
+        exclude_file = []
     file_list = []
     for root, dirs, files in os.walk(path):
         add = True
@@ -106,13 +110,14 @@ def get_file(path, exclude, exclude_file = [], get_path = False):
                         add = False
                 if add:
                     if get_path:
-                        path = root+"/"+file
-                        file_list.append(path.replace("//","/"))
+                        path = root + "/" + file
+                        file_list.append(path.replace("//", "/"))
                     else:
                         file_list.append(file)
     return file_list
 
-async def check_file(github_proxy, filename = 'map'):
+
+async def check_file(github_proxy, filename='map'):
     """
     说明：
         检测文件是否完整
