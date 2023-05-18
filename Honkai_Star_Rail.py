@@ -17,7 +17,6 @@ except:
 
 def main():
     main_start()
-    up_data()
     start = input('请输入起始地图（如果从头开始请输入0）：')
     if "-" in start and "_" in start or start == '0':
         log.info("脚本将自动切换至游戏窗口，请保持游戏窗口激活")
@@ -110,8 +109,14 @@ if __name__ == "__main__":
     try:
         if not pyuac.isUserAdmin():
             pyuac.runAsAdmin()
-        else:        
-            main()
+        else:
+            title = "请选择操作"
+            options = ['启动脚本', '检查更新']
+            option = questionary.select(title, options).ask()
+            if option == "启动脚本":
+                main()
+            elif option == "检查更新":
+                up_data()
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
         os.system("pip install -r requirements.txt")
