@@ -114,3 +114,4 @@ logs/
 # temp/
 tmp/
 config.json
+/temp/Simulated_Universe/map_result
