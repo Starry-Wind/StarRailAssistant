@@ -30,6 +30,6 @@ pynput
 
 aiohttp
 
-pick
+questionary
 
 pyuac
