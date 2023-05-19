@@ -1,6 +1,4 @@
-import time
-
-
+import win32api
 import win32con
 import win32gui
 import win32print
@@ -39,3 +37,24 @@ def get_width():
 
     modify_json_file(CONFIG_FILE_NAME, "real_width", real_width)
     modify_json_file(CONFIG_FILE_NAME, "real_height", real_height)
+
+
+def check_mult_screen():
+    """ 检查是否使用多块屏幕 """
+    sc_infos = win32api.EnumDisplayMonitors()
+    if len(sc_infos) > 1:
+        sc_list = []
+        for index, sc in enumerate(sc_infos):
+            info = win32api.GetMonitorInfo(sc_infos[index][0])
+            hdc = win32gui.CreateDC(info['Device'], info['Device'], None)
+            w = win32print.GetDeviceCaps(hdc, 118)
+            s = w / (sc[2][2] - sc[2][0])
+            sc_list.append(s)
+        # 检查缩放比例是否一致
+        is_ok = True
+        for i in sc_list:
+            if abs(i - sc_list[0]) >= 0.001:
+                is_ok = False
+                break
+        if not is_ok:
+            log.warning(f"您当前使用{len(sc_infos)}块屏幕，且缩放比例不一致，请确保游戏运行在主屏幕上")

@@ -1,13 +1,16 @@
-from tools.calculated import *
+import time
+
+import cv2 as cv
+import pyautogui
+
+from tools.calculated import Calculated
 from tools.config import get_file, read_json_file, CONFIG_FILE_NAME
 from tools.log import log, webhook_and_log
 
 
 class Map:
     def __init__(self):
-        self.calculated = calculated()
-        self.win32api = win32api
-        self.win32con = win32con
+        self.calculated = Calculated()
         self.open_map = read_json_file(CONFIG_FILE_NAME).get("open_map", "m")
         self.map_list = []
         self.map_list_map = {}
@@ -44,10 +47,10 @@ class Map:
     def auto_map(self, start):
         if f'map_{start}.json' in self.map_list:
             map_list = self.map_list[self.map_list.index(f'map_{start}.json'):len(self.map_list)]
-            for map in map_list:
+            for map_ in map_list:
                 # 选择地图
-                map = map.split('.')[0]
-                map_data = read_json_file(f"map/{map}.json")
+                map_ = map_.split('.')[0]
+                map_data = read_json_file(f"map/{map_}.json")
                 name = map_data['name']
                 author = map_data['author']
                 start_dict = map_data['start']
@@ -73,6 +76,6 @@ class Map:
                     time.sleep(1)
                 log.info(f'地图加载完毕，加载时间为 {count} 秒')
 
-                self.calculated.auto_map(map, False)
+                self.calculated.auto_map(map_, False)
         else:
             log.info(f'地图编号 {start} 不存在，请尝试检查更新')

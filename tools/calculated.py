@@ -1,9 +1,7 @@
 import time
-from pickle import FALSE
 
 import cv2 as cv
 import numpy as np
-import orjson
 import pyautogui
 import win32api
 import win32con
@@ -11,18 +9,17 @@ import win32gui
 from PIL import ImageGrab
 from pynput.keyboard import Controller as KeyboardController
 
-from .config import read_json_file, CONFIG_FILE_NAME
+from tools.config import read_json_file, CONFIG_FILE_NAME
+from tools.exceptions import Exception
+from tools.log import log
 
-from .exceptions import Exception
-from .log import log
 
-
-class calculated:
+class Calculated:
     def __init__(self):
         self.CONFIG = read_json_file(CONFIG_FILE_NAME)
         self.keyboard = KeyboardController()
 
-    def Click(self, points):
+    def click(self, points):
         """
         说明：
             点击坐标
@@ -33,11 +30,11 @@ class calculated:
         log.debug((x, y))
         win32api.SetCursorPos((x, y))
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
-        #pyautogui.click(x,y, clicks=5, interval=0.1)
+        # pyautogui.click(x,y, clicks=5, interval=0.1)
         time.sleep(0.5)
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
 
-    def Relative_click(self, points):
+    def relative_click(self, points):
         """
         说明：
             点击相对坐标
@@ -62,10 +59,10 @@ class calculated:
         # 返回RGB图像
         hwnd = win32gui.FindWindow("UnityWndClass", "崩坏：星穹铁道")
         left, top, right, bottom = win32gui.GetWindowRect(hwnd)
-        temp = ImageGrab.grab((left, top, right, bottom))
+        temp = ImageGrab.grab((left, top, right, bottom), all_screens=True)
         screenshot = np.array(temp)
         screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
-        return (screenshot, left, top, right, bottom)
+        return screenshot, left, top, right, bottom
 
     def scan_screenshot(self, prepared) -> dict:
         """
@@ -102,9 +99,9 @@ class calculated:
             result = self.scan_screenshot(target)
             if result["max_val"] > threshold:
                 points = self.calculated(result, target.shape)
-                self.Click(points)
+                self.click(points)
                 return
-            if flag == False:
+            if not flag:
                 return
 
     def fighting(self):
@@ -115,7 +112,7 @@ class calculated:
             result = self.scan_screenshot(target)
             if result["max_val"] > 0.98:
                 points = self.calculated(result, target.shape)
-                self.Click(points)
+                self.click(points)
                 break
             elif time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info("识别超时,此处可能无敌人")
@@ -128,7 +125,7 @@ class calculated:
                 result = self.scan_screenshot(target)
                 if result["max_val"] > 0.9:
                     points = self.calculated(result, target.shape)
-                    self.Click(points)
+                    self.click(points)
                     log.info("开启自动战斗")
                     break
                 elif time.time() - start_time > 15:
@@ -158,7 +155,7 @@ class calculated:
         # 开始寻路
         log.info("开始寻路")
         for map_index, map in enumerate(map_data["map"]):
-            log.info(f"执行{map_filename}文件:{map_index+1}/{len(map_data['map'])} {map}")
+            log.info(f"执行{map_filename}文件:{map_index + 1}/{len(map_data['map'])} {map}")
             key = list(map.keys())[0]
             value = map[key]
             if key in ["w", "s", "a", "d", "f"]:
@@ -168,28 +165,28 @@ class calculated:
                     pass
                 self.keyboard.release(key)
             elif key == "mouse_move":
-                self.Mouse_move(value)
+                self.mouse_move(value)
             elif key == "fighting":
                 if value == 1:  # 进战斗
                     self.fighting()
                 elif value == 2:  # 障碍物
-                    self.Click(win32api.GetCursorPos())
+                    self.click(win32api.GetCursorPos())
                     time.sleep(1)
                 else:
-                    raise Exception(f"map数据错误, fighting参数异常:{map_filename}", map)
+                    raise Exception((f"map数据错误, fighting参数异常:{map_filename}", map))
             elif key == "scroll":
                 self.scroll(value)
             else:
-                raise Exception(f"map数据错误,未匹配对应操作:{map_filename}", map)
+                raise Exception((f"map数据错误,未匹配对应操作:{map_filename}", map))
 
-    def Mouse_move(self, x):
+    def mouse_move(self, x):
         real_width = self.CONFIG["real_width"]
         # 该公式为不同缩放比之间的转化
         dx = int(x * 1295 / real_width)
-        i = int(dx/200)
-        last = dx - i*200
+        i = int(dx / 200)
+        last = dx - i * 200
         for ii in range(abs(i)):
-            if dx >0:
+            if dx > 0:
                 win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 200, 0)  # 进行视角移动
             else:
                 win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, -200, 0)  # 进行视角移动
@@ -197,7 +194,7 @@ class calculated:
         if last != 0:
             win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, last, 0)  # 进行视角移动
         time.sleep(0.5)
-       
+
     def scroll(self, clicks: float):
         """
         说明：
@@ -208,9 +205,7 @@ class calculated:
         pyautogui.scroll(clicks)
         time.sleep(0.5)
 
-    def is_blackscreen(self, threshold = 30):
+    def is_blackscreen(self, threshold=30):
         # 判断是否为黑屏，避免光标、加载画面或其他因素影响，不设为0，threshold范围0-255
         screenshot = cv.cvtColor(self.take_screenshot()[0], cv.COLOR_BGR2GRAY)
         return cv.mean(screenshot)[0] < threshold
-
-
