@@ -8,7 +8,7 @@ try:
     import pyuac
     import questionary
 
-    from get_width import get_width
+    from get_width import get_width, check_mult_screen
     from tools.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
     from tools.map import Map
     from tools.update_file import update_file_main
@@ -40,6 +40,7 @@ def main():
     start = choose_map(map_instance)
     if start:
         log.info("脚本将自动切换至游戏窗口，请保持游戏窗口激活")
+        check_mult_screen()
         switch_window()
         time.sleep(0.5)
         get_width()
