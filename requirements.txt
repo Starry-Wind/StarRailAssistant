@@ -33,5 +33,3 @@ aiohttp
 questionary
 
 pyuac
-
-keyboard
