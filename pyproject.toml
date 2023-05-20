@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "honkai-star-rail-1-1-7"
+version = "0.1.0"
+description = ""
+authors = ["Dylan <40823034+linty1997@users.noreply.github.com>"]
+readme = "README.md"
+packages = [{include = "honkai_star_rail_1"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+numpy = "^1.24.3"
+opencv-python = "^4.7.0.72"
+pyautogui = "^0.9.53"
+pygetwindow = "^0.0.9"
+pyperclip = "^1.8.2"
+pyrect = "^0.2.0"
+pyscreeze = "^0.1.28"
+pytweening = "^1.0.7"
+pywin32 = "^306"
+pillow = "^9.5.0"
+orjson = "^3.8.12"
+loguru = "^0.7.0"
+httpx = "^0.24.1"
+tqdm = "^4.65.0"
+pynput = "^1.7.6"
+aiohttp = "^3.8.4"
+questionary = "^1.10.0"
+pyuac = "^0.0.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
