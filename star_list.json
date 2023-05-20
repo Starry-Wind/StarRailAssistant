@@ -21,7 +21,7 @@
   },
   {
     "path": "requirements.txt",
-    "hash": "7502806ac3ae9c6af4e202a2f9e976a2"
+    "hash": "2743ec22fdade0ec263f16c82ad38868"
   },
   {
     "path": "pyproject.toml",
@@ -73,7 +73,7 @@
   },
   {
     "path": "tools/switch_window.py",
-    "hash": "b1c342a7151524bf55e734d711eef6ab"
+    "hash": "5c296ad2e8faef3694b1cb90fd52009c"
   },
   {
     "path": "tools/map.py",
