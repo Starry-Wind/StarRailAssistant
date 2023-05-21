@@ -5,6 +5,7 @@ on:
     branches: [ map ]
     paths:
       - 'map/**'
+      - 'temp/**'
 
   workflow_dispatch:
 
