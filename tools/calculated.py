@@ -106,14 +106,25 @@ class Calculated:
 
     def fighting(self):
         start_time = time.time()
-        target = cv.imread("./temp/attack.jpg")
+        attack = cv.imread("./temp/attack.jpg")
+        doubt = cv.imread("./temp/doubt.jpg")
+        warn = cv.imread("./temp/warn.jpg")
         while True:
             log.info("识别中")
-            result = self.scan_screenshot(target)
-            if result["max_val"] > 0.98:
-                points = self.calculated(result, target.shape)
+            attack_result = self.scan_screenshot(attack)
+            doubt_result = self.scan_screenshot(doubt)
+            warn_result = self.scan_screenshot(warn)
+            if attack_result["max_val"] > 0.98:
+                points = self.calculated(attack_result, attack.shape)
                 self.click(points)
                 break
+            elif doubt_result["max_val"] > 0.9 or warn_result["max_val"] > 0.95:
+                log.info("識別到疑問或警告，等待怪物開戰")
+                time.sleep(3)
+                target = cv.imread("./temp/finish_fighting.jpg")  # 識別是否已進入戰鬥，若已進入則跳出迴圈
+                result = self.scan_screenshot(target)
+                if result["max_val"] < 0.95:
+                    break
             elif time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info("识别超时,此处可能无敌人")
                 return
