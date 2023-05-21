@@ -1,0 +1,38 @@
+name: 更新依赖
+
+on:
+  push:
+    branches:
+      - 2.0
+    paths:
+      - '**'
+
+  workflow_dispatch:
+  
+
+jobs:
+  update:
+    name: Update Map
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@master
+
+      - name: Setup python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.10
+
+      - name: Update Requirements
+        run: |
+          pip install pipreqs
+          # 在仓库根目录下
+          pipreqs . --encoding=utf8 --force --pypi-server http://mirrors.aliyun.com/pypi/simple/
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9.1.3
+        with:
+          author_name: github-actions[bot]
+          author_email: github-actions[bot]@users.noreply.github.com
+          message: ':wrench: 自动更新资源列表'
+          add: |
+            'requirements.txt'
