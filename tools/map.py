@@ -68,7 +68,7 @@ class Map:
                         self.map_init()
                     else:
                         time.sleep(value)
-                        self.calculated.click_target(key, 0.98)
+                        self.calculated.click_target(key, 0.96)
                 time.sleep(3)
                 count = 0
                 while self.calculated.is_blackscreen():
