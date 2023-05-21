@@ -1,6 +1,7 @@
-from tools.calculated import *
-from tools.config import get_file, read_json_file, CONFIG_FILE_NAME
-from tools.log import log, webhook_and_log
+from .calculated import *
+from .config import get_file, read_json_file, CONFIG_FILE_NAME
+from .log import log
+from .requests import webhook_and_log
 
 
 class Map:
@@ -41,7 +42,7 @@ class Map:
         log.debug(self.map_list)
         log.debug(self.map_list_map)
 
-    def auto_map(self, start):
+    def auto_map(self, start,platform):
         if f'map_{start}.json' in self.map_list:
             map_list = self.map_list[self.map_list.index(f'map_{start}.json'):len(self.map_list)]
             for map in map_list:

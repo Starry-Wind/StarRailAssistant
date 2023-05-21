@@ -1,5 +1,6 @@
 import pyautogui
 from win32com import client
+
 def switch_window(title = '崩坏：星穹铁道'):
 
 	ws = pyautogui.getWindowsWithTitle(title)
