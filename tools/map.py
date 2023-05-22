@@ -30,7 +30,8 @@ class Map:
                 break
 
     def read_maps(self):
-        self.map_list = get_file('./map', ['old'])  # 从'./map'目录获取地图文件列表（排除'old'）
+        # 从'./map'目录获取地图文件列表（排除'old'）
+        self.map_list = get_file('./map', ['old'])
         self.map_list_map.clear()
         for map_ in self.map_list:
             map_data = read_json_file(f"map/{map_}")
@@ -46,7 +47,8 @@ class Map:
 
     def auto_map(self, start):
         if f'map_{start}.json' in self.map_list:
-            map_list = self.map_list[self.map_list.index(f'map_{start}.json'):len(self.map_list)]
+            map_list = self.map_list[self.map_list.index(
+                f'map_{start}.json'):len(self.map_list)]
             for map_ in map_list:
                 # 选择地图
                 map_ = map_.split('.')[0]
@@ -75,6 +77,7 @@ class Map:
                     count += 1
                     time.sleep(1)
                 log.info(f'地图加载完毕，加载时间为 {count} 秒')
+                time.sleep(2)  # 增加2秒等待防止人物未加载错轴
 
                 self.calculated.auto_map(map_, False)
         else:
