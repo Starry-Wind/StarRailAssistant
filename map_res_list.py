@@ -56,13 +56,11 @@ def up_data():
     '''
 
 def str_replace(find_str, replace_str):
-    f = open("requirements.txt", "r", encoding="utf-8")
-    content = f.read()
-    f.close()
-    content = content.replace(find_str, replace_str)
-    f_new = open("requirements.txt", "w", encoding="utf-8")
-    f_new.write(content)
-    f_new.close()
+    with open("requirements.txt", "r", encoding="utf-8") as f:
+        content = f.read()
+        content = content.replace(find_str, replace_str)
+        with open("requirements.txt", "w", encoding="utf-8") as f_new:
+            f_new.write(content)
     
 if __name__ == '__main__':
     args = docopt(__doc__)
