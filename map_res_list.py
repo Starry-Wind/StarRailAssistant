@@ -61,7 +61,6 @@ def str_replace(find_str, replace_str):
     f.close()
     content = content.replace(find_str, replace_str)
     f_new = open("requirements.txt", "w", encoding="utf-8")
-    print(content)
     f_new.write(content)
     f_new.close()
     
