@@ -1,0 +1,263 @@
+{
+    "tree": [
+        {
+            "id": 1,
+            "name": "空间站「黑塔」",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/04/21/288909604/5e345c709a28fcbb5fbf8cb3539c8ffe_8845225324835437110.png",
+            "node_type": 1,
+            "depth": 1,
+            "children": [
+                {
+                    "id": 38,
+                    "name": "主控舱段",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/d610df8d507df71c1d7000e1555b2fd2_1331628715271955592.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 39,
+                    "name": "基座舱段",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/d610df8d507df71c1d7000e1555b2fd2_473449446397421766.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 43,
+                    "name": "收容舱段 -1层",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/d610df8d507df71c1d7000e1555b2fd2_7538648265102050595.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 44,
+                    "name": "收容舱段 1层",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/d610df8d507df71c1d7000e1555b2fd2_5544617915347384965.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 45,
+                    "name": "收容舱段 2层",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/d610df8d507df71c1d7000e1555b2fd2_4704261060308491750.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 46,
+                    "name": "支援舱段 1层",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/d610df8d507df71c1d7000e1555b2fd2_9049159822553879951.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 47,
+                    "name": "支援舱段 2层",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/d610df8d507df71c1d7000e1555b2fd2_1298033199308161285.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "name": "雅利洛-VI",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/14/288909604/f8a9baf47e4f8d584b1727064f6d44e4_4689282205104628546.png",
+            "node_type": 1,
+            "depth": 1,
+            "children": [
+                {
+                    "id": 48,
+                    "name": "行政区 -1层",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_1784110229731771198.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 49,
+                    "name": "行政区 1层",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_4586906852887465355.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 50,
+                    "name": "城郊雪原",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_2606260011695965483.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 51,
+                    "name": "边缘通路",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_2840398383759632345.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 52,
+                    "name": "铁卫禁区",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_6779330589460030987.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 53,
+                    "name": "残响回廊",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_5653629172807449619.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 54,
+                    "name": "永冬岭",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_7737007936972797247.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 55,
+                    "name": "磐岩镇",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_4168298227734976849.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 56,
+                    "name": "大矿区",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_4258268872582466828.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 57,
+                    "name": "铆钉镇 1层",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_3607445654775603223.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 58,
+                    "name": "铆钉镇 2层",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_2870628318241294761.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 59,
+                    "name": "机械聚落 1层",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_6182758427262507075.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 60,
+                    "name": "机械聚落 2层",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_5809158059947660649.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                }
+            ]
+        },
+        {
+            "id": 24,
+            "name": "仙舟「罗浮」",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/14/288909604/3e876cda1c58bfcc13eae1ee25fa3081_4244335785675838897.png",
+            "node_type": 1,
+            "depth": 1,
+            "children": [
+                {
+                    "id": 61,
+                    "name": "星槎海中枢",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/01fa19193aea9cfb5bfa71c9652f607c_6899200950792896331.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 62,
+                    "name": "流云渡 1层",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/01fa19193aea9cfb5bfa71c9652f607c_8056201314294632612.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 63,
+                    "name": "流云渡 2层",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/01fa19193aea9cfb5bfa71c9652f607c_2678895528387248913.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 64,
+                    "name": "迴星港",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/01fa19193aea9cfb5bfa71c9652f607c_1426813686105581408.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 66,
+                    "name": "长乐天",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/04/23/288909604/e17bce526a591f15b1af003cbf578370_1236845332071473056.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 67,
+                    "name": "太卜司 1层",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/04/23/288909604/e17bce526a591f15b1af003cbf578370_1459700964989961010.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 68,
+                    "name": "太卜司 2层",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/04/23/288909604/e17bce526a591f15b1af003cbf578370_3006096705745740603.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                },
+                {
+                    "id": 69,
+                    "name": "工造司",
+                    "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/04/27/288909604/e17bce526a591f15b1af003cbf578370_3477444087152229739.png",
+                    "node_type": 2,
+                    "depth": 2,
+                    "children": []
+                }
+            ]
+        },
+        {
+            "id": 41,
+            "name": "列车客厢",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/f1c15952484d69dde72d438a89319253_1774877135906226327.png",
+            "node_type": 1,
+            "depth": 1,
+            "children": []
+        }
+    ]
+}
