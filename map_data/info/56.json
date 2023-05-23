@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 56,
+        "name": "大矿区",
+        "parent_id": 5,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/02/14/288909604/f06731962c053a8e26667aded29f2cc2_6128658556157953349.png\"}]],\"origin\":[504,545],\"total_size\":[1024,1024],\"padding\":[200,179]}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_4258268872582466828.png",
+        "ch_ext": "",
+        "parent_name": "雅利洛-VI"
+    }
+}

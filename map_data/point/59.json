@@ -1,0 +1,260 @@
+{
+    "point_list": [
+        {
+            "id": 1063,
+            "label_id": 58,
+            "x_pos": 113,
+            "y_pos": -41.951561971226056,
+            "author_name": "极尔希斯特",
+            "ctime": "2023-05-21 17:12:27",
+            "display_state": 1
+        },
+        {
+            "id": 1062,
+            "label_id": 56,
+            "x_pos": 158,
+            "y_pos": -43.459280196108125,
+            "author_name": "极尔希斯特",
+            "ctime": "2023-05-21 17:12:27",
+            "display_state": 1
+        },
+        {
+            "id": 1061,
+            "label_id": 58,
+            "x_pos": 148,
+            "y_pos": -37.94771813065972,
+            "author_name": "极尔希斯特",
+            "ctime": "2023-05-21 17:12:27",
+            "display_state": 1
+        },
+        {
+            "id": 1060,
+            "label_id": 58,
+            "x_pos": 197,
+            "y_pos": 11.116600410024375,
+            "author_name": "极尔希斯特",
+            "ctime": "2023-05-21 17:12:27",
+            "display_state": 1
+        },
+        {
+            "id": 1059,
+            "label_id": 56,
+            "x_pos": -84,
+            "y_pos": -56.96271051827796,
+            "author_name": "极尔希斯特",
+            "ctime": "2023-05-21 17:12:27",
+            "display_state": 1
+        },
+        {
+            "id": 1058,
+            "label_id": 58,
+            "x_pos": -189,
+            "y_pos": 41,
+            "author_name": "极尔希斯特",
+            "ctime": "2023-05-21 17:12:27",
+            "display_state": 1
+        },
+        {
+            "id": 1057,
+            "label_id": 56,
+            "x_pos": -208,
+            "y_pos": 37.87476269705235,
+            "author_name": "极尔希斯特",
+            "ctime": "2023-05-21 17:12:27",
+            "display_state": 1
+        },
+        {
+            "id": 753,
+            "label_id": 176,
+            "x_pos": -108.72195278598122,
+            "y_pos": 45.05769583025358,
+            "author_name": "饺子不吃瑶瑶",
+            "ctime": "2023-02-17 11:17:13",
+            "display_state": 1
+        },
+        {
+            "id": 640,
+            "label_id": 20,
+            "x_pos": 223,
+            "y_pos": -95,
+            "author_name": "雲瑾千香",
+            "ctime": "2022-10-30 09:55:05",
+            "display_state": 1
+        },
+        {
+            "id": 639,
+            "label_id": 17,
+            "x_pos": 81.5,
+            "y_pos": -73,
+            "author_name": "雲瑾千香",
+            "ctime": "2022-10-30 09:55:05",
+            "display_state": 1
+        },
+        {
+            "id": 638,
+            "label_id": 17,
+            "x_pos": -87.5,
+            "y_pos": -75,
+            "author_name": "雲瑾千香",
+            "ctime": "2022-10-30 09:55:05",
+            "display_state": 1
+        },
+        {
+            "id": 637,
+            "label_id": 20,
+            "x_pos": -195.5,
+            "y_pos": -71,
+            "author_name": "雲瑾千香",
+            "ctime": "2022-10-30 09:55:05",
+            "display_state": 1
+        },
+        {
+            "id": 636,
+            "label_id": 17,
+            "x_pos": -223.5,
+            "y_pos": 16,
+            "author_name": "雲瑾千香",
+            "ctime": "2022-10-30 09:55:05",
+            "display_state": 1
+        },
+        {
+            "id": 635,
+            "label_id": 32,
+            "x_pos": -195.5,
+            "y_pos": 73,
+            "author_name": "雲瑾千香",
+            "ctime": "2022-10-30 09:55:05",
+            "display_state": 1
+        },
+        {
+            "id": 634,
+            "label_id": 24,
+            "x_pos": -106,
+            "y_pos": 47,
+            "author_name": "雲瑾千香",
+            "ctime": "2022-10-30 09:55:05",
+            "display_state": 1
+        }
+    ],
+    "label_list": [
+        {
+            "id": 58,
+            "name": "自动机兵「甲虫」",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/378fef85f2b864eb372e044946e4b973_7879215771910640976.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 56,
+            "name": "自动机兵「蜘蛛」",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/a3209ed0a515a76d769abd0535eebbc2_5322974789571923564.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 176,
+            "name": "小朋友（已黑化）的观察日记",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/08/288909604/edd7c455cb1426dd6503121c615812e4_7980321950476982614.png",
+            "parent_id": 1,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 20,
+            "name": "贵重战利品",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/08/288909604/910170393345911651c3ac5d60dca425_446519570601603376.png",
+            "parent_id": 16,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 17,
+            "name": "普通战利品",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/08/288909604/2464c384cb4ae8d5e36585e9065c0cee_4344535935905106425.png",
+            "parent_id": 16,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 32,
+            "name": "同谐之蕾·拟造花萼（赤)",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/08/288909604/037a6fb0d79db3b750d82a890a28010e_3955644930899336333.png",
+            "parent_id": 22,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 24,
+            "name": "界域定锚",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/04/21/288909604/f2cd224aaa9df4c0c232e93e45fb0597_5502910962993642971.png",
+            "parent_id": 23,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        }
+    ]
+}

@@ -1,0 +1,84 @@
+{
+    "point_list": [
+        {
+            "id": 978,
+            "label_id": 20,
+            "x_pos": -186.23950936484,
+            "y_pos": 15.550640485523445,
+            "author_name": "缪之白凡.",
+            "ctime": "2023-05-03 18:43:44",
+            "display_state": 1
+        },
+        {
+            "id": 412,
+            "label_id": 71,
+            "x_pos": -102.08864826749516,
+            "y_pos": -71.70996351493653,
+            "author_name": "缪之白凡.",
+            "ctime": "2022-10-26 16:12:51",
+            "display_state": 1
+        },
+        {
+            "id": 411,
+            "label_id": 70,
+            "x_pos": -174.44475985470058,
+            "y_pos": 101.852775735524,
+            "author_name": "缪之白凡.",
+            "ctime": "2022-10-26 16:12:51",
+            "display_state": 1
+        }
+    ],
+    "label_list": [
+        {
+            "id": 20,
+            "name": "贵重战利品",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/08/288909604/910170393345911651c3ac5d60dca425_446519570601603376.png",
+            "parent_id": 16,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 71,
+            "name": "虚卒·掠夺者",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/c2a8774ff026b82778aa55dbd2b8c5e2_7972018250043495740.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 70,
+            "name": "虚卒·抹消者",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/c54fb9b9bc0aa7586e798c4836d5ee1c_3543081850191055049.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        }
+    ]
+}

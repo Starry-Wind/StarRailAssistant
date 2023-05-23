@@ -1,0 +1,288 @@
+{
+    "point_list": [
+        {
+            "id": 958,
+            "label_id": 24,
+            "x_pos": -158.5,
+            "y_pos": -347.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-05-01 23:29:01",
+            "display_state": 1
+        },
+        {
+            "id": 945,
+            "label_id": 85,
+            "x_pos": -252.5,
+            "y_pos": -242.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-28 00:34:15",
+            "display_state": 1
+        },
+        {
+            "id": 944,
+            "label_id": 85,
+            "x_pos": -188,
+            "y_pos": -259,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-28 00:33:59",
+            "display_state": 1
+        },
+        {
+            "id": 943,
+            "label_id": 85,
+            "x_pos": 336.5,
+            "y_pos": -286.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-28 00:33:45",
+            "display_state": 1
+        },
+        {
+            "id": 906,
+            "label_id": 17,
+            "x_pos": -215,
+            "y_pos": -12.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:42:04",
+            "display_state": 1
+        },
+        {
+            "id": 905,
+            "label_id": 19,
+            "x_pos": 129,
+            "y_pos": -160,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:41:57",
+            "display_state": 1
+        },
+        {
+            "id": 904,
+            "label_id": 17,
+            "x_pos": 179,
+            "y_pos": -86,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:41:50",
+            "display_state": 1
+        },
+        {
+            "id": 903,
+            "label_id": 17,
+            "x_pos": 300.5,
+            "y_pos": -62,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:41:44",
+            "display_state": 1
+        },
+        {
+            "id": 902,
+            "label_id": 19,
+            "x_pos": 405.5,
+            "y_pos": -147,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:41:38",
+            "display_state": 1
+        },
+        {
+            "id": 901,
+            "label_id": 69,
+            "x_pos": 388.5,
+            "y_pos": -205,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:41:30",
+            "display_state": 1
+        },
+        {
+            "id": 900,
+            "label_id": 309,
+            "x_pos": 423.5,
+            "y_pos": -290,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:41:23",
+            "display_state": 1
+        },
+        {
+            "id": 899,
+            "label_id": 309,
+            "x_pos": 413.5,
+            "y_pos": -288,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:41:16",
+            "display_state": 1
+        },
+        {
+            "id": 897,
+            "label_id": 309,
+            "x_pos": 324,
+            "y_pos": -286.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:40:59",
+            "display_state": 1
+        },
+        {
+            "id": 896,
+            "label_id": 19,
+            "x_pos": -266,
+            "y_pos": -176.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:40:51",
+            "display_state": 1
+        },
+        {
+            "id": 895,
+            "label_id": 69,
+            "x_pos": -268,
+            "y_pos": -228.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:40:40",
+            "display_state": 1
+        },
+        {
+            "id": 893,
+            "label_id": 19,
+            "x_pos": -99,
+            "y_pos": -238,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:40:28",
+            "display_state": 1
+        },
+        {
+            "id": 891,
+            "label_id": 309,
+            "x_pos": -176.5,
+            "y_pos": -259,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:40:15",
+            "display_state": 1
+        },
+        {
+            "id": 890,
+            "label_id": 19,
+            "x_pos": 310.5,
+            "y_pos": -373,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:40:07",
+            "display_state": 1
+        },
+        {
+            "id": 889,
+            "label_id": 17,
+            "x_pos": 3,
+            "y_pos": -422,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:40:01",
+            "display_state": 1
+        },
+        {
+            "id": 888,
+            "label_id": 19,
+            "x_pos": -231.5,
+            "y_pos": -474,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:39:49",
+            "display_state": 1
+        }
+    ],
+    "label_list": [
+        {
+            "id": 24,
+            "name": "界域定锚",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/04/21/288909604/f2cd224aaa9df4c0c232e93e45fb0597_5502910962993642971.png",
+            "parent_id": 23,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 85,
+            "name": "魔阴身士卒",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/854c7a66abdbaedd3047ca5c83b3a813_2937203063312620362.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 17,
+            "name": "普通战利品",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/08/288909604/2464c384cb4ae8d5e36585e9065c0cee_4344535935905106425.png",
+            "parent_id": 16,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 19,
+            "name": "丰厚战利品",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/08/288909604/5f50cb72f9eb97595724be3556e414b3_5349995602429583510.png",
+            "parent_id": 16,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 69,
+            "name": "巽风造物",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/2c007bedd31cfb9542bf29fb579bbbdb_2233091487109891453.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 309,
+            "name": "「药王秘传」内丹士",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/04/27/288909604/53558ddc5a2d509f36c1d41a69d3aa95_8887597706099285009.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        }
+    ]
+}

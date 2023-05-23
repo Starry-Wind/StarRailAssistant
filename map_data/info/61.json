@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 61,
+        "name": "星槎海中枢",
+        "parent_id": 24,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/05/04/288909604/52dcdb4e71e8cfaf1e7e61318b4e8d79_6640846397288038567.png\"}]],\"origin\":[510,524],\"total_size\":[1024,1024],\"padding\":[182,152]}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/01fa19193aea9cfb5bfa71c9652f607c_6899200950792896331.png",
+        "ch_ext": "",
+        "parent_name": "仙舟「罗浮」"
+    }
+}

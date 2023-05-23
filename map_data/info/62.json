@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 62,
+        "name": "流云渡 1层",
+        "parent_id": 24,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/05/04/288909604/5222433c9288f3c7dbdd28ffaac3833c_7406502316828126063.png\"}]],\"origin\":[550,1039],\"total_size\":[1024,2048],\"padding\":[195,436]}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/01fa19193aea9cfb5bfa71c9652f607c_8056201314294632612.png",
+        "ch_ext": "",
+        "parent_name": "仙舟「罗浮」"
+    }
+}

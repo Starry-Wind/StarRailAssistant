@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 64,
+        "name": "迴星港",
+        "parent_id": 24,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/02/14/288909604/f382d36dad0ca664eb220a66ec266330_9181061429763431991.png\"}]],\"origin\":[898,926],\"total_size\":[2048,2048],\"padding\":[429,393],\"id\":\"64\"}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/01fa19193aea9cfb5bfa71c9652f607c_1426813686105581408.png",
+        "ch_ext": "",
+        "parent_name": "仙舟「罗浮」"
+    }
+}

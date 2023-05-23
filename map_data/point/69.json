@@ -1,0 +1,660 @@
+{
+    "point_list": [
+        {
+            "id": 966,
+            "label_id": 20,
+            "x_pos": 263.22149682049394,
+            "y_pos": -288.1145705347303,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-05-02 00:04:45",
+            "display_state": 1
+        },
+        {
+            "id": 965,
+            "label_id": 19,
+            "x_pos": 268.22305270417826,
+            "y_pos": -292.57905848960354,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-05-02 00:04:39",
+            "display_state": 1
+        },
+        {
+            "id": 964,
+            "label_id": 17,
+            "x_pos": 278.2112279881769,
+            "y_pos": -289.53647617304875,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-05-02 00:04:32",
+            "display_state": 1
+        },
+        {
+            "id": 956,
+            "label_id": 20,
+            "x_pos": 270.5,
+            "y_pos": -294,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-29 20:11:59",
+            "display_state": 1
+        },
+        {
+            "id": 949,
+            "label_id": 17,
+            "x_pos": -169.5,
+            "y_pos": -39,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-28 09:35:50",
+            "display_state": 1
+        },
+        {
+            "id": 948,
+            "label_id": 17,
+            "x_pos": 261,
+            "y_pos": -293.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-28 09:35:39",
+            "display_state": 1
+        },
+        {
+            "id": 947,
+            "label_id": 17,
+            "x_pos": 281,
+            "y_pos": -294.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-28 09:35:35",
+            "display_state": 1
+        },
+        {
+            "id": 942,
+            "label_id": 85,
+            "x_pos": -182,
+            "y_pos": 349,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-28 00:33:12",
+            "display_state": 1
+        },
+        {
+            "id": 941,
+            "label_id": 85,
+            "x_pos": -215,
+            "y_pos": -367,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-28 00:33:02",
+            "display_state": 1
+        },
+        {
+            "id": 940,
+            "label_id": 85,
+            "x_pos": -150.5,
+            "y_pos": -354,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-28 00:32:55",
+            "display_state": 1
+        },
+        {
+            "id": 939,
+            "label_id": 92,
+            "x_pos": -150.5,
+            "y_pos": -347,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-28 00:32:50",
+            "display_state": 1
+        },
+        {
+            "id": 887,
+            "label_id": 24,
+            "x_pos": 113.5,
+            "y_pos": 189,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:11:53",
+            "display_state": 1
+        },
+        {
+            "id": 886,
+            "label_id": 24,
+            "x_pos": -131,
+            "y_pos": -223.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:11:46",
+            "display_state": 1
+        },
+        {
+            "id": 885,
+            "label_id": 24,
+            "x_pos": 166,
+            "y_pos": -129,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:11:42",
+            "display_state": 1
+        },
+        {
+            "id": 884,
+            "label_id": 307,
+            "x_pos": 179,
+            "y_pos": 373,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:08:28",
+            "display_state": 1
+        },
+        {
+            "id": 883,
+            "label_id": 41,
+            "x_pos": 215,
+            "y_pos": 419.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:08:22",
+            "display_state": 1
+        },
+        {
+            "id": 882,
+            "label_id": 19,
+            "x_pos": 70,
+            "y_pos": 452.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:08:15",
+            "display_state": 1
+        },
+        {
+            "id": 881,
+            "label_id": 17,
+            "x_pos": 132,
+            "y_pos": 460.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:08:08",
+            "display_state": 1
+        },
+        {
+            "id": 880,
+            "label_id": 84,
+            "x_pos": 86,
+            "y_pos": 328.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:08:01",
+            "display_state": 1
+        },
+        {
+            "id": 879,
+            "label_id": 83,
+            "x_pos": 84,
+            "y_pos": 286.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:07:55",
+            "display_state": 1
+        },
+        {
+            "id": 878,
+            "label_id": 83,
+            "x_pos": 214.5,
+            "y_pos": 290.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:07:49",
+            "display_state": 1
+        },
+        {
+            "id": 877,
+            "label_id": 84,
+            "x_pos": 214.5,
+            "y_pos": 283,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:07:43",
+            "display_state": 1
+        },
+        {
+            "id": 876,
+            "label_id": 19,
+            "x_pos": 251,
+            "y_pos": 348,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:07:36",
+            "display_state": 1
+        },
+        {
+            "id": 875,
+            "label_id": 82,
+            "x_pos": 258.5,
+            "y_pos": 301.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:07:27",
+            "display_state": 1
+        },
+        {
+            "id": 874,
+            "label_id": 20,
+            "x_pos": 167,
+            "y_pos": 194.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:07:20",
+            "display_state": 1
+        },
+        {
+            "id": 873,
+            "label_id": 17,
+            "x_pos": 184,
+            "y_pos": 143,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:07:14",
+            "display_state": 1
+        },
+        {
+            "id": 872,
+            "label_id": 17,
+            "x_pos": -124.5,
+            "y_pos": 471,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:07:04",
+            "display_state": 1
+        },
+        {
+            "id": 871,
+            "label_id": 19,
+            "x_pos": -90.5,
+            "y_pos": 333.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:06:56",
+            "display_state": 1
+        },
+        {
+            "id": 869,
+            "label_id": 309,
+            "x_pos": -173,
+            "y_pos": 317,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:06:43",
+            "display_state": 1
+        },
+        {
+            "id": 868,
+            "label_id": 19,
+            "x_pos": -182,
+            "y_pos": 197,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:06:36",
+            "display_state": 1
+        },
+        {
+            "id": 867,
+            "label_id": 17,
+            "x_pos": -125.5,
+            "y_pos": 230,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:06:29",
+            "display_state": 1
+        },
+        {
+            "id": 866,
+            "label_id": 17,
+            "x_pos": 92,
+            "y_pos": -37,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:06:22",
+            "display_state": 1
+        },
+        {
+            "id": 865,
+            "label_id": 84,
+            "x_pos": -102.5,
+            "y_pos": 50,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:06:15",
+            "display_state": 1
+        },
+        {
+            "id": 864,
+            "label_id": 82,
+            "x_pos": -83,
+            "y_pos": 3.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:06:08",
+            "display_state": 1
+        },
+        {
+            "id": 863,
+            "label_id": 83,
+            "x_pos": -91,
+            "y_pos": 6,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:06:01",
+            "display_state": 1
+        },
+        {
+            "id": 862,
+            "label_id": 17,
+            "x_pos": -195,
+            "y_pos": 37,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:05:54",
+            "display_state": 1
+        },
+        {
+            "id": 861,
+            "label_id": 19,
+            "x_pos": -332,
+            "y_pos": 211,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:05:46",
+            "display_state": 1
+        },
+        {
+            "id": 860,
+            "label_id": 24,
+            "x_pos": -359.5,
+            "y_pos": 102.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:05:30",
+            "display_state": 1
+        },
+        {
+            "id": 859,
+            "label_id": 17,
+            "x_pos": -116.5,
+            "y_pos": -103,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:05:22",
+            "display_state": 1
+        },
+        {
+            "id": 858,
+            "label_id": 84,
+            "x_pos": -104,
+            "y_pos": -101,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:05:01",
+            "display_state": 1
+        },
+        {
+            "id": 857,
+            "label_id": 19,
+            "x_pos": 308.5,
+            "y_pos": -218.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:04:51",
+            "display_state": 1
+        },
+        {
+            "id": 856,
+            "label_id": 17,
+            "x_pos": 266,
+            "y_pos": -297.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:04:43",
+            "display_state": 1
+        },
+        {
+            "id": 855,
+            "label_id": 17,
+            "x_pos": 276,
+            "y_pos": -298,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:04:37",
+            "display_state": 1
+        },
+        {
+            "id": 854,
+            "label_id": 19,
+            "x_pos": 271.5,
+            "y_pos": -296.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:04:28",
+            "display_state": 1
+        },
+        {
+            "id": 853,
+            "label_id": 17,
+            "x_pos": 294,
+            "y_pos": -316.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:02:56",
+            "display_state": 1
+        },
+        {
+            "id": 852,
+            "label_id": 19,
+            "x_pos": 192,
+            "y_pos": -412.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:02:23",
+            "display_state": 1
+        },
+        {
+            "id": 851,
+            "label_id": 309,
+            "x_pos": -229.5,
+            "y_pos": -305.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:01:28",
+            "display_state": 1
+        },
+        {
+            "id": 850,
+            "label_id": 17,
+            "x_pos": -241.5,
+            "y_pos": -335,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:01:22",
+            "display_state": 1
+        },
+        {
+            "id": 846,
+            "label_id": 19,
+            "x_pos": -83,
+            "y_pos": -364.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:00:20",
+            "display_state": 1
+        },
+        {
+            "id": 845,
+            "label_id": 20,
+            "x_pos": -201,
+            "y_pos": -427.5,
+            "author_name": "帕姆的小跟班",
+            "ctime": "2023-04-27 23:00:13",
+            "display_state": 1
+        }
+    ],
+    "label_list": [
+        {
+            "id": 20,
+            "name": "贵重战利品",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/08/288909604/910170393345911651c3ac5d60dca425_446519570601603376.png",
+            "parent_id": 16,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 19,
+            "name": "丰厚战利品",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/08/288909604/5f50cb72f9eb97595724be3556e414b3_5349995602429583510.png",
+            "parent_id": 16,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 17,
+            "name": "普通战利品",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/08/288909604/2464c384cb4ae8d5e36585e9065c0cee_4344535935905106425.png",
+            "parent_id": 16,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 85,
+            "name": "魔阴身士卒",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/854c7a66abdbaedd3047ca5c83b3a813_2937203063312620362.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 92,
+            "name": "「药王秘传」炼形者",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/86482bb71d50ac9cc5d66647e20d97a5_8859138836751679840.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 24,
+            "name": "界域定锚",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/04/21/288909604/f2cd224aaa9df4c0c232e93e45fb0597_5502910962993642971.png",
+            "parent_id": 23,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 307,
+            "name": "丹枢的日记 其二",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/04/27/288909604/01de1830df0875b981beec0a96d18cfc_3170223803336864575.png",
+            "parent_id": 1,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 41,
+            "name": "次元扑满",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/10/288909604/b994a046638217609187c642bb99df13_2009867316066577236.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 84,
+            "name": "入魔机巧·灯昼龙鱼",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/9bdaa293b34aa737512df476a7981035_4794032529452252916.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 83,
+            "name": "入魔机巧·率从狻猊",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/4eb7fd70eed6e204ee3657e629f3b9de_4158394204708641184.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 82,
+            "name": "入魔机巧·浓云金蟾",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/cd4ad30350f2a0a60fdfec4662a763d7_1607363619407328246.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 309,
+            "name": "「药王秘传」内丹士",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/04/27/288909604/53558ddc5a2d509f36c1d41a69d3aa95_8887597706099285009.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        }
+    ]
+}

@@ -1,0 +1,110 @@
+{
+    "point_list": [
+        {
+            "id": 380,
+            "label_id": 17,
+            "x_pos": 3.139681234019463,
+            "y_pos": -268.4327462976055,
+            "author_name": "饺子不吃瑶瑶",
+            "ctime": "2022-10-26 15:12:38",
+            "display_state": 1
+        },
+        {
+            "id": 379,
+            "label_id": 86,
+            "x_pos": -39.445793073897335,
+            "y_pos": -173.58231290264416,
+            "author_name": "饺子不吃瑶瑶",
+            "ctime": "2022-10-26 15:12:38",
+            "display_state": 1
+        },
+        {
+            "id": 377,
+            "label_id": 74,
+            "x_pos": -100.94374494389456,
+            "y_pos": -159.7409927114088,
+            "author_name": "饺子不吃瑶瑶",
+            "ctime": "2022-10-26 15:12:38",
+            "display_state": 1
+        },
+        {
+            "id": 375,
+            "label_id": 24,
+            "x_pos": 79.5869512114134,
+            "y_pos": -353.0966710787378,
+            "author_name": "饺子不吃瑶瑶",
+            "ctime": "2022-10-26 15:12:38",
+            "display_state": 1
+        }
+    ],
+    "label_list": [
+        {
+            "id": 17,
+            "name": "普通战利品",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/08/288909604/2464c384cb4ae8d5e36585e9065c0cee_4344535935905106425.png",
+            "parent_id": 16,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 86,
+            "name": "鸣雷造物",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/cec706714648de728100860874e75f5e_3248649073739257601.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 74,
+            "name": "虚数织叶者",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/5df71084797d6d0e9a082624281e8802_8889713508243474666.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 24,
+            "name": "界域定锚",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/04/21/288909604/f2cd224aaa9df4c0c232e93e45fb0597_5502910962993642971.png",
+            "parent_id": 23,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        }
+    ]
+}
