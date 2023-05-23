@@ -68,6 +68,7 @@ def str_replace(find_str, replace_str):
     
 if __name__ == '__main__':
     args = docopt(__doc__)
+    print(args)
     if args.get("type", "") == "replace":
         str_replace(args.get("find_str"), args.get("replace_str"))
     else:
