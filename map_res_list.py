@@ -57,20 +57,18 @@ def up_data():
 
 def str_replace(find_str, replace_str):
     f = open("requirements.txt", "r", encoding="utf-8")
-    line = ""
-    for line in f:
-        if find_str in line:
-            line = line.replace(find_str, replace_str)
+    content = f.read()
     f.close()
+    content = content.replace(find_str, replace_str)
     f_new = open("requirements.txt", "w", encoding="utf-8")
-    f_new = write(line)
+    print(content)
+    f_new.write(content)
     f_new.close()
     
 if __name__ == '__main__':
     args = docopt(__doc__)
-    print(args)
-    if args.get("type", "") == "replace":
-        str_replace(args.get("find_str"), args.get("replace_str"))
+    if args.get("--type", "") == "replace":
+        str_replace(args["--find_str"], args["--replace_str"])
     else:
         up_data()
         
