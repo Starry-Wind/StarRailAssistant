@@ -26,7 +26,8 @@ jobs:
       - name: Update Requirements
         run: |
           pip install pipreqs
-          pipreqs . --encoding=utf8 --force
+          pipreqs . --encoding=utf8 --force --mode=no-pin
+          python map_res_list.py replace win32gui pywin32
       - name: Commit changes
         uses: EndBug/add-and-commit@v9.1.3
         with:
