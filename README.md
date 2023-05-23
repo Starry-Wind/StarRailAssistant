@@ -19,23 +19,19 @@
 [![GitHub License](https://img.shields.io/github/license/Starry-Wind/Honkai-Star-Rail?style=flat-square)](https://github.com/Starry-Wind/Honkai-Star-Rail/blob/main/LICENSE)
 </div>
 
-*****该脚本仍然处于测试阶段，可能会出现奇奇怪怪的BUG*****
-
-***寻路撞墙？走的路径不对？嫌弃路线太慢？现在beta-2.7新增加地图录制功能***<br>
-***你现在可以使用tool目录下的record_v7.2.py自行录制地图路径，包你走到满意 XD***
-
 找到BUG了？代码问题想吐槽？欢迎加入 技术 & 吹水群：[QQ 群](https://qm.qq.com/cgi-bin/qm/qr?k=xdCO46fHlVcY7D2L7elXzqcxL3nyTGnW&jump_from=webapi&authKey=uWZooQ2szv+nG/re7luCKn8LW1KibSb0vvi0FycA45Mglm5AGM1GP2iJ+SiWmDwg)|[Telegram Group](https://t.me/+yeQEhnuT9O41NDM1)<br>
 
 ~~该脚本当前版本仅支持 缩放150%，屏幕分辨率2560x1440，现在在大改动中，尽快解决屏幕旋转适配问题~~
 
 ## 使用说明
 
-1：安装[Python 3.11](https://www.microsoft.com/store/productId/9NRWMJP3717K) (其他版本安装依赖项时会有很多问题)
+1：安装[Python 3.10](https://www.python.org/downloads/release/python-3100/) (其他版本安装依赖项时会有很多问题)
 
 2：确认游戏语言为**简体中文**，按键配置皆为默认，灵敏度皆为默认值
 
 3：如果你的电脑分辨率为2560\*1440，请将游戏分辨率调为1920\*1080（窗口化）<br>
    如果你的电脑分辨率为1920\*1080，请将游戏分辨率调为1920\*1080（全屏幕）
+   **我们推荐你使用模拟器运行脚本**
    
 4：战斗为游戏自带的自动战斗，确保你的队伍有足够实力平推小怪<br>
    (如启用了沿用自动战斗设定，请把config.json里的 "auto_battle_persistence" 改成 1) 
@@ -96,7 +92,7 @@
  
 ## 注意事项
  
-1：识图为截取游戏画面，所以不能有任何覆盖
+1：识图为截取游戏画面
  
 2：支持地图 **空间站「黑塔」、雅利洛VI、仙舟「罗浮」**
 
@@ -105,23 +101,6 @@
 4：请使用**三月七**来跑图以获得最佳体验
 
 ⭐**如果喜欢，点个星星~**⭐
-
-## 更新日志 (Release-v1.0.0)
-
-1：新增bat执行档一键开启 感谢[@apple050620312
-](https://github.com/apple050620312)
-
-2：新增地图自动更新功能
-
-3：将pynput重新加入依赖列表
-
-4：新增更多后台提示信息
-
-5：新增自动获取视窗大小
-
-6：日常修复一些小bug
-
-7：更新了新的地图json，能解决大部分撞墙问题
 
 ## 未来目标
 

@@ -1,0 +1,17 @@
+cn2an==0.5.19
+cnocr==2.2.2.3
+httpx==0.24.1
+loguru==0.7.0
+numpy==1.24.3
+orjson==3.8.12
+Pillow==9.5.0
+pyautogui==0.9.53
+pynput==1.7.6
+pyuac==0.0.3
+questionary==1.10.0
+tools==0.1.9
+torch==2.0.1
+tqdm==4.65.0
+ultralytics==8.0.107
+win32gui==221.6
+xpinyin==0.7.6
