@@ -25,7 +25,8 @@ jobs:
 
       - name: Update Requirements
         run: |
-          pip install pipreqs,docopt
+          pip install pipreqs
+          pip install docopt
           pipreqs . --encoding=utf8 --force --mode=no-pin
           python map_res_list.py --type=replace --find_str=win32gui --replace_str=pywin32
       - name: Commit changes
