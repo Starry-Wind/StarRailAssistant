@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 38,
+        "name": "主控舱段",
+        "parent_id": 1,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/02/14/288909604/3aecfa18b40222488762935cc5df8853_1250141403533732712.png\"}]],\"origin\":[509,572],\"total_size\":[1024,1024],\"padding\":[187,162]}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/d610df8d507df71c1d7000e1555b2fd2_1331628715271955592.png",
+        "ch_ext": "",
+        "parent_name": "空间站「黑塔」"
+    }
+}

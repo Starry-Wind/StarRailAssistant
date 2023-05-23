@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 39,
+        "name": "基座舱段",
+        "parent_id": 1,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/02/14/288909604/400d12a7066c8d959e57357be056cafa_1241479384043926194.png\"}]],\"origin\":[253,492],\"total_size\":[512,1024],\"padding\":[89,113]}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/d610df8d507df71c1d7000e1555b2fd2_473449446397421766.png",
+        "ch_ext": "",
+        "parent_name": "空间站「黑塔」"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 46,
+        "name": "支援舱段 1层",
+        "parent_id": 1,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/02/14/288909604/294cca619a564d9c7c57dcb0966fede9_1135339218769128298.png\"}]],\"origin\":[502,253],\"total_size\":[1024,512],\"padding\":[64,31]}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/d610df8d507df71c1d7000e1555b2fd2_9049159822553879951.png",
+        "ch_ext": "",
+        "parent_name": "空间站「黑塔」"
+    }
+}

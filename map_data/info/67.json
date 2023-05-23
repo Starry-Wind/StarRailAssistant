@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 67,
+        "name": "太卜司 1层",
+        "parent_id": 24,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/04/23/288909604/cf784994c69ff89551f81213e479b4f7_2560829293607855044.png\"}]],\"origin\":[400,565],\"total_size\":[1024,1024],\"padding\":[31,34]}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/04/23/288909604/e17bce526a591f15b1af003cbf578370_1459700964989961010.png",
+        "ch_ext": "",
+        "parent_name": "仙舟「罗浮」"
+    }
+}

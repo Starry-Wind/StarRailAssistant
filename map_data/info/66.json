@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 66,
+        "name": "长乐天",
+        "parent_id": 24,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/04/26/288909604/b6efd12a97b1b0f89c83b3a670c24ef2_5808403921370202157.png\"}]],\"origin\":[251,324],\"total_size\":[512,512],\"padding\":[48,25]}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/04/23/288909604/e17bce526a591f15b1af003cbf578370_1236845332071473056.png",
+        "ch_ext": "",
+        "parent_name": "仙舟「罗浮」"
+    }
+}

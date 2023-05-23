@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 50,
+        "name": "城郊雪原",
+        "parent_id": 5,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/02/14/288909604/49b020dee2dc1b7f2a66260c90094227_1934759594883558335.png\"}]],\"origin\":[1118,445],\"total_size\":[2048,1024],\"padding\":[484,212]}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_2606260011695965483.png",
+        "ch_ext": "",
+        "parent_name": "雅利洛-VI"
+    }
+}
