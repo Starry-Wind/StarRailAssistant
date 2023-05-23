@@ -57,12 +57,13 @@ def up_data():
 
 def str_replace(find_str, replace_str):
     f = open("requirements.txt", "r", encoding="utf-8")
-    f_new = open("requirements.txt", "w", encoding="utf-8")
+    line = ""
     for line in f:
         if find_str in line:
             line = line.replace(find_str, replace_str)
-        f_new = write(line)
     f.close()
+    f_new = open("requirements.txt", "w", encoding="utf-8")
+    f_new = write(line)
     f_new.close()
     
 if __name__ == '__main__':
