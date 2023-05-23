@@ -64,7 +64,7 @@ class Calculated:
         screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
         return screenshot, left, top, right, bottom
 
-    def scan_screenshot(self, prepared) -> dict:
+    def scan_screenshot(self, prepared, rect=False, debug=0) -> dict:
         """
         说明：
             比对图片
@@ -72,6 +72,12 @@ class Calculated:
             :param prepared: 比对图片地址
         """
         screenshot, left, top, right, bottom = self.take_screenshot()
+        if rect:
+            screenshot = self.crop_image(screenshot, rect)
+            left += rect[0] 
+            top += rect[1]
+            if debug == 1:
+                cv.imwrite('cropped image.png', screenshot)       
         result = cv.matchTemplate(screenshot, prepared, cv.TM_CCORR_NORMED)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
         return {
@@ -81,6 +87,11 @@ class Calculated:
             "min_loc": (min_loc[0] + left, min_loc[1] + top),
             "max_loc": (max_loc[0] + left, max_loc[1] + top),
         }
+
+    def crop_image(self, img, rect):
+        x, y, w, h = rect
+        return img[y:y+h, x:x+w]
+
 
     def calculated(self, result, shape):
         mat_top, mat_left = result["max_loc"]
@@ -93,10 +104,10 @@ class Calculated:
         return x, y
 
     # flag为true一定要找到
-    def click_target(self, target_path, threshold, flag=True):
+    def click_target(self, target_path, threshold, flag=True, rect=False):
         target = cv.imread(target_path)
         while True:
-            result = self.scan_screenshot(target)
+            result = self.scan_screenshot(target, rect)
             if result["max_val"] > threshold:
                 points = self.calculated(result, target.shape)
                 self.click(points)

@@ -11,6 +11,7 @@ try:
     from get_width import get_width, check_mult_screen
     from tools.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
     from tools.map import Map
+    from tools.commission import Commission
     from tools.update_file import update_file_main
     from tools.switch_window import switch_window
     from tools.exceptions import Exception
@@ -67,6 +68,16 @@ def main_start():
         option = questionary.select(title, options).ask()
         modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", options.index(option))
         modify_json_file(CONFIG_FILE_NAME, "start", True)
+
+def commission(n=4):
+    log.info("脚本将自动切换至游戏窗口，请保持游戏窗口激活")
+    switch_window()
+    time.sleep(0.5)
+
+    cms = Commission(n)
+    cms.open()
+    cms.run()
+    cms.close()
 
 
 def up_data():
@@ -133,10 +144,12 @@ if __name__ == "__main__":
             pyuac.runAsAdmin()
         else:
             title = "请选择操作"
-            options = ['启动脚本', '检查更新']
+            options = ['启动脚本', '自动委托', '检查更新']
             option = questionary.select(title, options).ask()
             if option == "启动脚本":
                 main()
+            elif option == "自动委托":
+                commission()
             elif option == "检查更新":
                 up_data()
     except ModuleNotFoundError as e:
