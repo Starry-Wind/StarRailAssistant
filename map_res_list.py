@@ -1,13 +1,12 @@
-'''
-Author: Night-stars-1 nujj1042633805@gmail.com
-Date: 2023-05-13 03:08:07
-LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-13 13:25:08
-FilePath: \Honkai-Star-Rail-beta-2.4h:\Download\Zip\Honkai-Star-Rail-beta-2.7\map_res_list.py
-Description: 
+"""
+Usage:
+    map_res_list.py [options]
 
-Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
-'''
+Options:
+    --type           
+    --find_str <str>   
+    --replace_str <str>         
+"""
 import datetime
 import hashlib
 import json
