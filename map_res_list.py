@@ -66,7 +66,7 @@ def str_replace(find_str, replace_str):
     f_new.close()
     
 if __name__ == '__main__':
-    type = sys.argv.get(1, None)
+    type = sys.argv[1]
     if type:
         if type == "replace":
             str_replace(sys.argv[2], sys.argv[3])
