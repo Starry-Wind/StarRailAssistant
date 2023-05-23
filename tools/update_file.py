@@ -112,9 +112,9 @@ async def update_file(url_proxy: str="",
     """
     global tmp_dir
 
-    url_version = f'{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/{version}/version.json' if 'http' in raw_proxy or raw_proxy == '' else f'https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/{version}/version.json'.replace('raw.githubusercontent.com', raw_proxy)
+    url_version = f'{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/SRA/{version}/version.json' if 'http' in raw_proxy or raw_proxy == '' else f'https://raw.githubusercontent.com/Starry-Wind/SRA/{version}/version.json'.replace('raw.githubusercontent.com', raw_proxy)
     url_zip = url_proxy+url_zip if 'http' in url_proxy or url_proxy == '' else url_zip.replace('github.com', url_proxy)
-    url_list = f'{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/{version}/{type}_list.json' if 'http' in raw_proxy or raw_proxy == '' else f'https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/{version}/{type}_list.json'.replace('raw.githubusercontent.com', raw_proxy)
+    url_list = f'{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/SRA/{version}/{type}_list.json' if 'http' in raw_proxy or raw_proxy == '' else f'https://raw.githubusercontent.com/Starry-Wind/SRA/{version}/{type}_list.json'.replace('raw.githubusercontent.com', raw_proxy)
     
     #tmp_zip = os.path.join(tmp_dir, f'{type}.zip')
     tmp_zip = Path() / tmp_dir / f'{type}.zip'
@@ -167,7 +167,7 @@ async def update_file(url_proxy: str="",
             raise Exception(f'[资源文件更新]重试次数已达上限，退出程序')
 
 
-        #shutil.rmtree('..\Honkai-Star-Rail-beta-2.7')
+        #shutil.rmtree('..\SRA-beta-2.7')
         #await remove_file(unzip_path, keep_folder, keep_file)
         await move_file(os.path.join(tmp_dir, zip_path), unzip_path, [], keep_file)
 
