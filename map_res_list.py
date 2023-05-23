@@ -3,7 +3,7 @@ Usage:
     map_res_list.py [options]
 
 Options:
-    --type           
+    --type <str>
     --find_str <str>   
     --replace_str <str>         
 """
