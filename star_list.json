@@ -25,7 +25,7 @@
   },
   {
     "path": "requirements.txt",
-    "hash": "caf090038d2f92f76fba3750a42500e7"
+    "hash": "f15a4bf697ce9a53f0bbed91b2f67a33"
   },
   {
     "path": "pyproject.toml",
@@ -53,7 +53,7 @@
   },
   {
     "path": "map_res_list.py",
-    "hash": "323c0e575a81613aae07a454bc8d4cb0"
+    "hash": "32bf39d62df1fbb7976e24cacdff3817"
   },
   {
     "path": "utils/simulated_universe.py",
