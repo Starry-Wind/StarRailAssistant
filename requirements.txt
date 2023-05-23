@@ -12,6 +12,6 @@ questionary==1.10.0
 tools==0.1.9
 torch==2.0.1
 tqdm==4.65.0
-ultralytics==8.0.105
+ultralytics==8.0.107
 win32gui==221.6
 xpinyin==0.7.6
