@@ -28,7 +28,7 @@ jobs:
           pip install pipreqs
           pip install docopt
           pipreqs . --encoding=utf8 --force --mode=no-pin
-          map_res_list --type=replace --find_str=win32gui --replace_str=pywin32
+          python map_res_list.py --type=replace --find_str=win32gui --replace_str=pywin32
           
       - name: Commit changes
         uses: EndBug/add-and-commit@v9.1.3
