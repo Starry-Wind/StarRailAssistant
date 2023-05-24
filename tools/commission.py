@@ -2,7 +2,7 @@ from tools.calculated import Calculated
 from tools.log import log
 from tools.switch_window import switch_window as sw
 import pyautogui
-from time import sleep
+import time
 
 class Commission():
     def __init__(self, n=4):
@@ -12,7 +12,7 @@ class Commission():
     def open(self):
         log.info(f"即将进行自动重新委托，当前重新委托次数为{self.n}")
         pyautogui.press('esc')
-        sleep(1)
+        time.sleep(1)
         self.calculated.click_target('./temp/commission_menu.jpg', 0.98)
 
     def run(self):
@@ -25,6 +25,6 @@ class Commission():
             time.sleep(5)
     def close(self):
         self.calculated.click_target('./temp/commission_close.jpg', 0.98)
-        sleep(1.5)
+        time.sleep(1.5)
         pyautogui.press('esc')
         log.info("执行完毕")
