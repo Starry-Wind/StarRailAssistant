@@ -1,76 +1,55 @@
 import os
 import traceback
+
 try:
-    from utils.log import log
+    from utils.log import log, webhook_and_log
     import time
+    import ctypes
     import pyuac
     import questionary
 
-    from get_width import get_width
+    from get_width import get_width, check_mult_screen
     from utils.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
     from utils.map import Map
-    from utils.simulated_universe import Simulated_Universe
     from utils.update_file import update_file_main
     from utils.switch_window import switch_window
     from utils.exceptions import Exception
-    from utils.requests import webhook_and_log
 except:
-    pass
+    print(traceback.format_exc())
 
 
-def choose_map(map_instance: Map, type = 0):
-    if type == 0:
-        title_ = "请选择起始星球："
-        options_map = {"空间站「黑塔」": "1", "雅利洛-VI": "2", "仙舟「罗浮」": "3"}
-        option_ = questionary.select(title_, list(options_map.keys())).ask()
-        main_map = options_map.get(option_)
-        title_ = "请选择起始地图："
-        options_map = map_instance.map_list_map.get(main_map)
-        if not options_map:
-            return
-        keys = list(options_map.keys())
-        values = list(options_map.values())
-        option_ = questionary.select(title_, values).ask()
-        side_map = keys[values.index(option_)]
-        return f"{main_map}-{side_map}", None
-    else:
-        title_ = "请选择第几宇宙："
-        options_map = ["选择宇宙", "设置预设"]
-        option = questionary.select(title_, options_map).ask()
-        if option == "选择宇宙":
-            title_ = "请选择第几宇宙："
-            options_map = {"第一世界": 1, "第二世界": 2, "第三世界": 3, "第四世界": 4, "第五世界": 5, "第六世界": 6}
-            option_ = questionary.select(title_, list(options_map.keys())).ask()
-            side_map = options_map[option_]
-            presets_list = read_json_file(CONFIG_FILE_NAME).get("presets", [])
-            presets_list = ['、'.join(i) for i in presets_list]
-            choose_role = questionary.select("要使用的预设队伍:", choices=presets_list).ask()
-            role_list = choose_role.split("、")
-            fate = ['存护', '记忆', '虚无', '丰饶', '巡猎', '毁灭', '欢愉']
-            choose_fate = questionary.select("要使用的预设队伍:", choices=fate).ask()
-            choose_list = [role_list, choose_fate]
-            return side_map, choose_list
-        else:
-            Simulated_Universe().choose_presets(option)
+def choose_map(map_instance: Map):
+    title_ = "请选择起始星球："
+    options_map = {"空间站「黑塔」": "1", "雅利洛-VI": "2", "仙舟「罗浮」": "3"}
+    option_ = questionary.select(title_, list(options_map.keys())).ask()
+    main_map = options_map.get(option_)
+    title_ = "请选择起始地图："
+    options_map = map_instance.map_list_map.get(main_map)
+    if not options_map:
+        return
+    keys = list(options_map.keys())
+    values = list(options_map.values())
+    option_ = questionary.select(title_, values).ask()
+    side_map = keys[values.index(option_)]
+    return f"{main_map}-{side_map}"
 
 
-def main(type=0,platform="PC"):
+def main():
     main_start()
     map_instance = Map()
-    simulated_universe = Simulated_Universe()
-    start, role_list = choose_map(map_instance, type)
+    start = choose_map(map_instance)
     if start:
-        if platform == "PC":
-            log.info("脚本将自动切换至游戏窗口，请保持游戏窗口激活")
-            switch_window()
-            time.sleep(0.5)
-            get_width()
-            log.info("开始运行，请勿移动鼠标和键盘")
-            log.info("若脚本运行无反应,请使用管理员权限运行")
-        if type == 0:
-            map_instance.auto_map(start,platform)  # 读取配置
-        elif type == 1:
-            simulated_universe.auto_map(start, role_list, platform)  # 读取配置
+        log.info("脚本将自动切换至游戏窗口，请保持游戏窗口激活")
+        check_mult_screen()
+        switch_window()
+        time.sleep(0.5)
+        get_width()
+        log.info("开始运行，请勿移动鼠标和键盘")
+        log.info("若脚本运行无反应,请使用管理员权限运行")
+        map_instance.auto_map(start)  # 读取配置
+    else:
+        log.info("错误编号，请尝试检查更新")
+        webhook_and_log("脚本已经完成运行")
 
 
 def main_start():
@@ -153,16 +132,11 @@ if __name__ == "__main__":
         if not pyuac.isUserAdmin():
             pyuac.runAsAdmin()
         else:
-            title = "请选择运行平台"
-            options = ['PC', '模拟器']
-            platform = questionary.select(title, options).ask()
             title = "请选择操作"
-            options = ['大世界', '模拟宇宙','检查更新']
+            options = ['启动脚本', '检查更新']
             option = questionary.select(title, options).ask()
-            if option == "大世界":
-                main(0,platform)
-            elif option == "模拟宇宙":
-                main(1,platform)
+            if option == "启动脚本":
+                main()
             elif option == "检查更新":
                 up_data()
     except ModuleNotFoundError as e:

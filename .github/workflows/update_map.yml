@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - beta-2.7_test
+      - 2.0
     paths:
       - '**'
 
@@ -25,6 +26,7 @@ jobs:
 
       - name: Update Map
         run: |
+          pip install docopt
           python map_res_list.py
       - name: Commit changes
         uses: EndBug/add-and-commit@v9.1.3

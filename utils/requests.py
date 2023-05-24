@@ -3,8 +3,6 @@ import tqdm.asyncio
 from pathlib import Path
 from typing import Dict, Optional, Any, Union, Tuple
 
-from .log import log
-from .config import read_json_file
 
 async def get(url: str,
                 *,
@@ -75,13 +73,3 @@ async def download(url: str, save_path: Path):
                                                 colour='green'):
             f.write(chunk)
         f.close()
-
-def webhook_and_log(message):
-    log.info(message)
-    url = read_json_file("config.json", False).get("webhook_url")
-    if url == "" or url == None:
-        return
-    try:
-        post(url, json={"content": message})
-    except Exception as e:
-        log.error(f"Webhook发送失败: {e}")

@@ -3,7 +3,12 @@ import orjson
 import hashlib
 import asyncio
 
-from .log import log,VER
+try:
+    from .requests import *
+    from .log import log
+except:
+    from requests import *
+    from log import log
 
 CONFIG_FILE_NAME = "config.json"
 
@@ -85,7 +90,7 @@ def init_config_file(real_width, real_height):
         )
 
 
-def get_file(path, exclude=[], exclude_file=None, get_path=False):
+def get_file(path, exclude, exclude_file=None, get_path=False):
     """
     获取文件夹下的文件
     """
@@ -111,4 +116,35 @@ def get_file(path, exclude=[], exclude_file=None, get_path=False):
                         file_list.append(file)
     return file_list
 
-VER = read_json_file(CONFIG_FILE_NAME).get("star_version")+"/"+read_json_file(CONFIG_FILE_NAME).get("temp_version")
+
+async def check_file(github_proxy, filename='map'):
+    """
+    说明：
+        检测文件是否完整
+    参数：
+        :param github_proxy: github代理
+        :param filename: 文件名称
+    """
+    try:
+        map_list = await get(
+            f'{github_proxy}https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/map/{filename}_list.json',
+            follow_redirects=True)
+        map_list = map_list.json()
+    except Exception:
+        log.warning('读取资源列表失败，请尝试更换github资源地址')
+        return
+    flag = False
+    for map in map_list:
+        file_path = Path() / map['path']
+        if os.path.exists(file_path):
+            if hashlib.md5(file_path.read_bytes()).hexdigest() == map['hash']:
+                continue
+        try:
+            await download(
+                url=f'{github_proxy}https://raw.githubusercontent.com/Starry-Wind/Honkai-Star-Rail/map/{map["path"]}',
+                save_path=file_path)
+            await asyncio.sleep(0.2)
+            flag = True
+        except Exception:
+            log.warning(f'下载{map["path"]}时出错，请尝试更换github资源地址')
+    log.info('资源下载完成' if flag else '资源完好，无需下载')

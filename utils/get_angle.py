@@ -7,7 +7,7 @@
 import cv2
 import numpy as np
 import pyautogui
-from .switch_window import switch_window
+from switch_window import switch_window
 import time
 
 

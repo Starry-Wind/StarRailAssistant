@@ -1,39 +1,55 @@
 [
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "d23e6012ffccade98fbecc106a6caece"
+    "hash": "4b1dc639844fd1bc8320b18959e72aea"
   },
   {
     "path": "get_width.py",
-    "hash": "5c3ba1f9c631abd41644a4e77e7cb724"
+    "hash": "92d3ea6b863107aa6835ef525b442f79"
   },
   {
     "path": "README_CHT.md",
-    "hash": "c9c656d8903253721e907c5053f83f77"
+    "hash": "0626dae68b6359ca63efb2bdaa35f92a"
+  },
+  {
+    "path": "README_old.md",
+    "hash": "6f610fae994f2fe1c3668c4281298087"
+  },
+  {
+    "path": "poetry.lock",
+    "hash": "6c4e5b96b828640739a017499d9d7230"
   },
   {
     "path": "README.md",
-    "hash": "a3113833169f0c95e5fb33d498bf5f53"
+    "hash": "e094294f6853775aa24faf10cf1a7fa4"
   },
   {
     "path": "requirements.txt",
-    "hash": "7502806ac3ae9c6af4e202a2f9e976a2"
+    "hash": "8a01ce83b37bc2c499bba7d81593e665"
+  },
+  {
+    "path": "pyproject.toml",
+    "hash": "ec0c9d81e742a6a0905b5c77506a5654"
   },
   {
     "path": "test.py",
-    "hash": "c4b536ba0b12ee44b9c3af22a68aa9b8"
+    "hash": "f2c43b06a927a61bea5b35866490b5f3"
   },
   {
     "path": "LICENSE",
     "hash": "8ceeca78b817cc0e6ae98824381ea098"
   },
   {
+    "path": "start.bat",
+    "hash": "9905cff8765d8c11aea638fa349b109d"
+  },
+  {
     "path": "map_res_list.py",
-    "hash": "323c0e575a81613aae07a454bc8d4cb0"
+    "hash": "4fb4a588ce159c598d7ba73e255917ba"
   },
   {
     "path": "tools/update_file.py",
-    "hash": "8a9f76ac8d99f750f5e9e2650b1a69f4"
+    "hash": "ad9f176f03dd443222798296ce134dc9"
   },
   {
     "path": "tools/config.py",
@@ -45,11 +61,11 @@
   },
   {
     "path": "tools/exceptions.py",
-    "hash": "a0e5847b4e5fe94a87041932434ea38c"
+    "hash": "51c0bd87c5c71562866be1ebce261b95"
   },
   {
     "path": "tools/calculated.py",
-    "hash": "c6cfeb752e98f566139ba489a53970eb"
+    "hash": "2b10520a4c27b3c26e11b49b2e400d7c"
   },
   {
     "path": "tools/get_angle.py",
@@ -65,7 +81,7 @@
   },
   {
     "path": "tools/map.py",
-    "hash": "8a6f045acabec2a5bf7aa10183498f0d"
+    "hash": "382242aba3f5553a380ed18a61296eb9"
   },
   {
     "path": "tools/log.py",

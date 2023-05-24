@@ -1,12 +1,3 @@
-'''
-Author: Night-stars-1 nujj1042633805@gmail.com
-Date: 2023-05-15 21:45:43
-LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-20 18:38:35
-Description: 
-
-Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
-'''
 #!/usr/bin/env python3
 # Author AlisaCat
 # -*- encoding:utf-8 -*-
