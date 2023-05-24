@@ -73,7 +73,7 @@ def init_config_file(real_width, real_height):
         f.write(
             orjson.dumps(
                 {
-                    "real_width": real_width,
+                    "real_width": real_width + 1,
                     "auto_battle_persistence": 0,
                     "real_height": real_height,
                     "map_debug": False,
