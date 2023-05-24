@@ -35,7 +35,7 @@ logger.add(path_log,
 
 def webhook_and_log(message):
     log.info(message)
-    from tools.config import read_json_file # Circular import
+    from .config import read_json_file # Circular import
     url = read_json_file("config.json", False).get("webhook_url")
     if url == "" or url == None:
         return
