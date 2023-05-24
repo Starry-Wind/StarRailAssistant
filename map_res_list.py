@@ -21,7 +21,7 @@ for file in map_path.rglob('*'):
 
 for file in temp_path.rglob('*'):
     if os.path.isfile(file):
-        map_list.append({
+        temp_list.append({
             'path': str(file).replace(this_path, '').replace('\\', '/').lstrip('/'),
             'hash': hashlib.md5(file.read_bytes()).hexdigest()
         })
