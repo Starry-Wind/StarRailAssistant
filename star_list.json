@@ -1,19 +1,11 @@
 [
   {
     "path": "Honkai_Star_Rail.py",
-<<<<<<< HEAD
     "hash": "4b1dc639844fd1bc8320b18959e72aea"
   },
   {
     "path": "get_width.py",
     "hash": "92d3ea6b863107aa6835ef525b442f79"
-=======
-    "hash": "1d297d4f2861ad8845bafc89c06d19cd"
-  },
-  {
-    "path": "get_width.py",
-    "hash": "5b3905c8b639fab1ba77f2c4ba16647d"
->>>>>>> aaadf30ba6ad93065a366f98bd142696eeef483a
   },
   {
     "path": "README_CHT.md",
@@ -28,39 +20,16 @@
     "hash": "6c4e5b96b828640739a017499d9d7230"
   },
   {
-    "path": "poetry.lock",
-    "hash": "6c4e5b96b828640739a017499d9d7230"
-  },
-  {
     "path": "README.md",
-<<<<<<< HEAD
     "hash": "e094294f6853775aa24faf10cf1a7fa4"
   },
   {
     "path": "requirements.txt",
     "hash": "8a01ce83b37bc2c499bba7d81593e665"
-=======
-    "hash": "b6225bce375d5ff6ad2786f95f23d1b1"
-  },
-  {
-    "path": "AdbWinApi.dll",
-    "hash": "ed5a809dc0024d83cbab4fb9933d598d"
-  },
-  {
-    "path": "requirements.txt",
-    "hash": "f15a4bf697ce9a53f0bbed91b2f67a33"
->>>>>>> aaadf30ba6ad93065a366f98bd142696eeef483a
   },
   {
     "path": "pyproject.toml",
     "hash": "ec0c9d81e742a6a0905b5c77506a5654"
-<<<<<<< HEAD
-=======
-  },
-  {
-    "path": "adb.exe",
-    "hash": "e885fa349d4b116f4a64c657451e6a53"
->>>>>>> aaadf30ba6ad93065a366f98bd142696eeef483a
   },
   {
     "path": "test.py",
@@ -71,7 +40,6 @@
     "hash": "8ceeca78b817cc0e6ae98824381ea098"
   },
   {
-<<<<<<< HEAD
     "path": "start.bat",
     "hash": "9905cff8765d8c11aea638fa349b109d"
   },
@@ -82,95 +50,41 @@
   {
     "path": "tools/update_file.py",
     "hash": "ad9f176f03dd443222798296ce134dc9"
-=======
-    "path": "AdbWinUsbApi.dll",
-    "hash": "0e24119daf1909e398fa1850b6112077"
   },
   {
-    "path": "start.bat",
-    "hash": "9905cff8765d8c11aea638fa349b109d"
+    "path": "tools/config.py",
+    "hash": "58db1789c8a40ff4803221e5b524763a"
   },
   {
-    "path": "map_res_list.py",
-    "hash": "4fb4a588ce159c598d7ba73e255917ba"
+    "path": "tools/requests.py",
+    "hash": "8b3e24396a1f8be5251e13aac7bae960"
   },
   {
-    "path": "utils/simulated_universe.py",
-    "hash": "44db0b26eda08b87110c723e97868ea1"
-  },
-  {
-    "path": "utils/update_file.py",
-    "hash": "8a9f76ac8d99f750f5e9e2650b1a69f4"
->>>>>>> aaadf30ba6ad93065a366f98bd142696eeef483a
-  },
-  {
-    "path": "utils/cv_tracker.py",
-    "hash": "26479ee3de840b04f4a824da039fd510"
-  },
-  {
-    "path": "utils/config.py",
-    "hash": "f2821518998e7c1f293fc952c1704324"
-  },
-  {
-<<<<<<< HEAD
     "path": "tools/exceptions.py",
     "hash": "51c0bd87c5c71562866be1ebce261b95"
   },
   {
     "path": "tools/calculated.py",
     "hash": "2b10520a4c27b3c26e11b49b2e400d7c"
-=======
-    "path": "utils/requests.py",
-    "hash": "3e3eaf06d4d26173708884faeea76d0b"
   },
   {
-    "path": "utils/A_.py",
-    "hash": "ababfe85f7130c0ba2968dc937b37f1a"
+    "path": "tools/get_angle.py",
+    "hash": "deb042c8bb83638a6e0164afc8828854"
   },
   {
-    "path": "utils/version.py",
-    "hash": "d41d8cd98f00b204e9800998ecf8427e"
+    "path": "tools/record_v7.2.py",
+    "hash": "0269fe20d8c756d90838003a39aa919c"
   },
   {
-    "path": "utils/exceptions.py",
-    "hash": "a0e5847b4e5fe94a87041932434ea38c"
+    "path": "tools/switch_window.py",
+    "hash": "b1c342a7151524bf55e734d711eef6ab"
   },
   {
-    "path": "utils/cv_tools.py",
-    "hash": "abdd6789c7b8280956a57275d37b6600"
->>>>>>> aaadf30ba6ad93065a366f98bd142696eeef483a
-  },
-  {
-    "path": "utils/calculated.py",
-    "hash": "fcf74593d50fe7cadae1e7ca62037c2f"
-  },
-  {
-    "path": "utils/get_angle.py",
-    "hash": "f0a1e64328fd8910da3af49aac79c914"
-  },
-  {
-    "path": "utils/record_v7.2.py",
-    "hash": "a3c51cbb259e1abc21938a75ba64f0fd"
-  },
-  {
-<<<<<<< HEAD
     "path": "tools/map.py",
     "hash": "382242aba3f5553a380ed18a61296eb9"
-=======
-    "path": "utils/switch_window.py",
-    "hash": "eec3fdf0cbd5e600414fd441d18853ca"
->>>>>>> aaadf30ba6ad93065a366f98bd142696eeef483a
   },
   {
-    "path": "utils/map.py",
-    "hash": "630a48f7174add8ee89dfc5755ddff70"
-  },
-  {
-    "path": "utils/yolo.py",
-    "hash": "1ec421c12aea96833ced5791efc0cb72"
-  },
-  {
-    "path": "utils/log.py",
-    "hash": "dbcd267f1f4b3337b0e324b91f165d03"
+    "path": "tools/log.py",
+    "hash": "957dea5581fdf5c16f70e6d514dcba59"
   }
 ]
