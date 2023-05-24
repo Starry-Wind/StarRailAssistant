@@ -1,23 +1,38 @@
-import win32api
-import win32con
-import win32gui
-import win32print
+'''
+Author: Night-stars-1 nujj1042633805@gmail.com
+Date: 2023-05-23 17:39:27
+LastEditors: Night-stars-1 nujj1042633805@gmail.com
+LastEditTime: 2023-05-24 20:51:37
+Description: 
+
+Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
+'''
+import ctypes
+import pygetwindow as gw
+from PIL import ImageGrab
 
 from utils.config import init_config_file, modify_json_file, normalize_file_path, CONFIG_FILE_NAME
 from utils.log import log
 
 
 def get_width():
-    hwnd = win32gui.GetForegroundWindow()  # 根据当前活动窗口获取句柄
-    log.info(hwnd)
-    Text = win32gui.GetWindowText(hwnd)
-    log.info(Text)
+    window = gw.getWindowsWithTitle('崩坏：星穹铁道')[0]
+    hwnd = window._hWnd
 
     # 获取活动窗口的大小
-    window_rect = win32gui.GetWindowRect(hwnd)
-    width = window_rect[2] - window_rect[0]
-    height = window_rect[3] - window_rect[1]
+    window_rect = window.width, window.height
 
+    user32 = ctypes.windll.user32
+    desktop_width = user32.GetSystemMetrics(0)
+    desktop_height = user32.GetSystemMetrics(1)
+    
+    #单显示器屏幕宽度和高度:
+    img = ImageGrab.grab()
+    width, height=img.size
+
+    scaling = round(width/desktop_width*10)/10
+    print(scaling)
+    """    
     # 获取当前显示器的缩放比例
     dc = win32gui.GetWindowDC(hwnd)
     dpi_x = win32print.GetDeviceCaps(dc, win32con.LOGPIXELSX)
@@ -25,36 +40,18 @@ def get_width():
     win32gui.ReleaseDC(hwnd, dc)
     scale_x = dpi_x / 96
     scale_y = dpi_y / 96
+    log.info(f"Real : {width} x {height} {dc} x {dc}")
+    """
 
     # 计算出真实分辨率
-    real_width = int(width * scale_x)
-    real_height = int(height * scale_y)
+    real_width = int(window_rect[0])
+    real_height = int(window_rect[1])
 
     if not normalize_file_path(CONFIG_FILE_NAME):
         init_config_file(real_width=real_width, real_height=real_height)
 
-    log.info(f"Real resolution: {real_width} x {real_height}")
+    log.info(f"Real resolution: {real_width} x {real_height} x {scaling}")
 
     modify_json_file(CONFIG_FILE_NAME, "real_width", real_width)
     modify_json_file(CONFIG_FILE_NAME, "real_height", real_height)
-
-
-def check_mult_screen():
-    """ 检查是否使用多块屏幕 """
-    sc_infos = win32api.EnumDisplayMonitors()
-    if len(sc_infos) > 1:
-        sc_list = []
-        for index, sc in enumerate(sc_infos):
-            info = win32api.GetMonitorInfo(sc_infos[index][0])
-            hdc = win32gui.CreateDC(info['Device'], info['Device'], None)
-            w = win32print.GetDeviceCaps(hdc, 118)
-            s = w / (sc[2][2] - sc[2][0])
-            sc_list.append(s)
-        # 检查缩放比例是否一致
-        is_ok = True
-        for i in sc_list:
-            if abs(i - sc_list[0]) >= 0.001:
-                is_ok = False
-                break
-        if not is_ok:
-            log.warning(f"您当前使用{len(sc_infos)}块屏幕，且缩放比例不一致，请确保游戏运行在主屏幕上")
+    modify_json_file(CONFIG_FILE_NAME, "scaling", scaling)

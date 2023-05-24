@@ -1,12 +1,18 @@
-"""
+'''
+Author: Night-stars-1 nujj1042633805@gmail.com
+Date: 2023-05-23 17:39:27
+LastEditors: Night-stars-1 nujj1042633805@gmail.com
+LastEditTime: 2023-05-24 14:29:41
+Description: 
 Usage:
     map_res_list.py [options]
 
 Options:
     --type <str>
     --find_str <str>   
-    --replace_str <str>         
-"""
+    --replace_str <str>   
+Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
+'''
 import datetime
 import hashlib
 import json
@@ -64,6 +70,7 @@ def str_replace(find_str, replace_str):
     
 if __name__ == '__main__':
     args = docopt(__doc__)
+    print(args)
     if args.get("--type", "") == "replace":
         str_replace(args["--find_str"], args["--replace_str"])
     else:

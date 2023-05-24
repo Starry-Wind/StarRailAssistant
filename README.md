@@ -8,15 +8,15 @@
 
 <h1 align="center">
 
-崩坏：星穹铁道小助手
+崩坏：星穹铁道小助手|StarRailAssistant|StarRailAssistant
 
 </h1>
  
-[![GitHub Stars](https://img.shields.io/github/stars/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/Honkai-Star-Rail/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/Honkai-Star-Rail/network)
-[![GitHub Issues](https://img.shields.io/github/issues/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/Honkai-Star-Rail/issues)
-[![GitHub Contributors](https://img.shields.io/github/contributors/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/Honkai-Star-Rail/graphs/contributors)
-[![GitHub License](https://img.shields.io/github/license/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/Honkai-Star-Rail/blob/main/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/StarRailAssistant/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/StarRailAssistant/network)
+[![GitHub Issues](https://img.shields.io/github/issues/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/StarRailAssistant/issues)
+[![GitHub Contributors](https://img.shields.io/github/contributors/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/StarRailAssistant/graphs/contributors)
+[![GitHub License](https://img.shields.io/github/license/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/StarRailAssistant/blob/main/LICENSE)
 </div>
 
 *****该脚本仍然处于测试阶段，可能会出现奇奇怪怪的BUG*****
@@ -36,7 +36,7 @@ This software is open source, free of charge and for learning and exchange purpo
 本软件开源、免费，仅供学习交流使用。开发者团队拥有本项目的最终解释权。使用本软件产生的所有问题与本项目与开发者团队无关。若您遇到商家使用本软件进行代练并收费，可能是设备与时间等费用，产生的问题及后果与本软件无关。
 
 
-请注意，根据MiHoYo的 [崩坏:星穹铁道的公平游戏宣言]([https://hsr.hoyoverse.com/en-us/news/111244](https://sr.mihoyo.com/news/111246?nav=news&type=notice)):
+请注意，根据MiHoYo的 [崩坏:星穹铁道的公平游戏宣言](https://sr.mihoyo.com/news/111246?nav=news&type=notice):
 
     "严禁使用外挂、加速器、脚本或其他破坏游戏公平性的第三方工具。"
     "一经发现，米哈游（下亦称“我们”）将视违规严重程度及违规次数，采取扣除违规收益、冻结游戏账号、永久封禁游戏账号等措施。"
@@ -44,6 +44,8 @@ This software is open source, free of charge and for learning and exchange purpo
 ## 使用说明
 
 1：安装[Python 3.11](https://www.microsoft.com/store/productId/9NRWMJP3717K) (其他版本安装依赖项时会有很多问题)
+
+1.1: 输入`pip install -r requirements.txt`安装依赖
 
 2：确认游戏语言为**简体中文**，按键配置皆为默认，灵敏度皆为默认值
 
@@ -98,10 +100,8 @@ This software is open source, free of charge and for learning and exchange purpo
     "start": [           （开局传送地图识别图片，并将鼠标移动至图片中间并按下按键）
         {"map": 1},         （按下m键打开地图）
         {"temp\\orientation_1.jpg": 1.5},     （识别到orientation_1.jpg图片后，将鼠标移动至图片中间并按下按键）
-        {"temp\\orientation_2.jpg": 1.5},      （识别到orientation_2.jpg图片后，将鼠标移动至图片中间并按下按键）
         {"temp\\map_1.jpg": 2},               （具体图片自己看，一般为该区域名"乌拉乌拉"的地图文字）
         {"temp\\map_1_point_1.jpg": 1.5},       （第一个传送点的图片）
-        {"temp\\map_1_point_2.jpg": 1.5},       （第二个传送点的图片）
         {"temp\\transfer.jpg": 1.5}              （"传送"字的图片）
     ]
 }
@@ -113,34 +113,19 @@ This software is open source, free of charge and for learning and exchange purpo
  
 2：支持地图 **空间站「黑塔」、雅利洛VI、仙舟「罗浮」**
 
-3：如果你发现地图有撞墙问题，可以协助更新[地图文件提交到这里](https://github.com/Starry-Wind/Honkai-Star-Rail/tree/map)
+3：如果你发现地图有撞墙问题，可以协助更新[地图文件提交到这里](https://github.com/Starry-Wind/StarRailAssistant/tree/map)
 
 4：请使用**三月七**来跑图以获得最佳体验
 
 ⭐**如果喜欢，点个星星~**⭐
 
-## 更新日志 (Release-v1.0.0)
-
-1：新增bat执行档一键开启 感谢[@apple050620312
-](https://github.com/apple050620312)
-
-2：新增地图自动更新功能
-
-3：将pynput重新加入依赖列表
-
-4：新增更多后台提示信息
-
-5：新增自动获取视窗大小
-
-6：日常修复一些小bug
-
-7：更新了新的地图json，能解决大部分撞墙问题
-
 ## 未来目标
 
 1：模拟宇宙正在开发
 
-2：后续将会新增找宝箱、锄大地顺带捡垃圾等功能
+2：GUI开发
+
+3：后续将会新增找宝箱、锄大地顺带捡垃圾等功能
 
 ## 贡献者
 

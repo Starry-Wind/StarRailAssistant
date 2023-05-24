@@ -1,33 +1,29 @@
 from get_width import get_width
 import time
+import os
 import ctypes
 import traceback
-from tools.log import log, webhook_and_log
-
+import pygetwindow as gw
+from utils.log import log
 
 def main():
-    if isadmin() == 1:
-        log.info("脚本将于5秒后运行,请确保你的游戏置顶")
-        time.sleep(5)
-        get_width()
-        from tools.calculated import Calculated
-        calculat = Calculated()
-        calculat.relative_click((96, 9))
-        webhook_and_log("脚本已经完成运行")
-    else:
-        log.info("请以管理员权限运行")
 
+    # 通过窗口标题查找窗口句柄
+    window = gw.getWindowsWithTitle('崩坏：星穹铁道')[0]
+    print(gw.getWindowsWithTitle('崩坏：星穹铁道'))
+    # 获取窗口句柄
+    handle = window._hWnd
+
+    print("窗口句柄：", handle)
 
 def isadmin():
-    return ctypes.windll.shell32.IsUserAnAdmin()
-
+	return ctypes.windll.shell32.IsUserAnAdmin()
 
 def test():
     pass
 
-
 if __name__ == '__main__':
     try:
-        test()
+        main()
     except:
         log.error(traceback.format_exc())
