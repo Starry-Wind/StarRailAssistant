@@ -14,7 +14,7 @@ on:
   pull_request_review:
     types:
       - submitted
-  status: {}
+  status: 
   workflow_dispatch:
 
 jobs:

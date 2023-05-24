@@ -3,7 +3,7 @@ name: Publish Release
 on:
   push:
     branches:
-      - "beta-2.7_test"
+      - "main"
     tags:
       - "v*.*.*"
   workflow_dispatch:
