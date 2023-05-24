@@ -98,5 +98,17 @@
   {
     "path": "utils/log.py",
     "hash": "cba7c2a5a75af185251e3c445513fade"
+  },
+  {
+    "path": "whl/cnstd-1.2.2-py3-none-any.whl",
+    "hash": "2e700dd1d42f71c71b739bd6afa67a8a"
+  },
+  {
+    "path": "whl/cnocr-2.2.2.3-py3-none-any.whl",
+    "hash": "fff249a0f8c75f5bc4f0f97c95880bd8"
+  },
+  {
+    "path": "whl/Polygon3-3.0.9-cp311-cp311-win_amd64.whl",
+    "hash": "43a2cab179598fdaaa21da76cdaaaafc"
   }
 ]
