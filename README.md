@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-<img alt="LOGO" src="../../blob/map/temp/love!_old.png" style="border-radius:50%">
-
-<h1 align="center">
-
-崩坏：星穹铁道小助手
-
-</h1>
-=======
 <div align="center">
 
 [嗨！点点我！点点我！点点我！ ](#使用说明)
@@ -132,4 +123,3 @@
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Starry-Wind/Honkai-Star-Rail&type=Date)](https://star-history.com/#Starry-Wind/Honkai-Star-Rail&Date)
->>>>>>> aaadf30ba6ad93065a366f98bd142696eeef483a
