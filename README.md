@@ -156,4 +156,4 @@ This software is open source, free of charge and for learning and exchange purpo
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Starry-Wind/Honkai-Star-Rail&type=Date)](https://star-history.com/#Starry-WindStarRailAssistant&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=Starry-Wind/StarRailAssistant&type=Date)](https://star-history.com/#Starry-Wind/StarRailAssistant&Date)
