@@ -3,8 +3,8 @@ import win32con
 import win32gui
 import win32print
 
-from tools.config import init_config_file, modify_json_file, normalize_file_path, CONFIG_FILE_NAME
-from tools.log import log
+from utils.config import init_config_file, modify_json_file, normalize_file_path, CONFIG_FILE_NAME
+from utils.log import log
 
 
 def get_width():

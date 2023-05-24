@@ -2,20 +2,20 @@ import os
 import traceback
 
 try:
-    from tools.log import log, webhook_and_log
+    from utils.log import log, webhook_and_log
     import time
     import ctypes
     import pyuac
     import questionary
 
     from get_width import get_width, check_mult_screen
-    from tools.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
-    from tools.map import Map
-    from tools.update_file import update_file_main
-    from tools.switch_window import switch_window
-    from tools.exceptions import Exception
+    from utils.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
+    from utils.map import Map
+    from utils.update_file import update_file_main
+    from utils.switch_window import switch_window
+    from utils.exceptions import Exception
 except:
-    pass
+    print(traceback.format_exc())
 
 
 def choose_map(map_instance: Map):

@@ -3,7 +3,6 @@ name: Publish Release
 on:
   push:
     branches:
-      - "master"
       - "beta-2.7_test"
     tags:
       - "v*.*.*"
