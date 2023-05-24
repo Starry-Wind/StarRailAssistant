@@ -1,9 +1,5 @@
 [
   {
-    "path": "Honkai_Star_Rail.py",
-    "hash": "182d1668912c4f35fa4db8822c19bc82"
-  },
-  {
     "path": "get_width.py",
     "hash": "5b3905c8b639fab1ba77f2c4ba16647d"
   },
@@ -46,49 +42,5 @@
   {
     "path": "map_res_list.py",
     "hash": "4fb4a588ce159c598d7ba73e255917ba"
-  },
-  {
-    "path": "utils/update_file.py",
-    "hash": "ad9f176f03dd443222798296ce134dc9"
-  },
-  {
-    "path": "utils/config.py",
-    "hash": "a9bb0955bfe7eb8327376b1d1ba1a656"
-  },
-  {
-    "path": "utils/requests.py",
-    "hash": "8b3e24396a1f8be5251e13aac7bae960"
-  },
-  {
-    "path": "utils/exceptions.py",
-    "hash": "5748c25619c5395bedb6c0425bc03257"
-  },
-  {
-    "path": "utils/calculated.py",
-    "hash": "713805d41797e27206f499510c044642"
-  },
-  {
-    "path": "utils/get_angle.py",
-    "hash": "deb042c8bb83638a6e0164afc8828854"
-  },
-  {
-    "path": "utils/record_v7.2.py",
-    "hash": "0269fe20d8c756d90838003a39aa919c"
-  },
-  {
-    "path": "utils/switch_window.py",
-    "hash": "b1c342a7151524bf55e734d711eef6ab"
-  },
-  {
-    "path": "utils/Revenue_Calculator.py",
-    "hash": "c1b96db4f63ab896c4c4a56446e5ccaa"
-  },
-  {
-    "path": "utils/map.py",
-    "hash": "bf84d05970e50820cdf971ceaa3d4716"
-  },
-  {
-    "path": "utils/log.py",
-    "hash": "1d5ecc0cf57475fbe62376bb2ca8fe1f"
   }
 ]
