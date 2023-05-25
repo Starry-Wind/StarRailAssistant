@@ -9,15 +9,15 @@
   },
   {
     "path": "README_CHT.md",
-    "hash": "3e2ab0ba242cd12c4ffd0e8acdbea1f8"
+    "hash": "c4cdd5ab8dd2a64d316c2a2b810ce4cd"
   },
   {
     "path": "README.md",
-    "hash": "5bf492249492e8ce94bff5fe1d4a14fd"
+    "hash": "6dc11a9edbd631b0be6225823f2d9eae"
   },
   {
     "path": "安装依赖.bat",
-    "hash": "a90c47a96de855f740f44e8a8ade68d1"
+    "hash": "46feabd6af66b86c8d1413be551d7164"
   },
   {
     "path": "config.json",
@@ -25,7 +25,7 @@
   },
   {
     "path": "requirements.txt",
-    "hash": "7a67d8b2a556b63ca31db26eb4c992a6"
+    "hash": "02c3c6e906f8b85c8260373d0d6404f9"
   },
   {
     "path": "map_res_list.py",
