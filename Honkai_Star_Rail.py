@@ -57,7 +57,8 @@ def choose_map(map_instance, type = 0, platform = "PC"):
 def main(type=0,platform="PC"):
     main_start()
     from utils.map import Map
-    map_instance = Map(platform)
+    order = read_json_file(CONFIG_FILE_NAME, False).get('adb', "")
+    map_instance = Map(platform, order)
     #simulated_universe = Simulated_Universe(platform)
     start, role_list = choose_map(map_instance, type, platform)
     if start:
@@ -90,6 +91,9 @@ def main_start():
         options = ['没打开', '打开了', '这是什么']
         option = questionary.select(title, options).ask()
         modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", options.index(option))
+        title = "请输入ADB的地址:端口"
+        text = questionary.text(title,default="127.0.0.1:62001").ask()
+        modify_json_file(CONFIG_FILE_NAME, "adb", text)
         modify_json_file(CONFIG_FILE_NAME, "start", True)
 
 

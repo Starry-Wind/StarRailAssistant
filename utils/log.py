@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-15 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-25 13:21:13
+LastEditTime: 2023-05-25 14:27:35
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -47,6 +47,9 @@ def read_json_file(filename: str, path=False):
                 return data
     else:
         return {}
+
+def get_message(*arg):
+    print(arg[0][:-1])
 data = read_json_file("config.json")
 VER = data.get("star_version",0)+"/"+data.get("temp_version",0)
 level = data.get("level","INFO")
@@ -59,11 +62,12 @@ logger.add(sys.stdout, level=level, colorize=True,
                     ":<cyan>{line}</cyan> - "+f"<cyan>{VER}</cyan> - "
                     "<level>{message}</level>"
             )
+logger.add(get_message, level=level,
+            format=f"{VER} - "
+                    "{message}"
+            )
 logger.add(path_log,
             format="{time:HH:mm:ss} - "
                     "{level}\t| "
                     "{module}.{function}:{line} - "+f"<cyan>{VER}</cyan> - "+" {message}",
             rotation='0:00', enqueue=True, serialize=False, encoding="utf-8", retention="10 days")
-
-def info(mess):
-    return log.info(mess)

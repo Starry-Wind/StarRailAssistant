@@ -76,7 +76,8 @@ def init_config_file(real_width, real_height):
                     "temp_version": "0",
                     "star_version": "0",
                     "open_map": "m",
-                    "level": "INFO"
+                    "level": "INFO",
+                    "adb": "127.0.0.1:62001"
                 }
             )
         )
