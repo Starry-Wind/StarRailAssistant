@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-23 17:39:27
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-24 20:51:37
+LastEditTime: 2023-05-25 21:58:46
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -31,7 +31,6 @@ def get_width():
     width, height=img.size
 
     scaling = round(width/desktop_width*10)/10
-    print(scaling)
     """    
     # 获取当前显示器的缩放比例
     dc = win32gui.GetWindowDC(hwnd)

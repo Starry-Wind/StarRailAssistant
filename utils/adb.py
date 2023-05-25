@@ -37,7 +37,7 @@ class ADB:
             :param pos2: 坐标2
             :param time: 操作时间
         """
-        shell = ["temp\\adb\\adb", "-s", self.order, "shell", "input", "swipe", str(pos1[0]), str(pos1[1]), str(pos2[0]), str(pos2[1]), str(time)]
+        shell = ["temp\\adb\\adb", "-s", self.order, "shell", "input", "swipe", str(pos1[0]), str(pos1[1]), str(pos2[0]), str(pos2[1]), str(int(time))]
         run(shell, shell=True) 
 
     def input_tap(self, pos=(880,362)):
