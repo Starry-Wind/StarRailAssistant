@@ -107,13 +107,15 @@ venv.bak/
 # add
 .idea/
 
-
+# custom 
 logs/
 map/
 map_data/
 temp/
+tmp/
 test.py
 map_list.json
 LICENSE
 temp_list.json
 version.json
+config.json
