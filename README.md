@@ -1,5 +1,3 @@
-# SRA
-# 崩坏：星穹铁道小助手地图库
 <img alt="LOGO" src="./temp/love!.png" style="border-radius:50%">
 
 [嗨！点点我！点点我！点点我！ ](#使用说明)
