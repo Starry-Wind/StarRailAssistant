@@ -95,60 +95,59 @@ def main_start():
 
 def up_data():
     main_start()    # 无config直接更新时初始化config文件
-    if not read_json_file(CONFIG_FILE_NAME, False).get('map_debug'):
-        ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
-        if "rawgithub_proxy" not in read_json_file(CONFIG_FILE_NAME, False):
-            init_config_file(0, 0)
-            raise Exception("未检测到必要更新，强制更新脚本，请重新运行脚本")
+    ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
+    if "rawgithub_proxy" not in read_json_file(CONFIG_FILE_NAME, False):
+        init_config_file(0, 0)
+        raise Exception("未检测到必要更新，强制更新脚本，请重新运行脚本")
 
-        rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
-        # asyncio.run(check_file(ghproxy, "map"))
-        # asyncio.run(check_file(ghproxy, "temp"))
-        up_data = [
-            {
-                'url_proxy': ghproxy,
-                'raw_proxy': rawghproxy,
-                'skip_verify': False,
-                'type': "star",
-                'version': "beta-2.7_test",
-                'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/beta-2.7_test.zip",
-                'unzip_path': ".",
-                'keep_folder': ['.git', 'logs', 'temp', 'map', 'tmp', 'venv'],
-                'keep_file': ['config.json', 'version.json', 'star_list.json', 'README_CHT.md', 'README.md'],
-                'zip_path': "StarRailAssistant-beta-2.7_test/",
-                'name': "脚本"
-            },
-            {
-                'url_proxy': ghproxy,
-                'raw_proxy': rawghproxy,
-                'skip_verify': False,
-                'type': "map",
-                'version': "map",
-                'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/map.zip",
-                'unzip_path': "map",
-                'keep_folder': [],
-                'keep_file': [],
-                'zip_path': "StarRailAssistant-map/",
-                'name': "地图"
-            },
-            {
-                'url_proxy': ghproxy,
-                'raw_proxy': rawghproxy,
-                'skip_verify': False,
-                'type': "temp",
-                'version': "map",
-                'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/map.zip",
-                'unzip_path': "temp",
-                'keep_folder': [],
-                'keep_file': [],
-                'zip_path': "StarRailAssistant-map/",
-                'name': "图片"
-            },
-        ]
-        for up in up_data:
-            if up["name"] == "脚本" and read_json_file(CONFIG_FILE_NAME, False).get('script_debug', False):
-                continue
-            update_file_main(**up)
+    rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
+    # asyncio.run(check_file(ghproxy, "map"))
+    # asyncio.run(check_file(ghproxy, "temp"))
+    up_data = {
+        "脚本":{
+            'url_proxy': ghproxy,
+            'raw_proxy': rawghproxy,
+            'skip_verify': False,
+            'type': "star",
+            'version': "beta-2.7_test",
+            'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/beta-2.7_test.zip",
+            'unzip_path': ".",
+            'keep_folder': ['.git', 'logs', 'temp', 'map', 'tmp', 'venv'],
+            'keep_file': ['config.json', 'version.json', 'star_list.json', 'README_CHT.md', 'README.md'],
+            'zip_path': "StarRailAssistant-beta-2.7_test/",
+            'name': "脚本"
+        },
+        "地图":{
+            'url_proxy': ghproxy,
+            'raw_proxy': rawghproxy,
+            'skip_verify': False,
+            'type': "map",
+            'version': "map",
+            'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/map.zip",
+            'unzip_path': "map",
+            'keep_folder': [],
+            'keep_file': [],
+            'zip_path': "StarRailAssistant-map/",
+            'name': "地图"
+        },
+        "图片":{
+            'url_proxy': ghproxy,
+            'raw_proxy': rawghproxy,
+            'skip_verify': False,
+            'type': "temp",
+            'version': "map",
+            'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/map.zip",
+            'unzip_path': "temp",
+            'keep_folder': [],
+            'keep_file': [],
+            'zip_path': "StarRailAssistant-map/",
+            'name': "图片"
+        },
+    }
+    title = "请选择更新项目"
+    options = list(up_data.keys())
+    option = questionary.select(title, options).ask()
+    update_file_main(**up_data[option])
 
 
 if __name__ == "__main__":
@@ -157,17 +156,17 @@ if __name__ == "__main__":
             pyuac.runAsAdmin()
         else:
             title = "请选择运行平台"
-            options = ['PC', '模拟器']
+            options = ['PC', '模拟器','检查更新']
             platform = questionary.select(title, options).ask()
+            if platform == "检查更新":
+                up_data()
             title = "请选择操作"
-            options = ['大世界', '模拟宇宙','检查更新']
+            options = ['大世界', '模拟宇宙']
             option = questionary.select(title, options).ask()
             if option == "大世界":
                 main(0,platform)
             elif option == "模拟宇宙":
                 main(1,platform)
-            elif option == "检查更新":
-                up_data()
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
         os.system("pip install -r requirements.txt")

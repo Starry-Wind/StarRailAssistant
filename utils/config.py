@@ -69,7 +69,6 @@ def init_config_file(real_width, real_height):
                     "real_width": real_width,
                     "auto_battle_persistence": 0,
                     "real_height": real_height,
-                    "map_debug": False,
                     "github_proxy": "",
                     "rawgithub_proxy": "",
                     "webhook_url": "",
@@ -77,7 +76,7 @@ def init_config_file(real_width, real_height):
                     "temp_version": "0",
                     "star_version": "0",
                     "open_map": "m",
-                    "script_debug": False
+                    "level": "INFO"
                 }
             )
         )

@@ -27,3 +27,4 @@ torch
 tqdm
 ultralytics
 xpinyin
+PySimpleGUI
