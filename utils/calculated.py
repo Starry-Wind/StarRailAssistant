@@ -54,7 +54,6 @@ class calculated:
         if not points:
             points = self.mouse.position
         x, y = int(points[0]), int(points[1])
-        log.debug((x, y))
         if self.platform == "PC":
             '''
             win32api.SetCursorPos((x, y))
@@ -63,6 +62,8 @@ class calculated:
             time.sleep(0.5)
             win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
             '''
+            #x = x - (self.window.width-1920)/2
+            #y = y - (self.window.height-1070)/2
             self.mouse.position = (x, y)
             self.mouse.press(mouse.Button.left)
             time.sleep(0.5)
@@ -98,7 +99,6 @@ class calculated:
             elif self.platform == "模拟器":
                 self.adb.input_tap((x, y))
             result = self.get_pix_bgr(appoint_points)
-            print(result)
             if result == hsv:
                 break
             if time.time() - start_time > 5:
@@ -226,12 +226,8 @@ class calculated:
             screenshot, left, top, right, bottom, width, length = self.take_screenshot()
         result = cv.matchTemplate(screenshot, prepared, cv.TM_CCORR_NORMED)
         length, width, _ = prepared.shape
-        if self.platform == "模拟器":
-            length = int(length)
-            width = int(width)
-        else:
-            length = 0
-            width = 0
+        length = int(length)
+        width = int(width)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
         return {
             "screenshot": screenshot,
@@ -268,7 +264,9 @@ class calculated:
             "orientation_2": "空间站「黑塔",
             "map_1": "基座舱段",
             "map_1_point" : [(593, 346),(593, 556)],
-            "transfer": "传送"
+            "transfer": "传送",
+            "map_1-2": "收容舱段",
+            "map_1-3": "支援舱段",
         }
         if temp_name in temp_ocr:
             if "map" not in temp_name:
@@ -276,7 +274,7 @@ class calculated:
                 while True:
                     if not self.is_blackscreen():
                         break
-            elif "point" in temp_name:
+            elif "point" in temp_name and self.platform == "模拟器":
                 self.adb.input_swipe(temp_ocr[temp_name][0],temp_ocr[temp_name][1],100)
                 temp_ocr.pop(temp_name)
                 time.sleep(0.5)
@@ -292,8 +290,8 @@ class calculated:
             while True:
                 result = self.scan_screenshot(target)
                 if result["max_val"] > threshold:
-                    points = self.calculated(result, target.shape)
-                    self.Click(points)
+                    #points = self.calculated(result, target.shape)
+                    self.Click(result["max_loc"])
                     break
                 if flag == False:
                     break
@@ -501,7 +499,10 @@ class calculated:
         data = {i['text']: i['position'] for i in out}
         if not characters:
             characters = list(data.keys())[0]
-        pos = ((data[characters][2][0]+data[characters][0][0])/2, (data[characters][2][1]+data[characters][0][1])/2) if characters in data else None
+        if self.platform == "模拟器":
+            pos = ((data[characters][2][0]+data[characters][0][0])/2, (data[characters][2][1]+data[characters][0][1])/2) if characters in data else None
+        elif self.platform == "PC":
+            pos = (data[characters][0][0], data[characters][0][1]) if characters in data else None
         return characters, pos
     
     def part_ocr(self,points = (0,0,0,0)):
