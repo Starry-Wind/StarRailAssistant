@@ -501,6 +501,7 @@ class calculated:
         """
         out = self.ocr.ocr(img_fp)
         data = {i['text']: i['position'] for i in out}
+        log.debug(data)
         if not characters:
             characters = list(data.keys())[0]
         if self.platform == "模拟器":
@@ -522,6 +523,7 @@ class calculated:
         x, y = width/100*points[0], length/100*points[1]
         out = self.ocr.ocr(img_fp)
         data = {i['text']: (left+x+(i['position'][2][0]+i['position'][0][0])/2,top+y+(i['position'][2][1]+i['position'][0][1])/2) for i in out}
+        log.debug(data)
         return data
 
     def get_pix_bgr(self, pos):
