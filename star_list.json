@@ -1,7 +1,7 @@
 [
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "dd55f37cb51a645f94b23eae1422db26"
+    "hash": "b78996b7b7f675d6dc2f6aade6465a2e"
   },
   {
     "path": "get_width.py",
@@ -17,23 +17,15 @@
   },
   {
     "path": "config.json",
-    "hash": "9260a362fb89b1d138bd3176a4dcad2e"
+    "hash": "e98ae49680b4716258534b1abe0196d9"
   },
   {
     "path": "requirements.txt",
-    "hash": "97c334d8818365c2de191b055f339739"
-  },
-  {
-    "path": "test.py",
-    "hash": "ec5b77cd26390b62c6bacf09feeabfc2"
-  },
-  {
-    "path": "LICENSE",
-    "hash": "f8e18e1941ab8aaa60102f83e419bea5"
+    "hash": "ee7818d509fdacfef5e94708d8ff8c0f"
   },
   {
     "path": "map_res_list.py",
-    "hash": "b1f01b909d4ec0fd85dd0fa124d82dc2"
+    "hash": "6d79a2ee17bbf5994610248146bd06f8"
   },
   {
     "path": "utils/update_file.py",
@@ -45,7 +37,7 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "1a646b9a2589069b0595b4341de0cc2e"
+    "hash": "0a107ff8cb0c905f716857647c62a34f"
   },
   {
     "path": "utils/requests.py",
@@ -61,7 +53,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "09edfc6417be718f523f38a9bc78d328"
+    "hash": "6219b1b5bbc1cf6e8c26268c9d527f2c"
   },
   {
     "path": "utils/get_angle.py",
@@ -77,11 +69,11 @@
   },
   {
     "path": "utils/adb.py",
-    "hash": "0ceb82e1e97d66fc62df5176ac515e30"
+    "hash": "bf2803d719ea830dd1bb97c52a2fe871"
   },
   {
     "path": "utils/log.py",
-    "hash": "cba7c2a5a75af185251e3c445513fade"
+    "hash": "5114887ed4f3f40ccee42f7c83cf6ae8"
   },
   {
     "path": "whl/cnstd-1.2.2-py3-none-any.whl",
