@@ -111,11 +111,11 @@ def up_data():
                 'skip_verify': False,
                 'type': "star",
                 'version': "beta-2.7_test",
-                'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/beta-2.7_test.zip",
+                'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/main.zip",
                 'unzip_path': ".",
                 'keep_folder': ['.git', 'logs', 'temp', 'map', 'tmp', 'venv'],
                 'keep_file': ['config.json', 'version.json', 'star_list.json'],
-                'zip_path': "StarRailAssistant-beta-2.7_test/",
+                'zip_path': "StarRailAssistant-main/",
                 'name': "脚本"
             },
             {
