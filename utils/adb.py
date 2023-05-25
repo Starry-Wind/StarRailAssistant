@@ -1,3 +1,12 @@
+'''
+Author: Night-stars-1 nujj1042633805@gmail.com
+Date: 2023-05-25 12:54:10
+LastEditors: Night-stars-1 nujj1042633805@gmail.com
+LastEditTime: 2023-05-25 13:10:02
+Description: 
+
+Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
+'''
 from subprocess import run, DEVNULL
 from PIL import ImageGrab, Image
 from typing import Dict, Optional, Any, Union
@@ -10,6 +19,15 @@ class ADB:
         """
         self.order = order
 
+    def connect(self):
+        """
+        说明:
+            连接ADB
+        参数:
+            :param order: ADB端口
+        """
+        shell = ["temp\\adb\\adb", "connect", self.order]
+        run(shell, shell=True) 
     def input_swipe(self, pos1=(919,617), pos2=(919,908), time: int=100):
         """
         说明:
