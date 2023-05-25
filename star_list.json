@@ -9,15 +9,15 @@
   },
   {
     "path": "README_CHT.md",
-    "hash": "dd90312e083f5fbbfbd0a2e30691360b"
+    "hash": "3e2ab0ba242cd12c4ffd0e8acdbea1f8"
   },
   {
     "path": "README.md",
-    "hash": "df3f3eb4083e1df0e196831520f2eb1a"
+    "hash": "c40b19bb3532cf9c00d14ba652864510"
   },
   {
     "path": "安装依赖.bat",
-    "hash": "9afde93775eaa530d21c0e637b50b577"
+    "hash": "46feabd6af66b86c8d1413be551d7164"
   },
   {
     "path": "config.json",
@@ -78,6 +78,10 @@
   {
     "path": "utils/log.py",
     "hash": "be48be3e52541115abe8bc793b22b73d"
+  },
+  {
+    "path": "whl/Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl",
+    "hash": "0c19795eb68713cde783a434ea636ba9"
   },
   {
     "path": "whl/cnstd-1.2.2-py3-none-any.whl",
