@@ -17,11 +17,11 @@
   },
   {
     "path": "config.json",
-    "hash": "7fc8edb288919b482ab8c64908db2109"
+    "hash": "2d3a3860d280d0203215f5b77ff01967"
   },
   {
     "path": "requirements.txt",
-    "hash": "ee7818d509fdacfef5e94708d8ff8c0f"
+    "hash": "dc6c9cd523c196962b36b10110aac2a6"
   },
   {
     "path": "map_res_list.py",
@@ -73,7 +73,7 @@
   },
   {
     "path": "utils/log.py",
-    "hash": "5114887ed4f3f40ccee42f7c83cf6ae8"
+    "hash": "5b118a06e891f70649b4550b82576885"
   },
   {
     "path": "whl/cnstd-1.2.2-py3-none-any.whl",
