@@ -76,10 +76,7 @@ def main(type=0,platform="PC"):
         elif type == 1:
             log.info("未完工")
             #simulated_universe.auto_map(start, role_list)  # 读取配置
-        elif type == 2:
-            log.info("自动派遣功能测试中，目前只支持PC")
-            if platform != "PC" : return False
-            commission(4)
+
 
 def main_start():
     if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
@@ -100,12 +97,17 @@ def main_start():
         modify_json_file(CONFIG_FILE_NAME, "adb", text)
         modify_json_file(CONFIG_FILE_NAME, "start", True)
 
-def commission(n=4):
-    log.info("脚本将自动切换至游戏窗口，请保持游戏窗口激活")
-    switch_window()
-    time.sleep(0.5)
+def commission(platform="PC", n=4):
+    log.info("脚本将自动切换至游戏窗口，请保持游戏窗口激活，暂时只测试PC")
 
     cms = Commission(n)
+
+    if platform == "PC":
+        cms.calculated.switch_window()
+        time.sleep(0.5)
+    else:
+        return
+
     cms.open()
     cms.run()
     cms.close()
@@ -186,7 +188,7 @@ if __name__ == "__main__":
             elif option == "模拟宇宙":
                 main(1,platform)            
             elif option == "派遣委托":
-                main(2,platform)
+                commission(n=4)
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
         os.system("pip install -r requirements.txt")

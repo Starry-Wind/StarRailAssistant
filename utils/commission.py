@@ -12,7 +12,7 @@ def get_percentile(rect, shape):
 class Commission():
     def __init__(self, n=4):
         self.n = n
-        self.calculated = Calculated()
+        self.calculated = calculated("PC")
 
 
     def open(self):

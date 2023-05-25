@@ -203,6 +203,7 @@ class calculated:
             left, top, right, bottom = 0,0,0,0
             temp = self.adb.screencast("/sdcard/Pictures/screencast1.png")
             width, length = temp.size
+
         if points != (0,0,0,0):
             #points = (points[0], points[1]+5, points[2], points[3]+5) if self.platform == "PC" else points
             temp = temp.crop((width/100*points[0], length/100*points[1], width/100*points[2], length/100*points[3]))
@@ -220,11 +221,11 @@ class calculated:
             :param points: 比对范围
         """
         if screenshot1:
-            screenshot, left, top, right, bottom, width, length = self.take_screenshot(points)
+            screenshot, left, top, right, bottom, width, length = self.take_screenshot(points=points)
             screenshot = np.array(screenshot1)
             screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
         else:
-            screenshot, left, top, right, bottom, width, length = self.take_screenshot(points)
+            screenshot, left, top, right, bottom, width, length = self.take_screenshot(points=points)
         result = cv.matchTemplate(screenshot, prepared, cv.TM_CCORR_NORMED)
         length, width, _ = prepared.shape
         length = int(length)
@@ -283,7 +284,11 @@ class calculated:
                 result = self.scan_screenshot(target, points=points)
                 if result["max_val"] > threshold:
                     #points = self.calculated(result, target.shape)
-                    self.Click(result["max_loc"])
+                    if points != (0,0,0,0):
+                        shifted = (result["max_loc"][0] + self.CONFIG["real_width"] ,  result["max_loc"][1] + self.CONFIG["real_height"])
+                        self.Click(shifted)       
+                    else:
+                        self.Click(result["max_loc"])
                     break
                 if flag == False:
                     break
