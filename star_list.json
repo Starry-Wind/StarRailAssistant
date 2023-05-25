@@ -13,15 +13,19 @@
   },
   {
     "path": "README.md",
-    "hash": "584c966a9fc20a693a8472656edf8359"
+    "hash": "df3f3eb4083e1df0e196831520f2eb1a"
+  },
+  {
+    "path": "安装依赖.bat",
+    "hash": "bb0a61f169b90164af4e11f23ff4a364"
   },
   {
     "path": "config.json",
-    "hash": "17a0d7b777d984cd78d5bd333e1d3072"
+    "hash": "edf5b3a188cc0f0a2899ebfb533d3a2f"
   },
   {
     "path": "requirements.txt",
-    "hash": "9ecac8801898212ba98f97bfdc2dd327"
+    "hash": "7a67d8b2a556b63ca31db26eb4c992a6"
   },
   {
     "path": "map_res_list.py",
