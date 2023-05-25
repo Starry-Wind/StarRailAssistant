@@ -1,3 +1,4 @@
+orjson
 cn2an
 coloredlogs
 flatbuffers
@@ -14,7 +15,6 @@ httpx
 loguru
 opencv_contrib_python
 opencv_python
-orjson
 Pillow
 Pillow
 PyAutoGUI
@@ -27,4 +27,3 @@ torch
 tqdm
 ultralytics
 xpinyin
-PySimpleGUI
