@@ -55,8 +55,10 @@ class Map:
             log.info(f"执行{map_filename}文件:{map_index+1}/{len(map_data['map'])} {map}")
             key = list(map.keys())[0]
             value = map[key]
-            if key in ["w", "s", "a", "d", "f"]:
+            if key in ["w", "s", "a", "d"]:
                 self.calculated.move(key, value)
+            elif key == "f":
+                self.calculated.teleport(key, value)
             elif key == "mouse_move":
                 self.calculated.Mouse_move(value)
             elif key == "fighting":
