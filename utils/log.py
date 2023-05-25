@@ -51,7 +51,7 @@ def read_json_file(filename: str, path=False):
 def get_message(*arg):
     print(arg[0][:-1])
 data = read_json_file("config.json")
-VER = str(data.get("star_version",0))+"/"+str(data.get("temp_version",0))
+VER = str(data.get("star_version",0))+"/"+str(data.get("temp_version",0))+"/"+str(data.get("map_version",0))
 level = data.get("level","INFO")
 log = logger
 dir_log = "logs"
