@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-15 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-25 14:27:35
+LastEditTime: 2023-05-25 15:21:36
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -62,10 +62,12 @@ logger.add(sys.stdout, level=level, colorize=True,
                     ":<cyan>{line}</cyan> - "+f"<cyan>{VER}</cyan> - "
                     "<level>{message}</level>"
             )
+"""
 logger.add(get_message, level=level,
             format=f"{VER} - "
                     "{message}"
             )
+"""
 logger.add(path_log,
             format="{time:HH:mm:ss} - "
                     "{level}\t| "
