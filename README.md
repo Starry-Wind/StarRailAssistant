@@ -45,7 +45,7 @@ This software is open source, free of charge and for learning and exchange purpo
 
 1：安装[Python 3.11](https://www.microsoft.com/store/productId/9NRWMJP3717K) (其他版本安装依赖项时会有很多问题)
 
-1.1: 点击`安装依赖.bat`安装依赖
+1.1: 输入`pip install -r requirements.txt`安装依赖
 
 2：确认游戏语言为**简体中文**，按键配置皆为默认，灵敏度皆为默认值
 
