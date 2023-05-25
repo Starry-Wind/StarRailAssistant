@@ -1,7 +1,7 @@
 [
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "25b2317326f5856bae0cbf70310f32d0"
+    "hash": "dd55f37cb51a645f94b23eae1422db26"
   },
   {
     "path": "get_width.py",
@@ -9,19 +9,11 @@
   },
   {
     "path": "README_CHT.md",
-    "hash": "b0905ef88dcd36defba7a8780d2a2eae"
-  },
-  {
-    "path": "README_old.md",
-    "hash": "1f8bebfeceb47f456cced058a2e7776b"
-  },
-  {
-    "path": "poetry.lock",
-    "hash": "6c4e5b96b828640739a017499d9d7230"
+    "hash": "dd90312e083f5fbbfbd0a2e30691360b"
   },
   {
     "path": "README.md",
-    "hash": "4d84599d101fdcae6132fe9bf1af72d4"
+    "hash": "e9650d9cafc4c8c2f1813eb7a8340c85"
   },
   {
     "path": "config.json",
@@ -32,20 +24,12 @@
     "hash": "97c334d8818365c2de191b055f339739"
   },
   {
-    "path": "pyproject.toml",
-    "hash": "ec0c9d81e742a6a0905b5c77506a5654"
-  },
-  {
     "path": "test.py",
     "hash": "ec5b77cd26390b62c6bacf09feeabfc2"
   },
   {
     "path": "LICENSE",
     "hash": "f8e18e1941ab8aaa60102f83e419bea5"
-  },
-  {
-    "path": "start.bat",
-    "hash": "9905cff8765d8c11aea638fa349b109d"
   },
   {
     "path": "map_res_list.py",
@@ -77,7 +61,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "1f0d5f61a458c4157924d2e8686815af"
+    "hash": "09edfc6417be718f523f38a9bc78d328"
   },
   {
     "path": "utils/get_angle.py",
