@@ -26,3 +26,4 @@ torch
 tqdm
 ultralytics
 xpinyin
+onnxruntime
