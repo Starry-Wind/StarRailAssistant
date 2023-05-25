@@ -210,20 +210,21 @@ class calculated:
         screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
         return (screenshot, left, top, right, bottom, width, length)
 
-    def scan_screenshot(self, prepared:np, screenshot1 = None) -> dict:
+    def scan_screenshot(self, prepared:np, screenshot1 = None, points = (0,0,0,0)) -> dict:
         """
         说明：
             比对图片
         参数：
             :param prepared: 比对图片地址
-            :param prepared: 被比对图片地址
+            :param screenshot1: 被比对图片地址
+            :param points: 比对范围
         """
         if screenshot1:
-            screenshot, left, top, right, bottom, width, length = self.take_screenshot()
+            screenshot, left, top, right, bottom, width, length = self.take_screenshot(points)
             screenshot = np.array(screenshot1)
             screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
         else:
-            screenshot, left, top, right, bottom, width, length = self.take_screenshot()
+            screenshot, left, top, right, bottom, width, length = self.take_screenshot(points)
         result = cv.matchTemplate(screenshot, prepared, cv.TM_CCORR_NORMED)
         length, width, _ = prepared.shape
         if self.platform == "模拟器":
@@ -242,17 +243,17 @@ class calculated:
         }
 
     def calculated(self, result, shape):
+        # 返回原值，所以calculated暂时没用
         mat_top, mat_left = result["max_loc"]
         prepared_width, prepared_height, prepared_channels = shape
 
-        x = int((mat_top + mat_top + prepared_width) / 2)
+        # x = int((mat_top + mat_top + prepared_width) / 2)
+        # y = int((mat_left + mat_left + prepared_height) / 2)
 
-        y = int((mat_left + mat_left + prepared_height) / 2)
-
-        return x, y
+        return mat_top, mat_left
 
     # flag为true一定要找到
-    def click_target(self, target_path: str, threshold, flag=True):
+    def click_target(self, target_path: str, threshold, flag=True, points=(0,0,0,0)):
         """
         说明:
             识别图片并点击
@@ -260,6 +261,7 @@ class calculated:
             :param target_path: 需要识别的图片地址
             :param threshold: 可信度阈值
             :param flag: 是否必须找到
+            :param points: 百分制识别范围
         """
         target_path = target_path.replace("temp\\","temp\\pc\\") if self.platform == "PC" else target_path.replace("temp\\","temp\\mnq\\")
         temp_name = target_path.split("\\")[-1].split(".")[0]
@@ -290,7 +292,7 @@ class calculated:
         if temp_name not in temp_ocr:
             target = cv.imread(target_path)
             while True:
-                result = self.scan_screenshot(target)
+                result = self.scan_screenshot(target, points=points)
                 if result["max_val"] > threshold:
                     points = self.calculated(result, target.shape)
                     self.Click(points)

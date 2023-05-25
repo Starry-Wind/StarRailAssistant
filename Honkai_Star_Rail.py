@@ -10,6 +10,7 @@ try:
     from utils.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
     #from utils.simulated_universe import Simulated_Universe
     from utils.update_file import update_file_main
+    from utils.commission import Commission
     from utils.calculated import calculated
     from utils.exceptions import Exception
     from utils.requests import webhook_and_log
@@ -75,7 +76,10 @@ def main(type=0,platform="PC"):
         elif type == 1:
             log.info("未完工")
             #simulated_universe.auto_map(start, role_list)  # 读取配置
-
+        elif type == 2:
+            log.info("自动派遣功能测试中，目前只支持PC")
+            if platform != "PC" : return False
+            commission(4)
 
 def main_start():
     if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
@@ -96,6 +100,15 @@ def main_start():
         modify_json_file(CONFIG_FILE_NAME, "adb", text)
         modify_json_file(CONFIG_FILE_NAME, "start", True)
 
+def commission(n=4):
+    log.info("脚本将自动切换至游戏窗口，请保持游戏窗口激活")
+    switch_window()
+    time.sleep(0.5)
+
+    cms = Commission(n)
+    cms.open()
+    cms.run()
+    cms.close()
 
 def up_data():
     main_start()    # 无config直接更新时初始化config文件
@@ -166,12 +179,14 @@ if __name__ == "__main__":
                 up_data()
                 raise Exception("请重新运行")
             title = "请选择操作"
-            options = ['大世界', '模拟宇宙']
+            options = ['大世界', '模拟宇宙', '派遣委托']
             option = questionary.select(title, options).ask()
             if option == "大世界":
                 main(0,platform)
             elif option == "模拟宇宙":
-                main(1,platform)
+                main(1,platform)            
+            elif option == "派遣委托":
+                main(2,platform)
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
         os.system("pip install -r requirements.txt")
