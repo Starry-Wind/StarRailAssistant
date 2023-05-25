@@ -12,14 +12,6 @@
     "hash": "b0905ef88dcd36defba7a8780d2a2eae"
   },
   {
-    "path": "README_old.md",
-    "hash": "1f8bebfeceb47f456cced058a2e7776b"
-  },
-  {
-    "path": "poetry.lock",
-    "hash": "6c4e5b96b828640739a017499d9d7230"
-  },
-  {
     "path": "README.md",
     "hash": "4d84599d101fdcae6132fe9bf1af72d4"
   },
@@ -32,20 +24,12 @@
     "hash": "97c334d8818365c2de191b055f339739"
   },
   {
-    "path": "pyproject.toml",
-    "hash": "ec0c9d81e742a6a0905b5c77506a5654"
-  },
-  {
     "path": "test.py",
     "hash": "ec5b77cd26390b62c6bacf09feeabfc2"
   },
   {
     "path": "LICENSE",
     "hash": "f8e18e1941ab8aaa60102f83e419bea5"
-  },
-  {
-    "path": "start.bat",
-    "hash": "9905cff8765d8c11aea638fa349b109d"
   },
   {
     "path": "map_res_list.py",
