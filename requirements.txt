@@ -7,8 +7,7 @@ packaging
 protobuf
 sympy
 whl//Polygon3-3.0.9-cp311-cp311-win_amd64.whl
-whl//cnstd-1.2.2-py3-none-any.whl
-whl//cnocr-2.2.2.3-py3-none-any.whl
+cnocr
 docopt
 httpx
 loguru

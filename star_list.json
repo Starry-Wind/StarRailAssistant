@@ -9,15 +9,11 @@
   },
   {
     "path": "README_CHT.md",
-    "hash": "3e2ab0ba242cd12c4ffd0e8acdbea1f8"
+    "hash": "c4cdd5ab8dd2a64d316c2a2b810ce4cd"
   },
   {
     "path": "README.md",
-    "hash": "5bf492249492e8ce94bff5fe1d4a14fd"
-  },
-  {
-    "path": "安装依赖.bat",
-    "hash": "a90c47a96de855f740f44e8a8ade68d1"
+    "hash": "6dc11a9edbd631b0be6225823f2d9eae"
   },
   {
     "path": "config.json",
@@ -25,7 +21,7 @@
   },
   {
     "path": "requirements.txt",
-    "hash": "7a67d8b2a556b63ca31db26eb4c992a6"
+    "hash": "02c3c6e906f8b85c8260373d0d6404f9"
   },
   {
     "path": "map_res_list.py",
@@ -57,7 +53,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "ccb1ab587138e2badcb5f8db682753be"
+    "hash": "17965c2c5515fe3735800ffe24977ab4"
   },
   {
     "path": "utils/get_angle.py",
@@ -77,7 +73,7 @@
   },
   {
     "path": "utils/log.py",
-    "hash": "be48be3e52541115abe8bc793b22b73d"
+    "hash": "d9090a0bd12bac33ab4c823264fe91a0"
   },
   {
     "path": "whl/Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl",
