@@ -5,23 +5,23 @@
   },
   {
     "path": "get_width.py",
-    "hash": "fc28b7a2d84f1ccb6a877a757d1c40bd"
+    "hash": "05e4b278d56fe0737b578e54f78a4756"
   },
   {
     "path": "README_CHT.md",
-    "hash": "dd90312e083f5fbbfbd0a2e30691360b"
+    "hash": "3e2ab0ba242cd12c4ffd0e8acdbea1f8"
   },
   {
     "path": "README.md",
-    "hash": "df3f3eb4083e1df0e196831520f2eb1a"
+    "hash": "5bf492249492e8ce94bff5fe1d4a14fd"
   },
   {
     "path": "安装依赖.bat",
-    "hash": "9afde93775eaa530d21c0e637b50b577"
+    "hash": "a90c47a96de855f740f44e8a8ade68d1"
   },
   {
     "path": "config.json",
-    "hash": "edf5b3a188cc0f0a2899ebfb533d3a2f"
+    "hash": "826fd04cf1aa653ab65e014eeee66625"
   },
   {
     "path": "requirements.txt",
@@ -57,7 +57,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "6219b1b5bbc1cf6e8c26268c9d527f2c"
+    "hash": "ccb1ab587138e2badcb5f8db682753be"
   },
   {
     "path": "utils/get_angle.py",
@@ -69,15 +69,19 @@
   },
   {
     "path": "utils/map.py",
-    "hash": "c2910116ee358c3b85f8f5834e55b44e"
+    "hash": "ac8170245650a8b0472ae7bbf39adb4d"
   },
   {
     "path": "utils/adb.py",
-    "hash": "bf2803d719ea830dd1bb97c52a2fe871"
+    "hash": "437660436dd7f902996ec2a8ef831b6b"
   },
   {
     "path": "utils/log.py",
     "hash": "be48be3e52541115abe8bc793b22b73d"
+  },
+  {
+    "path": "whl/Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl",
+    "hash": "0c19795eb68713cde783a434ea636ba9"
   },
   {
     "path": "whl/cnstd-1.2.2-py3-none-any.whl",

@@ -56,8 +56,10 @@ class Map:
             log.info(f"执行{map_filename}文件:{map_index+1}/{len(map_data['map'])} {map}")
             key = list(map.keys())[0]
             value = map[key]
-            if key in ["w", "s", "a", "d", "f"]:
+            if key in ["w", "s", "a", "d"]:
                 self.calculated.move(key, value)
+            elif key == "f":
+                self.calculated.teleport(key, value)
             elif key == "mouse_move":
                 self.calculated.Mouse_move(value)
             elif key == "fighting":
@@ -114,7 +116,7 @@ class Map:
                 time.sleep(3)
                 count = self.calculated.wait_join()
                 log.info(f'地图加载完毕，加载时间为 {count} 秒')
-                #time.sleep(999)
+                time.sleep(2) # 加2s防止人物未加载
 
                 self.start_map(map, False)
         else:
