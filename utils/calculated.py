@@ -394,7 +394,7 @@ class calculated:
         if self.platform == "PC":
             self.keyboard.press(com)
             start_time = time.perf_counter()
-            while time.perf_counter() - start_time < time:
+            while time.perf_counter() - start_time < time1:
                 pass
             self.keyboard.release(com)
         elif self.platform == "模拟器":

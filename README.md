@@ -2,7 +2,7 @@
 
 [嗨！点点我！点点我！点点我！ ](#使用说明)
 
-[简体中文](README.md) | [繁体中文](README_CHT.md)
+[简体中文](README.md) | [繁体中文](README_CHT.md) | [文档](https://sra.stysqy.top)
  
 <img alt="LOGO" src="../../blob/map/temp/love!.png" style="border-radius:50%">
 
