@@ -2,10 +2,9 @@ name: 更新地图文件
 
 on:
   push:
-    branches: [ map ]
+    branches: [ main ]
     paths:
-      - 'map/**'
-      - 'temp/**'
+      - '**'
 
   workflow_dispatch:
 
@@ -33,6 +32,5 @@ jobs:
           author_email: github-actions[bot]@users.noreply.github.com
           message: ':wrench: 自动更新资源列表'
           add: |
-            'map_list.json'
-            'temp_list.json'
+            'star_list.json'
             'version.json'
