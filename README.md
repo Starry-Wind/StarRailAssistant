@@ -1,4 +1,6 @@
-<div align="center">
+# SRA
+# 崩坏：星穹铁道小助手地图库
+<img alt="LOGO" src="./temp/love!.png" style="border-radius:50%">
 
 [嗨！点点我！点点我！点点我！ ](#使用说明)
 
@@ -131,14 +133,11 @@ This software is open source, free of charge and for learning and exchange purpo
 
 感谢以下贡献者对本项目做出的贡献
 
-<a href="https://github.com/Starry-Wind/StarRailAssistant/graphs/contributors">
-
-  <img src="https://contrib.rocks/image?repo=Starry-Wind/StarRailAssistant" />
+<a href="https://github.com/Starry-Wind/Honkai-Star-Rail/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Starry-Wind/Honkai-Star-Rail" />
 
 </a>
 
-![Alt](https://repobeats.axiom.co/api/embed/79d87540c597fc0b30893860e7b92da60c555fa9.svg "Repobeats analytics image")
-
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Starry-Wind/StarRailAssistant&type=Date)](https://star-history.com/#Starry-Wind/StarRailAssistant&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=Starry-Wind/Honkai-Star-Rail&type=Date)](https://star-history.com/#Starry-Wind/Honkai-Star-Rail&Date)

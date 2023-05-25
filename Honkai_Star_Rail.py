@@ -100,7 +100,7 @@ def main_start():
 def up_data():
     main_start()    # 无config直接更新时初始化config文件
     ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
-    if "rawgithub_proxy" not in read_json_file(CONFIG_FILE_NAME, False):
+    if "adb" not in read_json_file(CONFIG_FILE_NAME, False):
         init_config_file(0, 0)
         raise Exception("未检测到必要更新，强制更新脚本，请重新运行脚本")
 
@@ -164,6 +164,7 @@ if __name__ == "__main__":
             platform = questionary.select(title, options).ask()
             if platform == "检查更新":
                 up_data()
+                exit()
             title = "请选择操作"
             options = ['大世界', '模拟宇宙']
             option = questionary.select(title, options).ask()
