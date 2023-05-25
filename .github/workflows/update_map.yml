@@ -2,15 +2,12 @@ name: 更新地图文件
 
 on:
   push:
-    branches:
-      - beta-2.7_test
-      - 2.0
-      - main
+    branches: [ map ]
     paths:
-      - '**'
+      - 'map/**'
+      - 'temp/**'
 
   workflow_dispatch:
-  
 
 jobs:
   update:
@@ -27,8 +24,8 @@ jobs:
 
       - name: Update Map
         run: |
-          pip install docopt
           python map_res_list.py
+
       - name: Commit changes
         uses: EndBug/add-and-commit@v9.1.3
         with:
@@ -36,5 +33,6 @@ jobs:
           author_email: github-actions[bot]@users.noreply.github.com
           message: ':wrench: 自动更新资源列表'
           add: |
-            'star_list.json'
+            'map_list.json'
+            'temp_list.json'
             'version.json'
