@@ -164,7 +164,7 @@ if __name__ == "__main__":
             platform = questionary.select(title, options).ask()
             if platform == "检查更新":
                 up_data()
-                exit()
+                raise Exception("请重新运行")
             title = "请选择操作"
             options = ['大世界', '模拟宇宙']
             option = questionary.select(title, options).ask()
