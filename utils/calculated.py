@@ -18,6 +18,7 @@ from .exceptions import Exception
 from .log import log
 from .adb import ADB
 from .cv_tools import show_img
+from .exceptions import Exception
 
 class calculated:
 
@@ -36,7 +37,11 @@ class calculated:
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
         self.ocr = CnOcr(det_model_name='ch_PP-OCRv2_det', rec_model_name='densenet_lite_114-fc')
-        self.window = gw.getWindowsWithTitle('崩坏：星穹铁道')[0] if platform == "PC" else None
+        if platform == "PC":
+            self.window = gw.getWindowsWithTitle('崩坏：星穹铁道')
+            if not self.window:
+                raise Exception("你游戏没开，我真服了")
+            self.window = self.window[0]
         self.hwnd = self.window._hWnd  if platform == "PC" else None
 
     def Click(self, points = None):
