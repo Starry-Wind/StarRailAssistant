@@ -110,7 +110,7 @@ def up_data():
                 'raw_proxy': rawghproxy,
                 'skip_verify': False,
                 'type': "star",
-                'version': "beta-2.7_test",
+                'version': "main",
                 'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/main.zip",
                 'unzip_path': ".",
                 'keep_folder': ['.git', 'logs', 'temp', 'map', 'tmp', 'venv'],
