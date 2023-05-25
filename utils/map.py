@@ -33,7 +33,8 @@ class Map:
             while True:
                 result = self.calculated.scan_screenshot(target)
                 if result['max_val'] > 0.98:
-                    points = self.calculated.calculated(result, target.shape)
+                    #points = self.calculated.calculated(result, target.shape)
+                    points = result["max_loc"]
                     log.debug(points)
                     for i in range(5):
                         self.calculated.Click(points)

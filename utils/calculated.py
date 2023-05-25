@@ -237,16 +237,6 @@ class calculated:
             "max_loc": (max_loc[0] + left+(width/2), max_loc[1] + top+(length/2)),
         }
 
-    def calculated(self, result, shape):
-        mat_top, mat_left = result["max_loc"]
-        prepared_width, prepared_height, prepared_channels = shape
-
-        x = int((mat_top + mat_top + prepared_width) / 2)
-
-        y = int((mat_left + mat_left + prepared_height) / 2)
-
-        return x, y
-
     # flag为true一定要找到
     def click_target(self, target_path: str, threshold, flag=True):
         """
@@ -309,7 +299,8 @@ class calculated:
             log.info("识别中")
             result = self.scan_screenshot(target)
             if result["max_val"] > 0.98:
-                points = self.calculated(result, target.shape)
+                #points = self.calculated(result, target.shape)
+                points = result["max_loc"]
                 self.Click(points)
                 break
             elif time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
@@ -322,7 +313,8 @@ class calculated:
             while True:
                 result = self.scan_screenshot(target)
                 if result["max_val"] > 0.9:
-                    points = self.calculated(result, target.shape)
+                    #points = self.calculated(result, target.shape)
+                    points = result["max_loc"]
                     self.Click(points)
                     log.info("开启自动战斗")
                     break
@@ -338,7 +330,8 @@ class calculated:
             if type == 0:
                 result = self.scan_screenshot(target)
                 if result["max_val"] > 0.95:
-                    points = self.calculated(result, target.shape)
+                    #points = self.calculated(result, target.shape)
+                    points = result["max_loc"]
                     log.debug(points)
                     log.info("完成自动战斗")
                     time.sleep(3)
