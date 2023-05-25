@@ -5,7 +5,7 @@
   },
   {
     "path": "get_width.py",
-    "hash": "fc28b7a2d84f1ccb6a877a757d1c40bd"
+    "hash": "05e4b278d56fe0737b578e54f78a4756"
   },
   {
     "path": "README_CHT.md",
@@ -13,7 +13,7 @@
   },
   {
     "path": "README.md",
-    "hash": "c40b19bb3532cf9c00d14ba652864510"
+    "hash": "5bf492249492e8ce94bff5fe1d4a14fd"
   },
   {
     "path": "安装依赖.bat",
@@ -21,7 +21,7 @@
   },
   {
     "path": "config.json",
-    "hash": "edf5b3a188cc0f0a2899ebfb533d3a2f"
+    "hash": "826fd04cf1aa653ab65e014eeee66625"
   },
   {
     "path": "requirements.txt",
@@ -57,7 +57,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "6219b1b5bbc1cf6e8c26268c9d527f2c"
+    "hash": "ccb1ab587138e2badcb5f8db682753be"
   },
   {
     "path": "utils/get_angle.py",
@@ -69,11 +69,11 @@
   },
   {
     "path": "utils/map.py",
-    "hash": "c2910116ee358c3b85f8f5834e55b44e"
+    "hash": "ac8170245650a8b0472ae7bbf39adb4d"
   },
   {
     "path": "utils/adb.py",
-    "hash": "bf2803d719ea830dd1bb97c52a2fe871"
+    "hash": "437660436dd7f902996ec2a8ef831b6b"
   },
   {
     "path": "utils/log.py",

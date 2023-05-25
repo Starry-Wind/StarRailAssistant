@@ -131,10 +131,13 @@ This software is open source, free of charge and for learning and exchange purpo
 
 感谢以下贡献者对本项目做出的贡献
 
-<a href="https://github.com/Starry-Wind/Honkai-Star-Rail/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Starry-Wind/Honkai-Star-Rail" />
+<a href="https://github.com/Starry-Wind/StarRailAssistant/graphs/contributors">
+
+  <img src="https://contrib.rocks/image?repo=Starry-Wind/StarRailAssistant" />
 
 </a>
+
+![Alt](https://repobeats.axiom.co/api/embed/79d87540c597fc0b30893860e7b92da60c555fa9.svg "Repobeats analytics image")
 
 ## Star History
 
