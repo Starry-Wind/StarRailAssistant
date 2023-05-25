@@ -392,6 +392,10 @@
     "hash": "f95e6aab69c8471c4163ea894131f746"
   },
   {
+    "path": "temp/pc/warn.jpg",
+    "hash": "e9dc10288ce8b7ea854ff85e628129cc"
+  },
+  {
     "path": "temp/pc/map_2-5_point_2.png",
     "hash": "ed5df5214e80f5a300f6d8c715ffbd42"
   },
@@ -438,6 +442,10 @@
   {
     "path": "temp/pc/map_3-4_point_3.png",
     "hash": "e72b421994d59b5f6f7af0a121c7d66f"
+  },
+  {
+    "path": "temp/pc/doubt.jpg",
+    "hash": "f3ce82e29c57e499096f717c9cad0c4b"
   },
   {
     "path": "temp/pc/map_2-4_point_1.png",
