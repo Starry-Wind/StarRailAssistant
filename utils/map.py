@@ -114,7 +114,7 @@ class Map:
                 time.sleep(3)
                 count = self.calculated.wait_join()
                 log.info(f'地图加载完毕，加载时间为 {count} 秒')
-                #time.sleep(999)
+                time.sleep(2) # 加2s防止人物未加载
 
                 self.start_map(map, False)
         else:

@@ -294,15 +294,26 @@ class calculated:
             :param type: 类型 大世界/模拟宇宙
         """
         start_time = time.time()
-        target = cv.imread("./temp/pc/attack.jpg") if self.platform == "PC" else cv.imread("./temp/mnq/attack.jpg")
+        attack = cv.imread("./temp/pc/attack.jpg") if self.platform == "PC" else cv.imread("./temp/mnq/attack.jpg")
+        doubt = cv.imread("./temp/pc/doubt.jpg") if self.platform == "PC" else cv.imread("./temp/mnq/doubt.jpg")
+        warn = cv.imread("./temp/pc/warn.jpg") if self.platform == "PC" else cv.imread("./temp/mnq/warn.jpg")
         while True:
             log.info("识别中")
-            result = self.scan_screenshot(target)
-            if result["max_val"] > 0.98:
+            attack_result = self.scan_screenshot(attack)
+            doubt_result = self.scan_screenshot(doubt)
+            warn_result = self.scan_screenshot(warn)
+            if attack_result["max_val"] > 0.98:
                 #points = self.calculated(result, target.shape)
-                points = result["max_loc"]
+                points = attack_result["max_loc"]
                 self.Click(points)
                 break
+            elif doubt_result["max_val"] > 0.9 or warn_result["max_val"] > 0.95:
+                log.info("识别到疑问或是警告,等待怪物开战")
+                time.sleep(3)
+                target = cv.imread("./temp/finish_fighting.jpg")  # 識別是否已進入戰鬥，若已進入則跳出迴圈
+                result = self.scan_screenshot(target)
+                if result["max_val"] < 0.95:
+                    break
             elif time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info("识别超时,此处可能无敌人")
                 return
