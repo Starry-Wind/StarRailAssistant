@@ -1,3 +1,4 @@
+orjson
 cn2an
 coloredlogs
 flatbuffers
@@ -5,7 +6,6 @@ numpy
 packaging
 protobuf
 sympy
--i https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/ORT-Nightly/pypi/simple/ ort_nightly
 whl//Polygon3-3.0.9-cp311-cp311-win_amd64.whl
 whl//cnstd-1.2.2-py3-none-any.whl
 whl//cnocr-2.2.2.3-py3-none-any.whl
@@ -14,7 +14,6 @@ httpx
 loguru
 opencv_contrib_python
 opencv_python
-orjson
 Pillow
 Pillow
 PyAutoGUI
@@ -27,4 +26,3 @@ torch
 tqdm
 ultralytics
 xpinyin
-PySimpleGUI
