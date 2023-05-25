@@ -615,4 +615,19 @@ class calculated:
             if time.time() - start_time > 10:
                 log.info("识别超时")
                 break
-        
+
+    def teleport(self, key, value, threshold=0.95):
+        """
+            入画. 入画时ui会消失, 所以可以通过检测团队图标, 来判断是否结束入画
+        param:
+            - key 对应按键
+            - value 操作时间,单位秒
+        """
+        self.move(key, value)
+        time.sleep(1) # 等待进入入画
+        target = cv.imread("./temp/pc/finish_fighting.jpg") if self.platform == "PC" else cv.imread("./temp/mnq/finish_fighting.jpg")
+        result = self.scan_screenshot(target)
+        while result["max_val"] < threshold:
+            result = self.scan_screenshot(target)
+        time.sleep(.5) # 缓冲
+
