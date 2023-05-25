@@ -5,6 +5,7 @@ on:
     branches:
       - beta-2.7_test
       - 2.0
+      - main
     paths:
       - '**'
 
