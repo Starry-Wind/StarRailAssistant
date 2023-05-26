@@ -22,7 +22,8 @@ def zip_files(source_folder, zip_file):
             for root, dirs, files in os.walk(source_folder):
                 for file in files:
                     file_path = os.path.join(root, file)
-                    zf.write(file_path, file_path)
+                    save_name = file_path.replace("./", "./map/")
+                    zf.write(file_path, save_name)
                     pbar.update(1)
 
 for file in map_path.rglob('*'):
