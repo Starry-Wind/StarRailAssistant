@@ -13,12 +13,12 @@ try:
     from utils.calculated import calculated
     from utils.exceptions import Exception
     from utils.requests import webhook_and_log
-    from utils.map import Map
+    from utils.map import Map as map_word
 except:
     print(traceback.format_exc())
 
 
-def choose_map(map_instance: Map, type = 0, platform = "PC"):
+def choose_map(map_instance: map_word, type = 0, platform = "PC"):
     if type == 0:
         title_ = "请选择起始星球："
         options_map = {"空间站「黑塔」": "1", "雅利洛-VI": "2", "仙舟「罗浮」": "3"}
@@ -58,7 +58,7 @@ def choose_map(map_instance: Map, type = 0, platform = "PC"):
 def main(type=0,platform="PC"):
     main_start()
     order = read_json_file(CONFIG_FILE_NAME, False).get('adb', "")
-    map_instance = Map(platform, order)
+    map_instance = map_word(platform, order)
     start, role_list = choose_map(map_instance, type, platform)
     if start:
         if platform == "PC":
@@ -132,7 +132,7 @@ def up_data():
             'unzip_path': "map",
             'keep_folder': [],
             'keep_file': [],
-            'zip_path': "map/",
+            'zip_path': "map/map/",
             'name': "地图"
         },
         "图片":{
@@ -145,7 +145,7 @@ def up_data():
             'unzip_path': "temp",
             'keep_folder': [],
             'keep_file': [],
-            'zip_path': "map/",
+            'zip_path': "temp/temp/",
             'name': "图片"
         },
     }
