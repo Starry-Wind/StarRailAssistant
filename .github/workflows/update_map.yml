@@ -34,3 +34,4 @@ jobs:
           add: |
             'star_list.json'
             'version.json'
+            'config.json'

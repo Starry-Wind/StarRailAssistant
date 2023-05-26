@@ -149,9 +149,9 @@ def up_data():
         },
     }
     title = "请选择更新项目"
-    options = list(up_data.keys())
+    options = list(up_data.keys())+["全部更新"]
     option = questionary.select(title, options).ask()
-    update_file_main(**up_data[option])
+    update_file_main(**up_data[option]) if option != "全部更新" else update_file_main(**up_data)
 
 
 if __name__ == "__main__":
