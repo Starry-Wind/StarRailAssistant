@@ -132,7 +132,7 @@ def up_data():
             'unzip_path': "map",
             'keep_folder': [],
             'keep_file': [],
-            'zip_path': "map/map/",
+            'zip_path': "map/",
             'name': "地图"
         },
         "图片":{
@@ -145,7 +145,7 @@ def up_data():
             'unzip_path': "temp",
             'keep_folder': [],
             'keep_file': [],
-            'zip_path': "temp/temp/",
+            'zip_path': "temp/",
             'name': "图片"
         },
     }
