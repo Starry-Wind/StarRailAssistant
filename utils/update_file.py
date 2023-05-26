@@ -199,8 +199,8 @@ async def update_file(url_proxy: str="",
         # 更新版本号
         modify_json_file(CONFIG_FILE_NAME, f"{type}_version", remote_version)
 
-        log.info(f'[资源文件更新]删除临时文件{tmp_dir}')
         shutil.rmtree(tmp_dir, ignore_errors=True)
+        log.info(f'[资源文件更新]删除临时文件{tmp_dir}')
     else:
         log.info(f'[资源文件更新]资源文件已是最新版本 {local_version} = {remote_version}')
         if not skip_verify:
@@ -229,6 +229,8 @@ async def update_file(url_proxy: str="",
                 log.error(f"[资源文件更新]{path}发现文件缺失, 3秒后将使用远程版本覆盖本地版本")
                 return "rm_all"
             log.info(f'[资源文件更新]文件校验完成.')
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+            log.info(f'[资源文件更新]删除临时文件{tmp_dir}')
 
     log.info(f'[资源文件更新]更新完成.')
     return True

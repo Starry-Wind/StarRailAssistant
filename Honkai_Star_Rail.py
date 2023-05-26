@@ -13,11 +13,12 @@ try:
     from utils.calculated import calculated
     from utils.exceptions import Exception
     from utils.requests import webhook_and_log
+    from utils.map import Map
 except:
     print(traceback.format_exc())
 
 
-def choose_map(map_instance, type = 0, platform = "PC"):
+def choose_map(map_instance: Map, type = 0, platform = "PC"):
     if type == 0:
         title_ = "请选择起始星球："
         options_map = {"空间站「黑塔」": "1", "雅利洛-VI": "2", "仙舟「罗浮」": "3"}
@@ -26,7 +27,7 @@ def choose_map(map_instance, type = 0, platform = "PC"):
         title_ = "请选择起始地图："
         options_map = map_instance.map_list_map.get(main_map)
         if not options_map:
-            return
+            return None, "你没下载地图，拿什么选？"
         keys = list(options_map.keys())
         values = list(options_map.values())
         option_ = questionary.select(title_, values).ask()
@@ -56,10 +57,8 @@ def choose_map(map_instance, type = 0, platform = "PC"):
 
 def main(type=0,platform="PC"):
     main_start()
-    from utils.map import Map
     order = read_json_file(CONFIG_FILE_NAME, False).get('adb', "")
     map_instance = Map(platform, order)
-    #simulated_universe = Simulated_Universe(platform)
     start, role_list = choose_map(map_instance, type, platform)
     if start:
         if platform == "PC":
@@ -75,6 +74,8 @@ def main(type=0,platform="PC"):
         elif type == 1:
             log.info("未完工")
             #simulated_universe.auto_map(start, role_list)  # 读取配置
+    else:
+        raise Exception(role_list)
 
 
 def main_start():
