@@ -36,3 +36,5 @@ jobs:
             'map_list.json'
             'temp_list.json'
             'version.json'
+            'map.zip'
+            'temp.zip'

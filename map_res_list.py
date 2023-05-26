@@ -2,8 +2,9 @@ import os
 import datetime
 import hashlib
 import json
+import zipfile
 from pathlib import Path
-
+from tqdm import tqdm
 map_path = Path(__file__).parent / 'map'
 temp_path = Path(__file__).parent / 'temp'
 
@@ -11,6 +12,18 @@ map_list = []
 temp_list = []
 
 this_path = str(Path(__file__).parent)
+
+def zip_files(source_folder, zip_file):
+    total_files = 0
+    for root, dirs, files in os.walk(source_folder):
+        total_files += len(files)
+    with zipfile.ZipFile(zip_file, 'w', zipfile.ZIP_DEFLATED) as zf:
+        with tqdm(total=total_files, desc=zip_file, unit='files') as pbar:
+            for root, dirs, files in os.walk(source_folder):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    zf.write(file_path, file_path)
+                    pbar.update(1)
 
 for file in map_path.rglob('*'):
     if os.path.isfile(file):
@@ -46,3 +59,6 @@ version_dict = {
 # 写入到version.json文件
 with open("version.json", "w") as file:
     json.dump(version_dict, file)
+
+zip_files("./map", "map.zip")
+zip_files("./temp", "temp.zip")
