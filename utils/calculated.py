@@ -259,6 +259,19 @@ class calculated:
             "transfer": "传送",
             "map_1-2": "收容舱段",
             "map_1-3": "支援舱段",
+            "map_1-3_point_1": [(593, 346),(700, 346)],
+            # "orientation_3": "雅利洛-VI",
+            "map_2-1": "城郊雪原",
+            "map_2-2": "边缘通路",
+            "map_2-3": "残响回廊",
+            "map_2-3_point_2":[(593, 500),(593, 400)],
+            "map_2-3_point_4":[(593, 500),(593, 400)],
+            "map_2-3_point_5":[(593, 500),(593, 400)],
+            "map_2-4": "永冬岭",
+            "map_2-5": "大矿区",
+            "map_2-5_point_1": [(593, 500),(593, 400)],
+            "map_2-6": "铆钉镇",
+            "map_2-7": "机械聚落",
         }
         if temp_name in temp_ocr:
             if "map" not in temp_name:
@@ -414,15 +427,15 @@ class calculated:
                 pass
             self.keyboard.release(com)
         elif self.platform == "模拟器":
-            time1 = time1*1000
+            time1 = (time1)*1000
             if com == "w":
                 self.adb.input_swipe((213, 512), (213, 409), time1)
             elif com == "a":
-                self.adb.input_swipe((170, 560), (107, 560), time1)
+                self.adb.input_swipe((155, 560), (90, 560), time1)
             elif com == "s":
-                self.adb.input_swipe((208, 625), (208, 684), time1)
+                self.adb.input_swipe((213, 620), (213, 728), time1)
             elif com == "d":
-                self.adb.input_swipe((242, 557), (320, 557), time1)
+                self.adb.input_swipe((260, 560), (335, 560), time1)
             elif com == "f":
                 self.adb.input_swipe((880, 362))
 
@@ -637,7 +650,7 @@ class calculated:
                 #pyautogui.keyUp(open_key)
                 time.sleep(1)
             elif self.platform == "模拟器":
-                self.img_click((116, 128))
+                self.img_click((132, 82))
             time.sleep(0.5)
             map_status = self.part_ocr((5,7,10,10)) if self.platform == "PC" else self.part_ocr((6,2,10,5))
             if "导航" in map_status:
