@@ -24,6 +24,7 @@ jobs:
 
       - name: Update Map
         run: |
+          pip install tqdm
           python map_res_list.py
 
       - name: Commit changes
