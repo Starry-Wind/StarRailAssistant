@@ -17,7 +17,7 @@
   },
   {
     "path": "config.json",
-    "hash": "3640960c59aa1826650c3e2cfdfa1771"
+    "hash": "43d732cf5a6c69d80da88a1430ebd951"
   },
   {
     "path": "requirements.txt",
@@ -53,7 +53,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "8306d26943e4555ee55c3293e8f9b060"
+    "hash": "2addc1c421f1c4569404efbcdc9f90ae"
   },
   {
     "path": "utils/get_angle.py",
