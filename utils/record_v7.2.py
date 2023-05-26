@@ -7,6 +7,7 @@ Description: wasd移动，x是进战斗，鼠标左键是打障碍物等，不�
             F9停止录制并保存
 Copyright (c) 2023 by AlisaCat, All Rights Reserved. 
 '''
+import os
 import builtins
 import time
 from collections import defaultdict
@@ -16,8 +17,6 @@ import orjson
 from pynput import keyboard
 from pynput import mouse
 from pynput.mouse import Controller as mouseController
-
-from config import read_json_file
 
 
 def timestamped_print(*args, **kwargs):
@@ -60,7 +59,40 @@ def Click(points):
     time.sleep(0.5)
     mouse.release(mouse.Button.left)
 
-
+def normalize_file_path(filename):
+    # 尝试在当前目录下读取文件
+    current_dir = os.getcwd()
+    file_path = os.path.join(current_dir, filename)
+    if os.path.exists(file_path):
+        return file_path
+    else:
+        # 如果当前目录下没有该文件，则尝试在上一级目录中查找
+        parent_dir = os.path.dirname(current_dir)
+        file_path = os.path.join(parent_dir, filename)
+        if os.path.exists(file_path):
+            return file_path
+        else:
+            # 如果上一级目录中也没有该文件，则返回None
+            return None
+        
+def read_json_file(filename: str, path=False):
+    """
+    说明：
+        读取文件
+    参数：
+        :param filename: 文件名称
+        :param path: 是否返回路径
+    """
+    # 找到文件的绝对路径
+    file_path = normalize_file_path(filename)
+    if file_path:
+        with open(file_path, "rb") as f:
+            data = orjson.loads(f.read())
+            if path:
+                return data, file_path
+            else:
+                return data
+    
 real_width = read_json_file("config.json")['real_width']
 
 
