@@ -127,11 +127,11 @@ def up_data():
             'skip_verify': False,
             'type': "map",
             'version': "map",
-            'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/blob/map/map.zip",
+            'url_zip': "https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/map.zip",
             'unzip_path': "map",
             'keep_folder': [],
             'keep_file': [],
-            'zip_path': "map/map",
+            'zip_path': "map/map/",
             'name': "地图"
         },
         "图片":{
@@ -140,11 +140,11 @@ def up_data():
             'skip_verify': False,
             'type': "temp",
             'version': "map",
-            'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/blob/map/temp.zip",
+            'url_zip': "https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/temp.zip",
             'unzip_path': "temp",
             'keep_folder': [],
             'keep_file': [],
-            'zip_path': "temp/temp",
+            'zip_path': "temp/temp/",
             'name': "图片"
         },
     }
