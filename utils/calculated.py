@@ -266,10 +266,22 @@ class calculated:
                 while True:
                     if not self.is_blackscreen():
                         break
-            elif "point" in temp_name and self.platform == "模拟器":
-                self.adb.input_swipe(temp_ocr[temp_name][0],temp_ocr[temp_name][1],100)
-                temp_ocr.pop(temp_name)
-                time.sleep(0.5)
+            elif "point" in temp_name:
+                if self.platform == "模拟器":
+                    self.adb.input_swipe(temp_ocr[temp_name][0],temp_ocr[temp_name][1],100)
+                    temp_ocr.pop(temp_name)
+                    time.sleep(0.5)
+                else:
+                    target = cv.imread(target_path)
+                while True:
+                    result = self.scan_screenshot(target)
+                    if result["max_val"] > threshold:
+                        #points = self.calculated(result, target.shape)
+                        self.Click(result["max_loc"])
+                        break
+                    if flag == False:
+                        break
+
             else:
                 if type(temp_ocr[temp_name]) == str:
                     ocr_data = self.part_ocr((77,10,85,97)) if self.platform == "PC" else self.part_ocr((72,18,80,97))
@@ -601,13 +613,15 @@ class calculated:
     def switch_window(self,title = '崩坏：星穹铁道'):
         if self.platform == "PC":
             ws = gw.getWindowsWithTitle(title)
-            
+            kc = KeyboardController()
             if len(ws) >= 1 :
                 for w in ws:
                     # 避免其他窗口也包含崩坏：星穹铁道，比如正好开着github脚本页面
                     # log.debug(w.title)
                     if w.title == title:
                         #client.Dispatch("WScript.Shell").SendKeys('%')
+                        kc.press('%')
+                        kc.release('%')
                         w.activate()
                         break
             else:
