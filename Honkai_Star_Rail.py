@@ -151,7 +151,11 @@ def up_data():
     title = "请选择更新项目"
     options = list(up_data.keys())+["全部更新"]
     option = questionary.select(title, options).ask()
-    update_file_main(**up_data[option]) if option != "全部更新" else update_file_main(**up_data)
+    if option != "全部更新":
+        update_file_main(**up_data[option])
+    else:
+        for up_data in list(up_data.values()):
+            update_file_main(**up_data)
 
 
 if __name__ == "__main__":
