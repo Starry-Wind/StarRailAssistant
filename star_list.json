@@ -1,7 +1,7 @@
 [
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "62b36de782714eccc5c048422a87df8d"
+    "hash": "3d5d82ff5a6808977b9ea832e8e74da9"
   },
   {
     "path": "get_width.py",
@@ -25,7 +25,7 @@
   },
   {
     "path": "map_res_list.py",
-    "hash": "0a0b96f5a1421697c3e24518370120b7"
+    "hash": "0d7c47eabb1ebc8437b4aae18e7c2f2b"
   },
   {
     "path": "utils/update_file.py",
@@ -53,7 +53,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "17965c2c5515fe3735800ffe24977ab4"
+    "hash": "8306d26943e4555ee55c3293e8f9b060"
   },
   {
     "path": "utils/get_angle.py",
