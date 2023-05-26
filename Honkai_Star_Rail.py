@@ -4,6 +4,7 @@ try:
     from utils.log import log
     import time
     import pyuac
+    import asyncio
     import questionary
 
     from get_width import get_width
@@ -84,9 +85,12 @@ def main_start():
     if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
         title = "请选择下载代理地址：（不使用代理选空白选项）"
         options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
+        '''
         for url in options:
-            response = get(url)
-            response.elapsed.total_seconds()
+            response = asyncio.run(get(url)) if "http" in url else asyncio.run(get(f"https://"+url))
+            ms = response.elapsed.total_seconds()
+            options = [i+f" {ms}ms" for i in options]
+        '''
         option = questionary.select(title, options).ask()
         modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
         title = "请选择代理地址：（不使用代理选空白选项）"
