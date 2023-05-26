@@ -2,6 +2,7 @@
 系统控制项
 """
 import time
+import win32api
 import cv2 as cv
 import numpy as np
 import pygetwindow as gw
@@ -393,21 +394,21 @@ class calculated:
         for ii in range(abs(i)):
             if dx >0:
                 if self.platform == "PC":
-                    #win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 200, 0)  # 进行视角移动
-                    self.mouse.move(200, 0)
+                    win32api.mouse_event(1, 200, 0)  # 进行视角移动
+                    #self.mouse.move(200, 0)
                 else:
                     self.adb.input_swipe((919, 394), (1119, 394), 200)
             else:
                 if self.platform == "PC":
-                    #win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, -200, 0)  # 进行视角移动
-                    self.mouse.move(-200, 0)
+                    win32api.mouse_event(1, -200, 0)  # 进行视角移动
+                    #self.mouse.move(-200, 0)
                 else:
                     self.adb.input_swipe((919, 394), (719, 394), 200)
             time.sleep(0.1)
         if last != 0:
             if self.platform == "PC":
-                #win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, last, 0)  # 进行视角移动
-                self.mouse.move(last, 0)
+                win32api.mouse_event(1, last, 0)  # 进行视角移动
+                #self.mouse.move(last, 0)
             else:
                 self.adb.input_swipe((919, 394), (919-last, 394), 200)
         time.sleep(0.5)

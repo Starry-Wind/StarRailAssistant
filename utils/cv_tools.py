@@ -2,7 +2,7 @@
 Author: Xe-No
 Date: 2023-05-17 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-24 15:05:24
+LastEditTime: 2023-05-27 01:28:50
 Description: 一些cv工具
 
 Copyright (c) 2023 by Xe-No, All Rights Reserved. 
@@ -10,6 +10,7 @@ Copyright (c) 2023 by Xe-No, All Rights Reserved.
 
 import os
 import time
+import win32api
 import cv2 as cv
 import numpy as np
 import pygetwindow as gw
@@ -66,7 +67,7 @@ def take_fine_screenshot(rect = [47,58,187,187], platform="PC", order="127.0.0.1
     n = 5
     for i in range(n):
         if platform == "PC":
-            MouseController().move(-200, 0)
+            win32api.mouse_event(1, 0, -200)  # 进行视角移动
         elif platform == "模拟器":
             os.system(f"adb -s {order} shell input swipe 636 359 636 184 50")
         mask = cv.compare(total, take_screenshot(rect, platform, order), cv.CMP_EQ )
@@ -75,7 +76,7 @@ def take_fine_screenshot(rect = [47,58,187,187], platform="PC", order="127.0.0.1
     time.sleep(0.1)
     for i in range(n):
         if platform == "PC":
-            MouseController().move(200, 0)
+            win32api.mouse_event(1, 0, 200)  # 进行视角移动
         elif platform == "模拟器":
             os.system(f"adb -s {order} shell input swipe 636 362 636 495 50")
         mask = cv.compare(total, take_screenshot(rect, platform, order), cv.CMP_EQ )

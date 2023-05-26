@@ -14,6 +14,7 @@ try:
     from utils.exceptions import Exception
     from utils.requests import webhook_and_log
     from utils.map import Map as map_word
+    from utils.requests import *
 except:
     print(traceback.format_exc())
 
@@ -59,6 +60,7 @@ def main(type=0,platform="PC"):
     main_start()
     order = read_json_file(CONFIG_FILE_NAME, False).get('adb', "")
     map_instance = map_word(platform, order)
+    #simulated_universe =Simulated_Universe(platform, order)
     start, role_list = choose_map(map_instance, type, platform)
     if start:
         if platform == "PC":
@@ -82,6 +84,9 @@ def main_start():
     if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
         title = "请选择下载代理地址：（不使用代理选空白选项）"
         options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
+        for url in options:
+            response = get(url)
+            response.elapsed.total_seconds()
         option = questionary.select(title, options).ask()
         modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
         title = "请选择代理地址：（不使用代理选空白选项）"
@@ -145,7 +150,7 @@ def up_data():
             'unzip_path': "temp",
             'keep_folder': [],
             'keep_file': [],
-            'zip_path': "temp/",
+            'zip_path': "map/",
             'name': "图片"
         },
     }
@@ -179,11 +184,11 @@ if __name__ == "__main__":
                 main(1,platform)
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
-        os.system("pip install -r requirements.txt")
+        #os.system("pip install -r requirements.txt")
         print("请重新运行")
     except NameError as e:
         print(traceback.format_exc())
-        os.system("pip install -r requirements.txt")
+        #os.system("pip install -r requirements.txt")
         print("请重新运行")
     except Exception:
         ...
