@@ -273,14 +273,14 @@ class calculated:
                     time.sleep(0.5)
                 else:
                     target = cv.imread(target_path)
-                while True:
-                    result = self.scan_screenshot(target)
-                    if result["max_val"] > threshold:
-                        #points = self.calculated(result, target.shape)
-                        self.Click(result["max_loc"])
-                        break
-                    if flag == False:
-                        break
+                    while True:
+                        result = self.scan_screenshot(target)
+                        if result["max_val"] > threshold:
+                            #points = self.calculated(result, target.shape)
+                            self.Click(result["max_loc"])
+                            break
+                        if flag == False:
+                            break
 
             else:
                 if type(temp_ocr[temp_name]) == str:
