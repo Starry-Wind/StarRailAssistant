@@ -7,6 +7,7 @@ import numpy as np
 import pygetwindow as gw
 
 from cnocr import CnOcr
+from datetime import datetime
 from PIL import ImageGrab, Image
 from pynput import mouse
 from pynput.mouse import Controller as MouseController
@@ -37,6 +38,7 @@ class calculated:
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
         self.ocr = CnOcr(det_model_name='ch_PP-OCRv2_det', rec_model_name='densenet_lite_114-fc')
+        #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
         if platform == "PC":
             self.window = gw.getWindowsWithTitle('崩坏：星穹铁道')
             if not self.window:
@@ -504,10 +506,7 @@ class calculated:
         log.debug(data)
         if not characters:
             characters = list(data.keys())[0]
-        if self.platform == "模拟器":
-            pos = ((data[characters][2][0]+data[characters][0][0])/2, (data[characters][2][1]+data[characters][0][1])/2) if characters in data else None
-        elif self.platform == "PC":
-            pos = (data[characters][0][0], data[characters][0][1]) if characters in data else None
+        pos = ((data[characters][2][0]+data[characters][0][0])/2, (data[characters][2][1]+data[characters][0][1])/2) if characters in data else None
         return characters, pos
     
     def part_ocr(self,points = (0,0,0,0)):
@@ -522,7 +521,23 @@ class calculated:
         img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
         x, y = width/100*points[0], length/100*points[1]
         out = self.ocr.ocr(img_fp)
-        data = {i['text']: (left+x+(i['position'][2][0]+i['position'][0][0])/2,top+y+(i['position'][2][1]+i['position'][0][1])/2) for i in out}
+        data = {i['text']: (int(left+x+(i['position'][2][0]+i['position'][0][0])/2),int(top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
+        log.debug(data)
+        return data
+
+    def part_ocr_other(self,points = (0,0,0,0)):
+        """
+        说明：
+            返回图片文字和坐标
+        参数：
+            :param points: 图像截取范围
+        返回:
+            :return data: 文字: 坐标
+        """
+        img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
+        x, y = width/100*points[0], length/100*points[1]
+        out = self.ocr.ocr(img_fp)
+        data = {i['text']: (int(left+x+i['position'][0][0]),int(top+y+i['position'][0][1])) for i in out}
         log.debug(data)
         return data
 
@@ -633,3 +648,18 @@ class calculated:
             result = self.scan_screenshot(target)
         time.sleep(.5) # 缓冲
 
+    def monthly_pass(self):
+        """
+        说明：
+            点击月卡
+        """
+        start_time = time.time()
+        dt = datetime.now().strftime('%Y-%m-%d') + " 04:00:00"
+        ts = int(time.mktime(time.strptime(dt, "%Y-%m-%d %H:%M:%S")))
+        ns = int(start_time)
+        while True:
+            if 0 < ns - ts <= 60:
+                self.ocr_click("列车补给")
+                break
+            if time.time() - start_time > 60:
+                break
