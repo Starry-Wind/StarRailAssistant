@@ -96,7 +96,7 @@ def main_start():
             try:
                 response = asyncio.run(get(url))
                 ms = response.elapsed.total_seconds()
-            except ReadTimeout and ConnectError:
+            except (ReadTimeout, ConnectError):
                 ms = 0
             url_ms.append(options[index]+f" {ms}ms")
         url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
@@ -113,7 +113,7 @@ def main_start():
             try:
                 response = asyncio.run(get(url))
                 ms = response.elapsed.total_seconds()
-            except ReadTimeout and ConnectError:
+            except (ReadTimeout, ConnectError):
                 ms = 0
             url_ms.append(options[index]+f" {ms}ms")
         url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
