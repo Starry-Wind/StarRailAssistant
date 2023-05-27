@@ -4,7 +4,10 @@ try:
     from utils.log import log
     import time
     import pyuac
+    import asyncio
     import questionary
+    
+    from httpx import ReadTimeout, ConnectError
 
     from get_width import get_width
     from utils.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
@@ -84,14 +87,37 @@ def main_start():
     if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
         title = "请选择下载代理地址：（不使用代理选空白选项）"
         options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
-        for url in options:
-            response = get(url)
-            response.elapsed.total_seconds()
-        option = questionary.select(title, options).ask()
+        url_ms = []
+        for index,url in enumerate(options):
+            if url == "":
+                url = "https://github.com"
+            elif "https://" not in url:
+                url =  f"https://"+url
+            try:
+                response = asyncio.run(get(url))
+                ms = response.elapsed.total_seconds()
+            except ReadTimeout and ConnectError:
+                ms = 0
+            url_ms.append(options[index]+f" {ms}ms")
+        url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
+        option = options[url_ms.index(questionary.select(title, url_ms).ask())]
         modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
         title = "请选择代理地址：（不使用代理选空白选项）"
         options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', '']
-        option = questionary.select(title, options).ask()
+        url_ms = []
+        for index,url in enumerate(options):
+            if url == "":
+                url = "https://github.com"
+            elif "https://" not in url:
+                url =  f"https://"+url
+            try:
+                response = asyncio.run(get(url))
+                ms = response.elapsed.total_seconds()
+            except ReadTimeout and ConnectError:
+                ms = 0
+            url_ms.append(options[index]+f" {ms}ms")
+        url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
+        option = options[url_ms.index(questionary.select(title, url_ms).ask())]
         modify_json_file(CONFIG_FILE_NAME, "rawgithub_proxy", option)
         title = "你游戏里开启了连续自动战斗吗？："
         options = ['没打开', '打开了', '这是什么']
