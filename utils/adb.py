@@ -12,12 +12,14 @@ from PIL import ImageGrab, Image
 from typing import Dict, Optional, Any, Union
 
 class ADB:
-    def __init__(self, order="127.0.0.1:62001"):
+    def __init__(self, order="127.0.0.1:62001", adb_path="temp\\adb\\adb"):
         """
         参数: 
             :param order: ADB端口
+            :param adb_path: ADB可执行文件路径
         """
         self.order = order
+        self.adb_path = adb_path
 
     def connect(self):
         """
@@ -25,8 +27,9 @@ class ADB:
             连接ADB
         参数:
             :param order: ADB端口
+            :param adb_path: ADB可执行文件路径
         """
-        shell = ["temp\\adb\\adb", "connect", self.order]
+        shell = [self.adb_path, "connect", self.order]
         run(shell, shell=True) 
     def input_swipe(self, pos1=(919,617), pos2=(919,908), time: int=100):
         """
@@ -37,7 +40,7 @@ class ADB:
             :param pos2: 坐标2
             :param time: 操作时间
         """
-        shell = ["temp\\adb\\adb", "-s", self.order, "shell", "input", "swipe", str(pos1[0]), str(pos1[1]), str(pos2[0]), str(pos2[1]), str(int(time))]
+        shell = [self.adb_path, "-s", self.order, "shell", "input", "swipe", str(pos1[0]), str(pos1[1]), str(pos2[0]), str(pos2[1]), str(int(time))]
         run(shell, shell=True) 
 
     def input_tap(self, pos=(880,362)):
@@ -47,7 +50,7 @@ class ADB:
         参数:
             :param pos: 坐标
         """
-        shell = ["temp\\adb\\adb", "-s", self.order, "shell", "input", "tap", str(pos[0]), str(pos[1])]
+        shell = [self.adb_path, "-s", self.order, "shell", "input", "tap", str(pos[0]), str(pos[1])]
         run(shell, shell=True) 
 
     def screencast(self, path = "/sdcard/Pictures/screencast.png") -> Image:
@@ -58,9 +61,9 @@ class ADB:
             :param path: 手机中截图保存位置
         """
         img_name = path.split("/")[-1]
-        shell = ["temp\\adb\\adb", "-s", self.order, "shell", "screencap", "-p", path]
+        shell = [self.adb_path, "-s", self.order, "shell", "screencap", "-p", path]
         run(shell, shell=True)
-        shell = ["temp\\adb\\adb", "-s", self.order, "pull", path]
+        shell = [self.adb_path, "-s", self.order, "pull", path]
         run(shell, shell=True, stdout=DEVNULL) 
         img = Image.open(f"./{img_name}")
         return img
