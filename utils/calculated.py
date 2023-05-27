@@ -445,7 +445,8 @@ class calculated:
             elif com == "d":
                 self.adb.input_swipe((260, 560), (335, 560), time1)
             elif com == "f":
-                self.adb.input_swipe((880, 362))
+                self.adb.input_tap((880, 362))
+
 
     def path_move(self, path: List):
         '''
