@@ -72,7 +72,7 @@ class calculated:
             time.sleep(0.5)
             self.mouse.release(mouse.Button.left)
         elif self.platform == "模拟器":
-            self.adb.input_tap((x, y))
+            self.adb.input_tap((1040, 550))
 
     def appoint_click(self, points, appoint_points, hsv = [18, 18, 18]):
         """
@@ -333,8 +333,12 @@ class calculated:
             if attack_result["max_val"] > 0.98:
                 #points = self.calculated(result, target.shape)
                 points = attack_result["max_loc"]
-                self.Click(points)
-                break
+                if self.platform == "PC":
+                    self.Click(points)
+                    break
+                else:
+                    self.adb.input_tap((1040, 550))
+                    break
             elif doubt_result["max_val"] > 0.9 or warn_result["max_val"] > 0.95:
                 log.info("识别到疑问或是警告,等待怪物开战")
                 time.sleep(3)
@@ -430,7 +434,7 @@ class calculated:
         elif self.platform == "模拟器":
             time1 = (time1)*1000
             if com == "w":
-                self.adb.input_swipe((213, 512), (213, 409), time1)
+                self.adb.input_swipe((213, 500), (213, 409), time1)
             elif com == "a":
                 self.adb.input_swipe((155, 560), (90, 560), time1)
             elif com == "s":
