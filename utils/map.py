@@ -64,6 +64,8 @@ class Map:
                 self.calculated.Mouse_move(value)
             elif key == "fighting":
                 if value == 1:  # 进战斗
+                    if self.platform == '模拟器':
+                        self.adb.input_tap((1040, 550))
                     self.calculated.fighting()
                 elif value == 2:  # 障碍物
                     if self.platform == "PC":

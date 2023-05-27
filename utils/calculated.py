@@ -204,7 +204,7 @@ class calculated:
             width, length = temp.size
         elif self.platform == "模拟器":
             left, top, right, bottom = 0,0,0,0
-            temp = self.adb.screencast("/sdcard/Pictures/screencast1.png")
+            temp = self.adb.screencast()
             width, length = temp.size
         if points != (0,0,0,0):
             #points = (points[0], points[1]+5, points[2], points[3]+5) if self.platform == "PC" else points
@@ -273,6 +273,20 @@ class calculated:
             "map_2-5_point_1": [(593, 500),(593, 400)],
             "map_2-6": "铆钉镇",
             "map_2-7": "机械聚落",
+            # "orientation_4": "仙舟「罗浮",
+            "map_3-1": "流云渡",
+            "map_3-1_point_1" : [(593, 346),(593, 556)],
+            "map_3-1_point_2":[(593, 500),(593, 400)],
+            "map_3-1_point_3":[(593, 500),(593, 400)],
+            "map_3-2": "迥星港",
+            # "map_3-3": "太卜司",
+            "map_3-3_point_2":[(593, 500),(693, 400)],
+            "map_3-3_point_4":[(593, 500),(693, 700)],
+            "map_3-3_point_5":[(593, 500),(693, 700)],
+            "map_3-4": "工造司",
+            "map_3-4_point_1" : [(593, 500),(800, 700)],
+            "map_3-4_point_2":[(593, 500),(593, 400)],
+            "map_3-4_point_3" : [(593, 346),(400, 346)],
         }
         if temp_name in temp_ocr:
             if "map" not in temp_name:
@@ -337,7 +351,7 @@ class calculated:
                     self.Click(points)
                     break
                 else:
-                    self.adb.input_tap((1040, 550))
+                    # self.adb.input_tap((1040, 550))
                     break
             elif doubt_result["max_val"] > 0.9 or warn_result["max_val"] > 0.95:
                 log.info("识别到疑问或是警告,等待怪物开战")
@@ -375,7 +389,7 @@ class calculated:
         while True:
             if type == 0:
                 result = self.scan_screenshot(target)
-                if result["max_val"] > 0.95:
+                if result["max_val"] > 0.90:
                     #points = self.calculated(result, target.shape)
                     points = result["max_loc"]
                     log.debug(points)
@@ -443,7 +457,7 @@ class calculated:
             elif com == "s":
                 self.adb.input_swipe((213, 620), (213, 728), time1)
             elif com == "d":
-                self.adb.input_swipe((260, 560), (335, 560), time1)
+                self.adb.input_swipe((265, 560), (335, 560), time1)
             elif com == "f":
                 self.adb.input_tap((880, 362))
 
