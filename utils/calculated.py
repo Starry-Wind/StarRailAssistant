@@ -72,7 +72,7 @@ class calculated:
             time.sleep(0.5)
             self.mouse.release(mouse.Button.left)
         elif self.platform == "模拟器":
-            self.adb.input_tap((1040, 550))
+            self.adb.input_tap((x, y))
 
     def appoint_click(self, points, appoint_points, hsv = [18, 18, 18]):
         """
