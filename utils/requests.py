@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Dict, Optional, Any, Union, Tuple
 
 from .log import log
-from .config import read_json_file
+from .config import read_json_file, CONFIG_FILE_NAME
 
 async def get(url: str,
                 *,
@@ -78,7 +78,7 @@ async def download(url: str, save_path: Path):
 
 def webhook_and_log(message):
     log.info(message)
-    url = read_json_file("config.json", False).get("webhook_url")
+    url = read_json_file(CONFIG_FILE_NAME, False).get("webhook_url")
     if url == "" or url == None:
         return
     try:

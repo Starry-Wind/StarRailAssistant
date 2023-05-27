@@ -1,24 +1,24 @@
 {
-    "real_width": 1295,
-    "auto_battle_persistence": 0,
-    "real_height": 757,
-    "github_proxy": "",
-    "rawgithub_proxy": "",
-    "webhook_url": "",
-    "start": false,
-    "temp_version": "20230527020715",
-    "star_version": "20230526234248",
-    "open_map": "m",
-    "level": "INFO",
-    "adb": "127.0.0.1:62001",
-    "map_version": "20230527020715",
-    "scaling": 1.5,
-    "presets": [
-        [
-            "丹恒",
-            "火主",
-            "姬子",
-            "娜塔莎"
-        ]
+  "real_width": 1295,
+  "auto_battle_persistence": 0,
+  "real_height": 757,
+  "github_proxy": "",
+  "rawgithub_proxy": "",
+  "webhook_url": "",
+  "start": true,
+  "temp_version": "20230527020715",
+  "star_version": "20230526234248",
+  "open_map": "m",
+  "level": "INFO",
+  "adb": "127.0.0.1:62001",
+  "map_version": "20230527020715",
+  "scaling": 1.5,
+  "presets": [
+    [
+      "丹恒",
+      "火主",
+      "姬子",
+      "娜塔莎"
     ]
+  ]
 }
