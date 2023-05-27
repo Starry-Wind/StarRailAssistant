@@ -342,7 +342,10 @@ class calculated:
             elif doubt_result["max_val"] > 0.9 or warn_result["max_val"] > 0.95:
                 log.info("识别到疑问或是警告,等待怪物开战")
                 time.sleep(3)
-                target = cv.imread("./temp/finish_fighting.jpg")  # 識別是否已進入戰鬥，若已進入則跳出迴圈
+                if  self.platform == "PC":
+                    target = cv.imread("./temp/pc/finish_fighting.jpg")  # 識別是否已進入戰鬥，若已進入則跳出迴圈
+                else:
+                    target = cv.imread("./temp/mnq/finish_fighting.jpg")
                 result = self.scan_screenshot(target)
                 if result["max_val"] < 0.95:
                     break
