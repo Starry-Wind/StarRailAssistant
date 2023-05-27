@@ -58,7 +58,7 @@ def modify_json_file(filename: str, key, value):
     data, file_path = read_json_file(filename, path=True)
     data[key] = value
     with open(file_path, "wb") as f:
-        f.write(orjson.dumps(data))
+        f.write(orjson.dumps(data, option=orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2))
 
 
 def init_config_file(real_width, real_height):
@@ -78,7 +78,7 @@ def init_config_file(real_width, real_height):
                     "open_map": "m",
                     "level": "INFO",
                     "adb": "127.0.0.1:62001"
-                }
+                },option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2
             )
         )
 
