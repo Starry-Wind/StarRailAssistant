@@ -5,13 +5,13 @@
   "github_proxy": "",
   "rawgithub_proxy": "",
   "webhook_url": "",
-  "start": true,
-  "temp_version": "20230527020715",
-  "star_version": "20230526234248",
+  "start": false,
+  "temp_version": "0",
+  "star_version": "0",
   "open_map": "m",
   "level": "INFO",
   "adb": "127.0.0.1:62001",
-  "map_version": "20230527020715",
+  "map_version": "0",
   "scaling": 1.5,
   "presets": [
     [

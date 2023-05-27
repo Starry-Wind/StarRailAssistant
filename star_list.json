@@ -17,7 +17,7 @@
   },
   {
     "path": "config.json",
-    "hash": "95c8917a8ae59301caa42a7798ff334d"
+    "hash": "bcfe878a23e159323ddf0afaa5fe0eae"
   },
   {
     "path": "requirements.txt",
@@ -37,11 +37,11 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "0a107ff8cb0c905f716857647c62a34f"
+    "hash": "b1e5f025dd2156a33c0d0ebba5464c2b"
   },
   {
     "path": "utils/requests.py",
-    "hash": "a6a2172291b471b3c79bcc72fa3d03c6"
+    "hash": "96a85814612f0fda01b9269d342ab5af"
   },
   {
     "path": "utils/exceptions.py",
