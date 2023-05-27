@@ -665,23 +665,21 @@ class calculated:
 
     def open_map(self, open_key):
         start_time = time.time()
-        while True:
-            if self.platform == "PC":
-                self.keyboard.press(open_key)
-                self.keyboard.release(open_key)
-                #pyautogui.keyDown(open_key)
-                #pyautogui.keyUp(open_key)
-                time.sleep(1)
-            elif self.platform == "模拟器":
-                self.img_click((132, 82))
-            time.sleep(0.5)
-            map_status = self.part_ocr((5,7,10,10)) if self.platform == "PC" else self.part_ocr((6,2,10,5))
-            if "导航" in map_status:
-                log.info("进入地图")
-                break
-            if time.time() - start_time > 10:
-                log.info("识别超时")
-                break
+        if self.platform == "PC":
+            self.keyboard.press(open_key)
+            self.keyboard.release(open_key)
+            #pyautogui.keyDown(open_key)
+            #pyautogui.keyUp(open_key)
+        elif self.platform == "模拟器":
+            self.img_click((132, 82))
+            while True:
+                map_status = self.part_ocr((5,7,10,10)) if self.platform == "PC" else self.part_ocr((6,2,10,5))
+                if "导航" in map_status:
+                    log.info("进入地图")
+                    break
+                if time.time() - start_time > 10:
+                    log.info("识别超时")
+                    break
 
     def teleport(self, key, value, threshold=0.95):
         """
