@@ -667,9 +667,8 @@ class calculated:
         start_time = time.time()
         if self.platform == "PC":
             self.keyboard.press(open_key)
+            time.sleep(0.3) # 修复地图无法打开的问题
             self.keyboard.release(open_key)
-            #pyautogui.keyDown(open_key)
-            #pyautogui.keyUp(open_key)
         elif self.platform == "模拟器":
             self.img_click((132, 82))
             while True:
