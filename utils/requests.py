@@ -8,7 +8,6 @@ Description:
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
 '''
 import httpx
-import onepush
 import tqdm.asyncio
 
 from pathlib import Path
