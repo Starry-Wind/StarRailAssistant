@@ -36,11 +36,11 @@ class Map:
                     #points = self.calculated.calculated(result, target.shape)
                     points = result["max_loc"]
                     log.debug(points)
-                    for i in range(5):
+                    for i in range(6):
                         self.calculated.Click(points)
                     break
         elif self.platform == "模拟器":
-            for i in range(5):
+            for i in range(6):
                 self.calculated.img_click((366, 660))
 
     def start_map(self, map, old=True):
