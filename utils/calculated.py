@@ -680,6 +680,8 @@ class calculated:
             self.keyboard.release(open_key)
         elif self.platform == "模拟器":
             self.img_click((132, 82))
+            time.sleep(0.3) # 防止未打开地图
+            self.img_click((132, 82))
             while True:
                 map_status = self.part_ocr((5,7,10,10)) if self.platform == "PC" else self.part_ocr((6,2,10,5))
                 if "导航" in map_status:
