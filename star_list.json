@@ -1,7 +1,7 @@
 [
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "a2d373ed73e25024c16633e41d397c44"
+    "hash": "b89b2825ee2e7c87b1f1b5e4777ab552"
   },
   {
     "path": "get_width.py",
@@ -16,10 +16,6 @@
     "hash": "efb008080f16d851d922e866afffb7dd"
   },
   {
-    "path": "config.json",
-    "hash": "1a024335688c21a8f8ca9407d959dd96"
-  },
-  {
     "path": "requirements.txt",
     "hash": "9cb0a26a887005e0ac5d1351e34e6610"
   },
@@ -29,7 +25,7 @@
   },
   {
     "path": "map_res_list.py",
-    "hash": "164c5db97e05563b37fc8ef38be1e47d"
+    "hash": "2027d7dba3a3e12565621b101a2dc1cb"
   },
   {
     "path": "utils/simulated_universe.py",
@@ -45,11 +41,11 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "20f8fbb8adea8d47ac5fcda73781acb9"
+    "hash": "5d95e2a8485cff370478c39b104b708b"
   },
   {
     "path": "utils/requests.py",
-    "hash": "d6d9f8a69079a9f5aa92df1a7931d719"
+    "hash": "e6a0d5ff2a4d484354c2b62386672de8"
   },
   {
     "path": "utils/exceptions.py",
@@ -77,7 +73,7 @@
   },
   {
     "path": "utils/log.py",
-    "hash": "d9090a0bd12bac33ab4c823264fe91a0"
+    "hash": "f036f9705a64ad9ad144d2a6a9cd2950"
   },
   {
     "path": "whl/Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl",
