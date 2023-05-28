@@ -336,6 +336,10 @@
     "hash": "9cc7ea9cad61f00b53748186fdad64b7"
   },
   {
+    "path": "temp/mnq/map_3-2.png",
+    "hash": "f83ce2efaa1ac9c7fae3df1647ec29c8"
+  },
+  {
     "path": "temp/mnq/orientation_4.jpg",
     "hash": "63b33d939d1e6ce81530a53cb87c30c0"
   },
@@ -350,6 +354,10 @@
   {
     "path": "temp/mnq/map_1-3_point_1.jpg",
     "hash": "9d15b4c274e7accc93400880b0e4f497"
+  },
+  {
+    "path": "temp/mnq/map_2-1.jpg",
+    "hash": "947c04c8e37ae7295910647a5c970007"
   },
   {
     "path": "temp/mnq/map_2-6_point_1.png",
@@ -392,6 +400,14 @@
     "hash": "3ed07d7d989ba7374c490bb02b2fe74a"
   },
   {
+    "path": "temp/mnq/orientation_2.png",
+    "hash": "bff41fd1ee49fd1e9857a1165d3c6d3c"
+  },
+  {
+    "path": "temp/mnq/map_2-4.png",
+    "hash": "bdae6c7bce469432f874af4f8244b40f"
+  },
+  {
     "path": "temp/mnq/map_3-4_point_2.png",
     "hash": "acbcf910a44dbad6a9a80a5e509686fd"
   },
@@ -412,12 +428,32 @@
     "hash": "956a03adbd9f8798356b3d8c29c4fa06"
   },
   {
+    "path": "temp/mnq/map_2-2.jpg",
+    "hash": "7a5ad3bf901d9718eafe880f1c8bbf2b"
+  },
+  {
+    "path": "temp/mnq/map_3-4.png",
+    "hash": "b085cf9ae1ccf2a9babead8c9b04c7c0"
+  },
+  {
     "path": "temp/mnq/map_2-2_point_1.jpg",
     "hash": "6c5c7a3b897e0677ce3a98c5d7434082"
   },
   {
+    "path": "temp/mnq/map_1.jpg",
+    "hash": "03a7fdfec408ba25e815c0934fc56099"
+  },
+  {
     "path": "temp/mnq/map_2-5_point_1.png",
     "hash": "99c541d782b37abb44551163bb21fac1"
+  },
+  {
+    "path": "temp/mnq/map_1-3.jpg",
+    "hash": "b8665e3ca7c1d88f6bec176b8a1a06e2"
+  },
+  {
+    "path": "temp/mnq/map_2-3.jpg",
+    "hash": "a339141060d06ff4cfeb6e225b6cfb92"
   },
   {
     "path": "temp/mnq/map_3-4_point_3.png",
@@ -434,6 +470,10 @@
   {
     "path": "temp/mnq/map_3-2_point_4.png",
     "hash": "88c3640c18656c62e62c5e3ebdc86f30"
+  },
+  {
+    "path": "temp/mnq/map_3-1.png",
+    "hash": "b0587668e10f686913341adaee964bf3"
   },
   {
     "path": "temp/mnq/map_1-3_point_4.jpg",
@@ -464,12 +504,20 @@
     "hash": "f0e45ef1a16e133c0b787e51351622ea"
   },
   {
+    "path": "temp/mnq/map_2-7.png",
+    "hash": "80be218085fad145ef62b9d0a27f36da"
+  },
+  {
     "path": "temp/mnq/map_3-2_point_1.png",
     "hash": "e9b8e048c513a18b2b09c21242f5ccb7"
   },
   {
     "path": "temp/mnq/map_2-3_point_3.jpg",
     "hash": "60d9bb7f0c5d845aabb09a0eb7414d6e"
+  },
+  {
+    "path": "temp/mnq/map_2-5.png",
+    "hash": "ba13f544c06ef765088c8f67f1c0d045"
   },
   {
     "path": "temp/mnq/map_2-3_point_1.jpg",
@@ -502,6 +550,10 @@
   {
     "path": "temp/mnq/map_2-5_point_3.png",
     "hash": "a840d8d9f8077b91899de9eeb14441b3"
+  },
+  {
+    "path": "temp/mnq/map_1-2.jpg",
+    "hash": "a6b6a0dbcc22a5d954be1bd6cbf74caf"
   },
   {
     "path": "temp/mnq/map_1_point.jpg",
@@ -538,6 +590,14 @@
   {
     "path": "temp/mnq/map_1-3_point_3.jpg",
     "hash": "456d1767d2dcee7100298b98c9ab7934"
+  },
+  {
+    "path": "temp/mnq/map_2-6.png",
+    "hash": "5ec3ed2f9610e89ce3d6aad0c749474b"
+  },
+  {
+    "path": "temp/mnq/orientation_1.jpg",
+    "hash": "ef6c59ec5929ede8b74ff4b54fec9ed5"
   },
   {
     "path": "temp/mnq/map_3-3.png",
