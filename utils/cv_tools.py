@@ -40,7 +40,7 @@ def get_loc(im, imt):
     result = cv.matchTemplate(im, imt, cv.TM_CCORR_NORMED)
     return cv.minMaxLoc(result)
 
-def take_screenshot(rect, platform="PC", order="127.0.0.1:62001"):
+def take_screenshot(rect, platform="PC", order="127.0.0.1:62001", adb_path="temp\\adb\\adb"):
     # 返回RGB图像
     if platform == "PC":
         window = gw.getWindowsWithTitle('崩坏：星穹铁道')[0]
@@ -49,8 +49,8 @@ def take_screenshot(rect, platform="PC", order="127.0.0.1:62001"):
         #print((rect[0],rect[1],rect[3],rect[2]))
         temp = ImageGrab.grab((rect[0]+left,rect[1]+top,rect[3]+left,rect[2]+top))
     elif platform == "模拟器":
-        os.system(f"adb -s {order} shell screencap -p /sdcard/Pictures/screencast.png")
-        os.system(f"adb -s {order} pull /sdcard/Pictures/screencast.png")
+        os.system(f"{adb_path} -s {order} shell screencap -p /sdcard/Pictures/screencast.png")
+        os.system(f"{adb_path} -s {order} pull /sdcard/Pictures/screencast.png")
         img_fp = Image.open("./screencast.png")
         left, top = img_fp.size
         temp = img_fp.crop((rect[0],rect[1],rect[3],rect[2]))
@@ -62,15 +62,15 @@ def take_screenshot(rect, platform="PC", order="127.0.0.1:62001"):
 def take_minimap(rect = [47,58,187,187]):
     return take_screenshot(rect)
 
-def take_fine_screenshot(rect = [47,58,187,187], platform="PC", order="127.0.0.1:62001"):
-    total = take_screenshot(rect, platform, order)
+def take_fine_screenshot(rect = [47,58,187,187], platform="PC", order="127.0.0.1:62001", adb_path="temp\\adb\\adb"):
+    total = take_screenshot(rect, platform, order, adb_path)
     n = 5
     for i in range(n):
         if platform == "PC":
             win32api.mouse_event(1, 0, -200)  # 进行视角移动
         elif platform == "模拟器":
-            os.system(f"adb -s {order} shell input swipe 636 359 636 184 50")
-        mask = cv.compare(total, take_screenshot(rect, platform, order), cv.CMP_EQ )
+            os.system(f"{adb_path} -s {order} shell input swipe 636 359 636 184 50")
+        mask = cv.compare(total, take_screenshot(rect, platform, order, adb_path), cv.CMP_EQ )
         total = cv.bitwise_and(total, mask )
         time.sleep(0.01)
     time.sleep(0.1)
@@ -78,8 +78,8 @@ def take_fine_screenshot(rect = [47,58,187,187], platform="PC", order="127.0.0.1
         if platform == "PC":
             win32api.mouse_event(1, 0, 200)  # 进行视角移动
         elif platform == "模拟器":
-            os.system(f"adb -s {order} shell input swipe 636 362 636 495 50")
-        mask = cv.compare(total, take_screenshot(rect, platform, order), cv.CMP_EQ )
+            os.system(f"{adb_path} -s {order} shell input swipe 636 362 636 495 50")
+        mask = cv.compare(total, take_screenshot(rect, platform, order, adb_path), cv.CMP_EQ )
         total = cv.bitwise_and(total, mask )
         time.sleep(0.01)
     minimap = cv.bitwise_and(total, mask )

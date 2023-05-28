@@ -24,16 +24,18 @@ from .exceptions import Exception
 
 class calculated:
 
-    def __init__(self, platform="PC", order="127.0.0.1:62001"):
+    def __init__(self, platform="PC", order="127.0.0.1:62001", adb_path="temp\\adb\\adb"):
         """
         参数: 
             :param platform: 运行设备
             :param order: ADB端口
+            :param adb_path: ADB可执行文件路径
         """
         self.platform = platform
         self.order = order
+        self.adb_path = adb_path
 
-        self.adb = ADB(order)
+        self.adb = ADB(order, adb_path)
         self.CONFIG = read_json_file(CONFIG_FILE_NAME)
         self.scaling = self.CONFIG.get("scaling", 1)
         self.mouse = MouseController()

@@ -5,7 +5,7 @@ from .requests import webhook_and_log
 
 
 class Map:
-    def __init__(self, platform="PC",order="127.0.0.1:62001"):
+    def __init__(self, platform="PC",order="127.0.0.1:62001",adb_path="temp\\adb\\adb"):
         """
         参数: 
             :param platform: 运行设备
@@ -16,9 +16,9 @@ class Map:
             "模拟器": "mnq"
         }
         self.platform_name = platform2name[platform]
-        self.adb = ADB(order)
+        self.adb = ADB(order, adb_path)
 
-        self.calculated = calculated(platform,order)
+        self.calculated = calculated(platform,order,adb_path)
         self.keyboard = self.calculated.keyboard
         self.open_map = read_json_file(CONFIG_FILE_NAME).get("open_map", "m")
         self.map_list = []
