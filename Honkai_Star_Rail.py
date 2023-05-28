@@ -6,8 +6,9 @@ try:
     import pyuac
     import asyncio
     import questionary
-    
-    from httpx import ReadTimeout, ConnectError
+    import tqdm
+
+    from httpx import ReadTimeout, ConnectError, ConnectTimeout
 
     from get_width import get_width
     from utils.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
@@ -86,11 +87,12 @@ def main(type=0,platform="PC"):
         raise Exception(role_list)
 
 
-def main_start():
-    if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
+def main_start(start = True):
+    if not read_json_file(CONFIG_FILE_NAME, False).get('start') or not start:
         title = "请选择下载代理地址：（不使用代理选空白选项）"
         options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
         url_ms = []
+        pbar = tqdm.tqdm(total=len(options), desc='测速中', unit_scale=True, unit_divisor=1024, colour="green")
         for index,url in enumerate(options):
             if url == "":
                 url = "https://github.com"
@@ -99,8 +101,10 @@ def main_start():
             try:
                 response = asyncio.run(get(url))
                 ms = response.elapsed.total_seconds()
-            except (ReadTimeout, ConnectError):
+            except (ReadTimeout, ConnectError, ConnectTimeout):
                 ms = 999
+            finally:
+                pbar.update(1)
             url_ms.append(options[index]+f" {ms}ms")
         url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
         option = options[url_ms.index(questionary.select(title, url_ms).ask())]
@@ -108,6 +112,7 @@ def main_start():
         title = "请选择代理地址：（不使用代理选空白选项）"
         options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', '']
         url_ms = []
+        pbar = tqdm.tqdm(total=len(options), desc='测速中', unit_scale=True, unit_divisor=1024, colour="green")
         for index,url in enumerate(options):
             if url == "":
                 url = "https://github.com"
@@ -116,8 +121,10 @@ def main_start():
             try:
                 response = asyncio.run(get(url))
                 ms = response.elapsed.total_seconds()
-            except (ReadTimeout, ConnectError):
+            except (ReadTimeout, ConnectError, ConnectTimeout):
                 ms = 999
+            finally:
+                pbar.update(1)
             url_ms.append(options[index]+f" {ms}ms")
         url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
         option = options[url_ms.index(questionary.select(title, url_ms).ask())]
@@ -210,10 +217,13 @@ if __name__ == "__main__":
             pyuac.runAsAdmin()
         else:
             title = "请选择运行平台"
-            options = ['PC', '模拟器','检查更新']
+            options = ['PC', '模拟器','检查更新','配置参数']
             platform = questionary.select(title, options).ask()
             if platform == "检查更新":
                 up_data()
+                raise Exception("请重新运行")
+            if platform == "配置参数":
+                main_start(False)
                 raise Exception("请重新运行")
             title = "请选择操作"
             options = ['大世界', '模拟宇宙']

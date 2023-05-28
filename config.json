@@ -10,7 +10,7 @@
   "star_version": "0",
   "open_map": "m",
   "level": "INFO",
-  "adb": "127.0.0.1:5555",
+  "adb": "127.0.0.1:62001",
   "adb_path": "temp\\adb\\adb",
   "map_version": "0",
   "scaling": 1.5,
