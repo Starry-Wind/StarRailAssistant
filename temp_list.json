@@ -320,8 +320,16 @@
     "hash": "4fca8631ad666fe57234b26d66b3b6bd"
   },
   {
+    "path": "temp/mnq/map_3-3_point_3.png",
+    "hash": "6f5cb728400787299102992e25b86381"
+  },
+  {
     "path": "temp/mnq/map_2-4_point_4.jpg",
     "hash": "54ff4f236074923bfa04fe95d338c812"
+  },
+  {
+    "path": "temp/mnq/map_3-3_point_4.png",
+    "hash": "77a6ddfd0552c2aa984ab27126856b1a"
   },
   {
     "path": "temp/mnq/map_1-2_point_3.jpg",
@@ -330,6 +338,14 @@
   {
     "path": "temp/mnq/orientation_4.jpg",
     "hash": "63b33d939d1e6ce81530a53cb87c30c0"
+  },
+  {
+    "path": "temp/mnq/orientation_4.png",
+    "hash": "63b33d939d1e6ce81530a53cb87c30c0"
+  },
+  {
+    "path": "temp/mnq/map_3-3_point_1.png",
+    "hash": "9c0eb7bfdebd8bd398743bad92be5ac6"
   },
   {
     "path": "temp/mnq/map_1-3_point_1.jpg",
@@ -360,12 +376,28 @@
     "hash": "db6e30ebd93913e53920b0a726745102"
   },
   {
+    "path": "temp/mnq/map_3-1_point_1.png",
+    "hash": "c3ec57bcc8a8d05c3eed74c5082981f3"
+  },
+  {
     "path": "temp/mnq/map_2-5_point_5.png",
     "hash": "e0ac61c2e2d07c07827cddf22d7116ff"
   },
   {
+    "path": "temp/mnq/map_3-1_point_4.png",
+    "hash": "f57bde5d21bd6b930415af229d12196c"
+  },
+  {
     "path": "temp/mnq/map_2-6_point_2.png",
     "hash": "3ed07d7d989ba7374c490bb02b2fe74a"
+  },
+  {
+    "path": "temp/mnq/map_3-4_point_2.png",
+    "hash": "acbcf910a44dbad6a9a80a5e509686fd"
+  },
+  {
+    "path": "temp/mnq/map_3-4_point_1.png",
+    "hash": "84eab44580faf388bc3fec31d9f84b35"
   },
   {
     "path": "temp/mnq/warn.jpg",
@@ -376,6 +408,10 @@
     "hash": "36b9c6cef13111243142769d3ed76cb5"
   },
   {
+    "path": "temp/mnq/map_3-2_point_2.png",
+    "hash": "956a03adbd9f8798356b3d8c29c4fa06"
+  },
+  {
     "path": "temp/mnq/map_2-2_point_1.jpg",
     "hash": "6c5c7a3b897e0677ce3a98c5d7434082"
   },
@@ -384,12 +420,20 @@
     "hash": "99c541d782b37abb44551163bb21fac1"
   },
   {
+    "path": "temp/mnq/map_3-4_point_3.png",
+    "hash": "1f052d862b01bf42e87e83da3def397e"
+  },
+  {
     "path": "temp/mnq/doubt.jpg",
     "hash": "f3ce82e29c57e499096f717c9cad0c4b"
   },
   {
     "path": "temp/mnq/map_2-4_point_1.png",
     "hash": "8ed4e8d2be02e030add6859baf4b8c48"
+  },
+  {
+    "path": "temp/mnq/map_3-2_point_4.png",
+    "hash": "88c3640c18656c62e62c5e3ebdc86f30"
   },
   {
     "path": "temp/mnq/map_1-3_point_4.jpg",
@@ -416,6 +460,14 @@
     "hash": "2775a05a51045e7e3251c39a8b011e43"
   },
   {
+    "path": "temp/mnq/map_3-3_point_2.png",
+    "hash": "f0e45ef1a16e133c0b787e51351622ea"
+  },
+  {
+    "path": "temp/mnq/map_3-2_point_1.png",
+    "hash": "e9b8e048c513a18b2b09c21242f5ccb7"
+  },
+  {
     "path": "temp/mnq/map_2-3_point_3.jpg",
     "hash": "60d9bb7f0c5d845aabb09a0eb7414d6e"
   },
@@ -428,8 +480,24 @@
     "hash": "f255c66fc2cc567fc8a3f18b2b64adf5"
   },
   {
+    "path": "temp/mnq/map_3-3_point_5.png",
+    "hash": "536ed58a3d32f06716f750bb7fe96dd7"
+  },
+  {
+    "path": "temp/mnq/map_3-1_point_3.png",
+    "hash": "9415115e99e30f5ba36f196e05f48f25"
+  },
+  {
+    "path": "temp/mnq/map_3-2_point_3.png",
+    "hash": "3efc6b56b6feb819e0aeea6ba3c4ac7d"
+  },
+  {
     "path": "temp/mnq/map_2-1_point_1.jpg",
     "hash": "3573b678a05d8a0fcec9b5c1d31175bf"
+  },
+  {
+    "path": "temp/mnq/map_3-1_point_2.png",
+    "hash": "5d5d1f3540d4111a2e7e944c39fd5794"
   },
   {
     "path": "temp/mnq/map_2-5_point_3.png",
@@ -446,6 +514,10 @@
   {
     "path": "temp/mnq/orientation_3.jpg",
     "hash": "63211292415802a8c65dfc4002f868c0"
+  },
+  {
+    "path": "temp/mnq/map_3-2_point_5.png",
+    "hash": "512beee0eaf5738b43ff0987efdde963"
   },
   {
     "path": "temp/mnq/finish_fighting.jpg",
@@ -466,6 +538,10 @@
   {
     "path": "temp/mnq/map_1-3_point_3.jpg",
     "hash": "456d1767d2dcee7100298b98c9ab7934"
+  },
+  {
+    "path": "temp/mnq/map_3-3.png",
+    "hash": "fe39afc8bc72849cae5316e449ea9351"
   },
   {
     "path": "temp/Simulated_Universe/yes.jpg",
