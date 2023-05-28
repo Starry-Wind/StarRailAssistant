@@ -7,13 +7,13 @@ changelog:
     authors:
       - octocat
   categories:
-    - title: Breaking Changes 🛠
+    - title: 壮举
       labels:
-        - Semver-Major
-        - breaking-change
-    - title: Exciting New Features 🎉
+        - feat
+    - title: 日常更新
       labels:
         - enhancement
-    - title: Other Changes
+        - chore
+    - title: 其他更新
       labels:
         - "*"
