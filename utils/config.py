@@ -23,7 +23,7 @@ def normalize_file_path(filename):
             return None
 
 
-def read_json_file(filename: str, path=False):
+def read_json_file(filename: str, path=False) -> dict:
     """
     说明：
         读取文件

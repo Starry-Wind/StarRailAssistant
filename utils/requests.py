@@ -2,12 +2,13 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-25 12:54:10
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-28 16:43:07
+LastEditTime: 2023-05-28 21:13:37
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
 '''
 import httpx
+import onepush
 import tqdm.asyncio
 
 from pathlib import Path
@@ -92,3 +93,19 @@ def webhook_and_log(message):
         post(url, json={"content": message})
     except Exception as e:
         log.error(f"Webhook发送失败: {e}")
+
+def notify(content=None):
+    """
+    说明:
+        推送消息
+    参数:
+        :param content: 内容
+    """
+    config = read_json_file(CONFIG_FILE_NAME)
+    notifier = config.get('ONEPUSH', {}).get('notifier', '')
+    params = config.get('ONEPUSH', {}).get('params', '')
+    if not notifier or not params:
+        return
+    if not config.get('ONEPUSH', {}).get('title', ''):
+        config['ONEPUSH']['title'] = ''
+    return onepush.notify(notifier, content=content, **params).json()

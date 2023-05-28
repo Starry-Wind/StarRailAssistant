@@ -1,7 +1,7 @@
 import os
 import traceback
 try:
-    from utils.log import log
+    from utils.log import log, get_message
     import time
     import pyuac
     import asyncio
@@ -248,3 +248,7 @@ if __name__ == "__main__":
         log.error(traceback.format_exc())
     finally:
         ADB().kill()
+        if notify(get_message()).get("ok", False):
+            log.info("推送成功")
+        else:
+            log.info("推送失败")
