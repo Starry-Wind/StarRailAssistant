@@ -61,9 +61,10 @@ def choose_map(map_instance: map_word, type = 0, platform = "PC"):
 
 def main(type=0,platform="PC"):
     main_start()
-    order = read_json_file(CONFIG_FILE_NAME, False).get('adb', "")
-    map_instance = map_word(platform, order)
-    #simulated_universe =Simulated_Universe(platform, order)
+    order = read_json_file(CONFIG_FILE_NAME, False).get('adb', "127.0.0.1:62001")
+    adb_path = read_json_file(CONFIG_FILE_NAME, False).get('adb_path', "temp\\adb\\adb")
+    map_instance = map_word(platform, order, adb_path)
+    #simulated_universe =Simulated_Universe(platform, order, adb_path)
     start, role_list = choose_map(map_instance, type, platform)
     if start:
         if platform == "PC":
@@ -126,6 +127,9 @@ def main_start():
         title = "请输入ADB的地址:端口"
         text = questionary.text(title,default="127.0.0.1:62001").ask()
         modify_json_file(CONFIG_FILE_NAME, "adb", text)
+        title = "请输入ADB可执行文件的路径（如果你不知道这是什么，请直接回车使用默认选项）"
+        text = questionary.text(title,default="temp\\adb\\adb").ask()
+        modify_json_file(CONFIG_FILE_NAME, "adb_path", text)
         modify_json_file(CONFIG_FILE_NAME, "start", True)
 
 
