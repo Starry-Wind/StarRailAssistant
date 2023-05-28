@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-25 12:54:10
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-25 13:10:02
+LastEditTime: 2023-05-28 16:51:28
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -10,13 +10,13 @@ Copyright (c) 2023 by Night-stars-1, All Rights Reserved.
 from subprocess import run, DEVNULL
 from PIL import ImageGrab, Image
 from typing import Dict, Optional, Any, Union
+from .log import log
 
 class ADB:
     def __init__(self, order="127.0.0.1:62001", adb_path="temp\\adb\\adb"):
         """
         参数: 
             :param order: ADB端口
-            :param adb_path: ADB可执行文件路径
         """
         self.order = order
         self.adb_path = adb_path
@@ -27,10 +27,19 @@ class ADB:
             连接ADB
         参数:
             :param order: ADB端口
-            :param adb_path: ADB可执行文件路径
         """
         shell = [self.adb_path, "connect", self.order]
-        run(shell, shell=True) 
+        result = run(shell, shell=True, capture_output=True)
+        return result.stdout
+
+    def kill(self):
+        """
+        说明:
+            关闭ADB
+        """
+        shell = [self.adb_path, "kill-server"]
+        run(shell, shell=True, stdout=DEVNULL)
+        
     def input_swipe(self, pos1=(919,617), pos2=(919,908), time: int=100):
         """
         说明:

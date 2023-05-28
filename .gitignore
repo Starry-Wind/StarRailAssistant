@@ -122,5 +122,4 @@ config.json
 screencast1.png
 utils/A_.py
 utils/yolo.py
-utils/simulated_universe.py
 .vscode/settings.json

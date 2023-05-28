@@ -11,13 +11,14 @@ try:
 
     from get_width import get_width
     from utils.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
-    #from utils.simulated_universe import Simulated_Universe
+    from utils.simulated_universe import Simulated_Universe
     from utils.update_file import update_file_main
     from utils.calculated import calculated
     from utils.exceptions import Exception
     from utils.requests import webhook_and_log
     from utils.map import Map as map_word
     from utils.requests import *
+    from utils.adb import ADB
 except:
     print(traceback.format_exc())
 
@@ -55,16 +56,16 @@ def choose_map(map_instance: map_word, type = 0, platform = "PC"):
             choose_list = [role_list, choose_fate]
             return side_map, choose_list
         else:
-            #Simulated_Universe(platform).choose_presets(option)
+            Simulated_Universe(platform).choose_presets(option)
             return None, None
 
 
 def main(type=0,platform="PC"):
     main_start()
-    order = read_json_file(CONFIG_FILE_NAME, False).get('adb', "127.0.0.1:62001")
+    order = read_json_file(CONFIG_FILE_NAME, False).get('adb', "")
     adb_path = read_json_file(CONFIG_FILE_NAME, False).get('adb_path', "temp\\adb\\adb")
     map_instance = map_word(platform, order, adb_path)
-    #simulated_universe =Simulated_Universe(platform, order, adb_path)
+    simulated_universe =Simulated_Universe(platform, order, adb_path)
     start, role_list = choose_map(map_instance, type, platform)
     if start:
         if platform == "PC":
@@ -75,11 +76,12 @@ def main(type=0,platform="PC"):
             import pyautogui # 缩放纠正
             log.info("开始运行，请勿移动鼠标和键盘")
             log.info("若脚本运行无反应,请使用管理员权限运行")
+        elif platform == "模拟器":
+            ADB(order).connect()
         if type == 0:
             map_instance.auto_map(start)  # 读取配置
         elif type == 1:
-            log.info("未完工")
-            #simulated_universe.auto_map(start, role_list)  # 读取配置
+            simulated_universe.auto_map(start, role_list)  # 读取配置
     else:
         raise Exception(role_list)
 
@@ -98,7 +100,7 @@ def main_start():
                 response = asyncio.run(get(url))
                 ms = response.elapsed.total_seconds()
             except (ReadTimeout, ConnectError):
-                ms = 0
+                ms = 999
             url_ms.append(options[index]+f" {ms}ms")
         url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
         option = options[url_ms.index(questionary.select(title, url_ms).ask())]
@@ -115,7 +117,7 @@ def main_start():
                 response = asyncio.run(get(url))
                 ms = response.elapsed.total_seconds()
             except (ReadTimeout, ConnectError):
-                ms = 0
+                ms = 999
             url_ms.append(options[index]+f" {ms}ms")
         url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
         option = options[url_ms.index(questionary.select(title, url_ms).ask())]
@@ -127,9 +129,6 @@ def main_start():
         title = "请输入ADB的地址:端口"
         text = questionary.text(title,default="127.0.0.1:62001").ask()
         modify_json_file(CONFIG_FILE_NAME, "adb", text)
-        title = "请输入ADB可执行文件的路径（如果你不知道这是什么，请直接回车使用默认选项）"
-        text = questionary.text(title,default="temp\\adb\\adb").ask()
-        modify_json_file(CONFIG_FILE_NAME, "adb_path", text)
         modify_json_file(CONFIG_FILE_NAME, "start", True)
 
 
@@ -220,7 +219,11 @@ if __name__ == "__main__":
         print(traceback.format_exc())
         #os.system("pip install -r requirements.txt")
         print("请重新运行")
+    except KeyboardInterrupt:
+        log.error("监控到退出")
     except Exception:
         ...
     except:
         log.error(traceback.format_exc())
+    finally:
+        ADB().kill()
