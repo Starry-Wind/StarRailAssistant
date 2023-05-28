@@ -17,7 +17,7 @@
   },
   {
     "path": "config.json",
-    "hash": "7b14a0b6b590dbcdd7fd7dc6604b0b15"
+    "hash": "1a024335688c21a8f8ca9407d959dd96"
   },
   {
     "path": "requirements.txt",
@@ -33,7 +33,7 @@
   },
   {
     "path": "utils/simulated_universe.py",
-    "hash": "8897ba37ba2b8b2bbc17c907a9c42279"
+    "hash": "50ae15415fcfc4fe3b8c5633dd455783"
   },
   {
     "path": "utils/update_file.py",
