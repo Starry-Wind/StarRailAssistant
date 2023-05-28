@@ -73,6 +73,7 @@ class Map:
                         time.sleep(1)
                     else:
                         self.adb.input_tap((1040, 550))
+                        time.sleep(1)
                 else:
                     raise Exception(f"map数据错误, fighting参数异常:{map_filename}", map)
             elif key == "scroll":
