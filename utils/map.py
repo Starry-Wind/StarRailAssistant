@@ -113,6 +113,7 @@ class Map:
                     log.debug(key)
                     value = start[key]
                     if key == 'map':
+                        time.sleep(1) # 防止卡顿
                         self.calculated.open_map(self.open_map)
                         self.map_init()
                     else:

@@ -389,8 +389,14 @@ class calculated:
         while True:
             if type == 0:
                 result = self.scan_screenshot(target)
-                if result["max_val"] > 0.90:
+                if result["max_val"] > 0.95 and self.platform == 'PC':
                     #points = self.calculated(result, target.shape)
+                    points = result["max_loc"]
+                    log.debug(points)
+                    log.info("完成自动战斗")
+                    time.sleep(3)
+                    break
+                elif result["max_val"] > 0.90 and self.platform == '模拟器':
                     points = result["max_loc"]
                     log.debug(points)
                     log.info("完成自动战斗")
