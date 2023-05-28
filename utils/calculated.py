@@ -253,37 +253,37 @@ class calculated:
         target_path = target_path.replace("temp\\","temp\\pc\\") if self.platform == "PC" else target_path.replace("temp\\","temp\\mnq\\")
         temp_name = target_path.split("\\")[-1].split(".")[0]
         temp_ocr = {
-            "orientation_1": "星轨航图",
-            "orientation_2": "空间站「黑塔",
-            "map_1": "基座舱段",
+            # "orientation_1": "星轨航图",
+            # "orientation_2": "空间站「黑塔",
+            # "map_1": "基座舱段",
             "map_1_point" : [(593, 346),(593, 556)],
             "transfer": "传送",
-            "map_1-2": "收容舱段",
-            "map_1-3": "支援舱段",
+            # "map_1-2": "收容舱段",
+            # "map_1-3": "支援舱段",
             "map_1-3_point_1": [(593, 346),(700, 346)],
             # "orientation_3": "雅利洛-VI",
-            "map_2-1": "城郊雪原",
-            "map_2-2": "边缘通路",
-            "map_2-3": "残响回廊",
+            # "map_2-1": "城郊雪原",
+            # "map_2-2": "边缘通路",
+            # "map_2-3": "残响回廊",
             "map_2-3_point_2":[(593, 500),(593, 400)],
             "map_2-3_point_4":[(593, 500),(593, 400)],
             "map_2-3_point_5":[(593, 500),(593, 400)],
-            "map_2-4": "永冬岭",
-            "map_2-5": "大矿区",
+            # "map_2-4": "永冬岭",
+            # "map_2-5": "大矿区",
             "map_2-5_point_1": [(593, 500),(593, 400)],
-            "map_2-6": "铆钉镇",
-            "map_2-7": "机械聚落",
+            # "map_2-6": "铆钉镇",
+            # "map_2-7": "机械聚落",
             # "orientation_4": "仙舟「罗浮",
-            "map_3-1": "流云渡",
+            # "map_3-1": "流云渡",
             "map_3-1_point_1" : [(593, 346),(593, 556)],
             "map_3-1_point_2":[(593, 500),(593, 400)],
             "map_3-1_point_3":[(593, 500),(593, 400)],
-            "map_3-2": "迥星港",
+            # "map_3-2": "迥星港",
             # "map_3-3": "太卜司",
             "map_3-3_point_2":[(593, 500),(693, 400)],
             "map_3-3_point_4":[(593, 500),(693, 700)],
             "map_3-3_point_5":[(593, 500),(693, 700)],
-            "map_3-4": "工造司",
+            # "map_3-4": "工造司",
             "map_3-4_point_1" : [(593, 500),(800, 700)],
             "map_3-4_point_2":[(593, 500),(593, 400)],
             "map_3-4_point_3" : [(593, 346),(400, 346)],
@@ -296,6 +296,7 @@ class calculated:
                         break
             elif "point" in temp_name:
                 if self.platform == "模拟器":
+                    # time.sleep(0.5)
                     self.adb.input_swipe(temp_ocr[temp_name][0],temp_ocr[temp_name][1],100)
                     temp_ocr.pop(temp_name)
                     time.sleep(0.5)
