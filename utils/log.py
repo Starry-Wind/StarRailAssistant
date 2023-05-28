@@ -2,15 +2,18 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-15 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-25 15:21:36
+LastEditTime: 2023-05-28 21:38:56
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
 '''
 import os
+import re
 import sys
 import orjson
 from loguru import logger
+
+message = ""
 
 def normalize_file_path(filename):
     # 尝试在当前目录下读取文件
@@ -48,8 +51,6 @@ def read_json_file(filename: str, path=False):
     else:
         return {}
 
-def get_message(*arg):
-    print(arg[0][:-1])
 data = read_json_file("config.json")
 VER = str(data.get("star_version",0))+"/"+str(data.get("temp_version",0))+"/"+str(data.get("map_version",0))
 level = data.get("level","INFO")
@@ -62,12 +63,9 @@ logger.add(sys.stdout, level=level, colorize=True,
                     ":<cyan>{line}</cyan> - "+f"<cyan>{VER}</cyan> - "
                     "<level>{message}</level>"
             )
-"""
-logger.add(get_message, level=level,
-            format=f"{VER} - "
-                    "{message}"
-            )
-"""
+
+#logger.add(get_message, level=level,format="{message}")
+
 logger.add(path_log,
             format="{time:HH:mm:ss} - "
                     "{level}\t| "
