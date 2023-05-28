@@ -126,9 +126,20 @@ def main_start():
         options = ['没打开', '打开了', '这是什么']
         option = questionary.select(title, options).ask()
         modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", options.index(option))
-        title = "请输入ADB的地址:端口"
-        text = questionary.text(title,default="127.0.0.1:62001").ask()
-        modify_json_file(CONFIG_FILE_NAME, "adb", text)
+        title = "请选择运行的模拟器"
+        options = {
+            "逍遥游": "127.0.0.1:21503",
+            "夜神模拟器": "127.0.0.1:62001",
+            "海马玩模拟器": "127.0.0.1:26944",
+            "天天模拟器": "127.0.0.1:6555",
+            "雷电安卓模拟器": "127.0.0.1:5555",
+            "安卓模拟器大师": "127.0.0.1:54001",
+            "网易mumu模拟器": "127.0.0.1:7555",
+            "BlueStacks": "127.0.0.1:5555",
+            "天天安卓模拟器": "127.0.0.1:5037",
+        }
+        option = questionary.select(title, options).ask()
+        modify_json_file(CONFIG_FILE_NAME, "adb", options[option])
         modify_json_file(CONFIG_FILE_NAME, "start", True)
 
 
