@@ -26,7 +26,7 @@ from .calculated import *
 from .config import get_file, read_json_file, modify_json_file, CONFIG_FILE_NAME
 from .log import log
 from .requests import webhook_and_log
-from .yolo import predict
+#from .yolo import predict
 from .adb import ADB
 
 class Simulated_Universe:
