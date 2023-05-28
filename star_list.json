@@ -1,7 +1,7 @@
 [
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "33a63035ecae3afb101dec4426d4a6fe"
+    "hash": "368b86d7fcb6c3da8b5ae085462f50ef"
   },
   {
     "path": "get_width.py",
@@ -33,7 +33,7 @@
   },
   {
     "path": "utils/simulated_universe.py",
-    "hash": "50ae15415fcfc4fe3b8c5633dd455783"
+    "hash": "4b70e6f84073317eb1f1cb17e4e2509a"
   },
   {
     "path": "utils/update_file.py",
