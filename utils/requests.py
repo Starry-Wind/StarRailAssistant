@@ -93,19 +93,3 @@ def webhook_and_log(message):
         post(url, json={"content": message})
     except Exception as e:
         log.error(f"Webhook发送失败: {e}")
-
-def notify(content=None):
-    """
-    说明:
-        推送消息
-    参数:
-        :param content: 内容
-    """
-    config = read_json_file(CONFIG_FILE_NAME)
-    notifier = config.get('ONEPUSH', {}).get('notifier', '')
-    params = config.get('ONEPUSH', {}).get('params', '')
-    if not notifier or not params:
-        return
-    if not config.get('ONEPUSH', {}).get('title', ''):
-        config['ONEPUSH']['title'] = ''
-    return onepush.notify(notifier, content=content, **params).json()
