@@ -53,7 +53,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "d3e61b524458a2f7d5b181d8f2cd971f"
+    "hash": "dae98512ceeee80e9d0f24d531812452"
   },
   {
     "path": "utils/get_angle.py",
@@ -65,7 +65,7 @@
   },
   {
     "path": "utils/map.py",
-    "hash": "bad4d634eeacb8ac007d3397f7f54630"
+    "hash": "d2f82f1ea15daf6c670a83e95c7f9f11"
   },
   {
     "path": "utils/adb.py",
