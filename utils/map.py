@@ -36,11 +36,11 @@ class Map:
                     #points = self.calculated.calculated(result, target.shape)
                     points = result["max_loc"]
                     log.debug(points)
-                    for i in range(5):
+                    for i in range(6):
                         self.calculated.Click(points)
                     break
         elif self.platform == "模拟器":
-            for i in range(5):
+            for i in range(6):
                 self.calculated.img_click((366, 660))
 
     def start_map(self, map, old=True):
@@ -64,10 +64,16 @@ class Map:
                 self.calculated.Mouse_move(value)
             elif key == "fighting":
                 if value == 1:  # 进战斗
+                    if self.platform == '模拟器':
+                        self.adb.input_tap((1040, 550))
                     self.calculated.fighting()
                 elif value == 2:  # 障碍物
-                    self.calculated.Click()
-                    time.sleep(1)
+                    if self.platform == "PC":
+                        self.calculated.Click()
+                        time.sleep(1)
+                    else:
+                        self.adb.input_tap((1040, 550))
+                        time.sleep(1)
                 else:
                     raise Exception(f"map数据错误, fighting参数异常:{map_filename}", map)
             elif key == "scroll":
@@ -108,6 +114,7 @@ class Map:
                     log.debug(key)
                     value = start[key]
                     if key == 'map':
+                        time.sleep(1) # 防止卡顿
                         self.calculated.open_map(self.open_map)
                         self.map_init()
                     else:

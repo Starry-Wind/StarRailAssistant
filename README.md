@@ -67,6 +67,8 @@ This software is open source, free of charge and for learning and exchange purpo
 
 10：程序运行期间，**请勿移动**键盘及鼠标，如果移动了极有可能造成**偏离**或**撞墙**的问题
 
+11：使用模拟器请使用1280\*720p分辨率，默认为夜神模拟器，其他模拟器使用请先连接上adb(模拟器卡顿可能会吞操作)
+
 ## 配置文件说明
 ```json
 {
@@ -116,6 +118,8 @@ This software is open source, free of charge and for learning and exchange purpo
 3：如果你发现地图有撞墙问题，可以协助更新[地图文件提交到这里](https://github.com/Starry-Wind/StarRailAssistant/tree/map)
 
 4：请使用**三月七**来跑图以获得最佳体验
+
+5：遇到问题,请先确定你使用的是最新版本记得看[文档](https://sra.stysqy.top)
 
 ⭐**如果喜欢，点个星星~**⭐
 
