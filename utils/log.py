@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-15 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-28 21:10:44
+LastEditTime: 2023-05-29 13:46:22
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -78,7 +78,7 @@ logger.add(sys.stdout, level=level, colorize=True,
                     "<level>{message}</level>"
             )
 
-logger.add(get_message, level=level,format="{message}")
+#logger.add(get_message, level=level,format="{message}")
 
 logger.add(path_log,
             format="{time:HH:mm:ss} - "
