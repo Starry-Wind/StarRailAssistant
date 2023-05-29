@@ -1,7 +1,7 @@
 [
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "481c2eb4b48736188233e97bc04b37da"
+    "hash": "e1b0070540794e5c405ab9922417f0a3"
   },
   {
     "path": "get_width.py",
@@ -13,35 +13,39 @@
   },
   {
     "path": "README.md",
-    "hash": "9e737ccff501a41973614dfd209aa9d9"
-  },
-  {
-    "path": "config.json",
-    "hash": "b5345d2fe98f941c8b4661ed7ab88e55"
+    "hash": "efb008080f16d851d922e866afffb7dd"
   },
   {
     "path": "requirements.txt",
-    "hash": "02c3c6e906f8b85c8260373d0d6404f9"
+    "hash": "9cb0a26a887005e0ac5d1351e34e6610"
+  },
+  {
+    "path": "screencast.png",
+    "hash": "73fd6ced86a53698cea6e00f2ecf2bbc"
   },
   {
     "path": "map_res_list.py",
-    "hash": "164c5db97e05563b37fc8ef38be1e47d"
+    "hash": "2027d7dba3a3e12565621b101a2dc1cb"
+  },
+  {
+    "path": "utils/simulated_universe.py",
+    "hash": "4b70e6f84073317eb1f1cb17e4e2509a"
   },
   {
     "path": "utils/update_file.py",
-    "hash": "32ad48908a439cf341107d6922b035a8"
+    "hash": "6ab23531dc5dd3d1d4cda420733b3c4e"
   },
   {
     "path": "utils/cv_tracker.py",
-    "hash": "dbc9ecfb628a75a21bc0c04b7b265f9c"
+    "hash": "b540bcf1f23e64c1443a23c0d382db99"
   },
   {
     "path": "utils/config.py",
-    "hash": "0a107ff8cb0c905f716857647c62a34f"
+    "hash": "5d95e2a8485cff370478c39b104b708b"
   },
   {
     "path": "utils/requests.py",
-    "hash": "a6a2172291b471b3c79bcc72fa3d03c6"
+    "hash": "391d34e98377c0d99f460376d36c509b"
   },
   {
     "path": "utils/exceptions.py",
@@ -49,31 +53,27 @@
   },
   {
     "path": "utils/cv_tools.py",
-    "hash": "72b0233d3cb7f7c3141362e6b57678ad"
+    "hash": "47d888c1c606f5dea5b690b72e586d32"
   },
   {
     "path": "utils/calculated.py",
-    "hash": "c7a170e0b0d0b67dbb56cac2c31c53e4"
-  },
-  {
-    "path": "utils/get_angle.py",
-    "hash": "2c5db1e7611328baeb17613b96d55e0a"
+    "hash": "de5257813dab5939d11a2a9025c3f246"
   },
   {
     "path": "utils/record_v7.2.py",
-    "hash": "d1a591a4a2b48adcf713ac7d618451e3"
+    "hash": "7828b51751667aafed05f2419651582e"
   },
   {
     "path": "utils/map.py",
-    "hash": "ac8170245650a8b0472ae7bbf39adb4d"
+    "hash": "a7e4d2e1607f88a4e24db5296ca1019c"
   },
   {
     "path": "utils/adb.py",
-    "hash": "437660436dd7f902996ec2a8ef831b6b"
+    "hash": "513d63a20573fb0ac3ba3e71579db2b5"
   },
   {
     "path": "utils/log.py",
-    "hash": "d9090a0bd12bac33ab4c823264fe91a0"
+    "hash": "fc1a733bc8d76a09c6d02083892c8560"
   },
   {
     "path": "whl/Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl",

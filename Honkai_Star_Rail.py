@@ -1,19 +1,25 @@
 import os
 import traceback
 try:
-    from utils.log import log
+    from utils.log import log, get_message
     import time
     import pyuac
+    import asyncio
     import questionary
+    import tqdm
+
+    from httpx import ReadTimeout, ConnectError, ConnectTimeout
 
     from get_width import get_width
     from utils.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
-    #from utils.simulated_universe import Simulated_Universe
+    from utils.simulated_universe import Simulated_Universe
     from utils.update_file import update_file_main
     from utils.calculated import calculated
     from utils.exceptions import Exception
     from utils.requests import webhook_and_log
     from utils.map import Map as map_word
+    from utils.requests import *
+    from utils.adb import ADB
 except:
     print(traceback.format_exc())
 
@@ -51,14 +57,16 @@ def choose_map(map_instance: map_word, type = 0, platform = "PC"):
             choose_list = [role_list, choose_fate]
             return side_map, choose_list
         else:
-            #Simulated_Universe(platform).choose_presets(option)
+            Simulated_Universe(platform).choose_presets(option)
             return None, None
 
 
 def main(type=0,platform="PC"):
     main_start()
     order = read_json_file(CONFIG_FILE_NAME, False).get('adb', "")
-    map_instance = map_word(platform, order)
+    adb_path = read_json_file(CONFIG_FILE_NAME, False).get('adb_path', "temp\\adb\\adb")
+    map_instance = map_word(platform, order, adb_path)
+    simulated_universe =Simulated_Universe(platform, order, adb_path)
     start, role_list = choose_map(map_instance, type, platform)
     if start:
         if platform == "PC":
@@ -69,32 +77,76 @@ def main(type=0,platform="PC"):
             import pyautogui # 缩放纠正
             log.info("开始运行，请勿移动鼠标和键盘")
             log.info("若脚本运行无反应,请使用管理员权限运行")
+        elif platform == "模拟器":
+            ADB(order).connect()
         if type == 0:
             map_instance.auto_map(start)  # 读取配置
         elif type == 1:
-            log.info("未完工")
-            #simulated_universe.auto_map(start, role_list)  # 读取配置
+            simulated_universe.auto_map(start, role_list)  # 读取配置
     else:
         raise Exception(role_list)
 
 
-def main_start():
-    if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
+def main_start(start = True):
+    if not read_json_file(CONFIG_FILE_NAME, False).get('start') or not start:
         title = "请选择下载代理地址：（不使用代理选空白选项）"
         options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
-        option = questionary.select(title, options).ask()
+        url_ms = []
+        pbar = tqdm.tqdm(total=len(options), desc='测速中', unit_scale=True, unit_divisor=1024, colour="green")
+        for index,url in enumerate(options):
+            if url == "":
+                url = "https://github.com"
+            elif "https://" not in url:
+                url =  f"https://"+url
+            try:
+                response = asyncio.run(get(url))
+                ms = response.elapsed.total_seconds()
+            except (ReadTimeout, ConnectError, ConnectTimeout):
+                ms = 999
+            finally:
+                pbar.update(1)
+            url_ms.append(options[index]+f" {ms}ms")
+        url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
+        option = options[url_ms.index(questionary.select(title, url_ms).ask())]
         modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
         title = "请选择代理地址：（不使用代理选空白选项）"
         options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', '']
-        option = questionary.select(title, options).ask()
+        url_ms = []
+        pbar = tqdm.tqdm(total=len(options), desc='测速中', unit_scale=True, unit_divisor=1024, colour="green")
+        for index,url in enumerate(options):
+            if url == "":
+                url = "https://github.com"
+            elif "https://" not in url:
+                url =  f"https://"+url
+            try:
+                response = asyncio.run(get(url))
+                ms = response.elapsed.total_seconds()
+            except (ReadTimeout, ConnectError, ConnectTimeout):
+                ms = 999
+            finally:
+                pbar.update(1)
+            url_ms.append(options[index]+f" {ms}ms")
+        url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
+        option = options[url_ms.index(questionary.select(title, url_ms).ask())]
         modify_json_file(CONFIG_FILE_NAME, "rawgithub_proxy", option)
         title = "你游戏里开启了连续自动战斗吗？："
         options = ['没打开', '打开了', '这是什么']
         option = questionary.select(title, options).ask()
         modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", options.index(option))
-        title = "请输入ADB的地址:端口"
-        text = questionary.text(title,default="127.0.0.1:62001").ask()
-        modify_json_file(CONFIG_FILE_NAME, "adb", text)
+        title = "请选择模拟器的运行平台"
+        options = {
+            "逍遥游": "127.0.0.1:21503",
+            "夜神模拟器": "127.0.0.1:62001",
+            "海马玩模拟器": "127.0.0.1:26944",
+            "天天模拟器": "127.0.0.1:6555",
+            "雷电安卓模拟器": "127.0.0.1:5555",
+            "安卓模拟器大师": "127.0.0.1:54001",
+            "网易mumu模拟器": "127.0.0.1:7555",
+            "BlueStacks": "127.0.0.1:5555",
+            "天天安卓模拟器": "127.0.0.1:5037",
+        }
+        option = questionary.select(title, options).ask()
+        modify_json_file(CONFIG_FILE_NAME, "adb", options[option])
         modify_json_file(CONFIG_FILE_NAME, "start", True)
 
 
@@ -132,7 +184,7 @@ def up_data():
             'unzip_path': "map",
             'keep_folder': [],
             'keep_file': [],
-            'zip_path': "map/map/",
+            'zip_path': "map/",
             'name': "地图"
         },
         "图片":{
@@ -145,7 +197,7 @@ def up_data():
             'unzip_path': "temp",
             'keep_folder': [],
             'keep_file': [],
-            'zip_path': "temp/temp/",
+            'zip_path': "map/",
             'name': "图片"
         },
     }
@@ -165,10 +217,13 @@ if __name__ == "__main__":
             pyuac.runAsAdmin()
         else:
             title = "请选择运行平台"
-            options = ['PC', '模拟器','检查更新']
+            options = ['PC', '模拟器','检查更新','配置参数']
             platform = questionary.select(title, options).ask()
             if platform == "检查更新":
                 up_data()
+                raise Exception("请重新运行")
+            if platform == "配置参数":
+                main_start(False)
                 raise Exception("请重新运行")
             title = "请选择操作"
             options = ['大世界', '模拟宇宙']
@@ -179,13 +234,17 @@ if __name__ == "__main__":
                 main(1,platform)
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
-        os.system("pip install -r requirements.txt")
+        #os.system("pip install -r requirements.txt")
         print("请重新运行")
     except NameError as e:
         print(traceback.format_exc())
-        os.system("pip install -r requirements.txt")
+        #os.system("pip install -r requirements.txt")
         print("请重新运行")
+    except KeyboardInterrupt:
+        log.error("监控到退出")
     except Exception:
         ...
     except:
         log.error(traceback.format_exc())
+    finally:
+        ADB().kill()

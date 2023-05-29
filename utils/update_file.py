@@ -2,7 +2,7 @@
 Author: AlisaCat
 Date: 2023-05-11 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-25 00:38:58
+LastEditTime: 2023-05-27 02:44:21
 Description: 
 
 Copyright (c) 2023 by AlisaCat, All Rights Reserved. 
@@ -68,7 +68,6 @@ async def move_file(src_folder: Path, dst_folder,keep_folder: Optional[List[str]
     for item in get_file(src_folder,keep_folder,keep_file, True):
         if dst_folder in item:
             dst_path = item.replace(src_folder, "./")
-
             # 创建目标文件夹（如果不存在）
             if not os.path.exists(dst_path.rsplit("/",1)[0]) and dst_path.rsplit("/",1)[0] != '.':
                 os.makedirs(dst_path.rsplit("/",1)[0])

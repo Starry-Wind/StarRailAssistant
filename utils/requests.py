@@ -1,10 +1,20 @@
+'''
+Author: Night-stars-1 nujj1042633805@gmail.com
+Date: 2023-05-25 12:54:10
+LastEditors: Night-stars-1 nujj1042633805@gmail.com
+LastEditTime: 2023-05-29 13:40:41
+Description: 
+
+Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
+'''
 import httpx
 import tqdm.asyncio
+
 from pathlib import Path
 from typing import Dict, Optional, Any, Union, Tuple
 
 from .log import log
-from .config import read_json_file
+from .config import read_json_file, CONFIG_FILE_NAME
 
 async def get(url: str,
                 *,
@@ -64,21 +74,18 @@ async def download(url: str, save_path: Path):
     """
     save_path.parent.mkdir(parents=True, exist_ok=True)
     async with httpx.AsyncClient().stream(method='GET', url=url, follow_redirects=True) as datas:
-        size = int(datas.headers.get('Content-Length', 0))
-        f = save_path.open('wb')
-        async for chunk in tqdm.asyncio.tqdm(iterable=datas.aiter_bytes(1),
-                                                desc=url.split('/')[-1],
-                                                unit='iB',
-                                                unit_scale=True,
-                                                unit_divisor=1024,
-                                                total=size,
-                                                colour='green'):
+        size = int(datas.headers.get("Content-Length", 0))
+        f = save_path.open("wb")
+        pbar = tqdm.asyncio.tqdm(total=size, unit="MiB", unit_scale=True, unit_divisor=1024, colour="green")
+        async for chunk in datas.aiter_bytes(1024 * 1024):
             f.write(chunk)
+            pbar.update(len(chunk))
+        pbar.close()
         f.close()
 
 def webhook_and_log(message):
     log.info(message)
-    url = read_json_file("config.json", False).get("webhook_url")
+    url = read_json_file(CONFIG_FILE_NAME, False).get("webhook_url")
     if url == "" or url == None:
         return
     try:

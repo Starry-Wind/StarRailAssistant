@@ -2,6 +2,7 @@
 系统控制项
 """
 import time
+import win32api
 import cv2 as cv
 import numpy as np
 import pygetwindow as gw
@@ -23,16 +24,18 @@ from .exceptions import Exception
 
 class calculated:
 
-    def __init__(self, platform="PC", order="127.0.0.1:62001"):
+    def __init__(self, platform="PC", order="127.0.0.1:62001", adb_path="temp\\adb\\adb"):
         """
         参数: 
             :param platform: 运行设备
             :param order: ADB端口
+            :param adb_path: ADB可执行文件路径
         """
         self.platform = platform
         self.order = order
+        self.adb_path = adb_path
 
-        self.adb = ADB(order)
+        self.adb = ADB(order, adb_path)
         self.CONFIG = read_json_file(CONFIG_FILE_NAME)
         self.scaling = self.CONFIG.get("scaling", 1)
         self.mouse = MouseController()
@@ -203,7 +206,7 @@ class calculated:
             width, length = temp.size
         elif self.platform == "模拟器":
             left, top, right, bottom = 0,0,0,0
-            temp = self.adb.screencast("/sdcard/Pictures/screencast1.png")
+            temp = self.adb.screencast()
             width, length = temp.size
         if points != (0,0,0,0):
             #points = (points[0], points[1]+5, points[2], points[3]+5) if self.platform == "PC" else points
@@ -253,14 +256,47 @@ class calculated:
         temp_name = target_path.split("\\")[-1].split(".")[0]
         temp_ocr = {
             "orientation_1": "星轨航图",
-            "orientation_2": "空间站「黑塔",
+            #"orientation_2": "空间站「黑塔",
             "map_1": "基座舱段",
             "map_1_point" : [(593, 346),(593, 556)],
             "transfer": "传送",
             "map_1-2": "收容舱段",
             "map_1-3": "支援舱段",
+            "map_1-3_point_1": [(593, 346),(700, 346)],
+            #"orientation_3": "雅利洛-VI",
+            "map_2-1": "城郊雪原",
+            "map_2-2": "边缘通路",
+            "map_2-3": "残响回廊",
+            "map_2-3_point_2":[(593, 500),(593, 400)],
+            "map_2-3_point_4":[(593, 500),(593, 400)],
+            "map_2-3_point_5":[(593, 500),(593, 400)],
+            "map_2-4": "永冬岭",
+            "map_2-5": "大矿区",
+            "map_2-5_point_1": [(593, 500),(593, 400)],
+            "map_2-6": "铆钉镇",
+            "map_2-7": "机械聚落",
+            #"orientation_4": "仙舟「罗浮",
+            "map_3-1": "流云渡",
+            "map_3-1_point_1" : [(593, 346),(593, 556)],
+            "map_3-1_point_2":[(593, 500),(593, 400)],
+            "map_3-1_point_3":[(593, 500),(593, 400)],
+            "map_3-2": "迥星港",
+            "map_3-3": "太卜司",
+            "map_3-3_point_2":[(593, 500),(693, 400)],
+            "map_3-3_point_4":[(593, 500),(693, 700)],
+            "map_3-3_point_5":[(593, 500),(693, 700)],
+            "map_3-4": "工造司",
+            "map_3-4_point_1" : [(593, 500),(800, 700)],
+            "map_3-4_point_2":[(593, 500),(593, 400)],
+            "map_3-4_point_3" : [(593, 346),(400, 346)],
         }
         if temp_name in temp_ocr:
+            if "orientation" in temp_name:
+                log.info("选择星球")
+            elif "point" in temp_name:
+                log.info("选择传送锚点")
+            elif "map" in temp_name:
+                log.info("选择地图")
             if "map" not in temp_name:
                 self.ocr_click(temp_ocr[temp_name])
                 while True:
@@ -268,6 +304,7 @@ class calculated:
                         break
             elif "point" in temp_name:
                 if self.platform == "模拟器":
+                    # time.sleep(0.5)
                     self.adb.input_swipe(temp_ocr[temp_name][0],temp_ocr[temp_name][1],100)
                     temp_ocr.pop(temp_name)
                     time.sleep(0.5)
@@ -281,7 +318,6 @@ class calculated:
                             break
                         if flag == False:
                             break
-
             else:
                 if type(temp_ocr[temp_name]) == str:
                     ocr_data = self.part_ocr((77,10,85,97)) if self.platform == "PC" else self.part_ocr((72,18,80,97))
@@ -319,12 +355,19 @@ class calculated:
             if attack_result["max_val"] > 0.98:
                 #points = self.calculated(result, target.shape)
                 points = attack_result["max_loc"]
-                self.Click(points)
-                break
+                if self.platform == "PC":
+                    self.Click(points)
+                    break
+                else:
+                    # self.adb.input_tap((1040, 550))
+                    break
             elif doubt_result["max_val"] > 0.9 or warn_result["max_val"] > 0.95:
                 log.info("识别到疑问或是警告,等待怪物开战")
                 time.sleep(3)
-                target = cv.imread("./temp/finish_fighting.jpg")  # 識別是否已進入戰鬥，若已進入則跳出迴圈
+                if  self.platform == "PC":
+                    target = cv.imread("./temp/pc/finish_fighting.jpg")  # 識別是否已進入戰鬥，若已進入則跳出迴圈
+                else:
+                    target = cv.imread("./temp/mnq/finish_fighting.jpg")
                 result = self.scan_screenshot(target)
                 if result["max_val"] < 0.95:
                     break
@@ -354,8 +397,14 @@ class calculated:
         while True:
             if type == 0:
                 result = self.scan_screenshot(target)
-                if result["max_val"] > 0.95:
+                if result["max_val"] > 0.95 and self.platform == 'PC':
                     #points = self.calculated(result, target.shape)
+                    points = result["max_loc"]
+                    log.debug(points)
+                    log.info("完成自动战斗")
+                    time.sleep(3)
+                    break
+                elif result["max_val"] > 0.92 and self.platform == '模拟器':
                     points = result["max_loc"]
                     log.debug(points)
                     log.info("完成自动战斗")
@@ -380,21 +429,21 @@ class calculated:
         for ii in range(abs(i)):
             if dx >0:
                 if self.platform == "PC":
-                    #win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 200, 0)  # 进行视角移动
-                    self.mouse.move(200, 0)
+                    win32api.mouse_event(1, 200, 0)  # 进行视角移动
+                    #self.mouse.move(200, 0)
                 else:
                     self.adb.input_swipe((919, 394), (1119, 394), 200)
             else:
                 if self.platform == "PC":
-                    #win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, -200, 0)  # 进行视角移动
-                    self.mouse.move(-200, 0)
+                    win32api.mouse_event(1, -200, 0)  # 进行视角移动
+                    #self.mouse.move(-200, 0)
                 else:
                     self.adb.input_swipe((919, 394), (719, 394), 200)
             time.sleep(0.1)
         if last != 0:
             if self.platform == "PC":
-                #win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, last, 0)  # 进行视角移动
-                self.mouse.move(last, 0)
+                win32api.mouse_event(1, last, 0)  # 进行视角移动
+                #self.mouse.move(last, 0)
             else:
                 self.adb.input_swipe((919, 394), (919-last, 394), 200)
         time.sleep(0.5)
@@ -414,17 +463,18 @@ class calculated:
                 pass
             self.keyboard.release(com)
         elif self.platform == "模拟器":
-            time1 = time1*1000
+            time1 = (time1)*1000
             if com == "w":
-                self.adb.input_swipe((213, 512), (213, 409), time1)
+                self.adb.input_swipe((213, 500), (213, 409), time1)
             elif com == "a":
-                self.adb.input_swipe((170, 560), (107, 560), time1)
+                self.adb.input_swipe((155, 560), (90, 560), time1)
             elif com == "s":
-                self.adb.input_swipe((208, 625), (208, 684), time1)
+                self.adb.input_swipe((213, 620), (213, 728), time1)
             elif com == "d":
-                self.adb.input_swipe((242, 557), (320, 557), time1)
+                self.adb.input_swipe((265, 560), (335, 560), time1)
             elif com == "f":
-                self.adb.input_swipe((880, 362))
+                self.adb.input_tap((880, 362))
+
 
     def path_move(self, path: List):
         '''
@@ -628,17 +678,16 @@ class calculated:
                 log.info(f'没找到窗口{title}')
 
     def open_map(self, open_key):
-        start_time = time.time()
         while True:
+            start_time = time.time()
             if self.platform == "PC":
                 self.keyboard.press(open_key)
+                time.sleep(0.3) # 修复地图无法打开的问题
                 self.keyboard.release(open_key)
-                #pyautogui.keyDown(open_key)
-                #pyautogui.keyUp(open_key)
-                time.sleep(1)
             elif self.platform == "模拟器":
-                self.img_click((116, 128))
-            time.sleep(0.5)
+                self.img_click((132, 82))
+                time.sleep(0.3) # 防止未打开地图
+                self.img_click((132, 82))
             map_status = self.part_ocr((5,7,10,10)) if self.platform == "PC" else self.part_ocr((6,2,10,5))
             if "导航" in map_status:
                 log.info("进入地图")
