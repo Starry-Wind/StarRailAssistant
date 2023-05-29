@@ -40,7 +40,7 @@ class calculated:
         self.scaling = self.CONFIG.get("scaling", 1)
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
-        self.ocr = CnOcr(det_model_name='ch_PP-OCRv2_det', rec_model_name='densenet_lite_114-fc')
+        self.ocr = CnOcr(det_model_name='ch_PP-OCRv3_det', rec_model_name='densenet_lite_114-fc')
         #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
         if platform == "PC":
             self.window = gw.getWindowsWithTitle('崩坏：星穹铁道')
@@ -254,6 +254,7 @@ class calculated:
         """
         target_path = target_path.replace("temp\\","temp\\pc\\") if self.platform == "PC" else target_path.replace("temp\\","temp\\mnq\\")
         temp_name = target_path.split("\\")[-1].split(".")[0]
+        join = False # 强制进行传统模板匹配
         temp_ocr = {
             "orientation_1": "星轨航图",
             #"orientation_2": "空间站「黑塔",
@@ -320,12 +321,20 @@ class calculated:
                             break
             else:
                 if type(temp_ocr[temp_name]) == str:
-                    ocr_data = self.part_ocr((77,10,85,97)) if self.platform == "PC" else self.part_ocr((72,18,80,97))
-                    pos = ocr_data[temp_ocr[temp_name]]
-                    self.appoint_click(pos,(pos[0]+60, pos[1]), [40,40,40])
+                    start_time = time.time()
+                    while True:
+                        ocr_data = self.part_ocr((77,10,85,97)) if self.platform == "PC" else self.part_ocr((72,18,80,97))
+                        pos = ocr_data.get(temp_ocr[temp_name], None)
+                        if pos:
+                            self.appoint_click(pos,(pos[0]+60, pos[1]), [40,40,40])
+                            break
+                        if time.time() - start_time > 5:
+                            log.info("地图识别超时")
+                            join = True
+                            break
                 elif type(temp_ocr[temp_name]) == tuple:
                     self.img_click(temp_ocr[temp_name])
-        if temp_name not in temp_ocr:
+        if temp_name not in temp_ocr or join:
             target = cv.imread(target_path)
             while True:
                 result = self.scan_screenshot(target)
