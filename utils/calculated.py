@@ -203,8 +203,8 @@ class calculated:
         if self.platform == "PC":
             scaling = self.CONFIG.get("scaling", 1.0)
             points = (points[0]*1.5/scaling,points[1]*1.5/scaling,points[2]*1.5/scaling,points[3]*1.5/scaling)
-            left, top, right, bottom = self.window.left-10, self.window.top-45, self.window.right, self.window.bottom
-            temp = ImageGrab.grab((left+20, top+90, right, bottom))
+            left, top, right, bottom = self.window.left+10, self.window.top+45, self.window.right, self.window.bottom
+            temp = ImageGrab.grab((left, top, right, bottom))
             width, length = temp.size
         elif self.platform == "模拟器":
             left, top, right, bottom = 0,0,0,0
@@ -695,11 +695,12 @@ class calculated:
                 self.keyboard.press(open_key)
                 time.sleep(0.3) # 修复地图无法打开的问题
                 self.keyboard.release(open_key)
+                time.sleep(1)
             elif self.platform == "模拟器":
                 self.img_click((132, 82))
                 time.sleep(0.3) # 防止未打开地图
                 self.img_click((132, 82))
-            map_status = self.part_ocr((6,2,10,6)) if self.platform == "PC" else self.part_ocr((6,2,10,5))
+            map_status = self.part_ocr((3,2,10,6)) if self.platform == "PC" else self.part_ocr((6,2,10,6))
             if "导航" in map_status:
                 log.info("进入地图")
                 break
