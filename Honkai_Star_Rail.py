@@ -61,7 +61,7 @@ def choose_map(map_instance: map_word, type = 0, platform = "PC"):
             return None, None
 
 
-def main(type=0,platform="PC"):
+def main(type=0,platform="PC",start=None,role_list=None):
     main_start()
     order = read_json_file(CONFIG_FILE_NAME, False).get('adb', "")
     adb_path = read_json_file(CONFIG_FILE_NAME, False).get('adb_path', "temp\\adb\\adb")
@@ -154,7 +154,7 @@ def up_data():
     main_start()    # 无config直接更新时初始化config文件
     ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
     if "adb" not in read_json_file(CONFIG_FILE_NAME, False):
-        init_config_file(0, 0)
+        init_config_file(1920, 1080)
         raise Exception("未检测到必要更新，强制更新脚本，请重新运行脚本")
 
     rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
