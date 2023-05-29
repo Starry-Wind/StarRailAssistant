@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-19 16:04:28
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-28 18:43:06
+LastEditTime: 2023-05-29 23:04:47
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -20,7 +20,7 @@ from questionary import Validator, ValidationError
 from typing import List
 from pynput.keyboard import Controller as KeyboardController
 from threading import Thread
-from ultralytics.nn.tasks import  attempt_load_weights
+#from ultralytics.nn.tasks import  attempt_load_weights
 
 from .calculated import *
 from .config import get_file, read_json_file, modify_json_file, CONFIG_FILE_NAME
