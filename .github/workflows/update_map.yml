@@ -3,8 +3,8 @@ name: 更新地图文件
 on:
   push:
     branches: [ main ]
-    paths:
-      - '**'
+  pull_request:
+    branches: [ main ]
 
   workflow_dispatch:
 
