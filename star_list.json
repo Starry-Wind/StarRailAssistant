@@ -13,11 +13,11 @@
   },
   {
     "path": "README.md",
-    "hash": "efb008080f16d851d922e866afffb7dd"
+    "hash": "b94bdec8d3c78def9783b07bed23f8c6"
   },
   {
     "path": "requirements.txt",
-    "hash": "9cb0a26a887005e0ac5d1351e34e6610"
+    "hash": "bb5811ad3a1fa3fb73fed88bfdeab29d"
   },
   {
     "path": "screencast.png",
@@ -41,11 +41,11 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "5d95e2a8485cff370478c39b104b708b"
+    "hash": "80cd09f1a546847ac2592523fc763a5e"
   },
   {
     "path": "utils/requests.py",
-    "hash": "391d34e98377c0d99f460376d36c509b"
+    "hash": "315ffbc7ad1e1530c0258da8e0ce5919"
   },
   {
     "path": "utils/exceptions.py",
