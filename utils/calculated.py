@@ -326,12 +326,12 @@ class calculated:
                         ocr_data = self.part_ocr((77,10,85,97)) if self.platform == "PC" else self.part_ocr((72,18,80,97))
                         pos = ocr_data.get(temp_ocr[temp_name], None)
                         if pos:
+                            self.appoint_click(pos,(pos[0]+60, pos[1]), [40,40,40])
                             break
                         if time.time() - start_time > 5:
                             log.info("地图识别超时")
                             join = True
                             break
-                    self.appoint_click(pos,(pos[0]+60, pos[1]), [40,40,40])
                 elif type(temp_ocr[temp_name]) == tuple:
                     self.img_click(temp_ocr[temp_name])
         if temp_name not in temp_ocr or join:
