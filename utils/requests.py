@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-25 12:54:10
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-29 20:19:27
+LastEditTime: 2023-05-29 21:35:22
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -18,7 +18,7 @@ from .log import log
 from .config import read_json_file, CONFIG_FILE_NAME
 
 proxies=read_json_file(CONFIG_FILE_NAME).get("proxies", "")
-transport = AsyncProxyTransport.from_url(proxies)
+transport = AsyncProxyTransport.from_url(proxies) if proxies else None
 
 async def get(url: str,
                 *,
@@ -37,7 +37,7 @@ async def get(url: str,
         :param json: json
         :param timeout: 超时时间
     """
-    async with httpx.AsyncClient(transport=transport) as client:
+    async with httpx.AsyncClient(transport=transport if transport else None) as client:
         return await client.get(url,
                                 headers=headers,
                                 params=params,
@@ -61,7 +61,7 @@ async def post(url: str,
         :param json: json
         :param timeout: 超时时间
     """
-    async with httpx.AsyncClient(transport=transport) as client:
+    async with httpx.AsyncClient(transport=transport if transport else None) as client:
         return await client.post(url,
                                 headers=headers,
                                 params=params,
@@ -77,7 +77,7 @@ async def download(url: str, save_path: Path):
         :param save_path: 保存路径
     """
     save_path.parent.mkdir(parents=True, exist_ok=True)
-    async with httpx.AsyncClient(transport=transport).stream(method='GET', url=url, follow_redirects=True) as datas:
+    async with httpx.AsyncClient(transport=transport if transport else None).stream(method='GET', url=url, follow_redirects=True) as datas:
         size = int(datas.headers.get("Content-Length", 0))
         f = save_path.open("wb")
         pbar = tqdm.asyncio.tqdm(total=size, unit="MiB", unit_scale=True, unit_divisor=1024, colour="green")
