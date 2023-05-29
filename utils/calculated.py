@@ -201,8 +201,10 @@ class calculated:
             :param points: 图像截取范围
         """
         if self.platform == "PC":
-            left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
-            temp = ImageGrab.grab((left, top, right, bottom))
+            scaling = self.CONFIG.get("scaling", 1.0)
+            points = (points[0]*1.5/scaling,points[1]*1.5/scaling,points[2]*1.5/scaling,points[3]*1.5/scaling)
+            left, top, right, bottom = self.window.left-10, self.window.top-45, self.window.right, self.window.bottom
+            temp = ImageGrab.grab((left+20, top+90, right, bottom))
             width, length = temp.size
         elif self.platform == "模拟器":
             left, top, right, bottom = 0,0,0,0
@@ -590,6 +592,7 @@ class calculated:
             :return data: 文字: 坐标
         """
         img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
+        show_img(img_fp)
         x, y = width/100*points[0], length/100*points[1]
         out = self.ocr.ocr(img_fp)
         data = {i['text']: (int(left+x+(i['position'][2][0]+i['position'][0][0])/2),int(top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
@@ -697,7 +700,7 @@ class calculated:
                 self.img_click((132, 82))
                 time.sleep(0.3) # 防止未打开地图
                 self.img_click((132, 82))
-            map_status = self.part_ocr((5,7,10,10)) if self.platform == "PC" else self.part_ocr((6,2,10,5))
+            map_status = self.part_ocr((6,2,10,6)) if self.platform == "PC" else self.part_ocr((6,2,10,5))
             if "导航" in map_status:
                 log.info("进入地图")
                 break
