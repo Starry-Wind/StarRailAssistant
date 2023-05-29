@@ -1,7 +1,7 @@
 import os
 import traceback
 try:
-    from utils.log import log
+    from utils.log import log, get_message
     import time
     import pyuac
     import asyncio
