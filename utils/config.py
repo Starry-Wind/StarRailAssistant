@@ -78,7 +78,8 @@ def init_config_file(real_width, real_height):
                     "open_map": "m",
                     "level": "INFO",
                     "adb": "127.0.0.1:62001",
-                    "adb_path": "temp\\adb\\adb"
+                    "adb_path": "temp\\adb\\adb",
+                    "proxies": ""
                 },option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2
             )
         )
