@@ -592,7 +592,6 @@ class calculated:
             :return data: 文字: 坐标
         """
         img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
-        show_img(img_fp)
         x, y = width/100*points[0], length/100*points[1]
         out = self.ocr.ocr(img_fp)
         data = {i['text']: (int(left+x+(i['position'][2][0]+i['position'][0][0])/2),int(top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
