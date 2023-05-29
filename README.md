@@ -84,7 +84,8 @@ This software is open source, free of charge and for learning and exchange purpo
     "star_version": "20230515220742",
     "open_map": "m", (打开地图按钮)
     "map_version": "20230515205738",
-    "script_debug": true (是否检测脚本更新)
+    "script_debug": true, (是否检测脚本更新),
+    "proxies": "socks5://your_socks5_proxy" (网络代理)
 }
 ```
 
