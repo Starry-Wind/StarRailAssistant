@@ -255,42 +255,48 @@ class calculated:
         target_path = target_path.replace("temp\\","temp\\pc\\") if self.platform == "PC" else target_path.replace("temp\\","temp\\mnq\\")
         temp_name = target_path.split("\\")[-1].split(".")[0]
         temp_ocr = {
-            # "orientation_1": "星轨航图",
-            # "orientation_2": "空间站「黑塔",
-            # "map_1": "基座舱段",
+            "orientation_1": "星轨航图",
+            #"orientation_2": "空间站「黑塔",
+            "map_1": "基座舱段",
             "map_1_point" : [(593, 346),(593, 556)],
             "transfer": "传送",
-            # "map_1-2": "收容舱段",
-            # "map_1-3": "支援舱段",
+            "map_1-2": "收容舱段",
+            "map_1-3": "支援舱段",
             "map_1-3_point_1": [(593, 346),(700, 346)],
-            # "orientation_3": "雅利洛-VI",
-            # "map_2-1": "城郊雪原",
-            # "map_2-2": "边缘通路",
-            # "map_2-3": "残响回廊",
+            #"orientation_3": "雅利洛-VI",
+            "map_2-1": "城郊雪原",
+            "map_2-2": "边缘通路",
+            "map_2-3": "残响回廊",
             "map_2-3_point_2":[(593, 500),(593, 400)],
             "map_2-3_point_4":[(593, 500),(593, 400)],
             "map_2-3_point_5":[(593, 500),(593, 400)],
-            # "map_2-4": "永冬岭",
-            # "map_2-5": "大矿区",
+            "map_2-4": "永冬岭",
+            "map_2-5": "大矿区",
             "map_2-5_point_1": [(593, 500),(593, 400)],
-            # "map_2-6": "铆钉镇",
-            # "map_2-7": "机械聚落",
-            # "orientation_4": "仙舟「罗浮",
-            # "map_3-1": "流云渡",
+            "map_2-6": "铆钉镇",
+            "map_2-7": "机械聚落",
+            #"orientation_4": "仙舟「罗浮",
+            "map_3-1": "流云渡",
             "map_3-1_point_1" : [(593, 346),(593, 556)],
             "map_3-1_point_2":[(593, 500),(593, 400)],
             "map_3-1_point_3":[(593, 500),(593, 400)],
-            # "map_3-2": "迥星港",
-            # "map_3-3": "太卜司",
+            "map_3-2": "迥星港",
+            "map_3-3": "太卜司",
             "map_3-3_point_2":[(593, 500),(693, 400)],
             "map_3-3_point_4":[(593, 500),(693, 700)],
             "map_3-3_point_5":[(593, 500),(693, 700)],
-            # "map_3-4": "工造司",
+            "map_3-4": "工造司",
             "map_3-4_point_1" : [(593, 500),(800, 700)],
             "map_3-4_point_2":[(593, 500),(593, 400)],
             "map_3-4_point_3" : [(593, 346),(400, 346)],
         }
         if temp_name in temp_ocr:
+            if "orientation" in temp_name:
+                log.info("选择星球")
+            elif "point" in temp_name:
+                log.info("选择传送锚点")
+            elif "map" in temp_name:
+                log.info("选择地图")
             if "map" not in temp_name:
                 self.ocr_click(temp_ocr[temp_name])
                 while True:
@@ -312,7 +318,6 @@ class calculated:
                             break
                         if flag == False:
                             break
-
             else:
                 if type(temp_ocr[temp_name]) == str:
                     ocr_data = self.part_ocr((77,10,85,97)) if self.platform == "PC" else self.part_ocr((72,18,80,97))
@@ -673,23 +678,23 @@ class calculated:
                 log.info(f'没找到窗口{title}')
 
     def open_map(self, open_key):
-        start_time = time.time()
-        if self.platform == "PC":
-            self.keyboard.press(open_key)
-            time.sleep(0.3) # 修复地图无法打开的问题
-            self.keyboard.release(open_key)
-        elif self.platform == "模拟器":
-            self.img_click((132, 82))
-            time.sleep(0.3) # 防止未打开地图
-            self.img_click((132, 82))
-            while True:
-                map_status = self.part_ocr((5,7,10,10)) if self.platform == "PC" else self.part_ocr((6,2,10,5))
-                if "导航" in map_status:
-                    log.info("进入地图")
-                    break
-                if time.time() - start_time > 10:
-                    log.info("识别超时")
-                    break
+        while True:
+            start_time = time.time()
+            if self.platform == "PC":
+                self.keyboard.press(open_key)
+                time.sleep(0.3) # 修复地图无法打开的问题
+                self.keyboard.release(open_key)
+            elif self.platform == "模拟器":
+                self.img_click((132, 82))
+                time.sleep(0.3) # 防止未打开地图
+                self.img_click((132, 82))
+            map_status = self.part_ocr((5,7,10,10)) if self.platform == "PC" else self.part_ocr((6,2,10,5))
+            if "导航" in map_status:
+                log.info("进入地图")
+                break
+            if time.time() - start_time > 10:
+                log.info("识别超时")
+                break
 
     def teleport(self, key, value, threshold=0.95):
         """

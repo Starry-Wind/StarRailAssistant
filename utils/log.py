@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-15 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-28 21:38:56
+LastEditTime: 2023-05-29 13:46:22
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -50,6 +50,20 @@ def read_json_file(filename: str, path=False):
                 return data
     else:
         return {}
+
+def get_message(*arg):
+    """
+    说明:
+        收集消息并返回
+    返回:
+        收集到的消息
+    """
+    global message
+    if arg:
+        content = arg[0][:-1].replace("\x1b[0;34;40m","").replace("-1\x1b[0m","")
+        if re.match(r'开始(.*)锄地',content):
+            message += f"\n{content}"
+    return message
 
 data = read_json_file("config.json")
 VER = str(data.get("star_version",0))+"/"+str(data.get("temp_version",0))+"/"+str(data.get("map_version",0))
