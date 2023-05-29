@@ -234,11 +234,11 @@ if __name__ == "__main__":
                 main(1,platform)
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
-        #os.system("pip install -r requirements.txt")
+        os.system("pip install -r requirements.txt")
         print("请重新运行")
     except NameError as e:
         print(traceback.format_exc())
-        #os.system("pip install -r requirements.txt")
+        os.system("pip install -r requirements.txt")
         print("请重新运行")
     except KeyboardInterrupt:
         log.error("监控到退出")
