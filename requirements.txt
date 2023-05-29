@@ -25,3 +25,4 @@ torch
 tqdm
 ultralytics
 xpinyin
+httpx-socks[trio]
