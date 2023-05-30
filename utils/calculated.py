@@ -1,6 +1,7 @@
 """
 系统控制项
 """
+import re
 import time
 import win32api
 import cv2 as cv
@@ -41,6 +42,7 @@ class calculated:
         self.keyboard = KeyboardController()
         self.ocr = CnOcr(det_model_name='ch_PP-OCRv3_det', rec_model_name='densenet_lite_114-fc')
         #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
+        self.check_list = abc = lambda x,y: re.match(x, str(y)) != None
         if platform == "PC":
             self.window = gw.getWindowsWithTitle('崩坏：星穹铁道')
             if not self.window:
@@ -704,7 +706,7 @@ class calculated:
                 time.sleep(0.3) # 防止未打开地图
                 self.img_click((132, 82))
             map_status = self.part_ocr((3,2,10,6)) if self.platform == "PC" else self.part_ocr((6,2,10,6))
-            if "导航" in map_status:
+            if self.check_list(".*导.*航.*", map_status):
                 log.info("进入地图")
                 break
             if time.time() - start_time > 10:
