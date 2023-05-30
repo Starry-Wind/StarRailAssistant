@@ -253,7 +253,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         log.error("监控到退出")
     except Exception:
-        print(traceback.format_exc())
+        ...
     except:
         log.error(traceback.format_exc())
     finally:
