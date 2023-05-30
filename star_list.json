@@ -20,10 +20,6 @@
     "hash": "bb5811ad3a1fa3fb73fed88bfdeab29d"
   },
   {
-    "path": "screencast.png",
-    "hash": "73fd6ced86a53698cea6e00f2ecf2bbc"
-  },
-  {
     "path": "map_res_list.py",
     "hash": "2027d7dba3a3e12565621b101a2dc1cb"
   },
@@ -57,7 +53,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "e79cff621659ee9405e58dc7f7276e66"
+    "hash": "a07bcb441e4d8b182e78c4a437b0d3e4"
   },
   {
     "path": "utils/record_v7.2.py",
@@ -65,7 +61,7 @@
   },
   {
     "path": "utils/map.py",
-    "hash": "a7e4d2e1607f88a4e24db5296ca1019c"
+    "hash": "4f43f3b4979e79723d1c73f15bf1c5bd"
   },
   {
     "path": "utils/adb.py",
