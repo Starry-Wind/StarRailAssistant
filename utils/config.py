@@ -41,7 +41,7 @@ def read_json_file(filename: str, path=False) -> dict:
             else:
                 return data
     else:
-        init_config_file(0, 0)
+        init_config_file(1920, 1080)
         return read_json_file(filename, path)
 
 
@@ -63,6 +63,7 @@ def modify_json_file(filename: str, key, value):
 
 def init_config_file(real_width, real_height):
     with open(CONFIG_FILE_NAME, "wb+") as f:
+        log.info("配置初始化")
         f.write(
             orjson.dumps(
                 {
