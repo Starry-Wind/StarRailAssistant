@@ -2,7 +2,7 @@ name: 更新地图文件
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main-beta ]
 
   workflow_dispatch:
 
