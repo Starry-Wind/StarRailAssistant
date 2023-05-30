@@ -1,11 +1,11 @@
 [
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "e1b0070540794e5c405ab9922417f0a3"
+    "hash": "6b276a064b97d454f4b88597e4f66a05"
   },
   {
     "path": "get_width.py",
-    "hash": "05e4b278d56fe0737b578e54f78a4756"
+    "hash": "d07c5cd7540bd7ce29d5585998669799"
   },
   {
     "path": "README_CHT.md",
@@ -13,15 +13,11 @@
   },
   {
     "path": "README.md",
-    "hash": "efb008080f16d851d922e866afffb7dd"
+    "hash": "b94bdec8d3c78def9783b07bed23f8c6"
   },
   {
     "path": "requirements.txt",
-    "hash": "9cb0a26a887005e0ac5d1351e34e6610"
-  },
-  {
-    "path": "screencast.png",
-    "hash": "73fd6ced86a53698cea6e00f2ecf2bbc"
+    "hash": "bb5811ad3a1fa3fb73fed88bfdeab29d"
   },
   {
     "path": "map_res_list.py",
@@ -29,7 +25,7 @@
   },
   {
     "path": "utils/simulated_universe.py",
-    "hash": "4b70e6f84073317eb1f1cb17e4e2509a"
+    "hash": "757da434834b8faad32f08cb10887cc2"
   },
   {
     "path": "utils/update_file.py",
@@ -41,11 +37,11 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "5d95e2a8485cff370478c39b104b708b"
+    "hash": "af07249fd97ea9a8423b8c5eb55d69b1"
   },
   {
     "path": "utils/requests.py",
-    "hash": "391d34e98377c0d99f460376d36c509b"
+    "hash": "133ff742a664d9e5e52933eab04ff089"
   },
   {
     "path": "utils/exceptions.py",
@@ -57,7 +53,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "de5257813dab5939d11a2a9025c3f246"
+    "hash": "503e1546e2d4bc12eb2e62dc992eb49f"
   },
   {
     "path": "utils/record_v7.2.py",
@@ -65,7 +61,7 @@
   },
   {
     "path": "utils/map.py",
-    "hash": "a7e4d2e1607f88a4e24db5296ca1019c"
+    "hash": "4f43f3b4979e79723d1c73f15bf1c5bd"
   },
   {
     "path": "utils/adb.py",

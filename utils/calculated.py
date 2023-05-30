@@ -1,6 +1,7 @@
 """
 系统控制项
 """
+import re
 import time
 import win32api
 import cv2 as cv
@@ -36,12 +37,12 @@ class calculated:
         self.adb_path = adb_path
 
         self.adb = ADB(order, adb_path)
-        self.CONFIG = read_json_file(CONFIG_FILE_NAME)
-        self.scaling = self.CONFIG.get("scaling", 1)
+        self.scaling = read_json_file(CONFIG_FILE_NAME).get("scaling", 1)
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
         self.ocr = CnOcr(det_model_name='ch_PP-OCRv3_det', rec_model_name='densenet_lite_114-fc')
         #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
+        self.check_list = abc = lambda x,y: re.match(x, str(y)) != None
         if platform == "PC":
             self.window = gw.getWindowsWithTitle('崩坏：星穹铁道')
             if not self.window:
@@ -118,10 +119,10 @@ class calculated:
             :param points: 百分比坐标
         """
 
-        scaling = self.CONFIG["scaling"]
+        scaling = read_json_file(CONFIG_FILE_NAME)["scaling"]
         left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
-        real_width = self.CONFIG["real_width"]
-        real_height = self.CONFIG["real_height"]
+        real_width = read_json_file(CONFIG_FILE_NAME)["real_width"]
+        real_height = read_json_file(CONFIG_FILE_NAME)["real_height"]
         x, y = int(left + (right - left) / 100 * points[0]), int(
             top + (bottom - top) / 100 * points[1]
         )
@@ -150,7 +151,7 @@ class calculated:
             :param points: 坐标
         """
         if self.platform == "PC":
-            scaling = self.CONFIG["scaling"]
+            scaling = read_json_file(CONFIG_FILE_NAME)["scaling"]
             left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
             x, y = int(left + points[0]), int(top + points[1])
         elif self.platform == "模拟器":
@@ -201,10 +202,14 @@ class calculated:
             :param points: 图像截取范围
         """
         if self.platform == "PC":
-            scaling = self.CONFIG.get("scaling", 1.0)
+            scaling = read_json_file(CONFIG_FILE_NAME).get("scaling", 1.0)
+            borderless = read_json_file(CONFIG_FILE_NAME).get("borderless", False)
             points = (points[0]*1.5/scaling,points[1]*1.5/scaling,points[2]*1.5/scaling,points[3]*1.5/scaling)
-            left, top, right, bottom = self.window.left-10, self.window.top-45, self.window.right, self.window.bottom
-            temp = ImageGrab.grab((left+20, top+90, right, bottom))
+            if borderless:
+                left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
+            else:
+                left, top, right, bottom = self.window.left+10, self.window.top+45, self.window.right, self.window.bottom
+            temp = ImageGrab.grab((left, top, right, bottom))
             width, length = temp.size
         elif self.platform == "模拟器":
             left, top, right, bottom = 0,0,0,0
@@ -388,7 +393,7 @@ class calculated:
         time.sleep(6)
         target = cv.imread("./temp/pc/auto.jpg") if self.platform == "PC" else cv.imread("./temp/mnq/auto.jpg")
         start_time = time.time()
-        if self.CONFIG["auto_battle_persistence"] != 1:
+        if read_json_file(CONFIG_FILE_NAME)["auto_battle_persistence"] != 1:
             while True:
                 result = self.scan_screenshot(target)
                 if result["max_val"] > 0.9:
@@ -433,7 +438,7 @@ class calculated:
             视角转动
         """
         # 该公式为不同缩放比之间的转化
-        real_width = self.CONFIG["real_width"]
+        real_width = read_json_file(CONFIG_FILE_NAME)["real_width"]
         dx = int(x * 1295 / real_width)
         i = int(dx/200)
         last = dx - i*200
@@ -695,12 +700,13 @@ class calculated:
                 self.keyboard.press(open_key)
                 time.sleep(0.3) # 修复地图无法打开的问题
                 self.keyboard.release(open_key)
+                time.sleep(1)
             elif self.platform == "模拟器":
                 self.img_click((132, 82))
                 time.sleep(0.3) # 防止未打开地图
                 self.img_click((132, 82))
-            map_status = self.part_ocr((6,2,10,6)) if self.platform == "PC" else self.part_ocr((6,2,10,5))
-            if "导航" in map_status:
+            map_status = self.part_ocr((3,2,10,6)) if self.platform == "PC" else self.part_ocr((6,2,10,6))
+            if self.check_list(".*导.*航.*", map_status):
                 log.info("进入地图")
                 break
             if time.time() - start_time > 10:

@@ -61,7 +61,7 @@ def choose_map(map_instance: map_word, type = 0, platform = "PC"):
             return None, None
 
 
-def main(type=0,platform="PC"):
+def main(type=0,platform="PC",start=None,role_list=None):
     main_start()
     order = read_json_file(CONFIG_FILE_NAME, False).get('adb', "")
     adb_path = read_json_file(CONFIG_FILE_NAME, False).get('adb_path', "temp\\adb\\adb")
@@ -102,7 +102,7 @@ def main_start(start = True):
             try:
                 response = asyncio.run(get(url))
                 ms = response.elapsed.total_seconds()
-            except (ReadTimeout, ConnectError, ConnectTimeout):
+            except:
                 ms = 999
             finally:
                 pbar.update(1)
@@ -122,7 +122,7 @@ def main_start(start = True):
             try:
                 response = asyncio.run(get(url))
                 ms = response.elapsed.total_seconds()
-            except (ReadTimeout, ConnectError, ConnectTimeout):
+            except:
                 ms = 999
             finally:
                 pbar.update(1)
@@ -155,7 +155,7 @@ def up_data():
     main_start()    # 无config直接更新时初始化config文件
     ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
     if "adb" not in read_json_file(CONFIG_FILE_NAME, False):
-        init_config_file(0, 0)
+        init_config_file(1920, 1080)
         raise Exception("未检测到必要更新，强制更新脚本，请重新运行脚本")
 
     rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
@@ -217,22 +217,31 @@ if __name__ == "__main__":
         if not pyuac.isUserAdmin():
             pyuac.runAsAdmin()
         else:
-            title = "请选择运行平台"
-            options = ['PC', '模拟器','检查更新','配置参数']
-            platform = questionary.select(title, options).ask()
-            if platform == "检查更新":
-                up_data()
-                raise Exception("请重新运行")
-            if platform == "配置参数":
-                main_start(False)
-                raise Exception("请重新运行")
-            title = "请选择操作"
-            options = ['大世界', '模拟宇宙']
-            option = questionary.select(title, options).ask()
-            if option == "大世界":
-                main(0,platform)
-            elif option == "模拟宇宙":
-                main(1,platform)
+            while True:
+                title = "请选择运行平台"
+                options = ['PC', '模拟器', '检查更新', '配置参数']
+                platform = questionary.select(title, options).ask()
+                if platform == "检查更新":
+                    up_data()
+                    raise Exception("请重新运行")
+                if platform == "配置参数":
+                    main_start(False)
+                    raise Exception("请重新运行")
+                title = "请选择操作"
+                options = ['大世界', '模拟宇宙']
+                option = questionary.select(title, options).ask()
+                try:
+                    if option == "大世界":
+                        main(0, platform)
+                    elif option == "模拟宇宙":
+                        main(1, platform)
+                except KeyboardInterrupt:
+                    print("\033[1;35m检测到退出\033[0m")
+                finally:
+                    if questionary.select("用户退出或脚本运行完毕", ["退出", "返回主菜单"]).ask() == "退出":
+                        break
+                    else:
+                        continue
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
         os.system("pip install -r requirements.txt")
