@@ -16,6 +16,10 @@
     "hash": "64a3004404e474d2e9ea8da12f6af67e"
   },
   {
+    "path": "gui.py",
+    "hash": "e572c2a1cebb5e53b78955f6239f996f"
+  },
+  {
     "path": "requirements.txt",
     "hash": "bb5811ad3a1fa3fb73fed88bfdeab29d"
   },
