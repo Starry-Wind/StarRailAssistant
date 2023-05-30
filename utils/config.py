@@ -86,7 +86,7 @@ def init_config_file(real_width, real_height):
         )
 
 
-def get_file(path, exclude=[], exclude_file=None, get_path=False):
+def get_file(path, exclude=[], exclude_file=None, get_path=False) -> list[str]:
     """
     获取文件夹下的文件
     """

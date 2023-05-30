@@ -313,7 +313,7 @@ class calculated:
             elif "point" in temp_name:
                 if self.platform == "模拟器":
                     # time.sleep(0.5)
-                    self.adb.input_swipe(temp_ocr[temp_name][0],temp_ocr[temp_name][1],100)
+                    self.adb.input_swipe(temp_ocr[temp_name][0],temp_ocr[temp_name][1],200)
                     temp_ocr.pop(temp_name)
                     time.sleep(0.5)
                 else:

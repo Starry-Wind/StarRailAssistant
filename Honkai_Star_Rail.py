@@ -13,7 +13,7 @@ try:
     from get_width import get_width
     from utils.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
     from utils.simulated_universe import Simulated_Universe
-    from utils.update_file import update_file_main
+    from utils.update_file import update_file
     from utils.calculated import calculated
     from utils.exceptions import Exception
     from utils.requests import webhook_and_log
@@ -206,10 +206,10 @@ def up_data():
     options = list(up_data.keys())+["全部更新"]
     option = questionary.select(title, options).ask()
     if option != "全部更新":
-        update_file_main(**up_data[option])
+        update_file().update_file_main(**up_data[option])
     else:
         for up_data in list(up_data.values()):
-            update_file_main(**up_data)
+            update_file().update_file_main(**up_data)
 
 
 if __name__ == "__main__":
@@ -217,22 +217,31 @@ if __name__ == "__main__":
         if not pyuac.isUserAdmin():
             pyuac.runAsAdmin()
         else:
-            title = "请选择运行平台"
-            options = ['PC', '模拟器','检查更新','配置参数']
-            platform = questionary.select(title, options).ask()
-            if platform == "检查更新":
-                up_data()
-                raise Exception("请重新运行")
-            if platform == "配置参数":
-                main_start(False)
-                raise Exception("请重新运行")
-            title = "请选择操作"
-            options = ['大世界', '模拟宇宙']
-            option = questionary.select(title, options).ask()
-            if option == "大世界":
-                main(0,platform)
-            elif option == "模拟宇宙":
-                main(1,platform)
+            while True:
+                title = "请选择运行平台"
+                options = ['PC', '模拟器', '检查更新', '配置参数']
+                platform = questionary.select(title, options).ask()
+                if platform == "检查更新":
+                    up_data()
+                    raise Exception("请重新运行")
+                if platform == "配置参数":
+                    main_start(False)
+                    raise Exception("请重新运行")
+                title = "请选择操作"
+                options = ['大世界', '模拟宇宙']
+                option = questionary.select(title, options).ask()
+                try:
+                    if option == "大世界":
+                        main(0, platform)
+                    elif option == "模拟宇宙":
+                        main(1, platform)
+                except KeyboardInterrupt:
+                    print("\033[1;35m检测到退出\033[0m")
+                finally:
+                    if questionary.select("用户退出或脚本运行完毕", ["退出", "返回主菜单"]).ask() == "退出":
+                        break
+                    else:
+                        continue
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
         os.system("pip install -r requirements.txt")
@@ -244,7 +253,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         log.error("监控到退出")
     except Exception:
-        ...
+        print(traceback.format_exc())
     except:
         log.error(traceback.format_exc())
     finally:
