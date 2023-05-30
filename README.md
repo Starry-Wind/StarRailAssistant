@@ -69,6 +69,8 @@ This software is open source, free of charge and for learning and exchange purpo
 
 11：使用模拟器请使用1280\*720p分辨率，默认为夜神模拟器，其他模拟器使用请先连接上adb(模拟器卡顿可能会吞操作)
 
+12：跑图过程中出问题了不想跑了想返回主菜单了可以用Ctrl+C并默念<font color= #E2027F>爱门</font>
+
 ## 配置文件说明
 ```json
 {
