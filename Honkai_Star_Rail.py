@@ -74,6 +74,7 @@ def main(type=0,platform="PC",start=None,role_list=None):
             calculated("PC").switch_window()
             time.sleep(0.5)
             get_width()
+            map_instance.calculated.CONFIG = read_json_file(CONFIG_FILE_NAME)
             import pyautogui # 缩放纠正
             log.info("开始运行，请勿移动鼠标和键盘")
             log.info("若脚本运行无反应,请使用管理员权限运行")
