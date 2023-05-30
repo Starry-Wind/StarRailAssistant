@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-31 01:18:05
+LastEditTime: 2023-05-31 02:19:58
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -21,7 +21,36 @@ from get_width import get_width
 def page_main(page: ft.Page):
     page.client_storage.clear()
     map_dict = map_word("模拟器").map_list_map
-
+    def add(*args,**kargs):
+        first_page = []
+        if type(args[0]) != list:
+            args = [i for i in args]
+        else:
+            args = args[0]
+        kargs = kargs if "left_page" in kargs else {"left_page": []}
+        return page.add(
+            ft.Stack(
+                [
+                    ft.Image(
+                        src=f"https://upload-bbs.miyoushe.com/upload/2023/04/04/341589474/5d2239e0352a9b3a561efcf6137b6010_8753232008183647500.jpg",
+                        fit=ft.ImageFit.FILL,
+                        repeat=ft.ImageRepeat.NO_REPEAT,
+                        gapless_playback=False,
+                    ),
+                    ft.Row(
+                        [
+                            ft.Column(
+                                args,
+                                alignment=ft.MainAxisAlignment.CENTER,
+                                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                            )
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER,
+                    ),
+                ]+kargs['left_page'],
+            )
+        )
+    
     def radiogroup_changed(e):
         """
         说明:
@@ -60,9 +89,9 @@ def page_main(page: ft.Page):
             page.update()
 
         page.clean()
-        page.add(
+        add(
             log_text,
-            ft.ElevatedButton("返回", on_click=send_log)
+            ft.ElevatedButton("返回", on_click=send_log),
         )
 
     def map_confirm(e):
@@ -82,14 +111,14 @@ def page_main(page: ft.Page):
         page.clean()
         page.vertical_alignment = "START"
         page.horizontal_alignment = "START"
-        page.add(log_text)
+        add(log_text)
         if platform.value == "PC":
             calculated("PC").switch_window()
             time.sleep(0.5)
             get_width()
             import pyautogui # 缩放纠正
         map_word(platform.value).auto_map(start)
-        page.add(ft.ElevatedButton("返回", on_click=to_page_main))
+        add(ft.ElevatedButton("返回", on_click=to_page_main))
 
     def to_page_main(e):
         """
@@ -107,7 +136,7 @@ def page_main(page: ft.Page):
             地图选择界面
         """
         page.clean()
-        page.add(
+        add(
             ft.Text("星穹铁道小助手", size=50),
             ft.Text("大世界", size=30),
             ft.Text(VER, size=20),
@@ -115,7 +144,7 @@ def page_main(page: ft.Page):
             map_select_dd,
             ft.ElevatedButton("确认", on_click=map_confirm),
             ft.ElevatedButton("返回", on_click=to_page_main),
-            platform,
+            left_page=[platform]
         )
 
     def updata(e):
@@ -180,17 +209,17 @@ def page_main(page: ft.Page):
                     format="{message}")
             page.client_storage.set("updata_log", updata_log)
             page.clean()
-            page.add(
+            add(
                 ft.Text("星穹铁道小助手", size=50),
                 ft.Text("检查更新", size=30),
                 ft.Text(VER, size=20),
                 ft.Column([ text, pb])
             )
             update_file(page,pb).update_file_main(**data[e.control.text])
-            page.add(ft.ElevatedButton("返回", on_click=to_page_main))
+            add(ft.ElevatedButton("返回", on_click=to_page_main))
         Column.controls = [ft.ElevatedButton(i, on_click=up_data) for i in data]
         page.clean()
-        page.add(
+        add(
             ft.Text("星穹铁道小助手", size=50),
             ft.Text("检查更新", size=30),
             ft.Text(VER, size=20),
@@ -279,7 +308,7 @@ def page_main(page: ft.Page):
             to_page_main(page)
         page.clean()
         page.overlay.append(pick_files_dialog)
-        page.add(
+        add(
             ft.Text("星穹铁道小助手", size=50),
             ft.Text("大世界", size=30),
             ft.Text(VER, size=20),
@@ -319,7 +348,7 @@ def page_main(page: ft.Page):
                 ft.Radio(value="PC", label="PC"),
                 ft.Radio(value="模拟器", label="模拟器")
             ],
-            spacing=0
+            spacing=0,
         ),
         value="PC"
     )
@@ -345,12 +374,6 @@ def page_main(page: ft.Page):
         value=list(map_dict["1"].values())[0]
     )
     # %%
-    img = ft.Image(
-        src=f"https://upload-bbs.miyoushe.com/upload/2023/04/04/341589474/5d2239e0352a9b3a561efcf6137b6010_8753232008183647500.jpg",
-        fit=ft.ImageFit.FILL,
-        repeat=ft.ImageRepeat.NO_REPEAT,
-        gapless_playback=False,
-    )
     page.title = "星穹铁道小助手"
     page.scroll = "AUTO"
     page.theme = ft.Theme(font_family="Verdana")
@@ -361,14 +384,15 @@ def page_main(page: ft.Page):
     page.window_height = 600
     page.window_min_height = 600
     page.clean()
-    page.add(
-        ft.Text("星穹铁道小助手", size=50),
-        ft.Text(VER, size=20),
-        ft.ElevatedButton("大世界", on_click=word),
-        ft.ElevatedButton("模拟宇宙"),
-        ft.ElevatedButton("检查更新", on_click=updata),
-        ft.ElevatedButton("编辑配置", on_click=set_config),
-        img,
+    add(
+        [
+            ft.Text("星穹铁道小助手", size=50),
+            ft.Text(VER, size=20),
+            ft.ElevatedButton("大世界", on_click=word),
+            ft.ElevatedButton("模拟宇宙"),
+            ft.ElevatedButton("检查更新", on_click=updata),
+            ft.ElevatedButton("编辑配置", on_click=set_config),
+        ]
     )
 
 ft.app(target=page_main)
