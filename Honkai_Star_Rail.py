@@ -74,6 +74,7 @@ def main(type=0,platform="PC",start=None,role_list=None):
             calculated("PC").switch_window()
             time.sleep(0.5)
             get_width()
+            map_instance.calculated.CONFIG = read_json_file(CONFIG_FILE_NAME)
             import pyautogui # 缩放纠正
             log.info("开始运行，请勿移动鼠标和键盘")
             log.info("若脚本运行无反应,请使用管理员权限运行")
@@ -216,22 +217,31 @@ if __name__ == "__main__":
         if not pyuac.isUserAdmin():
             pyuac.runAsAdmin()
         else:
-            title = "请选择运行平台"
-            options = ['PC', '模拟器','检查更新','配置参数']
-            platform = questionary.select(title, options).ask()
-            if platform == "检查更新":
-                up_data()
-                raise Exception("请重新运行")
-            if platform == "配置参数":
-                main_start(False)
-                raise Exception("请重新运行")
-            title = "请选择操作"
-            options = ['大世界', '模拟宇宙']
-            option = questionary.select(title, options).ask()
-            if option == "大世界":
-                main(0,platform)
-            elif option == "模拟宇宙":
-                main(1,platform)
+            while True:
+                title = "请选择运行平台"
+                options = ['PC', '模拟器', '检查更新', '配置参数']
+                platform = questionary.select(title, options).ask()
+                if platform == "检查更新":
+                    up_data()
+                    raise Exception("请重新运行")
+                if platform == "配置参数":
+                    main_start(False)
+                    raise Exception("请重新运行")
+                title = "请选择操作"
+                options = ['大世界', '模拟宇宙']
+                option = questionary.select(title, options).ask()
+                try:
+                    if option == "大世界":
+                        main(0, platform)
+                    elif option == "模拟宇宙":
+                        main(1, platform)
+                except KeyboardInterrupt:
+                    print("\033[1;35m检测到退出\033[0m")
+                finally:
+                    if questionary.select("用户退出或脚本运行完毕", ["退出", "返回主菜单"]).ask() == "退出":
+                        break
+                    else:
+                        continue
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
         os.system("pip install -r requirements.txt")
