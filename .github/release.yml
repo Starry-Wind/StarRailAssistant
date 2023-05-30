@@ -9,12 +9,12 @@ changelog:
   categories:
     - title: 壮举
       labels:
-        - feat
+        - "feat"
     - title: 日常更新
       labels:
-        - enhancement
-        - chore
-        - deploy
-    - title: 其他更新
+        - "enhancement"
+        - "chore"
+        - "deploy"
+    - title: Other Changes
       labels:
         - "*"
