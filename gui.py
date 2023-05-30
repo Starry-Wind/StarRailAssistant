@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-30 23:53:21
+LastEditTime: 2023-05-31 01:18:05
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -220,7 +220,12 @@ def page_main(page: ft.Page):
         rawgithub_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', '']
         simulator_keys = list(simulator.keys())
         simulator_values = list(simulator.values())
-        adb = simulator_keys[simulator_values.index(config.get("adb", "127.0.0.1:62001"))]
+        user_adb = config.get("adb", "127.0.0.1:62001")
+        if user_adb not in simulator_values:
+            simulator_values.append(user_adb)
+            simulator_keys.append("自定义")
+            simulator["自定义"] = user_adb
+        adb = simulator_keys[simulator_values.index(user_adb)]
         github_proxy = config.get("github_proxy", "")
         rawgithub_proxy = config.get("rawgithub_proxy", "")
         open_map = config.get("open_map", "m")
@@ -360,7 +365,7 @@ def page_main(page: ft.Page):
         ft.Text("星穹铁道小助手", size=50),
         ft.Text(VER, size=20),
         ft.ElevatedButton("大世界", on_click=word),
-        ft.ElevatedButton("模拟宇宙", on_click=start),
+        ft.ElevatedButton("模拟宇宙"),
         ft.ElevatedButton("检查更新", on_click=updata),
         ft.ElevatedButton("编辑配置", on_click=set_config),
         img,
