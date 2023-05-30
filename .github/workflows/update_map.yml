@@ -2,9 +2,9 @@ name: 更新地图文件
 
 on:
   push:
-    branches: [ main-beta ]
+    branches: [ main ]
 
-  workflow_dispatch:
+workflow_dispatch:
 
 jobs:
   update:

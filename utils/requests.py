@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-25 12:54:10
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-30 20:21:10
+LastEditTime: 2023-05-31 02:23:41
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -86,8 +86,10 @@ async def download(url: str, save_path: Path, page: ft.Page=None, pb: ft.Progres
         async for chunk in datas.aiter_bytes(1024 * 1024):
             i+=len(chunk)
             f.write(chunk)
-            pb.value = 100/size * i * 0.01
-            page.update()
+            if pb:
+                pb.value = 100/size * i * 0.01
+            if page:
+                page.update()
             pbar.update(len(chunk))
         pbar.close()
         f.close()

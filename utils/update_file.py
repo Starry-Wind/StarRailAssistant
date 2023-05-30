@@ -2,7 +2,7 @@
 Author: AlisaCat
 Date: 2023-05-11 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-30 20:02:36
+LastEditTime: 2023-05-31 02:28:26
 Description: 
 
 Copyright (c) 2023 by AlisaCat, All Rights Reserved. 
@@ -55,9 +55,10 @@ class update_file:
                 log.debug(hashlib.md5(file_path.read_bytes()).hexdigest())
                 if hashlib.md5(file_path.read_bytes()).hexdigest() != data['hash']:
                     return False, file_path
-            self.pb.value = len(json_path)/100 * i * 0.01
-            time.sleep(1)
-            self.page.update()
+            if self.pb:
+                self.pb.value = len(json_path)/100 * i * 0.01
+            if self.page:
+                self.page.update()
         return True, None
 
     async def unzip(self, zip, zip_path: Path):
@@ -67,8 +68,10 @@ class update_file:
                 if member.filename.startswith(zip_path):
                     zf.extract(member, tmp_dir)
                     log.debug(f'[资源文件更新]正在提取{member.filename}')
-                    self.pb.value = len(zf.infolist())/100 * i * 0.01
-                    self.page.update()
+                    if self.pb:
+                        self.pb.value = len(zf.infolist())/100 * i * 0.01
+                    if self.page:
+                        self.page.update()
 
     async def remove_file(self, folder_path: Path,keep_folder: Optional[List[str]] = [],keep_file: Optional[List[str]] = []) -> None:
         if os.path.exists(folder_path):
