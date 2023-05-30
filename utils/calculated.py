@@ -202,8 +202,12 @@ class calculated:
         """
         if self.platform == "PC":
             scaling = self.CONFIG.get("scaling", 1.0)
+            borderless = self.CONFIG.get("borderless", False)
             points = (points[0]*1.5/scaling,points[1]*1.5/scaling,points[2]*1.5/scaling,points[3]*1.5/scaling)
-            left, top, right, bottom = self.window.left+10, self.window.top+45, self.window.right, self.window.bottom
+            if borderless:
+                left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
+            else:
+                left, top, right, bottom = self.window.left+10, self.window.top+45, self.window.right, self.window.bottom
             temp = ImageGrab.grab((left, top, right, bottom))
             width, length = temp.size
         elif self.platform == "模拟器":
