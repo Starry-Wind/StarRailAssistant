@@ -13,7 +13,7 @@ try:
     from get_width import get_width
     from utils.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
     from utils.simulated_universe import Simulated_Universe
-    from utils.update_file import update_file_main
+    from utils.update_file import update_file
     from utils.calculated import calculated
     from utils.exceptions import Exception
     from utils.requests import webhook_and_log
@@ -206,10 +206,10 @@ def up_data():
     options = list(up_data.keys())+["全部更新"]
     option = questionary.select(title, options).ask()
     if option != "全部更新":
-        update_file_main(**up_data[option])
+        update_file().update_file_main(**up_data[option])
     else:
         for up_data in list(up_data.values()):
-            update_file_main(**up_data)
+            update_file().update_file_main(**up_data)
 
 
 if __name__ == "__main__":
@@ -253,7 +253,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         log.error("监控到退出")
     except Exception:
-        ...
+        print(traceback.format_exc())
     except:
         log.error(traceback.format_exc())
     finally:

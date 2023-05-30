@@ -2,12 +2,13 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-25 12:54:10
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-29 21:35:22
+LastEditTime: 2023-05-30 20:21:10
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
 '''
 import httpx
+import flet as ft
 import tqdm.asyncio
 
 from httpx_socks import AsyncProxyTransport
@@ -68,7 +69,7 @@ async def post(url: str,
                                 timeout=timeout,
                                 **kwargs)
 
-async def download(url: str, save_path: Path):
+async def download(url: str, save_path: Path, page: ft.Page=None, pb: ft.ProgressBar=None):
     """
     说明：
         下载文件(带进度条)
@@ -80,9 +81,13 @@ async def download(url: str, save_path: Path):
     async with httpx.AsyncClient(transport=transport if transport else None).stream(method='GET', url=url, follow_redirects=True) as datas:
         size = int(datas.headers.get("Content-Length", 0))
         f = save_path.open("wb")
-        pbar = tqdm.asyncio.tqdm(total=size, unit="MiB", unit_scale=True, unit_divisor=1024, colour="green")
+        pbar = tqdm.asyncio.tqdm(total=size, unit="iB", desc=url.split('/')[-1], unit_scale=True, unit_divisor=1024, colour="green")
+        i=0
         async for chunk in datas.aiter_bytes(1024 * 1024):
+            i+=len(chunk)
             f.write(chunk)
+            pb.value = 100/size * i * 0.01
+            page.update()
             pbar.update(len(chunk))
         pbar.close()
         f.close()
