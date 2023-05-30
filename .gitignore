@@ -124,5 +124,4 @@ utils/A_.py
 utils/yolo.py
 .vscode/settings.json
 config.json
-gui.py
 启动.exe
