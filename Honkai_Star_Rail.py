@@ -101,7 +101,7 @@ def main_start(start = True):
             try:
                 response = asyncio.run(get(url))
                 ms = response.elapsed.total_seconds()
-            except (ReadTimeout, ConnectError, ConnectTimeout):
+            except:
                 ms = 999
             finally:
                 pbar.update(1)
@@ -121,7 +121,7 @@ def main_start(start = True):
             try:
                 response = asyncio.run(get(url))
                 ms = response.elapsed.total_seconds()
-            except (ReadTimeout, ConnectError, ConnectTimeout):
+            except:
                 ms = 999
             finally:
                 pbar.update(1)
