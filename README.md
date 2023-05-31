@@ -129,7 +129,7 @@ This software is open source, free of charge and for learning and exchange purpo
 
 1：模拟宇宙正在开发
 
-2：GUI开发
+&#x2714; 2：GUI开发
 
 3：后续将会新增找宝箱、锄大地顺带捡垃圾等功能
 
