@@ -2,7 +2,7 @@
 Author: AlisaCat
 Date: 2023-05-11 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-31 18:49:26
+LastEditTime: 2023-06-01 00:30:17
 Description: 
 
 Copyright (c) 2023 by AlisaCat, All Rights Reserved. 
@@ -56,7 +56,7 @@ class update_file:
                 if hashlib.md5(file_path.read_bytes()).hexdigest() != data['hash']:
                     return False, file_path
             if self.pb:
-                self.pb.value = len(json_path)/100 * i * 0.01
+                self.pb.value = 100/len(json_path) * i * 0.01
             if self.page:
                 self.page.update()
         return True, None

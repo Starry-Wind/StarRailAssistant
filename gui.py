@@ -2,17 +2,18 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-31 22:27:00
+LastEditTime: 2023-06-01 00:49:39
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
 '''
 import time
 import flet as ft
+from re import sub
 from cryptography.fernet import Fernet
 from flet_core import MainAxisAlignment, CrossAxisAlignment
 
-from utils.log import log,VER,level
+from utils.log import log,level
 from utils.map import Map as map_word
 from utils.config import read_json_file,modify_json_file , CONFIG_FILE_NAME
 from utils.update_file import update_file
@@ -20,8 +21,14 @@ from utils.calculated import calculated
 from get_width import get_width
 
 def page_main(page: ft.Page):
-    #page.client_storage.clear()
+    if page.session.contains_key("updata_log"):
+        page.session.remove("updata_log")
     map_dict = map_word("模拟器").map_list_map
+    VER = str(read_json_file("config.json").get("star_version",0))+"/"+str(read_json_file("config.json").get("temp_version",0))+"/"+str(read_json_file("config.json").get("map_version",0))
+    img_url = [
+        "https://upload-bbs.miyoushe.com/upload/2023/04/04/341589474/5d2239e0352a9b3a561efcf6137b6010_8753232008183647500.jpg",
+        "https://upload-bbs.miyoushe.com/upload/2023/05/31/272930625/2c884f70bcd35555b5ad59163df6a952_2976928227773983219.jpg"
+    ]
     def add(*args,**kargs):
         """
         说明:
@@ -82,12 +89,12 @@ def page_main(page: ft.Page):
                     ":{line} - "+f"{VER} - "
                     "{message}"
             )
-    
+
     def get_mess(num:int):
         data = [b"gAAAAABkd00kmO4Lkj6jdx88m9HqzU1RQC85SfB_h19TI1WP5pkLZHlA1nauTYBU6ga5hRFlKas9i-rFaC-Q0PPkLd_NLSR9sh8TbGBRE952hIHecP9uwyufZrWwhmdFg4EzlJR4Us64ojJZBm6DkfXSRS2syqbhlg==", b"gAAAAABkd05QbDIzYa9ebhDd6oL1ScrWhuQv8Vay1zj3c3NenzXIpGvWcmiNsNz7nYGJg2G9KJ9edRahlVASebG6zm0YTP-XeJQlgQzChoRnr606FZg0feQSzQVz_Rzri1j_HAmHQR20",b"gAAAAABkd0SIKuiC3bqUwWmhWFr_uqlWUMmv1rclIJNhvr-GteOiT_ahz3Z6GKXoCL-IG0G8_AReT9ISb2PUI_TMXGxWGEW3YrmRy5F5kiQCLORXn8mA7GE="]
         cp = Fernet(b"VKcGP_EkdRbXTe8aAVcjKoI2fULVuyrSX8Le-QZsDOA=")
         return cp.decrypt(data[num]).decode('utf-8')
-    
+
     def start(e):
         def send_log(e):
             '''
@@ -210,8 +217,8 @@ def page_main(page: ft.Page):
         }
         def add_updata_log(message):
             message = message[:-1]
-            text.value = message
-            pb.width = len(message)*13.2
+            text.value = sub(r"(.{67})", "\\1\r\n", message)
+            pb.width = len(message)*13.2 if len(message) <= 50 else 50*13.2
             page.update()
         def up_data(e):
             log.remove()
@@ -346,7 +353,18 @@ def page_main(page: ft.Page):
             ),
             ft.ElevatedButton("保存", on_click=save),
         )
-    
+
+    def change__img(e):
+        """
+        说明:
+            切换背景
+        """
+        img_v = img_url.index(bg_img.src)
+        img_v = 0 if img_v+1 >= len(img_url) else img_v+1
+        page.session.set("img_v", img_v)
+        bg_img.src = img_url[img_v]
+        page.update()
+
     def about(e):
         """
         说明:
@@ -395,17 +413,25 @@ def page_main(page: ft.Page):
     Column = ft.Column()
     log_text = ft.Column()
     # 背景图片
+    img_url2 = img_url[page.session.get("img_v")] if page.session.get("img_v") else img_url[0]
     bg_img = ft.Image(
-        src=f"https://upload-bbs.miyoushe.com/upload/2023/04/04/341589474/5d2239e0352a9b3a561efcf6137b6010_8753232008183647500.jpg",
+        src=img_url2,
         width=page.window_width,
         height=page.window_height-58,
-        fit=ft.ImageFit.FILL,
+        fit=ft.ImageFit.FIT_HEIGHT,
         repeat=ft.ImageRepeat.NO_REPEAT,
         gapless_playback=False,
     )
     # 关于按钮
     about_ib = ft.Column(
                 [
+                    ft.IconButton(
+                        icon=ft.icons.CHANGE_CIRCLE_OUTLINED,
+                        icon_color="blue200",
+                        icon_size=35,
+                        tooltip="切换背景",
+                        on_click=change__img
+                    ),
                     ft.IconButton(
                         icon=ft.icons.INFO_OUTLINED,
                         icon_color="blue200",
@@ -467,6 +493,11 @@ def page_main(page: ft.Page):
         page.window_min_height = 600
     page.session.set("start", True)
     page.on_window_event = on_window_event
+    page.fonts = {
+        "Kanit": "temp/fonts/Kanit-Bold.ttf",
+    }
+
+    page.theme = ft.Theme(font_family="Kanit")
     add(
         [
             ft.Text("星穹铁道小助手", size=50),
