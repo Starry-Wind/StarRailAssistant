@@ -126,7 +126,7 @@ Please note that based on MiHoYo's [FairPlay statement for Honkai Impact 3 - Sta
 
 1. The simulated universe is under development.
 
-2. GUI development
+&#x2714; 2. GUI development
 
 3. Additional features will be added, such as treasure hunting, field exploration, and litter picking.
 
