@@ -2,13 +2,14 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-31 02:19:58
+LastEditTime: 2023-05-31 20:59:36
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
 '''
 import time
 import flet as ft
+from cryptography.fernet import Fernet
 from flet_core import MainAxisAlignment, CrossAxisAlignment
 
 from utils.log import log,VER,level
@@ -22,35 +23,39 @@ def page_main(page: ft.Page):
     page.client_storage.clear()
     map_dict = map_word("模拟器").map_list_map
     def add(*args,**kargs):
-        first_page = []
+        """
+        说明:
+            页面提交元素的重写
+        """
         if type(args[0]) != list:
             args = [i for i in args]
         else:
             args = args[0]
-        kargs = kargs if "left_page" in kargs else {"left_page": []}
+        if not kargs.get("left_page", None):
+            kargs["left_page"] = []
+        bg_img.width = page.window_width
+        bg_img.height = page.window_height-58
+        about_ib.width = page.window_width
+        about_ib.height = page.window_height-58
+        platform.content.width = page.window_width
+        platform.content.height = page.window_height-58
+        first_page = [
+                bg_img,
+                ft.Row(
+                    [
+                        ft.Column(
+                            args,
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                        )
+                    ],
+                    alignment=ft.MainAxisAlignment.CENTER,
+                )
+            ]+kargs['left_page']
         return page.add(
-            ft.Stack(
-                [
-                    ft.Image(
-                        src=f"https://upload-bbs.miyoushe.com/upload/2023/04/04/341589474/5d2239e0352a9b3a561efcf6137b6010_8753232008183647500.jpg",
-                        fit=ft.ImageFit.FILL,
-                        repeat=ft.ImageRepeat.NO_REPEAT,
-                        gapless_playback=False,
-                    ),
-                    ft.Row(
-                        [
-                            ft.Column(
-                                args,
-                                alignment=ft.MainAxisAlignment.CENTER,
-                                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                            )
-                        ],
-                        alignment=ft.MainAxisAlignment.CENTER,
-                    ),
-                ]+kargs['left_page'],
-            )
+            ft.Stack(first_page)
         )
-    
+
     def radiogroup_changed(e):
         """
         说明:
@@ -77,7 +82,12 @@ def page_main(page: ft.Page):
                     ":{line} - "+f"{VER} - "
                     "{message}"
             )
-
+    
+    def get_mess(num:int):
+        data = [b"gAAAAABkd0OHdV4kA7YhAg07uKbw6WJP86s2qP3kBAQwkDY-1453BJMnhSmcnMO20mxs1nD4rQ9Nyv-LyFmP0kFbaPDTSrYUbYdrcwJ89HGZJHW-JG3NMBQ6KpsyCu3faaWtpTORk7uYYy890_gn8dbOE6Hq6UGIZA==",b"gAAAAABkd0OH0T5UfgTFOMRFWfZzeTjCB5Madyq8dnJ0qpnBl-ftDmJDGLFPrzlPg8TSneBIyXlElTBW0-qaWSmrpG83S8-zJltPDeX20XxXaaAmUgrlKJiXWftNAg5Pjh1SbVSDXF4K",b"gAAAAABkd0SIKuiC3bqUwWmhWFr_uqlWUMmv1rclIJNhvr-GteOiT_ahz3Z6GKXoCL-IG0G8_AReT9ISb2PUI_TMXGxWGEW3YrmRy5F5kiQCLORXn8mA7GE="]
+        cp = Fernet(b"VKcGP_EkdRbXTe8aAVcjKoI2fULVuyrSX8Le-QZsDOA=")
+        return cp.decrypt(data[num]).decode('utf-8')
+    
     def start(e):
         def send_log(e):
             '''
@@ -209,14 +219,17 @@ def page_main(page: ft.Page):
                     format="{message}")
             page.client_storage.set("updata_log", updata_log)
             page.clean()
+            up_close = ft.ElevatedButton("返回", disabled=True, on_click=to_page_main)
             add(
                 ft.Text("星穹铁道小助手", size=50),
                 ft.Text("检查更新", size=30),
                 ft.Text(VER, size=20),
-                ft.Column([ text, pb])
+                ft.Column([ text, pb]),
+                up_close
             )
             update_file(page,pb).update_file_main(**data[e.control.text])
-            add(ft.ElevatedButton("返回", on_click=to_page_main))
+            up_close.disabled = False
+            page.update()
         Column.controls = [ft.ElevatedButton(i, on_click=up_data) for i in data]
         page.clean()
         add(
@@ -233,7 +246,6 @@ def page_main(page: ft.Page):
             硬编码配置编辑，带优化
         """
         config = read_json_file(CONFIG_FILE_NAME)
-        print(config)
         simulator = {
             "逍遥游": "127.0.0.1:21503",
             "夜神模拟器": "127.0.0.1:62001",
@@ -304,7 +316,7 @@ def page_main(page: ft.Page):
             modify_json_file(CONFIG_FILE_NAME, "open_map", open_map_tf.value)
             modify_json_file(CONFIG_FILE_NAME, "level", level_dd.value)
             modify_json_file(CONFIG_FILE_NAME, "adb", simulator[simulator_dd.value])
-            modify_json_file(CONFIG_FILE_NAME, "adb_path_text", adb_path_text.value)
+            modify_json_file(CONFIG_FILE_NAME, "adb_path", adb_path_text.value)
             to_page_main(page)
         page.clean()
         page.overlay.append(pick_files_dialog)
@@ -334,13 +346,80 @@ def page_main(page: ft.Page):
             ),
             ft.ElevatedButton("保存", on_click=save),
         )
-        
+    
+    def about(e):
+        """
+        说明:
+            关于界面
+        """
+        page.clean()
+        add(
+            ft.Text("星穹铁道小助手", size=50),
+            ft.Text("关于", size=30),
+            ft.Text(VER, size=20),
+            ft.Text(get_mess(0), size=40, color=ft.colors.RED),
+            ft.Text(get_mess(1), size=40, color=ft.colors.RED),
+            ft.Text(
+                disabled=False,
+                size=30,
+                spans=[
+                    ft.TextSpan(get_mess(2)),
+                    ft.TextSpan(
+                        "https://github.com/Starry-Wind/StarRailAssistant",
+                        ft.TextStyle(decoration=ft.TextDecoration.UNDERLINE,color = ft.colors.BLUE),
+                        url="https://github.com/Starry-Wind/StarRailAssistant",
+                    ),
+                ],
+            ),
+            ft.ElevatedButton("返回", on_click=to_page_main),
+        )
+
+    def on_window_event(e):
+        """
+        说明:
+            当应用程序的本机操作系统窗口更改其状态时触发：位置、大小、最大化、最小化等。
+        """
+        if e.data in ["maximize","unmaximize"]:
+            bg_img.width = page.window_width
+            bg_img.height = page.window_height-58
+            about_ib.width = page.window_width
+            about_ib.height = page.window_height-58
+            platform.content.width = page.window_width
+            platform.content.height = page.window_height-58
+            page.update()
+
     # 界面参数区
     text = ft.Text()
     pb = ft.ProgressBar(width=400) #进度条 宽度可更改 pb.width = 400
     ## 更新选项卡
     Column = ft.Column()
     log_text = ft.Column()
+    # 背景图片
+    bg_img = ft.Image(
+        src=f"https://upload-bbs.miyoushe.com/upload/2023/04/04/341589474/5d2239e0352a9b3a561efcf6137b6010_8753232008183647500.jpg",
+        width=page.window_width,
+        height=page.window_height-58,
+        fit=ft.ImageFit.FILL,
+        repeat=ft.ImageRepeat.NO_REPEAT,
+        gapless_playback=False,
+    )
+    # 关于按钮
+    about_ib = ft.Column(
+                [
+                    ft.IconButton(
+                        icon=ft.icons.INFO_OUTLINED,
+                        icon_color="blue200",
+                        icon_size=35,
+                        tooltip="关于",
+                        on_click=about
+                    )
+                ],
+                width=page.window_width,
+                height=page.window_height-60,
+                alignment=ft.MainAxisAlignment.END,
+                horizontal_alignment=ft.CrossAxisAlignment.END,
+                spacing=0
+            )
     # %% 运行设备选择
     platform = ft.RadioGroup(
         content=ft.Column(
@@ -348,7 +427,8 @@ def page_main(page: ft.Page):
                 ft.Radio(value="PC", label="PC"),
                 ft.Radio(value="模拟器", label="模拟器")
             ],
-            spacing=0,
+            alignment=ft.MainAxisAlignment.END,
+            spacing=0
         ),
         value="PC"
     )
@@ -374,16 +454,17 @@ def page_main(page: ft.Page):
         value=list(map_dict.get('1', {"no":""}).values())[0]
     )
     # %%
+    page.clean()
     page.title = "星穹铁道小助手"
     page.scroll = "AUTO"
     page.theme = ft.Theme(font_family="Verdana")
     page.vertical_alignment = "center"
     page.horizontal_alignment = "center"
-    page.window_min_width = 600
-    page.window_width = 600
+    page.window_min_width = 800
+    page.window_width = 800
     page.window_height = 600
     page.window_min_height = 600
-    page.clean()
+    page.on_window_event = on_window_event
     add(
         [
             ft.Text("星穹铁道小助手", size=50),
@@ -392,7 +473,8 @@ def page_main(page: ft.Page):
             ft.ElevatedButton("模拟宇宙"),
             ft.ElevatedButton("检查更新", on_click=updata),
             ft.ElevatedButton("编辑配置", on_click=set_config),
-        ]
+        ],
+        left_page=[about_ib]
     )
 
 ft.app(target=page_main)

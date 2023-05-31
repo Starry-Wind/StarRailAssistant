@@ -2,7 +2,7 @@
 Author: AlisaCat
 Date: 2023-05-11 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-31 02:28:26
+LastEditTime: 2023-05-31 18:49:26
 Description: 
 
 Copyright (c) 2023 by AlisaCat, All Rights Reserved. 
@@ -290,3 +290,4 @@ class update_file:
             check_file_status = asyncio.run(self.update_file(url_proxy,raw_proxy,True,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name))
         elif check_file_status == "download_error":
             check_file_status = asyncio.run(self.update_file(url_proxy,raw_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name))
+    

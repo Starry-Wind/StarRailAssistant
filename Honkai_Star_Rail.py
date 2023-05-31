@@ -7,7 +7,8 @@ try:
     import asyncio
     import questionary
     import tqdm
-
+    import asf
+    from questionary import ValidationError
     from httpx import ReadTimeout, ConnectError, ConnectTimeout
 
     from get_width import get_width
@@ -22,6 +23,8 @@ try:
     from utils.adb import ADB
 except:
     print(traceback.format_exc())
+    os.system("pip install -r requirements.txt")
+    print("请重新运行")
 
 
 def choose_map(map_instance: map_word, type = 0, platform = "PC"):
@@ -213,11 +216,12 @@ def up_data():
 
 
 if __name__ == "__main__":
+    print("\033[0;31;40m星穹铁道小助手为开源项目，完全免费\n如果你是购买的那么你被骗了\n开源仓库地址: https://github.com/Starry-Wind/StarRailAssistant\033[0m")
     try:
         if not pyuac.isUserAdmin():
             pyuac.runAsAdmin()
         else:
-            while True:
+            def select():
                 title = "请选择运行平台"
                 options = ['PC', '模拟器', '检查更新', '配置参数']
                 platform = questionary.select(title, options).ask()
@@ -230,16 +234,16 @@ if __name__ == "__main__":
                 title = "请选择操作"
                 options = ['大世界', '模拟宇宙']
                 option = questionary.select(title, options).ask()
-                try:
+                if option:
                     if option == "大世界":
                         main(0, platform)
                     elif option == "模拟宇宙":
-                        main(1, platform)
-                except KeyboardInterrupt:
-                    if questionary.select("用户退出或脚本运行完毕", ["退出", "返回主菜单"]).ask() == "退出":
-                        break
-                    else:
-                        continue
+                        ''''''
+                        #main(1, platform)
+                else:
+                    if questionary.select("请问要退出脚本吗？", ["退出", "返回主菜单"]).ask() == "返回主菜单":
+                        select()
+            select()
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
         os.system("pip install -r requirements.txt")
