@@ -27,3 +27,4 @@ ultralytics
 xpinyin
 httpx-socks[trio]
 flet
+cryptography
