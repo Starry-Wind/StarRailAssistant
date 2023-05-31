@@ -7,7 +7,6 @@ try:
     import asyncio
     import questionary
     import tqdm
-    import asf
     from questionary import ValidationError
     from httpx import ReadTimeout, ConnectError, ConnectTimeout
 
