@@ -370,8 +370,8 @@ def page_main(page: ft.Page):
         width=100,
         label="地图",
         hint_text="选择地图",
-        options=[ft.dropdown.Option(i) for i in list(map_dict['1'].values())],
-        value=list(map_dict["1"].values())[0]
+        options=[ft.dropdown.Option(i) for i in list(map_dict.get('1', {}).values())],
+        value=list(map_dict.get('1', {"no":""}).values())[0]
     )
     # %%
     page.title = "星穹铁道小助手"
