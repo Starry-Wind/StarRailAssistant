@@ -604,6 +604,10 @@
     "hash": "fe39afc8bc72849cae5316e449ea9351"
   },
   {
+    "path": "temp/fonts/Kanit-Bold.ttf",
+    "hash": "5e47d7fa1b13f5d623a0cedabcc62433"
+  },
+  {
     "path": "temp/adb/AdbWinApi.dll",
     "hash": "ed5a809dc0024d83cbab4fb9933d598d"
   },
