@@ -136,7 +136,7 @@ def main_start(start = True):
         options = ['没打开', '打开了', '这是什么']
         option = questionary.select(title, options).ask()
         modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", options.index(option))
-        title = "请选择模拟器的运行平台"
+        title = "请选择模拟器的运行平台(如果你不打算使用模拟器运行请直接回车)"
         options = {
             "逍遥游": "127.0.0.1:21503",
             "夜神模拟器": "127.0.0.1:62001",
