@@ -123,7 +123,7 @@ This software is open source, free of charge and for learning and exchange purpo
 
 1：模擬宇宙正在開發
 
-2：GUI開發
+&#x2714; 2：GUI開發
 
 3：後續將會新增找寶箱、鋤大地順帶撿垃圾等功能
 
