@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-31 20:59:36
+LastEditTime: 2023-05-31 21:40:03
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -84,7 +84,7 @@ def page_main(page: ft.Page):
             )
     
     def get_mess(num:int):
-        data = [b"gAAAAABkd0OHdV4kA7YhAg07uKbw6WJP86s2qP3kBAQwkDY-1453BJMnhSmcnMO20mxs1nD4rQ9Nyv-LyFmP0kFbaPDTSrYUbYdrcwJ89HGZJHW-JG3NMBQ6KpsyCu3faaWtpTORk7uYYy890_gn8dbOE6Hq6UGIZA==",b"gAAAAABkd0OH0T5UfgTFOMRFWfZzeTjCB5Madyq8dnJ0qpnBl-ftDmJDGLFPrzlPg8TSneBIyXlElTBW0-qaWSmrpG83S8-zJltPDeX20XxXaaAmUgrlKJiXWftNAg5Pjh1SbVSDXF4K",b"gAAAAABkd0SIKuiC3bqUwWmhWFr_uqlWUMmv1rclIJNhvr-GteOiT_ahz3Z6GKXoCL-IG0G8_AReT9ISb2PUI_TMXGxWGEW3YrmRy5F5kiQCLORXn8mA7GE="]
+        data = [b"gAAAAABkd00kmO4Lkj6jdx88m9HqzU1RQC85SfB_h19TI1WP5pkLZHlA1nauTYBU6ga5hRFlKas9i-rFaC-Q0PPkLd_NLSR9sh8TbGBRE952hIHecP9uwyufZrWwhmdFg4EzlJR4Us64ojJZBm6DkfXSRS2syqbhlg==", b"gAAAAABkd05QbDIzYa9ebhDd6oL1ScrWhuQv8Vay1zj3c3NenzXIpGvWcmiNsNz7nYGJg2G9KJ9edRahlVASebG6zm0YTP-XeJQlgQzChoRnr606FZg0feQSzQVz_Rzri1j_HAmHQR20",b"gAAAAABkd0SIKuiC3bqUwWmhWFr_uqlWUMmv1rclIJNhvr-GteOiT_ahz3Z6GKXoCL-IG0G8_AReT9ISb2PUI_TMXGxWGEW3YrmRy5F5kiQCLORXn8mA7GE="]
         cp = Fernet(b"VKcGP_EkdRbXTe8aAVcjKoI2fULVuyrSX8Le-QZsDOA=")
         return cp.decrypt(data[num]).decode('utf-8')
     
@@ -361,7 +361,7 @@ def page_main(page: ft.Page):
             ft.Text(get_mess(1), size=40, color=ft.colors.RED),
             ft.Text(
                 disabled=False,
-                size=30,
+                size=25,
                 spans=[
                     ft.TextSpan(get_mess(2)),
                     ft.TextSpan(
