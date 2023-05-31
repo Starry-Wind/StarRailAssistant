@@ -77,17 +77,16 @@ This software is open source, free of charge and for learning and exchange purpo
     "real_width": 0, (实际宽度)
     "auto_battle_persistence": 0, (游戏内是否开启自动自动，填1则为开启)
     "real_height": 0, (实际长度)
-    "map_debug": false,  (是否检测更新)
     "github_proxy": "", (github代理)
     "rawgithub_proxy": "", (github代理)
     "webhook_url": "",
     "start": true, (是否第一次运行脚本)
     "temp_version": "20230515205738",
     "star_version": "20230515220742",
-    "open_map": "m", (打开地图按钮)
-    "map_version": "20230515205738",
-    "script_debug": true, (是否检测脚本更新),
-    "proxies": "socks5://your_socks5_proxy" (网络代理)
+    "level": "INFO",
+    "adb": "127.0.0.1:62001",（62001为adb端口）
+    "adb_path": "temp\\adb\\adb",（adb文件路径）
+    "proxies": ""
 }
 ```
 
