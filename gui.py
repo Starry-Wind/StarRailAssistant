@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-31 21:40:03
+LastEditTime: 2023-05-31 21:50:00
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -20,7 +20,7 @@ from utils.calculated import calculated
 from get_width import get_width
 
 def page_main(page: ft.Page):
-    page.client_storage.clear()
+    #page.client_storage.clear()
     map_dict = map_word("模拟器").map_list_map
     def add(*args,**kargs):
         """
@@ -135,7 +135,7 @@ def page_main(page: ft.Page):
         说明:
             返回主页
         """
-        updata_log = page.client_storage.get("updata_log")
+        updata_log = page.session.get("updata_log")
         if updata_log:
             log.remove(updata_log)
         page_main(page)
@@ -217,7 +217,7 @@ def page_main(page: ft.Page):
             log.remove()
             updata_log = log.add(add_updata_log, level=level, colorize=True,
                     format="{message}")
-            page.client_storage.set("updata_log", updata_log)
+            page.session.set("updata_log", updata_log)
             page.clean()
             up_close = ft.ElevatedButton("返回", disabled=True, on_click=to_page_main)
             add(
@@ -460,10 +460,12 @@ def page_main(page: ft.Page):
     page.theme = ft.Theme(font_family="Verdana")
     page.vertical_alignment = "center"
     page.horizontal_alignment = "center"
-    page.window_min_width = 800
-    page.window_width = 800
-    page.window_height = 600
-    page.window_min_height = 600
+    if not page.session.get("start"):
+        page.window_min_width = 800
+        page.window_width = 800
+        page.window_height = 600
+        page.window_min_height = 600
+    page.session.set("start", True)
     page.on_window_event = on_window_event
     add(
         [
