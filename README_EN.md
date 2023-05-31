@@ -39,7 +39,7 @@ Please note that based on MiHoYo's [FairPlay statement for Honkai Impact 3 - Sta
     "It is strictly forbidden to use hack tools, accelerators, scripts or other third-party tools that undermine game fairness."
     "Once discovered, miHoYo (hereinafter referred to as "we") will take measures such as deducting illegal gains - freezing game accounts - permanent bans based on the severity and frequency of violations."
 
-## User Guide
+## Usage
 
 1. Install [Python 3.11](https://www.microsoft.com/store/productId/9NRWMJP3717K) (other versions may have many problems when installing dependencies)
 
