@@ -222,9 +222,9 @@ if __name__ == "__main__":
         else:
             def select():
                 title = "请选择运行平台"
-                options = ['PC', '模拟器', '检查更新', '配置参数']
+                options = ['PC', '模拟器', '更新资源', '配置参数']
                 platform = questionary.select(title, options).ask()
-                if platform == "检查更新":
+                if platform == "更新资源":
                     up_data()
                     raise Exception("请重新运行")
                 if platform == "配置参数":

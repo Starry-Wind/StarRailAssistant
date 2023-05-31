@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-31 21:50:00
+LastEditTime: 2023-05-31 22:27:00
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -473,7 +473,7 @@ def page_main(page: ft.Page):
             ft.Text(VER, size=20),
             ft.ElevatedButton("大世界", on_click=word),
             ft.ElevatedButton("模拟宇宙"),
-            ft.ElevatedButton("检查更新", on_click=updata),
+            ft.ElevatedButton("更新资源", on_click=updata),
             ft.ElevatedButton("编辑配置", on_click=set_config),
         ],
         left_page=[about_ib]
