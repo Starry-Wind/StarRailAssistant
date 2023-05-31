@@ -236,8 +236,6 @@ if __name__ == "__main__":
                     elif option == "模拟宇宙":
                         main(1, platform)
                 except KeyboardInterrupt:
-                    print("\033[1;35m检测到退出\033[0m")
-                finally:
                     if questionary.select("用户退出或脚本运行完毕", ["退出", "返回主菜单"]).ask() == "退出":
                         break
                     else:
