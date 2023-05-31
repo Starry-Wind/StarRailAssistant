@@ -331,7 +331,8 @@ class calculated:
                     start_time = time.time()
                     while True:
                         ocr_data = self.part_ocr((77,10,85,97)) if self.platform == "PC" else self.part_ocr((72,18,80,97))
-                        pos = ocr_data.get(temp_ocr[temp_name], None)
+                        check_dict = list(filter(lambda x: re.match(f'.*{temp_ocr[temp_name]}.*', x) != None, list(ocr_data.keys())))
+                        pos = ocr_data.get(check_dict[0], None)
                         if pos:
                             self.appoint_click(pos,(pos[0]+60, pos[1]), [40,40,40])
                             break

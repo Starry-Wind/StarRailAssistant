@@ -2,16 +2,18 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-31 02:19:58
+LastEditTime: 2023-06-01 00:49:39
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
 '''
 import time
 import flet as ft
+from re import sub
+from cryptography.fernet import Fernet
 from flet_core import MainAxisAlignment, CrossAxisAlignment
 
-from utils.log import log,VER,level
+from utils.log import log,level
 from utils.map import Map as map_word
 from utils.config import read_json_file,modify_json_file , CONFIG_FILE_NAME
 from utils.update_file import update_file
@@ -19,38 +21,48 @@ from utils.calculated import calculated
 from get_width import get_width
 
 def page_main(page: ft.Page):
-    page.client_storage.clear()
+    if page.session.contains_key("updata_log"):
+        page.session.remove("updata_log")
     map_dict = map_word("模拟器").map_list_map
+    VER = str(read_json_file("config.json").get("star_version",0))+"/"+str(read_json_file("config.json").get("temp_version",0))+"/"+str(read_json_file("config.json").get("map_version",0))
+    img_url = [
+        "https://upload-bbs.miyoushe.com/upload/2023/04/04/341589474/5d2239e0352a9b3a561efcf6137b6010_8753232008183647500.jpg",
+        "https://upload-bbs.miyoushe.com/upload/2023/05/31/272930625/2c884f70bcd35555b5ad59163df6a952_2976928227773983219.jpg"
+    ]
     def add(*args,**kargs):
-        first_page = []
+        """
+        说明:
+            页面提交元素的重写
+        """
         if type(args[0]) != list:
             args = [i for i in args]
         else:
             args = args[0]
-        kargs = kargs if "left_page" in kargs else {"left_page": []}
+        if not kargs.get("left_page", None):
+            kargs["left_page"] = []
+        bg_img.width = page.window_width
+        bg_img.height = page.window_height-58
+        about_ib.width = page.window_width
+        about_ib.height = page.window_height-58
+        platform.content.width = page.window_width
+        platform.content.height = page.window_height-58
+        first_page = [
+                bg_img,
+                ft.Row(
+                    [
+                        ft.Column(
+                            args,
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                        )
+                    ],
+                    alignment=ft.MainAxisAlignment.CENTER,
+                )
+            ]+kargs['left_page']
         return page.add(
-            ft.Stack(
-                [
-                    ft.Image(
-                        src=f"https://upload-bbs.miyoushe.com/upload/2023/04/04/341589474/5d2239e0352a9b3a561efcf6137b6010_8753232008183647500.jpg",
-                        fit=ft.ImageFit.FILL,
-                        repeat=ft.ImageRepeat.NO_REPEAT,
-                        gapless_playback=False,
-                    ),
-                    ft.Row(
-                        [
-                            ft.Column(
-                                args,
-                                alignment=ft.MainAxisAlignment.CENTER,
-                                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                            )
-                        ],
-                        alignment=ft.MainAxisAlignment.CENTER,
-                    ),
-                ]+kargs['left_page'],
-            )
+            ft.Stack(first_page)
         )
-    
+
     def radiogroup_changed(e):
         """
         说明:
@@ -77,6 +89,11 @@ def page_main(page: ft.Page):
                     ":{line} - "+f"{VER} - "
                     "{message}"
             )
+
+    def get_mess(num:int):
+        data = [b"gAAAAABkd00kmO4Lkj6jdx88m9HqzU1RQC85SfB_h19TI1WP5pkLZHlA1nauTYBU6ga5hRFlKas9i-rFaC-Q0PPkLd_NLSR9sh8TbGBRE952hIHecP9uwyufZrWwhmdFg4EzlJR4Us64ojJZBm6DkfXSRS2syqbhlg==", b"gAAAAABkd05QbDIzYa9ebhDd6oL1ScrWhuQv8Vay1zj3c3NenzXIpGvWcmiNsNz7nYGJg2G9KJ9edRahlVASebG6zm0YTP-XeJQlgQzChoRnr606FZg0feQSzQVz_Rzri1j_HAmHQR20",b"gAAAAABkd0SIKuiC3bqUwWmhWFr_uqlWUMmv1rclIJNhvr-GteOiT_ahz3Z6GKXoCL-IG0G8_AReT9ISb2PUI_TMXGxWGEW3YrmRy5F5kiQCLORXn8mA7GE="]
+        cp = Fernet(b"VKcGP_EkdRbXTe8aAVcjKoI2fULVuyrSX8Le-QZsDOA=")
+        return cp.decrypt(data[num]).decode('utf-8')
 
     def start(e):
         def send_log(e):
@@ -125,7 +142,7 @@ def page_main(page: ft.Page):
         说明:
             返回主页
         """
-        updata_log = page.client_storage.get("updata_log")
+        updata_log = page.session.get("updata_log")
         if updata_log:
             log.remove(updata_log)
         page_main(page)
@@ -200,23 +217,26 @@ def page_main(page: ft.Page):
         }
         def add_updata_log(message):
             message = message[:-1]
-            text.value = message
-            pb.width = len(message)*13.2
+            text.value = sub(r"(.{67})", "\\1\r\n", message)
+            pb.width = len(message)*13.2 if len(message) <= 50 else 50*13.2
             page.update()
         def up_data(e):
             log.remove()
             updata_log = log.add(add_updata_log, level=level, colorize=True,
                     format="{message}")
-            page.client_storage.set("updata_log", updata_log)
+            page.session.set("updata_log", updata_log)
             page.clean()
+            up_close = ft.ElevatedButton("返回", disabled=True, on_click=to_page_main)
             add(
                 ft.Text("星穹铁道小助手", size=50),
                 ft.Text("检查更新", size=30),
                 ft.Text(VER, size=20),
-                ft.Column([ text, pb])
+                ft.Column([ text, pb]),
+                up_close
             )
             update_file(page,pb).update_file_main(**data[e.control.text])
-            add(ft.ElevatedButton("返回", on_click=to_page_main))
+            up_close.disabled = False
+            page.update()
         Column.controls = [ft.ElevatedButton(i, on_click=up_data) for i in data]
         page.clean()
         add(
@@ -233,7 +253,6 @@ def page_main(page: ft.Page):
             硬编码配置编辑，带优化
         """
         config = read_json_file(CONFIG_FILE_NAME)
-        print(config)
         simulator = {
             "逍遥游": "127.0.0.1:21503",
             "夜神模拟器": "127.0.0.1:62001",
@@ -304,7 +323,7 @@ def page_main(page: ft.Page):
             modify_json_file(CONFIG_FILE_NAME, "open_map", open_map_tf.value)
             modify_json_file(CONFIG_FILE_NAME, "level", level_dd.value)
             modify_json_file(CONFIG_FILE_NAME, "adb", simulator[simulator_dd.value])
-            modify_json_file(CONFIG_FILE_NAME, "adb_path_text", adb_path_text.value)
+            modify_json_file(CONFIG_FILE_NAME, "adb_path", adb_path_text.value)
             to_page_main(page)
         page.clean()
         page.overlay.append(pick_files_dialog)
@@ -334,13 +353,99 @@ def page_main(page: ft.Page):
             ),
             ft.ElevatedButton("保存", on_click=save),
         )
-        
+
+    def change__img(e):
+        """
+        说明:
+            切换背景
+        """
+        img_v = img_url.index(bg_img.src)
+        img_v = 0 if img_v+1 >= len(img_url) else img_v+1
+        page.session.set("img_v", img_v)
+        bg_img.src = img_url[img_v]
+        page.update()
+
+    def about(e):
+        """
+        说明:
+            关于界面
+        """
+        page.clean()
+        add(
+            ft.Text("星穹铁道小助手", size=50),
+            ft.Text("关于", size=30),
+            ft.Text(VER, size=20),
+            ft.Text(get_mess(0), size=40, color=ft.colors.RED),
+            ft.Text(get_mess(1), size=40, color=ft.colors.RED),
+            ft.Text(
+                disabled=False,
+                size=25,
+                spans=[
+                    ft.TextSpan(get_mess(2)),
+                    ft.TextSpan(
+                        "https://github.com/Starry-Wind/StarRailAssistant",
+                        ft.TextStyle(decoration=ft.TextDecoration.UNDERLINE,color = ft.colors.BLUE),
+                        url="https://github.com/Starry-Wind/StarRailAssistant",
+                    ),
+                ],
+            ),
+            ft.ElevatedButton("返回", on_click=to_page_main),
+        )
+
+    def on_window_event(e):
+        """
+        说明:
+            当应用程序的本机操作系统窗口更改其状态时触发：位置、大小、最大化、最小化等。
+        """
+        if e.data in ["maximize","unmaximize"]:
+            bg_img.width = page.window_width
+            bg_img.height = page.window_height-58
+            about_ib.width = page.window_width
+            about_ib.height = page.window_height-58
+            platform.content.width = page.window_width
+            platform.content.height = page.window_height-58
+            page.update()
+
     # 界面参数区
     text = ft.Text()
     pb = ft.ProgressBar(width=400) #进度条 宽度可更改 pb.width = 400
     ## 更新选项卡
     Column = ft.Column()
     log_text = ft.Column()
+    # 背景图片
+    img_url2 = img_url[page.session.get("img_v")] if page.session.get("img_v") else img_url[0]
+    bg_img = ft.Image(
+        src=img_url2,
+        width=page.window_width,
+        height=page.window_height-58,
+        fit=ft.ImageFit.FIT_HEIGHT,
+        repeat=ft.ImageRepeat.NO_REPEAT,
+        gapless_playback=False,
+    )
+    # 关于按钮
+    about_ib = ft.Column(
+                [
+                    ft.IconButton(
+                        icon=ft.icons.CHANGE_CIRCLE_OUTLINED,
+                        icon_color="blue200",
+                        icon_size=35,
+                        tooltip="切换背景",
+                        on_click=change__img
+                    ),
+                    ft.IconButton(
+                        icon=ft.icons.INFO_OUTLINED,
+                        icon_color="blue200",
+                        icon_size=35,
+                        tooltip="关于",
+                        on_click=about
+                    )
+                ],
+                width=page.window_width,
+                height=page.window_height-60,
+                alignment=ft.MainAxisAlignment.END,
+                horizontal_alignment=ft.CrossAxisAlignment.END,
+                spacing=0
+            )
     # %% 运行设备选择
     platform = ft.RadioGroup(
         content=ft.Column(
@@ -348,7 +453,8 @@ def page_main(page: ft.Page):
                 ft.Radio(value="PC", label="PC"),
                 ft.Radio(value="模拟器", label="模拟器")
             ],
-            spacing=0,
+            alignment=ft.MainAxisAlignment.END,
+            spacing=0
         ),
         value="PC"
     )
@@ -374,25 +480,34 @@ def page_main(page: ft.Page):
         value=list(map_dict.get('1', {"no":""}).values())[0]
     )
     # %%
+    page.clean()
     page.title = "星穹铁道小助手"
     page.scroll = "AUTO"
     page.theme = ft.Theme(font_family="Verdana")
     page.vertical_alignment = "center"
     page.horizontal_alignment = "center"
-    page.window_min_width = 600
-    page.window_width = 600
-    page.window_height = 600
-    page.window_min_height = 600
-    page.clean()
+    if not page.session.get("start"):
+        page.window_min_width = 800
+        page.window_width = 800
+        page.window_height = 600
+        page.window_min_height = 600
+    page.session.set("start", True)
+    page.on_window_event = on_window_event
+    page.fonts = {
+        "Kanit": "temp/fonts/Kanit-Bold.ttf",
+    }
+
+    page.theme = ft.Theme(font_family="Kanit")
     add(
         [
             ft.Text("星穹铁道小助手", size=50),
             ft.Text(VER, size=20),
             ft.ElevatedButton("大世界", on_click=word),
             ft.ElevatedButton("模拟宇宙"),
-            ft.ElevatedButton("检查更新", on_click=updata),
+            ft.ElevatedButton("更新资源", on_click=updata),
             ft.ElevatedButton("编辑配置", on_click=set_config),
-        ]
+        ],
+        left_page=[about_ib]
     )
 
 ft.app(target=page_main)

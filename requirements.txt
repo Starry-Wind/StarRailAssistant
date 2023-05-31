@@ -26,4 +26,5 @@ tqdm
 ultralytics
 xpinyin
 httpx-socks[trio]
-flat
+flet
+cryptography

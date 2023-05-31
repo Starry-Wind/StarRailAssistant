@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-25 12:54:10
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-31 02:23:41
+LastEditTime: 2023-06-01 00:46:47
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -77,6 +77,7 @@ async def download(url: str, save_path: Path, page: ft.Page=None, pb: ft.Progres
         :param url: url
         :param save_path: 保存路径
     """
+    import time
     save_path.parent.mkdir(parents=True, exist_ok=True)
     async with httpx.AsyncClient(transport=transport if transport else None).stream(method='GET', url=url, follow_redirects=True) as datas:
         size = int(datas.headers.get("Content-Length", 0))
