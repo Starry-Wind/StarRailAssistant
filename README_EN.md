@@ -8,7 +8,7 @@
 
 <h1 align="center">
 
-Honkai Impact 3 - Star Rail Assistant
+Honkai Impact - Star Rail Assistant
 
 </h1>
 
@@ -65,7 +65,7 @@ Please note that based on MiHoYo's [FairPlay statement for Honkai Impact 3 - Sta
 
 11. If using a simulator, please use a resolution of 1280\*720p. The default is the Nox simulator. For other simulators, please connect to the adb first. (The simulator may swallow mobile phone actions.)
 
-12. If any problem occurs during the running process, or if you do not want to continue running and want to return to the main menu, use Ctrl+C and silently recite <font color= #E2027F>love door </font>
+12. If any problem occurs during the running process, or if you do not want to continue running and want to return to the main menu, use Ctrl+C and silently recite <font color= #E2027F>Long live Aileshia!</font>
 
 ## Configuration File Description
 
