@@ -8,7 +8,7 @@
 
 <h1 align="center">
 
-Honkai Impact 3 - Star Rail Assistant
+Honkai - Star Rail Assistant
 
 </h1>
 
