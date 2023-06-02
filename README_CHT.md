@@ -2,7 +2,7 @@
 
 [海！點點我！點點我！點點我！ ](#使用說明)
 
-[簡體中文](README.md) | [繁體中文](README_CHT.md) | [文档](https://sra.stysqy.top)
+[簡體中文](README.md) | [繁體中文](README_CHT.md) | [English](README_EN.md) | [文档](https://sra.stysqy.top)
  
 <img alt="LOGO" src="../../blob/map/temp/love!.png" style="border-radius:50%">
 
@@ -123,7 +123,7 @@ This software is open source, free of charge and for learning and exchange purpo
 
 1：模擬宇宙正在開發
 
-2：GUI開發
+&#x2714; 2：GUI開發
 
 3：後續將會新增找寶箱、鋤大地順帶撿垃圾等功能
 
