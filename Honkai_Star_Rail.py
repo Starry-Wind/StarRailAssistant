@@ -147,9 +147,14 @@ def main_start(start = True):
             "网易mumu模拟器": "127.0.0.1:7555",
             "BlueStacks": "127.0.0.1:5555",
             "天天安卓模拟器": "127.0.0.1:5037",
+            "手动填写端口号": "",
         }
         option = questionary.select(title, options).ask()
-        modify_json_file(CONFIG_FILE_NAME, "adb", options[option])
+        if option == "手动填写端口号":
+            option = input('请输入端口号:')
+            modify_json_file(CONFIG_FILE_NAME, "adb", option)
+        else:
+            modify_json_file(CONFIG_FILE_NAME, "adb", options[option])
         modify_json_file(CONFIG_FILE_NAME, "start", True)
 
 
