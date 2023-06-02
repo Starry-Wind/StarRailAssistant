@@ -15,8 +15,8 @@ from utils.config import init_config_file, modify_json_file, normalize_file_path
 from utils.log import log
 
 
-def get_width():
-    window = gw.getWindowsWithTitle('崩坏：星穹铁道')[0]
+def get_width(title):
+    window = gw.getWindowsWithTitle(title)[0]
     hwnd = window._hWnd
 
     # 获取活动窗口的大小

@@ -1,8 +1,8 @@
 '''
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-15 21:45:43
-LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-01 00:35:53
+LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+LastEditTime: 2023-06-02 18:09:56
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -11,6 +11,8 @@ import os
 import re
 import sys
 import orjson
+import locale
+import gettext
 from loguru import logger
 
 message = ""
@@ -50,6 +52,19 @@ def read_json_file(filename: str, path=False):
                 return data
     else:
         return {}
+    
+def get_folder(path) -> list[str]:
+    """
+    获取文件夹下的文件夹列表
+    """
+    for root, dirs, files in os.walk(path):
+        return dirs
+
+loc = locale.getdefaultlocale()
+if loc[0] not in get_folder("locale"):
+    loc[0] = "zh_CN"
+t = gettext.translation('sra', 'locale', languages=[loc[0]])
+_ = t.gettext
 
 def get_message(*arg):
     """
@@ -61,7 +76,7 @@ def get_message(*arg):
     global message
     if arg:
         content = arg[0][:-1].replace("\x1b[0;34;40m","").replace("-1\x1b[0m","")
-        if re.match(r'开始(.*)锄地',content):
+        if re.match(_(r'开始(.*)锄地'),content):
             message += f"\n{content}"
     return message
 
@@ -70,7 +85,7 @@ VER = str(data.get("star_version",0))+"/"+str(data.get("temp_version",0))+"/"+st
 level = data.get("level","INFO")
 log = logger
 dir_log = "logs"
-path_log = os.path.join(dir_log, '日志文件.log')
+path_log = os.path.join(dir_log, _('日志文件.log'))
 logger.remove()
 logger.add(sys.stdout, level=level, colorize=True,
             format="<cyan>{module}</cyan>.<cyan>{function}</cyan>"

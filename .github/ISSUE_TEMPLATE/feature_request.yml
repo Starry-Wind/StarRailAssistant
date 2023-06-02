@@ -1,7 +1,7 @@
 name: 功能请求
 description: 想要请求添加某个功能
 labels: [enhancement]
-title: "[功能请求] "
+title: "[功能请求] 请在这里简要描述Feature，否则该Issue将直接关闭"
 body:
   - type: textarea
     id: reason

@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-25 12:54:10
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-01 00:46:47
+LastEditTime: 2023-06-02 00:55:10
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Dict, Optional, Any, Union, Tuple
 
 from .log import log
-from .config import read_json_file, CONFIG_FILE_NAME
+from .config import read_json_file, CONFIG_FILE_NAME, _
 
 proxies=read_json_file(CONFIG_FILE_NAME).get("proxies", "")
 transport = AsyncProxyTransport.from_url(proxies) if proxies else None
@@ -103,4 +103,4 @@ def webhook_and_log(message):
     try:
         post(url, json={"content": message})
     except Exception as e:
-        log.error(f"Webhook发送失败: {e}")
+        log.error(_("Webhook发送失败: {e}").format(e=e))
