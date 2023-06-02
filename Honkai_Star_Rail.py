@@ -148,7 +148,7 @@ def main_start(start = True):
             "BlueStacks": "127.0.0.1:5555",
             "天天安卓模拟器": "127.0.0.1:5037",
             "手动填写端口号": "",
-            }
+        }
         option = questionary.select(title, options).ask()
         if option == "手动填写端口号":
             option = input('请输入端口号:')
