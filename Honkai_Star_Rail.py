@@ -42,7 +42,10 @@ class SRA:
         }
 
     def run_plugins(self, option_dict):
-        return plugin_manager.hook.add_option(SRA=self, option_dict=option_dict)
+        if os.path.exists(plugins_path):
+            return plugin_manager.hook.add_option(SRA=self, option_dict=option_dict)
+        else:
+            return [{}]
 
     def add_option(self, option_dict, option, func, position):
         self.option_dict = add_key_value(option_dict, option, func, position)
@@ -50,17 +53,18 @@ class SRA:
 
     def load_plugin(self):
         # 遍历插件文件夹中的文件夹
-        for foldername in os.listdir(plugins_path):
-            folder_path = os.path.join(plugins_path, foldername)
-            plugins_folder = folder_path.replace("\\",".")
-            plugin = importlib.import_module(f"{plugins_folder}")
-            main = plugin = importlib.import_module(f"{plugins_folder}.main")
-            plugin_name = plugin.plugin_name
-            plugin_ver = plugin.plugin_ver
-            print(f"\033[0;34;40m正在加载插件 {plugin_name}-{plugin_ver}\033[0m")
-            plugin_manager.register(main)
-        # 加载通过 setuptools 安装的插件
-        plugin_manager.load_setuptools_entrypoints("SRA")
+        if os.path.exists(plugins_path):
+            for foldername in os.listdir(plugins_path):
+                folder_path = os.path.join(plugins_path, foldername)
+                plugins_folder = folder_path.replace("\\",".")
+                plugin = importlib.import_module(f"{plugins_folder}")
+                main = plugin = importlib.import_module(f"{plugins_folder}.main")
+                plugin_name = plugin.plugin_name
+                plugin_ver = plugin.plugin_ver
+                print(f"\033[0;34;40m正在加载插件 {plugin_name}-{plugin_ver}\033[0m")
+                plugin_manager.register(main)
+            # 加载通过 setuptools 安装的插件
+            plugin_manager.load_setuptools_entrypoints("SRA")
 
     def choose_map(self, map_instance: map_word, type = 0, platform = "PC"):
         if type == 0:
@@ -253,8 +257,8 @@ class SRA:
 if __name__ == "__main__":
     print(_("\033[0;31;40m星穹铁道小助手为开源项目，完全免费\n如果你是购买的那么你被骗了\n开源仓库地址: https://github.com/Starry-Wind/StarRailAssistant\033[0m"))
     sra = SRA()
-    #sra.load_plugin()
-    #sra.run_plugins(sra.option_dict)
+    sra.load_plugin()
+    sra.run_plugins(sra.option_dict)
     try:
         if not pyuac.isUserAdmin():
             pyuac.runAsAdmin()
