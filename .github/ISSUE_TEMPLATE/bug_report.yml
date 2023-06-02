@@ -1,7 +1,7 @@
 name: 反馈 Bug
 description: 反馈遇到的问题
 labels: [bug]
-title: "[Bug] "
+title: "[Bug] 请在这里简要描述BUG，否则该Issue将直接关闭"
 body:
   - type: markdown
     attributes:

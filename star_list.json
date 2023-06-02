@@ -1,87 +1,43 @@
 [
   {
-    "path": "Honkai_Star_Rail.py",
-    "hash": "a8aec83803da951053d60c347c015e6d"
-  },
-  {
     "path": "get_width.py",
     "hash": "4ce0e512a9be8f5753eaf0e66ac0c61e"
   },
   {
-    "path": "README_CHT.md",
-    "hash": "c4cdd5ab8dd2a64d316c2a2b810ce4cd"
-  },
-  {
-    "path": "README.md",
-    "hash": "64a3004404e474d2e9ea8da12f6af67e"
-  },
-  {
-    "path": "gui.py",
-    "hash": "66ed4768d82e190f3639b6caf6ccb1b7"
-  },
-  {
-    "path": "requirements.txt",
-    "hash": "5908c3a84946a2c8cf72cd64376d70a3"
+    "path": "README_EN.md",
+    "hash": "9a86da75193b8ea93857e1fbee6e32cd"
   },
   {
     "path": "map_res_list.py",
     "hash": "2027d7dba3a3e12565621b101a2dc1cb"
   },
   {
-    "path": "utils/simulated_universe.py",
-    "hash": "757da434834b8faad32f08cb10887cc2"
+    "path": "requirements.txt",
+    "hash": "da7dbd9b6470eb4b2bbc8a56a8fd408a"
   },
   {
-    "path": "utils/update_file.py",
-    "hash": "f04be15a36e21dd047e9e2564b370085"
+    "path": "gui.py",
+    "hash": "4b137f6c5a9a5b9f68af80d24bcd8a92"
   },
   {
-    "path": "utils/cv_tracker.py",
-    "hash": "b540bcf1f23e64c1443a23c0d382db99"
+    "path": "README.md",
+    "hash": "c5a44e2b1a1a2f7e5520bb055c090f74"
   },
   {
-    "path": "utils/config.py",
-    "hash": "01560a81f4432abd1c98c55adc8537d3"
+    "path": "README_CHT.md",
+    "hash": "ba978c2cf39e8640c46a90f287dbcba5"
   },
   {
-    "path": "utils/requests.py",
-    "hash": "90665b6b6cf142cbff603b87de146df1"
-  },
-  {
-    "path": "utils/exceptions.py",
-    "hash": "772b4ac1f24220955f07568e3359068c"
-  },
-  {
-    "path": "utils/cv_tools.py",
-    "hash": "47d888c1c606f5dea5b690b72e586d32"
-  },
-  {
-    "path": "utils/calculated.py",
-    "hash": "dc6457821020189f34f09e3f5bd04797"
-  },
-  {
-    "path": "utils/record_v7.2.py",
-    "hash": "7828b51751667aafed05f2419651582e"
-  },
-  {
-    "path": "utils/map.py",
-    "hash": "4f43f3b4979e79723d1c73f15bf1c5bd"
-  },
-  {
-    "path": "utils/adb.py",
-    "hash": "513d63a20573fb0ac3ba3e71579db2b5"
-  },
-  {
-    "path": "utils/log.py",
-    "hash": "fc1a733bc8d76a09c6d02083892c8560"
-  },
-  {
-    "path": "whl/Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl",
-    "hash": "0c19795eb68713cde783a434ea636ba9"
+    "path": "Honkai_Star_Rail.py",
+    "hash": "706d9d3fa5a4ca957fad350ca0293a6f"
   },
   {
     "path": "whl/cnstd-1.2.2-py3-none-any.whl",
     "hash": "2e700dd1d42f71c71b739bd6afa67a8a"
+  },
+  {
+    "path": "whl/Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl",
+    "hash": "0c19795eb68713cde783a434ea636ba9"
   },
   {
     "path": "whl/cnocr-2.2.2.3-py3-none-any.whl",
@@ -90,5 +46,53 @@
   {
     "path": "whl/Polygon3-3.0.9-cp311-cp311-win_amd64.whl",
     "hash": "43a2cab179598fdaaa21da76cdaaaafc"
+  },
+  {
+    "path": "utils/exceptions.py",
+    "hash": "772b4ac1f24220955f07568e3359068c"
+  },
+  {
+    "path": "utils/calculated.py",
+    "hash": "dc6457821020189f34f09e3f5bd04797"
+  },
+  {
+    "path": "utils/adb.py",
+    "hash": "513d63a20573fb0ac3ba3e71579db2b5"
+  },
+  {
+    "path": "utils/cv_tracker.py",
+    "hash": "b540bcf1f23e64c1443a23c0d382db99"
+  },
+  {
+    "path": "utils/map.py",
+    "hash": "4f43f3b4979e79723d1c73f15bf1c5bd"
+  },
+  {
+    "path": "utils/requests.py",
+    "hash": "90665b6b6cf142cbff603b87de146df1"
+  },
+  {
+    "path": "utils/record_v7.2.py",
+    "hash": "7828b51751667aafed05f2419651582e"
+  },
+  {
+    "path": "utils/update_file.py",
+    "hash": "51a9d970e941002cc747eb081ebea050"
+  },
+  {
+    "path": "utils/simulated_universe.py",
+    "hash": "757da434834b8faad32f08cb10887cc2"
+  },
+  {
+    "path": "utils/log.py",
+    "hash": "fc1a733bc8d76a09c6d02083892c8560"
+  },
+  {
+    "path": "utils/cv_tools.py",
+    "hash": "47d888c1c606f5dea5b690b72e586d32"
+  },
+  {
+    "path": "utils/config.py",
+    "hash": "01560a81f4432abd1c98c55adc8537d3"
   }
 ]

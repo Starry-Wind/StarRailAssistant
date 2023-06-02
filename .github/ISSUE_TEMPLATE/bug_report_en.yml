@@ -1,7 +1,7 @@
 name: Report bugs
 description: Problems encountered in feedback
 labels: [bug]
-title: "[Bug] "
+title: "[Bug] Please briefly describe the BUG, otherwise the Issue will be closed directly"
 body:
   - type: markdown
     attributes:
