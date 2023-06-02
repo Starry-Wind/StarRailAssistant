@@ -1,7 +1,7 @@
 import os
 import traceback
 try:
-    from utils.log import log, get_message
+    from utils.log import log
     import time
     import pyuac
     import asyncio
@@ -42,9 +42,15 @@ class SRA:
         }
 
     def run_plugins(self, option_dict):
-        if os.path.exists(plugins_path):
+        try:
             return plugin_manager.hook.add_option(SRA=self, option_dict=option_dict)
-        else:
+        except:
+            return [{}]
+
+    def stop(self):
+        try:
+            plugin_manager.hook.stop(SRA=self)
+        except:
             return [{}]
 
     def add_option(self, option_dict, option, func, position):
@@ -274,7 +280,9 @@ if __name__ == "__main__":
                 elif platform == _("配置参数"):
                     sra.main_start(False)
                     raise Exception(_("请重新运行"))
-                elif platform in options_list:
+                elif platform == None:
+                    ...
+                elif platform not in options_list:
                     options[platform]()
                 else:
                     title = _("请选择操作")
@@ -305,4 +313,5 @@ if __name__ == "__main__":
     except:
         log.error(traceback.format_exc())
     finally:
+        sra.stop()
         ADB().kill()

@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
-LastEditTime: 2023-06-02 18:21:07
+LastEditTime: 2023-06-02 22:57:27
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -544,3 +544,5 @@ except KeyboardInterrupt:
 except:
     log.error(traceback.format_exc())
     messagebox.showerror("运行错误", traceback.format_exc())
+finally:
+    sra.stop()
