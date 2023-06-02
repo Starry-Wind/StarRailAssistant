@@ -1,5 +1,6 @@
 import os
 import traceback
+
 try:
     from utils.log import log, get_message
     import time
@@ -7,13 +8,13 @@ try:
     import asyncio
     import questionary
     import tqdm
-
+    from questionary import ValidationError
     from httpx import ReadTimeout, ConnectError, ConnectTimeout
 
     from get_width import get_width
     from utils.config import read_json_file, modify_json_file, init_config_file, CONFIG_FILE_NAME
     from utils.simulated_universe import Simulated_Universe
-    from utils.update_file import update_file_main
+    from utils.update_file import update_file
     from utils.calculated import calculated
     from utils.exceptions import Exception
     from utils.requests import webhook_and_log
@@ -22,9 +23,11 @@ try:
     from utils.adb import ADB
 except:
     print(traceback.format_exc())
+    os.system("pip install -r requirements.txt")
+    print("请重新运行")
 
 
-def choose_map(map_instance: map_word, type = 0, platform = "PC"):
+def choose_map(map_instance: map_word, type=0, platform="PC"):
     if type == 0:
         title_ = "请选择起始星球："
         options_map = {"空间站「黑塔」": "1", "雅利洛-VI": "2", "仙舟「罗浮」": "3"}
@@ -61,12 +64,12 @@ def choose_map(map_instance: map_word, type = 0, platform = "PC"):
             return None, None
 
 
-def main(type=0,platform="PC"):
+def main(type=0, platform="PC", start=None, role_list=None):
     main_start()
     order = read_json_file(CONFIG_FILE_NAME, False).get('adb', "")
     adb_path = read_json_file(CONFIG_FILE_NAME, False).get('adb_path', "temp\\adb\\adb")
     map_instance = map_word(platform, order, adb_path)
-    simulated_universe =Simulated_Universe(platform, order, adb_path)
+    simulated_universe = Simulated_Universe(platform, order, adb_path)
     start, role_list = choose_map(map_instance, type, platform)
     if start:
         if platform == "PC":
@@ -74,7 +77,8 @@ def main(type=0,platform="PC"):
             calculated("PC").switch_window()
             time.sleep(0.5)
             get_width()
-            import pyautogui # 缩放纠正
+            map_instance.calculated.CONFIG = read_json_file(CONFIG_FILE_NAME)
+            import pyautogui  # 缩放纠正
             log.info("开始运行，请勿移动鼠标和键盘")
             log.info("若脚本运行无反应,请使用管理员权限运行")
         elif platform == "模拟器":
@@ -87,46 +91,50 @@ def main(type=0,platform="PC"):
         raise Exception(role_list)
 
 
-def main_start(start = True):
+def main_start(start=True):
     if not read_json_file(CONFIG_FILE_NAME, False).get('start') or not start:
         title = "请选择下载代理地址：（不使用代理选空白选项）"
         options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
         url_ms = []
         pbar = tqdm.tqdm(total=len(options), desc='测速中', unit_scale=True, unit_divisor=1024, colour="green")
-        for index,url in enumerate(options):
+        for index, url in enumerate(options):
             if url == "":
                 url = "https://github.com"
             elif "https://" not in url:
-                url =  f"https://"+url
+                url = f"https://" + url
             try:
                 response = asyncio.run(get(url))
                 ms = response.elapsed.total_seconds()
-            except (ReadTimeout, ConnectError, ConnectTimeout):
+            except:
                 ms = 999
             finally:
                 pbar.update(1)
-            url_ms.append(options[index]+f" {ms}ms")
-        url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
+            url_ms.append(options[index] + f" {ms}ms")
+        url_ms = [
+            i.replace(" ", " " * (len(max(url_ms, key=len)) - len(i))) if len(i) < len(max(url_ms, key=len)) else i for
+            i in url_ms]
         option = options[url_ms.index(questionary.select(title, url_ms).ask())]
         modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
         title = "请选择代理地址：（不使用代理选空白选项）"
         options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', '']
         url_ms = []
         pbar = tqdm.tqdm(total=len(options), desc='测速中', unit_scale=True, unit_divisor=1024, colour="green")
-        for index,url in enumerate(options):
+        for index, url in enumerate(options):
             if url == "":
                 url = "https://github.com"
             elif "https://" not in url:
-                url =  f"https://"+url
+                url = f"https://" + url
             try:
                 response = asyncio.run(get(url))
                 ms = response.elapsed.total_seconds()
-            except (ReadTimeout, ConnectError, ConnectTimeout):
+            except:
                 ms = 999
             finally:
                 pbar.update(1)
-            url_ms.append(options[index]+f" {ms}ms")
-        url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
+            url_ms.append(options[index] + f" {ms}ms")
+        url_ms = [
+            i.replace(" ", " " * (len(max(url_ms, key=len)) - len(i))) if len(i) < len(max(url_ms, key=len)) else i for
+            i in url_ms]
         option = options[url_ms.index(questionary.select(title, url_ms).ask())]
         modify_json_file(CONFIG_FILE_NAME, "rawgithub_proxy", option)
         title = "你游戏里开启了连续自动战斗吗？："
@@ -144,24 +152,28 @@ def main_start(start = True):
             "网易mumu模拟器": "127.0.0.1:7555",
             "BlueStacks": "127.0.0.1:5555",
             "天天安卓模拟器": "127.0.0.1:5037",
-        }
+            "手动填写端口号": ""
+            }
         option = questionary.select(title, options).ask()
-        modify_json_file(CONFIG_FILE_NAME, "adb", options[option])
+        if option == "手动填写端口号":
+            option = input('请输入端口号:')
+            modify_json_file(CONFIG_FILE_NAME, "adb", option)
+        else:
+            modify_json_file(CONFIG_FILE_NAME, "adb", options[option])
         modify_json_file(CONFIG_FILE_NAME, "start", True)
 
-
 def up_data():
-    main_start()    # 无config直接更新时初始化config文件
+    main_start()  # 无config直接更新时初始化config文件
     ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
     if "adb" not in read_json_file(CONFIG_FILE_NAME, False):
-        init_config_file(0, 0)
+        init_config_file(1920, 1080)
         raise Exception("未检测到必要更新，强制更新脚本，请重新运行脚本")
 
     rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
     # asyncio.run(check_file(ghproxy, "map"))
     # asyncio.run(check_file(ghproxy, "temp"))
     up_data = {
-        "脚本":{
+        "脚本": {
             'url_proxy': ghproxy,
             'raw_proxy': rawghproxy,
             'skip_verify': False,
@@ -174,7 +186,7 @@ def up_data():
             'zip_path': "StarRailAssistant-main/",
             'name': "脚本"
         },
-        "地图":{
+        "地图": {
             'url_proxy': ghproxy,
             'raw_proxy': rawghproxy,
             'skip_verify': False,
@@ -187,7 +199,7 @@ def up_data():
             'zip_path': "map/",
             'name': "地图"
         },
-        "图片":{
+        "图片": {
             'url_proxy': ghproxy,
             'raw_proxy': rawghproxy,
             'skip_verify': False,
@@ -202,36 +214,47 @@ def up_data():
         },
     }
     title = "请选择更新项目"
-    options = list(up_data.keys())+["全部更新"]
+    options = list(up_data.keys()) + ["全部更新"]
     option = questionary.select(title, options).ask()
     if option != "全部更新":
-        update_file_main(**up_data[option])
+        update_file().update_file_main(**up_data[option])
     else:
         for up_data in list(up_data.values()):
-            update_file_main(**up_data)
+            update_file().update_file_main(**up_data)
 
 
 if __name__ == "__main__":
+    print(
+        "\033[0;31;40m星穹铁道小助手为开源项目，完全免费\n如果你是购买的那么你被骗了\n开源仓库地址: https://github.com/Starry-Wind/StarRailAssistant\033[0m")
     try:
         if not pyuac.isUserAdmin():
             pyuac.runAsAdmin()
         else:
-            title = "请选择运行平台"
-            options = ['PC', '模拟器','检查更新','配置参数']
-            platform = questionary.select(title, options).ask()
-            if platform == "检查更新":
-                up_data()
-                raise Exception("请重新运行")
-            if platform == "配置参数":
-                main_start(False)
-                raise Exception("请重新运行")
-            title = "请选择操作"
-            options = ['大世界', '模拟宇宙']
-            option = questionary.select(title, options).ask()
-            if option == "大世界":
-                main(0,platform)
-            elif option == "模拟宇宙":
-                main(1,platform)
+            def select():
+                title = "请选择运行平台"
+                options = ['PC', '模拟器', '检查更新', '配置参数']
+                platform = questionary.select(title, options).ask()
+                if platform == "检查更新":
+                    up_data()
+                    raise Exception("请重新运行")
+                if platform == "配置参数":
+                    main_start(False)
+                    raise Exception("请重新运行")
+                title = "请选择操作"
+                options = ['大世界', '模拟宇宙']
+                option = questionary.select(title, options).ask()
+                if option:
+                    if option == "大世界":
+                        main(0, platform)
+                    elif option == "模拟宇宙":
+                        ''''''
+                        # main(1, platform)
+                else:
+                    if questionary.select("请问要退出脚本吗？", ["退出", "返回主菜单"]).ask() == "返回主菜单":
+                        select()
+
+
+            select()
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
         os.system("pip install -r requirements.txt")
