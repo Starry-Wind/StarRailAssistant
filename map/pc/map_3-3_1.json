@@ -1,0 +1,29 @@
+{
+    "name": "太卜司-1",
+    "author": "雪见璃,夜里无星",
+    "start": [
+        {
+            "map": 1
+        },
+        {
+            "temp\\orientation_1.jpg": 1.5
+        },
+        {
+            "temp\\orientation_4.png": 1.5
+        },
+        {
+            "temp\\map_3-3.png": 2
+        },
+        {
+            "temp\\map_3-3_point_1.png": 1.5
+        },
+        {
+            "temp\\transfer.jpg": 1.5
+        }
+    ],
+    "map": [
+        {
+            "w": 1.8796117305755615
+        }
+    ]
+}

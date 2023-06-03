@@ -1,0 +1,26 @@
+{
+    "name": "边缘道路-1",
+    "author": "Starry-Wind,小明",
+    "start": [
+        {"map": 1},
+        {"temp\\orientation_1.jpg": 1.5},
+        {"temp\\orientation_3.jpg": 1.5},
+        {"temp\\map_2-2.jpg": 2},
+        {"temp\\map_2-2_point_1.jpg": 1.5},
+        {"temp\\transfer.jpg": 1.5}
+    ],
+    "map": [
+        {
+            "s": 5.407622814178467
+        },
+        {
+            "fighting": 2
+        },
+        {
+            "a": 6.200099945068359
+        },
+        {
+            "fighting": 1
+        }
+    ]
+}

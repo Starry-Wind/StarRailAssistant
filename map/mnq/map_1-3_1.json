@@ -1,0 +1,36 @@
+{
+    "name": "支援舱段-1",
+    "author": "Starry-Wind,小明",
+    "start": [
+        {"map": 1},
+        {"temp\\orientation_1.jpg": 1.5},
+        {"temp\\orientation_2.png": 1.5},
+        {"temp\\map_1-3.jpg": 2},
+        {"temp\\map_1-3_point_1.jpg": 1.5},
+        {"temp\\map_1-3_point_2.jpg": 1.5},
+        {"temp\\transfer.jpg": 1.5}
+    ],
+    "map": [
+        {
+            "w": 4.478364944458008
+        },
+        {
+            "fighting": 1
+        },
+        {
+            "fighting": 2
+        },
+        {
+            "w": 3.5120498657226562
+        },
+        {
+            "a": 3.747433662414551
+        },
+        {
+            "w": 2.3790948390960693
+        },
+        {
+            "fighting": 1
+        }
+    ]
+}

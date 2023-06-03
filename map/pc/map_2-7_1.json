@@ -1,0 +1,26 @@
+{
+    "name": "机器聚落-1",
+    "author": "夜里无星,小明",
+    "start": [
+        {"map": 1},
+        {"temp\\orientation_1.jpg": 1.5},
+        {"temp\\orientation_3.jpg": 1.5},
+        {"temp\\map_2-7.png": 2},
+        {"temp\\map_2-7_point_1.png": 1.5},
+        {"temp\\transfer.jpg": 1.5}
+    ],
+    "map": [
+        {
+            "w": 3.3958475589752197
+        },
+        {
+            "d": 0.7453296184539795
+        },
+        {
+            "fighting": 1
+        },
+        {
+            "fighting": 2
+        }
+    ]
+}
