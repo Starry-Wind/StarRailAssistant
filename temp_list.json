@@ -80,16 +80,12 @@
     "hash": "2775a05a51045e7e3251c39a8b011e43"
   },
   {
-    "path": "temp/mnq/map_1-1_1bx.jpg",
-    "hash": "a9d6986b950a97d8cdc167c96c23213b"
-  },
-  {
     "path": "temp/mnq/attack.jpg",
     "hash": "bfa2c7a02cb93f192724107661ff18e5"
   },
   {
     "path": "temp/mnq/map_3-2_point_1.png",
-    "hash": "c0b7ce5067adc0d0773a7f48705eb094"
+    "hash": "e9b8e048c513a18b2b09c21242f5ccb7"
   },
   {
     "path": "temp/mnq/map_1-2_point_4.jpg",
@@ -110,10 +106,6 @@
   {
     "path": "temp/mnq/map_3-3.png",
     "hash": "fe39afc8bc72849cae5316e449ea9351"
-  },
-  {
-    "path": "temp/mnq/map_3-3_point_6_max.png",
-    "hash": "5841bab6030a83ac7cc94c3c689153a7"
   },
   {
     "path": "temp/mnq/map_3-3_point_5.png",
@@ -142,10 +134,6 @@
   {
     "path": "temp/mnq/map_2-3_point_5.jpg",
     "hash": "8c2630a5cffc5e6e10ef7792ca94963a"
-  },
-  {
-    "path": "temp/mnq/map_3-3_point_7_max.png",
-    "hash": "a94538abf2999d35a24e27e5369f924c"
   },
   {
     "path": "temp/mnq/doubt.jpg",
@@ -252,10 +240,6 @@
     "hash": "ef6c59ec5929ede8b74ff4b54fec9ed5"
   },
   {
-    "path": "temp/mnq/map_3-2_point_3.jpg",
-    "hash": "1778dc991ad45b1c171872fe58c65b4e"
-  },
-  {
     "path": "temp/mnq/map_3-3_point_3.png",
     "hash": "6f5cb728400787299102992e25b86381"
   },
@@ -298,6 +282,10 @@
   {
     "path": "temp/mnq/map_2-2_point_1.jpg",
     "hash": "6c5c7a3b897e0677ce3a98c5d7434082"
+  },
+  {
+    "path": "temp/mnq/map_3-2_point_3.png",
+    "hash": "3efc6b56b6feb819e0aeea6ba3c4ac7d"
   },
   {
     "path": "temp/mnq/map_2-2.jpg",
