@@ -1,0 +1,29 @@
+{
+  "name": "迥星港-4",
+  "author": "忘了,MaximPlayer",
+  "start": [
+    {
+      "map": 1
+    },
+    {
+      "temp\\map_3-2_point_5.png": 1.5
+    },
+    {
+      "temp\\transfer.jpg": 1.5
+    }
+  ],
+  "map": [
+    {
+      "w": 1.5
+    },
+    {
+      "d": 1.5
+    },
+    {
+      "s": 4.5
+    },
+    {
+      "fighting": 2
+    }
+  ]
+}

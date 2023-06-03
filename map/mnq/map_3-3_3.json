@@ -1,0 +1,45 @@
+{
+    "name": "太卜司-3",
+    "author": "雪见璃，jiuerd,MaximPlayer",
+    "start": [
+        {"map": 1},
+        {"temp\\map_3-3_point_7_max.png": 1.5},
+        {"temp\\transfer.jpg": 1.5}
+    ],
+    "map": [
+        {
+          "d": 6.5
+        },
+        {
+          "fighting": 2
+        },
+        {
+          "a": 8.5
+        },
+        {
+          "w": 1.0
+        },
+        {
+          "fighting": 2
+        },
+        {
+          "s": 1.0
+        },
+        {
+          "d": 2.5
+        },
+        {
+          "w": 3.0
+        },
+        {
+          "a": 14.0
+        },
+        {
+          "s": 2.0
+        },
+        {
+          "fighting": 2
+        }
+        
+    ]
+}
