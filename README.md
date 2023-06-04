@@ -47,6 +47,8 @@ This software is open source, free of charge and for learning and exchange purpo
 
 1.1: 输入`pip install -r requirements.txt`安装依赖
 
+1.2：如果您是第一次运行脚本，还请选择：检测更新-全部更新~
+
 2：确认游戏语言为**简体中文**，按键配置皆为默认，灵敏度皆为默认值
 
 3：如果你的电脑分辨率为2560\*1440，请将游戏分辨率调为1920\*1080（窗口化）<br>
