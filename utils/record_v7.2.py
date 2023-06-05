@@ -2,22 +2,22 @@
 Author: AlisaCat
 Date: 2023-05-07 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-20 18:38:35
+LastEditTime: 2023-05-28 17:03:10
 Description: wasd移动，x是进战斗，鼠标左键是打障碍物等，不要用鼠标移动视角，用方向键左右来移动视角（脚本运行后方向键左右会映射成鼠标）
             F9停止录制并保存
 Copyright (c) 2023 by AlisaCat, All Rights Reserved. 
 '''
+import os
 import builtins
 import time
 from collections import defaultdict
 from datetime import datetime
-
+import win32gui
 import orjson
+from PIL import ImageGrab
 from pynput import keyboard
 from pynput import mouse
 from pynput.mouse import Controller as mouseController
-
-from config import read_json_file
 
 
 def timestamped_print(*args, **kwargs):
@@ -60,7 +60,40 @@ def Click(points):
     time.sleep(0.5)
     mouse.release(mouse.Button.left)
 
-
+def normalize_file_path(filename):
+    # 尝试在当前目录下读取文件
+    current_dir = os.getcwd()
+    file_path = os.path.join(current_dir, filename)
+    if os.path.exists(file_path):
+        return file_path
+    else:
+        # 如果当前目录下没有该文件，则尝试在上一级目录中查找
+        parent_dir = os.path.dirname(current_dir)
+        file_path = os.path.join(parent_dir, filename)
+        if os.path.exists(file_path):
+            return file_path
+        else:
+            # 如果上一级目录中也没有该文件，则返回None
+            return None
+        
+def read_json_file(filename: str, path=False):
+    """
+    说明：
+        读取文件
+    参数：
+        :param filename: 文件名称
+        :param path: 是否返回路径
+    """
+    # 找到文件的绝对路径
+    file_path = normalize_file_path(filename)
+    if file_path:
+        with open(file_path, "rb") as f:
+            data = orjson.loads(f.read())
+            if path:
+                return data, file_path
+            else:
+                return data
+    
 real_width = read_json_file("config.json")['real_width']
 
 
@@ -96,6 +129,14 @@ def on_release(key):
                 mouse_watch = False
                 Click(cen_mouse_pos)
                 mouse_watch = True
+        if key.char == "v":
+            if debug_mode:
+                print("捕捉v截图")
+            hwnd = win32gui.FindWindow("UnityWndClass", "崩坏：星穹铁道")
+            left, top, right, bottom = win32gui.GetWindowRect(hwnd)
+            temp = ImageGrab.grab((left*1.5, top*1.5, right*1.5, bottom*1.5))
+            temp.save(f"temp//maps//{int(time.time())}.png")
+            print("截图成功")
     except AttributeError:
         pass
     if key == keyboard.Key.left:

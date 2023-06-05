@@ -2,7 +2,7 @@
 
 [嗨！点点我！点点我！点点我！ ](#使用说明)
 
-[简体中文](README.md) | [繁体中文](README_CHT.md) | [文档](https://sra.stysqy.top)
+[简体中文](README.md) | [繁体中文](README_CHT.md) | [English](README_EN.md) | [文档](https://sra.stysqy.top)
  
 <img alt="LOGO" src="../../blob/map/temp/love!.png" style="border-radius:50%">
 
@@ -47,6 +47,8 @@ This software is open source, free of charge and for learning and exchange purpo
 
 1.1: 输入`pip install -r requirements.txt`安装依赖
 
+1.2：如果您是第一次运行脚本，还请选择：检测更新-全部更新~
+
 2：确认游戏语言为**简体中文**，按键配置皆为默认，灵敏度皆为默认值
 
 3：如果你的电脑分辨率为2560\*1440，请将游戏分辨率调为1920\*1080（窗口化）<br>
@@ -67,22 +69,26 @@ This software is open source, free of charge and for learning and exchange purpo
 
 10：程序运行期间，**请勿移动**键盘及鼠标，如果移动了极有可能造成**偏离**或**撞墙**的问题
 
+11：使用模拟器请使用1280\*720p分辨率，默认为夜神模拟器，其他模拟器使用请先连接上adb(模拟器卡顿可能会吞操作)
+
+12：跑图过程中出问题了不想跑了想返回主菜单了可以用Ctrl+C并默念<font color= #E2027F>爱门</font>
+
 ## 配置文件说明
 ```json
 {
     "real_width": 0, (实际宽度)
     "auto_battle_persistence": 0, (游戏内是否开启自动自动，填1则为开启)
     "real_height": 0, (实际长度)
-    "map_debug": false,  (是否检测更新)
     "github_proxy": "", (github代理)
     "rawgithub_proxy": "", (github代理)
     "webhook_url": "",
     "start": true, (是否第一次运行脚本)
     "temp_version": "20230515205738",
     "star_version": "20230515220742",
-    "open_map": "m", (打开地图按钮)
-    "map_version": "20230515205738",
-    "script_debug": true (是否检测脚本更新)
+    "level": "INFO",
+    "adb": "127.0.0.1:62001",（62001为adb端口）
+    "adb_path": "temp\\adb\\adb",（adb文件路径）
+    "proxies": ""
 }
 ```
 
@@ -117,13 +123,15 @@ This software is open source, free of charge and for learning and exchange purpo
 
 4：请使用**三月七**来跑图以获得最佳体验
 
+5：遇到问题,请先确定你使用的是最新版本记得看[文档](https://sra.stysqy.top)
+
 ⭐**如果喜欢，点个星星~**⭐
 
 ## 未来目标
 
 1：模拟宇宙正在开发
 
-2：GUI开发
+&#x2714; 2：GUI开发
 
 3：后续将会新增找宝箱、锄大地顺带捡垃圾等功能
 
@@ -141,4 +149,4 @@ This software is open source, free of charge and for learning and exchange purpo
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Starry-Wind/Honkai-Star-Rail&type=Date)](https://star-history.com/#Starry-Wind/Honkai-Star-Rail&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=Starry-Wind/StarRailAssistant&type=Date)](https://star-history.com/#Starry-Wind/StarRailAssistant&Date)

@@ -145,12 +145,12 @@ class Tracker():
         wf = int(w * scale_percent/100)
 
         cv.rectangle(map_b, max_loc, np.add(max_loc, [wf,hf]), 255, 5   )
-        #show_img(map_b, 0.25)
+        show_img(map_b, 0.25)
         
         return scale_percent, max_loc
 
 
-def get_rolepos(index, platform="PC", order="127.0.0.1:62001"):
+def get_rolepos(index, platform="PC", order="127.0.0.1:62001", adb_path="temp\\adb\\adb"):
     """
     说明：
         获取玩家坐标
@@ -171,8 +171,7 @@ def get_rolepos(index, platform="PC", order="127.0.0.1:62001"):
     b = b * mask
     # show_img(b, 0.25)
     map_b = cv.threshold(b, 20, 150, cv.THRESH_BINARY)[1]
-    if platform == "模拟器":
-        mini = take_fine_screenshot([30,50,200,200],platform,order)
+    mini = take_fine_screenshot([30,50,200,200],platform,order,adb_path)
     pos = calculated().hsv2pos(mini, [97, 255,255])
     #show_img(mini)
     mini = cv.cvtColor(mini, cv.COLOR_BGR2GRAY)

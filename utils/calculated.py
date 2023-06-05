@@ -1,12 +1,15 @@
 """
 系统控制项
 """
+import re
 import time
+import win32api
 import cv2 as cv
 import numpy as np
 import pygetwindow as gw
 
 from cnocr import CnOcr
+from datetime import datetime
 from PIL import ImageGrab, Image
 from pynput import mouse
 from pynput.mouse import Controller as MouseController
@@ -22,21 +25,24 @@ from .exceptions import Exception
 
 class calculated:
 
-    def __init__(self, platform="PC", order="127.0.0.1:62001"):
+    def __init__(self, platform="PC", order="127.0.0.1:62001", adb_path="temp\\adb\\adb"):
         """
         参数: 
             :param platform: 运行设备
             :param order: ADB端口
+            :param adb_path: ADB可执行文件路径
         """
         self.platform = platform
         self.order = order
+        self.adb_path = adb_path
 
-        self.adb = ADB(order)
-        self.CONFIG = read_json_file(CONFIG_FILE_NAME)
-        self.scaling = self.CONFIG.get("scaling", 1)
+        self.adb = ADB(order, adb_path)
+        self.scaling = read_json_file(CONFIG_FILE_NAME).get("scaling", 1)
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
-        self.ocr = CnOcr(det_model_name='ch_PP-OCRv2_det', rec_model_name='densenet_lite_114-fc')
+        self.ocr = CnOcr(det_model_name='ch_PP-OCRv3_det', rec_model_name='densenet_lite_114-fc')
+        #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
+        self.check_list = abc = lambda x,y: re.match(x, str(y)) != None
         if platform == "PC":
             self.window = gw.getWindowsWithTitle('崩坏：星穹铁道')
             if not self.window:
@@ -113,10 +119,10 @@ class calculated:
             :param points: 百分比坐标
         """
 
-        scaling = self.CONFIG["scaling"]
+        scaling = read_json_file(CONFIG_FILE_NAME)["scaling"]
         left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
-        real_width = self.CONFIG["real_width"]
-        real_height = self.CONFIG["real_height"]
+        real_width = read_json_file(CONFIG_FILE_NAME)["real_width"]
+        real_height = read_json_file(CONFIG_FILE_NAME)["real_height"]
         x, y = int(left + (right - left) / 100 * points[0]), int(
             top + (bottom - top) / 100 * points[1]
         )
@@ -145,7 +151,7 @@ class calculated:
             :param points: 坐标
         """
         if self.platform == "PC":
-            scaling = self.CONFIG["scaling"]
+            scaling = read_json_file(CONFIG_FILE_NAME)["scaling"]
             left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
             x, y = int(left + points[0]), int(top + points[1])
         elif self.platform == "模拟器":
@@ -196,12 +202,18 @@ class calculated:
             :param points: 图像截取范围
         """
         if self.platform == "PC":
-            left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
+            scaling = read_json_file(CONFIG_FILE_NAME).get("scaling", 1.0)
+            borderless = read_json_file(CONFIG_FILE_NAME).get("borderless", False)
+            points = (points[0]*1.5/scaling,points[1]*1.5/scaling,points[2]*1.5/scaling,points[3]*1.5/scaling)
+            if borderless:
+                left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
+            else:
+                left, top, right, bottom = self.window.left+10, self.window.top+45, self.window.right, self.window.bottom
             temp = ImageGrab.grab((left, top, right, bottom))
             width, length = temp.size
         elif self.platform == "模拟器":
             left, top, right, bottom = 0,0,0,0
-            temp = self.adb.screencast("/sdcard/Pictures/screencast1.png")
+            temp = self.adb.screencast()
             width, length = temp.size
 
         if points != (0,0,0,0):
@@ -252,33 +264,87 @@ class calculated:
         """
         target_path = target_path.replace("temp\\","temp\\pc\\") if self.platform == "PC" else target_path.replace("temp\\","temp\\mnq\\")
         temp_name = target_path.split("\\")[-1].split(".")[0]
+        join = False # 强制进行传统模板匹配
         temp_ocr = {
             "orientation_1": "星轨航图",
-            "orientation_2": "空间站「黑塔",
+            #"orientation_2": "空间站「黑塔",
             "map_1": "基座舱段",
             "map_1_point" : [(593, 346),(593, 556)],
             "transfer": "传送",
             "map_1-2": "收容舱段",
             "map_1-3": "支援舱段",
+            "map_1-3_point_1": [(593, 346),(700, 346)],
+            #"orientation_3": "雅利洛-VI",
+            "map_2-1": "城郊雪原",
+            "map_2-2": "边缘通路",
+            "map_2-3": "残响回廊",
+            "map_2-3_point_2":[(593, 500),(593, 400)],
+            "map_2-3_point_4":[(593, 500),(593, 400)],
+            "map_2-3_point_5":[(593, 500),(593, 400)],
+            "map_2-4": "永冬岭",
+            "map_2-5": "大矿区",
+            "map_2-5_point_1": [(593, 500),(593, 400)],
+            "map_2-6": "铆钉镇",
+            "map_2-7": "机械聚落",
+            #"orientation_4": "仙舟「罗浮",
+            "map_3-1": "流云渡",
+            "map_3-1_point_1" : [(593, 346),(593, 556)],
+            "map_3-1_point_2":[(593, 500),(593, 400)],
+            "map_3-1_point_3":[(593, 500),(593, 400)],
+            "map_3-2": "迥星港",
+            "map_3-3": "太卜司",
+            "map_3-3_point_2":[(593, 500),(693, 400)],
+            "map_3-3_point_4":[(593, 500),(693, 700)],
+            "map_3-3_point_5":[(593, 500),(693, 700)],
+            "map_3-4": "工造司",
+            "map_3-4_point_1" : [(593, 500),(800, 700)],
+            "map_3-4_point_2":[(593, 500),(593, 400)],
+            "map_3-4_point_3" : [(593, 346),(400, 346)],
         }
         if temp_name in temp_ocr:
+            if "orientation" in temp_name:
+                log.info("选择星球")
+            elif "point" in temp_name:
+                log.info("选择传送锚点")
+            elif "map" in temp_name:
+                log.info("选择地图")
             if "map" not in temp_name:
                 self.ocr_click(temp_ocr[temp_name])
                 while True:
                     if not self.is_blackscreen():
                         break
-            elif "point" in temp_name and self.platform == "模拟器":
-                self.adb.input_swipe(temp_ocr[temp_name][0],temp_ocr[temp_name][1],100)
-                temp_ocr.pop(temp_name)
-                time.sleep(0.5)
+            elif "point" in temp_name:
+                if self.platform == "模拟器":
+                    # time.sleep(0.5)
+                    self.adb.input_swipe(temp_ocr[temp_name][0],temp_ocr[temp_name][1],200)
+                    temp_ocr.pop(temp_name)
+                    time.sleep(0.5)
+                else:
+                    target = cv.imread(target_path)
+                    while True:
+                        result = self.scan_screenshot(target)
+                        if result["max_val"] > threshold:
+                            #points = self.calculated(result, target.shape)
+                            self.Click(result["max_loc"])
+                            break
+                        if flag == False:
+                            break
             else:
                 if type(temp_ocr[temp_name]) == str:
-                    ocr_data = self.part_ocr((77,10,85,97)) if self.platform == "PC" else self.part_ocr((72,18,80,97))
-                    pos = ocr_data[temp_ocr[temp_name]]
-                    self.appoint_click(pos,(pos[0]+60, pos[1]), [40,40,40])
+                    start_time = time.time()
+                    while True:
+                        ocr_data = self.part_ocr((77,10,85,97)) if self.platform == "PC" else self.part_ocr((72,18,80,97))
+                        pos = ocr_data.get(temp_ocr[temp_name], None)
+                        if pos:
+                            self.appoint_click(pos,(pos[0]+60, pos[1]), [40,40,40])
+                            break
+                        if time.time() - start_time > 5:
+                            log.info("地图识别超时")
+                            join = True
+                            break
                 elif type(temp_ocr[temp_name]) == tuple:
                     self.img_click(temp_ocr[temp_name])
-        if temp_name not in temp_ocr:
+        if temp_name not in temp_ocr or join:
             target = cv.imread(target_path)
             while True:
                 result = self.scan_screenshot(target, points=points)
@@ -312,12 +378,19 @@ class calculated:
             if attack_result["max_val"] > 0.98:
                 #points = self.calculated(result, target.shape)
                 points = attack_result["max_loc"]
-                self.Click(points)
-                break
+                if self.platform == "PC":
+                    self.Click(points)
+                    break
+                else:
+                    # self.adb.input_tap((1040, 550))
+                    break
             elif doubt_result["max_val"] > 0.9 or warn_result["max_val"] > 0.95:
                 log.info("识别到疑问或是警告,等待怪物开战")
                 time.sleep(3)
-                target = cv.imread("./temp/finish_fighting.jpg")  # 識別是否已進入戰鬥，若已進入則跳出迴圈
+                if  self.platform == "PC":
+                    target = cv.imread("./temp/pc/finish_fighting.jpg")  # 識別是否已進入戰鬥，若已進入則跳出迴圈
+                else:
+                    target = cv.imread("./temp/mnq/finish_fighting.jpg")
                 result = self.scan_screenshot(target)
                 if result["max_val"] < 0.95:
                     break
@@ -327,7 +400,7 @@ class calculated:
         time.sleep(6)
         target = cv.imread("./temp/pc/auto.jpg") if self.platform == "PC" else cv.imread("./temp/mnq/auto.jpg")
         start_time = time.time()
-        if self.CONFIG["auto_battle_persistence"] != 1:
+        if read_json_file(CONFIG_FILE_NAME)["auto_battle_persistence"] != 1:
             while True:
                 result = self.scan_screenshot(target)
                 if result["max_val"] > 0.9:
@@ -347,8 +420,14 @@ class calculated:
         while True:
             if type == 0:
                 result = self.scan_screenshot(target)
-                if result["max_val"] > 0.95:
+                if result["max_val"] > 0.95 and self.platform == 'PC':
                     #points = self.calculated(result, target.shape)
+                    points = result["max_loc"]
+                    log.debug(points)
+                    log.info("完成自动战斗")
+                    time.sleep(3)
+                    break
+                elif result["max_val"] > 0.92 and self.platform == '模拟器':
                     points = result["max_loc"]
                     log.debug(points)
                     log.info("完成自动战斗")
@@ -366,28 +445,28 @@ class calculated:
             视角转动
         """
         # 该公式为不同缩放比之间的转化
-        real_width = self.CONFIG["real_width"]
+        real_width = read_json_file(CONFIG_FILE_NAME)["real_width"]
         dx = int(x * 1295 / real_width)
         i = int(dx/200)
         last = dx - i*200
         for ii in range(abs(i)):
             if dx >0:
                 if self.platform == "PC":
-                    #win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 200, 0)  # 进行视角移动
-                    self.mouse.move(200, 0)
+                    win32api.mouse_event(1, 200, 0)  # 进行视角移动
+                    #self.mouse.move(200, 0)
                 else:
                     self.adb.input_swipe((919, 394), (1119, 394), 200)
             else:
                 if self.platform == "PC":
-                    #win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, -200, 0)  # 进行视角移动
-                    self.mouse.move(-200, 0)
+                    win32api.mouse_event(1, -200, 0)  # 进行视角移动
+                    #self.mouse.move(-200, 0)
                 else:
                     self.adb.input_swipe((919, 394), (719, 394), 200)
             time.sleep(0.1)
         if last != 0:
             if self.platform == "PC":
-                #win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, last, 0)  # 进行视角移动
-                self.mouse.move(last, 0)
+                win32api.mouse_event(1, last, 0)  # 进行视角移动
+                #self.mouse.move(last, 0)
             else:
                 self.adb.input_swipe((919, 394), (919-last, 394), 200)
         time.sleep(0.5)
@@ -407,17 +486,18 @@ class calculated:
                 pass
             self.keyboard.release(com)
         elif self.platform == "模拟器":
-            time1 = time1*1000
+            time1 = (time1)*1000
             if com == "w":
-                self.adb.input_swipe((213, 512), (213, 409), time1)
+                self.adb.input_swipe((213, 500), (213, 409), time1)
             elif com == "a":
-                self.adb.input_swipe((170, 560), (107, 560), time1)
+                self.adb.input_swipe((155, 560), (90, 560), time1)
             elif com == "s":
-                self.adb.input_swipe((208, 625), (208, 684), time1)
+                self.adb.input_swipe((213, 620), (213, 728), time1)
             elif com == "d":
-                self.adb.input_swipe((242, 557), (320, 557), time1)
+                self.adb.input_swipe((265, 560), (335, 560), time1)
             elif com == "f":
-                self.adb.input_swipe((880, 362))
+                self.adb.input_tap((880, 362))
+
 
     def path_move(self, path: List):
         '''
@@ -511,10 +591,7 @@ class calculated:
         log.debug(data)
         if not characters:
             characters = list(data.keys())[0]
-        if self.platform == "模拟器":
-            pos = ((data[characters][2][0]+data[characters][0][0])/2, (data[characters][2][1]+data[characters][0][1])/2) if characters in data else None
-        elif self.platform == "PC":
-            pos = (data[characters][0][0], data[characters][0][1]) if characters in data else None
+        pos = ((data[characters][2][0]+data[characters][0][0])/2, (data[characters][2][1]+data[characters][0][1])/2) if characters in data else None
         return characters, pos
     
     def part_ocr(self,points = (0,0,0,0)):
@@ -529,7 +606,23 @@ class calculated:
         img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
         x, y = width/100*points[0], length/100*points[1]
         out = self.ocr.ocr(img_fp)
-        data = {i['text']: (left+x+(i['position'][2][0]+i['position'][0][0])/2,top+y+(i['position'][2][1]+i['position'][0][1])/2) for i in out}
+        data = {i['text']: (int(left+x+(i['position'][2][0]+i['position'][0][0])/2),int(top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
+        log.debug(data)
+        return data
+
+    def part_ocr_other(self,points = (0,0,0,0)):
+        """
+        说明：
+            返回图片文字和坐标
+        参数：
+            :param points: 图像截取范围
+        返回:
+            :return data: 文字: 坐标
+        """
+        img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
+        x, y = width/100*points[0], length/100*points[1]
+        out = self.ocr.ocr(img_fp)
+        data = {i['text']: (int(left+x+i['position'][0][0]),int(top+y+i['position'][0][1])) for i in out}
         log.debug(data)
         return data
 
@@ -593,32 +686,34 @@ class calculated:
     def switch_window(self,title = '崩坏：星穹铁道'):
         if self.platform == "PC":
             ws = gw.getWindowsWithTitle(title)
-            
+            kc = KeyboardController()
             if len(ws) >= 1 :
                 for w in ws:
                     # 避免其他窗口也包含崩坏：星穹铁道，比如正好开着github脚本页面
                     # log.debug(w.title)
                     if w.title == title:
                         #client.Dispatch("WScript.Shell").SendKeys('%')
+                        kc.press('%')
+                        kc.release('%')
                         w.activate()
                         break
             else:
                 log.info(f'没找到窗口{title}')
 
     def open_map(self, open_key):
-        start_time = time.time()
         while True:
+            start_time = time.time()
             if self.platform == "PC":
                 self.keyboard.press(open_key)
+                time.sleep(0.3) # 修复地图无法打开的问题
                 self.keyboard.release(open_key)
-                #pyautogui.keyDown(open_key)
-                #pyautogui.keyUp(open_key)
                 time.sleep(1)
             elif self.platform == "模拟器":
-                self.img_click((116, 128))
-            time.sleep(0.5)
-            map_status = self.part_ocr((5,7,10,10)) if self.platform == "PC" else self.part_ocr((6,2,10,5))
-            if "导航" in map_status:
+                self.img_click((132, 82))
+                time.sleep(0.3) # 防止未打开地图
+                self.img_click((132, 82))
+            map_status = self.part_ocr((3,2,10,10)) if self.platform == "PC" else self.part_ocr((6,2,10,6))
+            if self.check_list(".*导.*航.*", map_status):
                 log.info("进入地图")
                 break
             if time.time() - start_time > 10:
@@ -640,3 +735,18 @@ class calculated:
             result = self.scan_screenshot(target)
         time.sleep(.5) # 缓冲
 
+    def monthly_pass(self):
+        """
+        说明：
+            点击月卡
+        """
+        start_time = time.time()
+        dt = datetime.now().strftime('%Y-%m-%d') + " 04:00:00"
+        ts = int(time.mktime(time.strptime(dt, "%Y-%m-%d %H:%M:%S")))
+        ns = int(start_time)
+        while True:
+            if 0 < ns - ts <= 60:
+                self.ocr_click("列车补给")
+                break
+            if time.time() - start_time > 60:
+                break

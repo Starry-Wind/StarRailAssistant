@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-23 17:39:27
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-25 21:58:46
+LastEditTime: 2023-05-30 23:56:43
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -30,7 +30,7 @@ def get_width():
     img = ImageGrab.grab()
     width, height=img.size
 
-    scaling = round(width/desktop_width*10)/10
+    scaling = round(width/desktop_width*100)/100
     """    
     # 获取当前显示器的缩放比例
     dc = win32gui.GetWindowDC(hwnd)
@@ -45,12 +45,13 @@ def get_width():
     # 计算出真实分辨率
     real_width = int(window_rect[0])
     real_height = int(window_rect[1])
-
+    borderless = True if real_width*scaling == 1920 else False
     if not normalize_file_path(CONFIG_FILE_NAME):
         init_config_file(real_width=real_width, real_height=real_height)
 
-    log.info(f"Real resolution: {real_width} x {real_height} x {scaling}")
+    log.info(f"Real resolution: {real_width} x {real_height} x {scaling} x {borderless}")
 
     modify_json_file(CONFIG_FILE_NAME, "real_width", real_width)
     modify_json_file(CONFIG_FILE_NAME, "real_height", real_height)
     modify_json_file(CONFIG_FILE_NAME, "scaling", scaling)
+    modify_json_file(CONFIG_FILE_NAME, "borderless", borderless)

@@ -3,8 +3,9 @@ name: 更新地图文件
 on:
   push:
     branches: [ main ]
-    paths:
-      - '**'
+  pull_request_target:
+    types: 
+      - auto_merge_enabled
 
   workflow_dispatch:
 

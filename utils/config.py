@@ -23,7 +23,7 @@ def normalize_file_path(filename):
             return None
 
 
-def read_json_file(filename: str, path=False):
+def read_json_file(filename: str, path=False) -> dict:
     """
     说明：
         读取文件
@@ -41,7 +41,7 @@ def read_json_file(filename: str, path=False):
             else:
                 return data
     else:
-        init_config_file(0, 0)
+        init_config_file(1920, 1080)
         return read_json_file(filename, path)
 
 
@@ -58,11 +58,12 @@ def modify_json_file(filename: str, key, value):
     data, file_path = read_json_file(filename, path=True)
     data[key] = value
     with open(file_path, "wb") as f:
-        f.write(orjson.dumps(data))
+        f.write(orjson.dumps(data, option=orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2))
 
 
 def init_config_file(real_width, real_height):
     with open(CONFIG_FILE_NAME, "wb+") as f:
+        log.info("配置初始化")
         f.write(
             orjson.dumps(
                 {
@@ -77,13 +78,15 @@ def init_config_file(real_width, real_height):
                     "star_version": "0",
                     "open_map": "m",
                     "level": "INFO",
-                    "adb": "127.0.0.1:62001"
-                }
+                    "adb": "127.0.0.1:62001",
+                    "adb_path": "temp\\adb\\adb",
+                    "proxies": ""
+                },option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2
             )
         )
 
 
-def get_file(path, exclude=[], exclude_file=None, get_path=False):
+def get_file(path, exclude=[], exclude_file=None, get_path=False) -> list[str]:
     """
     获取文件夹下的文件
     """

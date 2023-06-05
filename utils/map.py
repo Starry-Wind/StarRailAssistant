@@ -5,7 +5,7 @@ from .requests import webhook_and_log
 
 
 class Map:
-    def __init__(self, platform="PC",order="127.0.0.1:62001"):
+    def __init__(self, platform="PC",order="127.0.0.1:62001",adb_path="temp\\adb\\adb"):
         """
         参数: 
             :param platform: 运行设备
@@ -16,9 +16,9 @@ class Map:
             "模拟器": "mnq"
         }
         self.platform_name = platform2name[platform]
-        self.adb = ADB(order)
+        self.adb = ADB(order, adb_path)
 
-        self.calculated = calculated(platform,order)
+        self.calculated = calculated(platform,order,adb_path)
         self.keyboard = self.calculated.keyboard
         self.open_map = read_json_file(CONFIG_FILE_NAME).get("open_map", "m")
         self.map_list = []
@@ -36,11 +36,11 @@ class Map:
                     #points = self.calculated.calculated(result, target.shape)
                     points = result["max_loc"]
                     log.debug(points)
-                    for i in range(5):
+                    for i in range(6):
                         self.calculated.Click(points)
                     break
         elif self.platform == "模拟器":
-            for i in range(5):
+            for i in range(6):
                 self.calculated.img_click((366, 660))
 
     def start_map(self, map, old=True):
@@ -64,10 +64,16 @@ class Map:
                 self.calculated.Mouse_move(value)
             elif key == "fighting":
                 if value == 1:  # 进战斗
+                    if self.platform == '模拟器':
+                        self.adb.input_tap((1040, 550))
                     self.calculated.fighting()
                 elif value == 2:  # 障碍物
-                    self.calculated.Click()
-                    time.sleep(1)
+                    if self.platform == "PC":
+                        self.calculated.Click()
+                        time.sleep(1)
+                    else:
+                        self.adb.input_tap((1040, 550))
+                        time.sleep(1)
                 else:
                     raise Exception(f"map数据错误, fighting参数异常:{map_filename}", map)
             elif key == "scroll":
@@ -91,6 +97,11 @@ class Map:
         log.debug(self.map_list_map)
 
     def auto_map(self, start):
+        if self.platform == "模拟器":
+            _, _, _, _, _, width, length = self.calculated.take_screenshot()
+            log.info((width,length))
+            if width!=1280 or length!=720:
+                raise Exception("错误的模拟器分辨率，请调整为1280X720，请不要在群里问怎么调整分辨率，小心被踢！")
         if f'map_{start}.json' in self.map_list:
             map_list = self.map_list[self.map_list.index(f'map_{start}.json'):len(self.map_list)]
             for map in map_list:
@@ -108,6 +119,7 @@ class Map:
                     log.debug(key)
                     value = start[key]
                     if key == 'map':
+                        time.sleep(1) # 防止卡顿
                         self.calculated.open_map(self.open_map)
                         self.map_init()
                     else:
