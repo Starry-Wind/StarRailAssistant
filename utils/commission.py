@@ -7,7 +7,7 @@ def get_percentile(rect, shape):
     #获取长方形的相对坐标
     x1,y1,x2,y2 = rect
     w,h = shape
-    return [x1/w,y1/h,x2/w,y2/h]
+    return [x1/w*100,y1/h*100,x2/w*100,y2/h*100]
 
 class Commission():
     def __init__(self, n=4):
@@ -19,7 +19,8 @@ class Commission():
         log.info(f"即将进行自动重新委托，当前重新委托次数为{self.n}")
         pyautogui.press('esc')
         time.sleep(1)
-        self.calculated.click_target('./temp/commission_menu.jpg', 0.98)
+        # self.calculated.click_target('./temp/commission_menu.jpg', 0.98)
+        self.calculated.ocr_click('委托')
 
     def run(self):
         for i in range(self.n):
@@ -30,8 +31,9 @@ class Commission():
 
             self.calculated.click_target('./temp/red_dot.jpg', 0.98, points=points1 )
             self.calculated.click_target('./temp/red_dot.jpg', 0.98, points=points2 )
-            self.calculated.click_target('./temp/commission_reward.jpg', 0.98)
-            self.calculated.click_target('./temp/commission_resend.jpg', 0.98)
+
+            self.calculated.ocr_click('领取')
+            self.calculated.ocr_click('再次派遣')
             time.sleep(5)
     def close(self):
         self.calculated.click_target('./temp/commission_close.jpg', 0.98)
