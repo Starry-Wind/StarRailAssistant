@@ -663,7 +663,7 @@ class calculated:
         for index,x in enumerate(HSV):
             for index1,x1 in enumerate(HSV[index]):
                 if x1[0] == color[0] and x1[1] == color[1] and x1[2] == color[2]:
-                    return (index1, index1)
+                    return (index1, index)
 
     def wait_join(self):
         """
