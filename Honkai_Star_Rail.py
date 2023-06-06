@@ -15,7 +15,7 @@ try:
     from utils.simulated_universe import Simulated_Universe
     from utils.update_file import update_file
     #from utils.simulated_universe import Simulated_Universe
-    from utils.update_file import update_file_main
+    from utils.update_file import update_file
     from utils.commission import Commission
     from utils.calculated import calculated
     from utils.exceptions import Exception

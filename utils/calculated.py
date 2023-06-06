@@ -351,7 +351,10 @@ class calculated:
                 if result["max_val"] > threshold:
                     #points = self.calculated(result, target.shape)
                     if points != (0,0,0,0):
-                        shifted = (result["max_loc"][0] + self.CONFIG["real_width"] ,  result["max_loc"][1] + self.CONFIG["real_height"])
+                        real_width = read_json_file(CONFIG_FILE_NAME)["real_width"]
+                        real_height = read_json_file(CONFIG_FILE_NAME)["real_height"]
+                        shifted = (result["max_loc"][0] + real_width ,  result["max_loc"][1] + real_height)
+                        print(shifted)
                         self.Click(shifted)       
                     else:
                         self.Click(result["max_loc"])

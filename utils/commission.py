@@ -29,8 +29,9 @@ class Commission():
             points1 = get_percentile([300,180,300+900,180+100],[1920,1080])
             points2 = get_percentile([350,280,350+480,280+600],[1920,1080])
 
-            self.calculated.click_target('./temp/red_dot.jpg', 0.98, points=points1 )
-            self.calculated.click_target('./temp/red_dot.jpg', 0.98, points=points2 )
+            self.calculated.take_screenshot()
+            # self.calculated.click_target('./temp/red_dot.jpg', 0.98, points=points1 )
+            # self.calculated.click_target('./temp/red_dot.jpg', 0.98, points=points2 )
 
             self.calculated.ocr_click('领取')
             self.calculated.ocr_click('再次派遣')
