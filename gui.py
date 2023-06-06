@@ -1,8 +1,8 @@
 '''
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
-LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
-LastEditTime: 2023-06-02 22:57:27
+LastEditors: Night-stars-1 nujj1042633805@gmail.com
+LastEditTime: 2023-06-04 03:17:36
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -34,8 +34,10 @@ except:
 sra = SRA()
 
 def page_main(page: ft.Page):
+    '''
     if page.session.contains_key("updata_log"):
         page.session.remove("updata_log")
+    '''
     map_dict = map_word(platform=_("模拟器")).map_list_map
     VER = str(read_json_file("config.json").get("star_version",0))+"/"+str(read_json_file("config.json").get("temp_version",0))+"/"+str(read_json_file("config.json").get("map_version",0))
     img_url = [
@@ -99,11 +101,11 @@ def page_main(page: ft.Page):
         log_text.controls.append(ft.Text(message[:-1]))
         page.update()
 
-    log.add(add_log, level=level, colorize=True,
-            format="{module}.{function}"
-                    ":{line} - "+f"{VER} - "
-                    "{message}"
-            )
+    if not page.session.get("updata_log"):
+        log.add(add_log, level=level, colorize=True,
+                format="{module}.{function}"
+                        ":{line} - {message}"
+                )
 
     def get_mess(num:int):
         data = [b"gAAAAABkd00kmO4Lkj6jdx88m9HqzU1RQC85SfB_h19TI1WP5pkLZHlA1nauTYBU6ga5hRFlKas9i-rFaC-Q0PPkLd_NLSR9sh8TbGBRE952hIHecP9uwyufZrWwhmdFg4EzlJR4Us64ojJZBm6DkfXSRS2syqbhlg==", b"gAAAAABkd05QbDIzYa9ebhDd6oL1ScrWhuQv8Vay1zj3c3NenzXIpGvWcmiNsNz7nYGJg2G9KJ9edRahlVASebG6zm0YTP-XeJQlgQzChoRnr606FZg0feQSzQVz_Rzri1j_HAmHQR20",b"gAAAAABkd0SIKuiC3bqUwWmhWFr_uqlWUMmv1rclIJNhvr-GteOiT_ahz3Z6GKXoCL-IG0G8_AReT9ISb2PUI_TMXGxWGEW3YrmRy5F5kiQCLORXn8mA7GE="]
@@ -121,7 +123,7 @@ def page_main(page: ft.Page):
             page.update()
 
         page.clean()
-        add(
+        page.add(
             log_text,
             ft.ElevatedButton(_("返回"), on_click=send_log),
         )
@@ -145,9 +147,9 @@ def page_main(page: ft.Page):
         page.horizontal_alignment = "START"
         add(log_text)
         if platform.value == _("PC"):
-            calculated(_("PC")).switch_window()
+            calculated(_("崩坏：星穹铁道"), _("PC")).switch_window()
             time.sleep(0.5)
-            get_width()
+            get_width(_("崩坏：星穹铁道"))
             import pyautogui # 缩放纠正
         map_word(platform=platform.value).auto_map(start)
         add(ft.ElevatedButton(_("返回"), on_click=to_page_main))
@@ -160,6 +162,7 @@ def page_main(page: ft.Page):
         updata_log = page.session.get("updata_log")
         if updata_log:
             log.remove(updata_log)
+            page.session.set("updata_log", False)
         page_main(page)
 
     def word(e):

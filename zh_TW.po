@@ -1,0 +1,816 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-02 17:52+0800\n"
+"PO-Revision-Date: 2023-06-04 03:12+0800\n"
+"Last-Translator: Night-stars-1\n"
+"Language-Team: \n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.3.1\n"
+
+#: Honkai_Star_Rail.py:29 utils/calculated.py:28 utils/map.py:8
+#: utils/simulated_universe.py:33 utils/simulated_universe.py:40
+msgid "崩坏：星穹铁道"
+msgstr "崩壞：星穹鐵道"
+
+#: Honkai_Star_Rail.py:36 Honkai_Star_Rail.py:38 gui.py:135 gui.py:136
+#: gui.py:456 gui.py:462 utils/calculated.py:28 utils/calculated.py:47
+#: utils/calculated.py:52 utils/calculated.py:64 utils/calculated.py:94
+#: utils/calculated.py:132 utils/calculated.py:154 utils/calculated.py:161
+#: utils/calculated.py:189 utils/calculated.py:205 utils/calculated.py:263
+#: utils/calculated.py:334 utils/calculated.py:365 utils/calculated.py:366
+#: utils/calculated.py:367 utils/calculated.py:376 utils/calculated.py:385
+#: utils/calculated.py:396 utils/calculated.py:414 utils/calculated.py:449
+#: utils/calculated.py:455 utils/calculated.py:462 utils/calculated.py:477
+#: utils/calculated.py:635 utils/calculated.py:682 utils/calculated.py:701
+#: utils/calculated.py:710 utils/calculated.py:727 utils/map.py:8
+#: utils/map.py:15 utils/map.py:31 utils/map.py:71
+#: utils/simulated_universe.py:33 utils/simulated_universe.py:40
+#: utils/simulated_universe.py:41 utils/simulated_universe.py:74
+#: utils/simulated_universe.py:80 utils/simulated_universe.py:84
+#: utils/simulated_universe.py:92 utils/simulated_universe.py:117
+#: utils/simulated_universe.py:132
+msgid "PC"
+msgstr "PC"
+
+#: Honkai_Star_Rail.py:36 Honkai_Star_Rail.py:39 Honkai_Star_Rail.py:119
+#: gui.py:29 gui.py:286 gui.py:457 utils/calculated.py:78
+#: utils/calculated.py:106 utils/calculated.py:144 utils/calculated.py:158
+#: utils/calculated.py:172 utils/calculated.py:191 utils/calculated.py:215
+#: utils/calculated.py:315 utils/calculated.py:483 utils/calculated.py:706
+#: utils/map.py:16 utils/map.py:42 utils/map.py:100
+#: utils/simulated_universe.py:76 utils/simulated_universe.py:82
+#: utils/simulated_universe.py:87 utils/simulated_universe.py:99
+#: utils/simulated_universe.py:120 utils/simulated_universe.py:134
+msgid "模拟器"
+msgstr "模擬器"
+
+#: Honkai_Star_Rail.py:36 Honkai_Star_Rail.py:40 Honkai_Star_Rail.py:267
+#: gui.py:515
+msgid "更新资源"
+msgstr "更新資源"
+
+#: Honkai_Star_Rail.py:36 Honkai_Star_Rail.py:41 Honkai_Star_Rail.py:270
+msgid "配置参数"
+msgstr "配置參數"
+
+#: Honkai_Star_Rail.py:67
+msgid "请选择起始星球："
+msgstr "請選擇起始星球："
+
+#: Honkai_Star_Rail.py:68 gui.py:468
+msgid "空间站「黑塔」"
+msgstr "空間站「黑塔」"
+
+#: Honkai_Star_Rail.py:68 gui.py:469
+msgid "雅利洛-VI"
+msgstr "雅利洛-VI"
+
+#: Honkai_Star_Rail.py:68 gui.py:470
+msgid "仙舟「罗浮」"
+msgstr "仙舟「羅浮」"
+
+#: Honkai_Star_Rail.py:71
+msgid "请选择起始地图："
+msgstr "請選擇起始地圖："
+
+#: Honkai_Star_Rail.py:74
+msgid "你没下载地图，拿什么选？"
+msgstr "你沒下載地圖，拿什麼選？"
+
+#: Honkai_Star_Rail.py:81 Honkai_Star_Rail.py:85
+msgid "请选择第几宇宙："
+msgstr "請選擇第幾宇宙："
+
+#: Honkai_Star_Rail.py:82 Honkai_Star_Rail.py:84
+msgid "选择宇宙"
+msgstr "選擇宇宙"
+
+#: Honkai_Star_Rail.py:86
+msgid "第一世界"
+msgstr "第一世界"
+
+#: Honkai_Star_Rail.py:86
+msgid "第二世界"
+msgstr "第二世界"
+
+#: Honkai_Star_Rail.py:86
+msgid "第三世界"
+msgstr "第三世界"
+
+#: Honkai_Star_Rail.py:86
+msgid "第四世界"
+msgstr "第四世界"
+
+#: Honkai_Star_Rail.py:86
+msgid "第五世界"
+msgstr "第五世界"
+
+#: Honkai_Star_Rail.py:86
+msgid "第六世界"
+msgstr "第六世界"
+
+#: Honkai_Star_Rail.py:91 Honkai_Star_Rail.py:94
+msgid "要使用的预设队伍:"
+msgstr "要使用的預設隊伍:"
+
+#: Honkai_Star_Rail.py:93
+msgid "存护"
+msgstr "存護"
+
+#: Honkai_Star_Rail.py:93
+msgid "记忆"
+msgstr "記憶"
+
+#: Honkai_Star_Rail.py:93
+msgid "虚无"
+msgstr "虛無"
+
+#: Honkai_Star_Rail.py:93
+msgid "丰饶"
+msgstr "豐饒"
+
+#: Honkai_Star_Rail.py:93 utils/simulated_universe.py:162
+msgid "巡猎"
+msgstr "巡獵"
+
+#: Honkai_Star_Rail.py:93
+msgid "毁灭"
+msgstr "毀滅"
+
+#: Honkai_Star_Rail.py:93
+msgid "欢愉"
+msgstr "歡愉"
+
+#: Honkai_Star_Rail.py:111
+msgid "脚本将自动切换至游戏窗口，请保持游戏窗口激活"
+msgstr "腳本將自動切換至遊戲窗口，請保持遊戲窗口激活"
+
+#: Honkai_Star_Rail.py:117
+msgid "开始运行，请勿移动鼠标和键盘"
+msgstr "開始運行，請勿移動鼠標和鍵盤"
+
+#: Honkai_Star_Rail.py:118
+msgid "若脚本运行无反应,请使用管理员权限运行"
+msgstr "若腳本運行無反應,請使用管理員權限運行"
+
+#: Honkai_Star_Rail.py:131
+msgid "请选择下载代理地址：（不使用代理选空白选项）"
+msgstr "請選擇下載代理地址：（不使用代理選空白選項）"
+
+#: Honkai_Star_Rail.py:134 Honkai_Star_Rail.py:154
+msgid "测速中"
+msgstr "測速中"
+
+#: Honkai_Star_Rail.py:151
+msgid "请选择代理地址：（不使用代理选空白选项）"
+msgstr "請選擇代理地址：（不使用代理選空白選項）"
+
+#: Honkai_Star_Rail.py:171
+msgid "你游戏里开启了连续自动战斗吗？："
+msgstr "你遊戲裡開啓了連續自動戰鬥嗎？："
+
+#: Honkai_Star_Rail.py:172
+msgid "没打开"
+msgstr "沒打開"
+
+#: Honkai_Star_Rail.py:172
+msgid "打开了"
+msgstr "打開了"
+
+#: Honkai_Star_Rail.py:172
+msgid "这是什么"
+msgstr "這是什麼"
+
+#: Honkai_Star_Rail.py:175
+msgid "请选择模拟器的运行平台(如果你不打算使用模拟器运行请直接回车)"
+msgstr "請選擇模擬器的運行平臺(如果你不打算使用模擬器運行請直接回車)"
+
+#: Honkai_Star_Rail.py:197
+msgid "未检测到必要更新，强制更新脚本，请重新运行脚本"
+msgstr "未檢測到必要更新，強制更新腳本，請重新運行腳本"
+
+#: Honkai_Star_Rail.py:203 Honkai_Star_Rail.py:214 gui.py:181 gui.py:192
+msgid "脚本"
+msgstr "腳本"
+
+#: Honkai_Star_Rail.py:216 Honkai_Star_Rail.py:227 gui.py:194 gui.py:205
+#: gui.py:480
+msgid "地图"
+msgstr "地圖"
+
+#: Honkai_Star_Rail.py:229 Honkai_Star_Rail.py:240 gui.py:207 gui.py:218
+msgid "图片"
+msgstr "圖片"
+
+#: Honkai_Star_Rail.py:243
+msgid "请选择更新项目"
+msgstr "請選擇更新項目"
+
+#: Honkai_Star_Rail.py:244 Honkai_Star_Rail.py:246
+msgid "全部更新"
+msgstr "全部更新"
+
+#: Honkai_Star_Rail.py:254
+msgid ""
+"[0;31;40m星穹铁道小助手为开源项目，完全免费\n"
+"如果你是购买的那么你被骗了\n"
+"开源仓库地址: https://github.com/Starry-Wind/StarRailAssistant[0m"
+msgstr ""
+"[0;31;40m星穹鐵道小助手爲開源項目，完全免費\n"
+"如果你是購買的那麼你被騙了\n"
+"開源倉庫地址: https://github.com/Starry-Wind/StarRailAssistant[0m"
+
+#: Honkai_Star_Rail.py:263
+msgid "请选择运行平台"
+msgstr "請選擇運行平臺"
+
+#: Honkai_Star_Rail.py:269 Honkai_Star_Rail.py:272
+msgid "请重新运行"
+msgstr "請重新運行"
+
+#: Honkai_Star_Rail.py:276
+msgid "请选择操作"
+msgstr "請選擇操作"
+
+#: Honkai_Star_Rail.py:277 Honkai_Star_Rail.py:280 gui.py:161 gui.py:335
+#: gui.py:511
+msgid "大世界"
+msgstr "大世界"
+
+#: Honkai_Star_Rail.py:277 Honkai_Star_Rail.py:282 gui.py:512
+msgid "模拟宇宙"
+msgstr "模擬宇宙"
+
+#: Honkai_Star_Rail.py:286
+msgid "请问要退出脚本吗？"
+msgstr "請問要退出腳本嗎？"
+
+#: Honkai_Star_Rail.py:286
+msgid "退出"
+msgstr "退出"
+
+#: Honkai_Star_Rail.py:286
+msgid "返回主菜单"
+msgstr "返回主菜單"
+
+#: Honkai_Star_Rail.py:298
+msgid "监控到退出"
+msgstr "監控到退出"
+
+#: gui.py:114 gui.py:141 gui.py:166 gui.py:232 gui.py:250 gui.py:395
+msgid "返回"
+msgstr "返回"
+
+#: gui.py:160 gui.py:234 gui.py:246 gui.py:334 gui.py:378 gui.py:487 gui.py:509
+msgid "星穹铁道小助手"
+msgstr "星穹鐵道小助手"
+
+#: gui.py:165
+msgid "确认"
+msgstr "確認"
+
+#: gui.py:235 gui.py:247
+msgid "检查更新"
+msgstr "檢查更新"
+
+#: gui.py:277 gui.py:278
+msgid "自定义"
+msgstr "自定義"
+
+#: gui.py:287
+msgid "选择你运行的模拟器"
+msgstr "選擇你運行的模擬器"
+
+#: gui.py:293
+msgid "GITHUB代理"
+msgstr "GITHUB代理"
+
+#: gui.py:294
+msgid "GITHUB代理地址"
+msgstr "GITHUB代理地址"
+
+#: gui.py:300
+msgid "RAWGITHUB代理"
+msgstr "RAWGITHUB代理"
+
+#: gui.py:301
+msgid "RAWGITHUB代理地址"
+msgstr "RAWGITHUB代理地址"
+
+#: gui.py:307 gui.py:308
+msgid "日志等级"
+msgstr "日誌等級"
+
+#: gui.py:322
+msgid "打开地图按钮"
+msgstr "打開地圖按鈕"
+
+#: gui.py:346
+msgid "选择文件"
+msgstr "選擇文件"
+
+#: gui.py:357
+msgid "保存"
+msgstr "保存"
+
+#: gui.py:379 gui.py:442
+msgid "关于"
+msgstr "關於"
+
+#: gui.py:435
+msgid "切换背景"
+msgstr "切換背景"
+
+#: gui.py:481 utils/calculated.py:308
+msgid "选择地图"
+msgstr "選擇地圖"
+
+#: gui.py:516
+msgid "编辑配置"
+msgstr "編輯配置"
+
+#: utils/calculated.py:50
+msgid "你游戏没开，我真服了"
+msgstr "你遊戲沒開，我真服了"
+
+#: utils/calculated.py:112 utils/calculated.py:195 utils/calculated.py:678
+#: utils/calculated.py:715 utils/simulated_universe.py:106
+#: utils/simulated_universe.py:140 utils/simulated_universe.py:183
+#: utils/simulated_universe.py:202
+msgid "识别超时"
+msgstr "識別超時"
+
+#: utils/calculated.py:267
+msgid "星轨航图"
+msgstr "(星軌航圖|星勒航固|星勒航圆)"
+
+#: utils/calculated.py:269
+msgid "基座舱段"
+msgstr "(基座艙段|基座蟾段)"
+
+#: utils/calculated.py:271
+msgid "传送"
+msgstr "(傳送|傅送|售送)"
+
+#: utils/calculated.py:272
+msgid "收容舱段"
+msgstr "(收容艙段|收容蟾段)"
+
+#: utils/calculated.py:273
+msgid "支援舱段"
+msgstr "(支援艙段|支援蟾段)"
+
+#: utils/calculated.py:276
+msgid "城郊雪原"
+msgstr "城郊雪原"
+
+#: utils/calculated.py:277
+msgid "边缘通路"
+msgstr "邊緣通路"
+
+#: utils/calculated.py:278
+msgid "残响回廊"
+msgstr "殘響迴廊"
+
+#: utils/calculated.py:282
+msgid "永冬岭"
+msgstr "永冬嶺"
+
+#: utils/calculated.py:283
+msgid "大矿区"
+msgstr "大礦區"
+
+#: utils/calculated.py:285
+msgid "铆钉镇"
+msgstr "鉚釘鎮"
+
+#: utils/calculated.py:286
+msgid "机械聚落"
+msgstr "機械聚落"
+
+#: utils/calculated.py:288
+msgid "流云渡"
+msgstr "流雲渡"
+
+#: utils/calculated.py:292
+msgid "迥星港"
+msgstr "迥星港"
+
+#: utils/calculated.py:293
+msgid "太卜司"
+msgstr "太卜司"
+
+#: utils/calculated.py:297
+msgid "工造司"
+msgstr "工造司"
+
+#: utils/calculated.py:304
+msgid "选择星球"
+msgstr "選擇星球"
+
+#: utils/calculated.py:306
+msgid "选择传送锚点"
+msgstr "選擇傳送錨點"
+
+#: utils/calculated.py:341
+msgid "地图识别超时"
+msgstr "地圖識別超時"
+
+#: utils/calculated.py:369
+msgid "识别中"
+msgstr "識別中"
+
+#: utils/calculated.py:383
+msgid "识别到疑问或是警告,等待怪物开战"
+msgstr "識別到疑問或是警告,等待怪物開戰"
+
+#: utils/calculated.py:393
+msgid "识别超时,此处可能无敌人"
+msgstr "識別超時,此處可能無敵人"
+
+#: utils/calculated.py:405
+msgid "开启自动战斗"
+msgstr "開啓自動戰鬥"
+
+#: utils/calculated.py:410
+msgid "跳过开启自动战斗（沿用设置）"
+msgstr "跳過開啓自動戰鬥（沿用設置）"
+
+#: utils/calculated.py:422 utils/calculated.py:428 utils/calculated.py:434
+msgid "完成自动战斗"
+msgstr "完成自動戰鬥"
+
+#: utils/calculated.py:675
+msgid "已进入地图"
+msgstr "已進入地圖"
+
+#: utils/calculated.py:711
+msgid ".*导.*航.*"
+msgstr ".*(導|遵).*航.*"
+
+#: utils/calculated.py:712
+msgid "进入地图"
+msgstr "進入地圖"
+
+#: utils/calculated.py:744
+msgid "列车补给"
+msgstr "列車補給"
+
+#: utils/log.py:66
+msgid "开始(.*)锄地"
+msgstr "開始(.*)鋤地"
+
+#: utils/log.py:75
+msgid "日志文件.log"
+msgstr "日誌文件.log"
+
+#: utils/map.py:54
+msgid "开始寻路"
+msgstr "開始尋路"
+
+#: utils/map.py:56
+msgid "执行{map_filename}文件:{map_index+1}/{len(map_data['map'])} {map}"
+msgstr "執行{map_filename}文件:{map_index+1}/{len(map_data['map'])} {map}"
+
+#: utils/map.py:78
+#, python-brace-format
+msgid "map数据错误, fighting参数异常:{map_filename}"
+msgstr "map數據錯誤, fighting參數異常:{map_filename}"
+
+#: utils/map.py:82
+#, python-brace-format
+msgid "map数据错误,未匹配对应操作:{map_filename}"
+msgstr "map數據錯誤,未匹配對應操作:{map_filename}"
+
+#: utils/map.py:104
+msgid "错误的模拟器分辨率，请调整为1280X720，请不要在群里问怎么调整分辨率，小心被踢！"
+msgstr "錯誤的模擬器分辨率，請調整爲1280X720，請不要在羣裏問怎麼調整分辨率，小心被踢！"
+
+#: utils/map.py:114
+#, python-brace-format
+msgid "开始[0;34;40m{name}[0m锄地"
+msgstr "開始[0;34;40m{name}[0m鋤地"
+
+#: utils/map.py:115
+#, python-brace-format
+msgid "该路线导航作者：[0;31;40m{author}[0m"
+msgstr "該路線導航作者：[0;31;40m{author}[0m"
+
+#: utils/map.py:116
+msgid "感谢每一位无私奉献的作者"
+msgstr "感謝每一位無私奉獻的作者"
+
+#: utils/map.py:130
+#, python-brace-format
+msgid "地图加载完毕，加载时间为 {count} 秒"
+msgstr "地圖加載完畢，加載時間爲 {count} 秒"
+
+#: utils/map.py:135
+#, python-brace-format
+msgid "地图编号 {start} 不存在，请尝试检查更新"
+msgstr "地圖編號 {start} 不存在，請嘗試檢查更新"
+
+#: utils/requests.py:106
+#, python-brace-format
+msgid "Webhook发送失败: {e}"
+msgstr "Webhook發送失敗: {e}"
+
+#: utils/simulated_universe.py:95 utils/simulated_universe.py:101
+msgid "下载初始角色"
+msgstr "下載初始角色"
+
+#: utils/simulated_universe.py:151
+msgid "设置预设"
+msgstr "設置預設"
+
+#: utils/simulated_universe.py:152
+msgid "请输入预设数量："
+msgstr "請輸入預設數量："
+
+#: utils/simulated_universe.py:154
+#, python-brace-format
+msgid "当前是第{r}只队伍预设"
+msgstr "當前是第{r}只隊伍預設"
+
+#: utils/simulated_universe.py:155
+msgid "三月七"
+msgstr "三月七"
+
+#: utils/simulated_universe.py:155
+msgid "丹恒"
+msgstr "丹恆"
+
+#: utils/simulated_universe.py:155
+msgid "佩拉"
+msgstr "佩拉"
+
+#: utils/simulated_universe.py:155
+msgid "姬子"
+msgstr "姬子"
+
+#: utils/simulated_universe.py:155
+msgid "娜塔莎"
+msgstr "娜塔莎"
+
+#: utils/simulated_universe.py:155
+msgid "婷云"
+msgstr "婷雲"
+
+#: utils/simulated_universe.py:155
+msgid "布洛尼亚"
+msgstr "布洛尼亞"
+
+#: utils/simulated_universe.py:155
+msgid "希儿"
+msgstr "希兒"
+
+#: utils/simulated_universe.py:155
+msgid "希露瓦"
+msgstr "希露瓦"
+
+#: utils/simulated_universe.py:155
+msgid "彦卿"
+msgstr "彥卿"
+
+#: utils/simulated_universe.py:155
+msgid "景元"
+msgstr "景元"
+
+#: utils/simulated_universe.py:155
+msgid "杰帕德"
+msgstr "傑帕德"
+
+#: utils/simulated_universe.py:155
+msgid "桑博"
+msgstr "桑博"
+
+#: utils/simulated_universe.py:155
+msgid "火主"
+msgstr "火主"
+
+#: utils/simulated_universe.py:155
+msgid "火主1"
+msgstr "火主1"
+
+#: utils/simulated_universe.py:155
+msgid "物主"
+msgstr "物主"
+
+#: utils/simulated_universe.py:155
+msgid "瓦尔特"
+msgstr "瓦爾特"
+
+#: utils/simulated_universe.py:155
+msgid "素裳"
+msgstr "素裳"
+
+#: utils/simulated_universe.py:155
+msgid "艾丝妲"
+msgstr "艾絲妲"
+
+#: utils/simulated_universe.py:155
+msgid "虎克"
+msgstr "虎克"
+
+#: utils/simulated_universe.py:155
+msgid "阿兰"
+msgstr "阿蘭"
+
+#: utils/simulated_universe.py:155
+msgid "青雀"
+msgstr "青雀"
+
+#: utils/simulated_universe.py:155
+msgid "黑塔"
+msgstr "黑塔"
+
+#: utils/simulated_universe.py:156
+msgid "请选择角色"
+msgstr "請選擇角色"
+
+#: utils/simulated_universe.py:157
+msgid "请选择5名角色"
+msgstr "請選擇5名角色"
+
+#: utils/simulated_universe.py:171 utils/simulated_universe.py:174
+#, python-brace-format
+msgid "「{bless}」"
+msgstr "「{bless}」"
+
+#: utils/simulated_universe.py:173
+msgid "「存护」"
+msgstr "「存護」"
+
+#: utils/simulated_universe.py:173
+msgid "「记忆」"
+msgstr "「記憶」"
+
+#: utils/simulated_universe.py:173
+msgid "「虚无」"
+msgstr "「虛無」"
+
+#: utils/simulated_universe.py:173
+msgid "「丰饶」"
+msgstr "「豐饒」"
+
+#: utils/simulated_universe.py:173 utils/simulated_universe.py:193
+msgid "「巡猎」"
+msgstr "「巡獵」"
+
+#: utils/simulated_universe.py:173
+msgid "「毁灭」"
+msgstr "「毀滅」"
+
+#: utils/simulated_universe.py:173
+msgid "「欢愉」"
+msgstr "「歡愉」"
+
+#: utils/simulated_universe.py:180
+msgid "选择祝福"
+msgstr "選擇祝福"
+
+#: utils/simulated_universe.py:195 utils/simulated_universe.py:196
+msgid "选择"
+msgstr "選擇"
+
+#: utils/simulated_universe.py:195
+msgid "进入战斗"
+msgstr "進入戰鬥"
+
+#: utils/simulated_universe.py:199
+msgid "选择事件"
+msgstr "選擇事件"
+
+#: utils/update_file.py:67
+msgid "解压中"
+msgstr "解壓中"
+
+#: utils/update_file.py:70
+#, python-brace-format
+msgid "[资源文件更新]正在提取{member.filename}"
+msgstr "[資源文件更新]正在提取{member.filename}"
+
+#: utils/update_file.py:153
+msgid "[资源文件更新]正在检查远程版本是否有更新..."
+msgstr "[資源文件更新]正在檢查遠程版本是否有更新..."
+
+#: utils/update_file.py:162
+#, python-brace-format
+msgid "[资源文件更新]获取远程版本失败, 正在重试: {e}"
+msgstr "[資源文件更新]獲取遠程版本失敗, 正在重試: {e}"
+
+#: utils/update_file.py:164
+#, python-brace-format
+msgid "[资源文件更新]获取远程版本失败: {e}"
+msgstr "[資源文件更新]獲取遠程版本失敗: {e}"
+
+#: utils/update_file.py:165 utils/update_file.py:187 utils/update_file.py:206
+#: utils/update_file.py:237
+msgid "将在10秒后重试"
+msgstr "將在10秒後重試"
+
+#: utils/update_file.py:168 utils/update_file.py:169 utils/update_file.py:190
+#: utils/update_file.py:191 utils/update_file.py:209 utils/update_file.py:210
+msgid "[资源文件更新]重试次数已达上限，退出程序"
+msgstr "[資源文件更新]重試次數已達上限，退出程序"
+
+#: utils/update_file.py:176
+#, python-brace-format
+msgid "[资源文件更新]本地版本与远程版本不符，开始更新资源文件->{url_zip}"
+msgstr "[資源文件更新]本地版本與遠程版本不符，開始更新資源文件->{url_zip}"
+
+#: utils/update_file.py:180
+#, python-brace-format
+msgid "[资源文件更新]下载更新包成功, 正在覆盖本地文件: {local_version} -> {remote_version}"
+msgstr "[資源文件更新]下載更新包成功, 正在覆蓋本地文件: {local_version} -> {remote_version}"
+
+#: utils/update_file.py:184
+msgid "[资源文件更新]下载压缩包失败, 重试中: BadZipFile"
+msgstr "[資源文件更新]下載壓縮包失敗, 重試中: BadZipFile"
+
+#: utils/update_file.py:186
+#, python-brace-format
+msgid "[资源文件更新]下载压缩包失败: {e}"
+msgstr "[資源文件更新]下載壓縮包失敗: {e}"
+
+#: utils/update_file.py:198
+msgid "[资源文件更新]正在校验资源文件"
+msgstr "[資源文件更新]正在校驗資源文件"
+
+#: utils/update_file.py:205
+#, python-brace-format
+msgid "[资源文件更新]校验文件下载失败: {e}"
+msgstr "[資源文件更新]校驗文件下載失敗: {e}"
+
+#: utils/update_file.py:214
+#, python-brace-format
+msgid "[资源文件更新]{path}校验失败, 程序退出"
+msgstr "[資源文件更新]{path}校驗失敗, 程序退出"
+
+#: utils/update_file.py:216
+#, python-brace-format
+msgid "[资源文件更新]校验完成, 更新本地{name}文件版本号 {local_version} -> {remote_version}"
+msgstr "[資源文件更新]校驗完成, 更新本地{name}文件版本號 {local_version} -> {remote_version}"
+
+#: utils/update_file.py:222 utils/update_file.py:252
+#, python-brace-format
+msgid "[资源文件更新]删除临时文件{tmp_dir}"
+msgstr "[資源文件更新]刪除臨時文件{tmp_dir}"
+
+#: utils/update_file.py:224
+#, python-brace-format
+msgid "[资源文件更新]资源文件已是最新版本 {local_version} = {remote_version}"
+msgstr "[資源文件更新]資源文件已是最新版本 {local_version} = {remote_version}"
+
+#: utils/update_file.py:226
+msgid "[资源文件更新]准备校验资源文件"
+msgstr "[資源文件更新]準備校驗資源文件"
+
+#: utils/update_file.py:234
+#, python-brace-format
+msgid "[资源文件更新]获取{name}文件列表失败, 正在重试: {e}"
+msgstr "[資源文件更新]獲取{name}文件列表失敗, 正在重試: {e}"
+
+#: utils/update_file.py:236
+#, python-brace-format
+msgid "[资源文件更新]获取{name}文件列表失败: {e}"
+msgstr "[資源文件更新]獲取{name}文件列表失敗: {e}"
+
+#: utils/update_file.py:240 utils/update_file.py:241
+#, python-brace-format
+msgid "[资源文件更新]获取{name}文件列表重试次数已达上限，退出程序"
+msgstr "[資源文件更新]獲取{name}文件列表重試次數已達上限，退出程序"
+
+#: utils/update_file.py:243
+#, python-brace-format
+msgid "[资源文件更新]获取{name}文件列表成功."
+msgstr "[資源文件更新]獲取{name}文件列表成功."
+
+#: utils/update_file.py:248
+#, python-brace-format
+msgid "[资源文件更新]{path}发现文件缺失, 3秒后将使用远程版本覆盖本地版本"
+msgstr "[資源文件更新]{path}發現文件缺失, 3秒後將使用遠程版本覆蓋本地版本"
+
+#: utils/update_file.py:250
+msgid "[资源文件更新]文件校验完成."
+msgstr "[資源文件更新]文件校驗完成."
+
+#: utils/update_file.py:254
+msgid "[资源文件更新]更新完成."
+msgstr "[資源文件更新]更新完成."
+
+#: utils/update_file.py:286
+#, python-brace-format
+msgid "[资源文件更新]即将资源文件更新，本操作会覆盖本地{name}文件.."
+msgstr "[資源文件更新]即將資源文件更新，本操作會覆蓋本地{name}文件.."
