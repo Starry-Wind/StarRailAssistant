@@ -205,11 +205,13 @@ class calculated:
         if self.platform == _("PC"):
             scaling = read_json_file(CONFIG_FILE_NAME).get("scaling", 1.0)
             borderless = read_json_file(CONFIG_FILE_NAME).get("borderless", False)
-            points = (points[0]*1.5/scaling,points[1]*1.5/scaling,points[2]*1.5/scaling,points[3]*1.5/scaling)
+            left_border = read_json_file(CONFIG_FILE_NAME).get("left_border", 11)
+            up_border = read_json_file(CONFIG_FILE_NAME).get("up_border", 56)
+            #points = (points[0]*1.5/scaling,points[1]*1.5/scaling,points[2]*1.5/scaling,points[3]*1.5/scaling)
             if borderless:
                 left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
             else:
-                left, top, right, bottom = self.window.left+10, self.window.top+45, self.window.right, self.window.bottom
+                left, top, right, bottom = self.window.left+left_border, self.window.top+up_border, self.window.right-left_border, self.window.bottom-left_border
             temp = ImageGrab.grab((left, top, right, bottom))
             width, length = temp.size
         elif self.platform == _("模拟器"):
@@ -332,8 +334,10 @@ class calculated:
                     start_time = time.time()
                     while True:
                         ocr_data = self.part_ocr((77,10,85,97)) if self.platform == _("PC") else self.part_ocr((72,18,80,97))
+                        log.debug(temp_ocr[temp_name])
                         check_dict = list(filter(lambda x: re.match(f'.*{temp_ocr[temp_name]}.*', x) != None, list(ocr_data.keys())))
-                        pos = ocr_data.get(check_dict[0], None)
+                        pos = ocr_data.get(check_dict[0], None) if check_dict else None
+                        log.debug(pos)
                         if pos:
                             self.appoint_click(pos,(pos[0]+60, pos[1]), [40,40,40])
                             break
@@ -586,6 +590,8 @@ class calculated:
         log.debug(data)
         if not characters:
             characters = list(data.keys())[0]
+        check_list = list(filter(lambda x: re.match(f'.*{characters}.*', x) != None, list(data.keys())))
+        characters = check_list[0] if check_list else None
         pos = ((data[characters][2][0]+data[characters][0][0])/2, (data[characters][2][1]+data[characters][0][1])/2) if characters in data else None
         return characters, pos
     
@@ -660,6 +666,35 @@ class calculated:
                 if x1[0] == color[0] and x1[1] == color[1] and x1[2] == color[2]:
                     return (index1, index1)
 
+    def click_hsv(self, hsv_color, points=(0,0,0,0), offset=(0,0), flag=True):
+        """
+        说明：
+            点击指定hsv颜色，允许偏移
+        参数：
+            :hsv_color: hsv颜色
+            :points: 百分比截取范围
+            :offset: 坐标偏移
+        返回:
+            :return 坐标
+        """        
+        # print(points)
+
+        while 1:
+            img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
+            x, y = left + width/100*points[0]*1.5, top + length/100*points[1]*1.5
+            print([x,y])
+            cv.imwrite('11.png',img_fp)
+            pos = self.hsv2pos(img_fp, hsv_color)
+            if pos == False: 
+                time.sleep(1)
+                if flag == True:
+                    continue
+                else:
+                    break
+            ret = [x + pos[0] + offset[0] , y + pos[1] + offset[1] ]
+            self.Click(ret)
+            return
+        
     def wait_join(self):
         """
         说明：
@@ -707,7 +742,7 @@ class calculated:
                 self.img_click((132, 82))
                 time.sleep(0.3) # 防止未打开地图
                 self.img_click((132, 82))
-            map_status = self.part_ocr((3,2,10,6)) if self.platform == _("PC") else self.part_ocr((6,2,10,6))
+            map_status = self.part_ocr((3,2,10,10)) if self.platform == _("PC") else self.part_ocr((6,2,10,6))
             if self.check_list(_(".*导.*航.*"), map_status):
                 log.info(_("进入地图"))
                 break
