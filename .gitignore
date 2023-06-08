@@ -128,3 +128,5 @@ config.json
 启动.exe
 星穹铁道小助手.exe
 gettext.bat
+gui.build/
+gui.dist/
