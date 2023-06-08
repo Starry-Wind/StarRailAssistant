@@ -41,6 +41,13 @@ body:
       placeholder: 2.7_test
     validations:
       required: true
+  - type: equipment
+    id: equipment
+    attributes:
+      label: What equipment do you work on?
+      options:
+        - PC
+        - 模拟器
   - type: dropdown
     id: server
     attributes:
