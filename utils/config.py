@@ -1,5 +1,7 @@
 import os
 import orjson
+import gettext
+import locale
 
 from .log import log
 
@@ -111,3 +113,35 @@ def get_file(path, exclude=[], exclude_file=None, get_path=False) -> list[str]:
                     else:
                         file_list.append(file)
     return file_list
+
+def get_folder(path) -> list[str]:
+    """
+    获取文件夹下的文件夹列表
+    """
+    for root, dirs, files in os.walk(path):
+        return dirs
+
+loc = locale.getdefaultlocale()
+if loc[0] not in get_folder("locale"):
+    loc[0] = "zh_CN"
+t = gettext.translation('sra', 'locale', languages=[loc[0]])
+_ = t.gettext
+
+def add_key_value(dictionary, key, value, position):
+    """
+    说明:
+        在指定位置添加键值对
+    参数:
+        :param dictionary 需要添加的字典
+        :param key: 键
+        :param value: 值
+        :param position: 需要添加的位置
+    返回:
+        new_dictionary: 添加后的字典
+    """
+    keys = list(dictionary.keys())
+    values = list(dictionary.values())
+    keys.insert(position, key)
+    values.insert(position, value)
+    new_dictionary = dict(zip(keys, values))
+    return new_dictionary

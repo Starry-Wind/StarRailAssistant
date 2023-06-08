@@ -1,7 +1,7 @@
 name: feature request
 description: Want to request a feature be added
 labels: [enhancement]
-title: "[Feature] "
+title: "[Feature] Please briefly describe the Feature, otherwise the Issue will be closed directly"
 body:
   - type: textarea
     id: reason
