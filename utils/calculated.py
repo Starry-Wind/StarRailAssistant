@@ -664,7 +664,7 @@ class calculated:
         for index,x in enumerate(HSV):
             for index1,x1 in enumerate(HSV[index]):
                 if x1[0] == color[0] and x1[1] == color[1] and x1[2] == color[2]:
-                    return (index1, index1)
+                    return (index1, index)
 
     def click_hsv(self, hsv_color, points=(0,0,0,0), offset=(0,0), flag=True):
         """
@@ -681,9 +681,7 @@ class calculated:
 
         while 1:
             img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
-            x, y = left + width/100*points[0]*1.5, top + length/100*points[1]*1.5
-            print([x,y])
-            cv.imwrite('11.png',img_fp)
+            x, y = left + width/100*points[0], top + length/100*points[1]
             pos = self.hsv2pos(img_fp, hsv_color)
             if pos == False: 
                 time.sleep(1)
