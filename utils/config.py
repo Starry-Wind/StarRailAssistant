@@ -43,7 +43,7 @@ def read_json_file(filename: str, path=False) -> dict:
             else:
                 return data
     else:
-        init_config_file(1920, 1080)
+        init_config_file(1920, 1080, filename)
         return read_json_file(filename, path)
 
 
@@ -63,29 +63,38 @@ def modify_json_file(filename: str, key, value):
         f.write(orjson.dumps(data, option=orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2))
 
 
-def init_config_file(real_width, real_height):
-    with open(CONFIG_FILE_NAME, "wb+") as f:
-        log.info("配置初始化")
-        f.write(
-            orjson.dumps(
-                {
-                    "real_width": real_width,
-                    "auto_battle_persistence": 0,
-                    "real_height": real_height,
-                    "github_proxy": "",
-                    "rawgithub_proxy": "",
-                    "webhook_url": "",
-                    "start": False,
-                    "temp_version": "0",
-                    "star_version": "0",
-                    "open_map": "m",
-                    "level": "INFO",
-                    "adb": "127.0.0.1:62001",
-                    "adb_path": "temp\\adb\\adb",
-                    "proxies": ""
-                },option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2
+def init_config_file(real_width, real_height, file_name = CONFIG_FILE_NAME):
+    if file_name == CONFIG_FILE_NAME:
+        with open(CONFIG_FILE_NAME, "wb+") as f:
+            log.info("配置初始化")
+            f.write(
+                orjson.dumps(
+                    {
+                        "real_width": real_width,
+                        "auto_battle_persistence": 0,
+                        "real_height": real_height,
+                        "github_proxy": "",
+                        "rawgithub_proxy": "",
+                        "webhook_url": "",
+                        "start": False,
+                        "temp_version": "0",
+                        "star_version": "0",
+                        "open_map": "m",
+                        "level": "INFO",
+                        "adb": "127.0.0.1:62001",
+                        "adb_path": "temp\\adb\\adb",
+                        "proxies": ""
+                    },option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2
+                )
             )
-        )
+    else:
+        with open(file_name, "wb+") as f:
+            log.info("配置初始化")
+            f.write(
+                orjson.dumps(
+                    {},option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2
+                )
+            )
 
 
 def get_file(path, exclude=[], exclude_file=None, get_path=False) -> list[str]:
