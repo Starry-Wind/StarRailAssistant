@@ -53,6 +53,13 @@ class SRA:
         except:
             return [{}]
 
+    def end(self):
+        try:
+            plugin_manager.hook.end(SRA=self)
+        except:
+            return [{}]
+
+
     def add_option(self, option_dict, option, func, position):
         self.option_dict = add_key_value(option_dict, option, func, position)
         return self.option_dict
@@ -298,6 +305,7 @@ if __name__ == "__main__":
                         if questionary.select(_("请问要退出脚本吗？"), [_("退出"), _("返回主菜单")]).ask() == _("返回主菜单"):
                             select()
             select()
+            sra.end()
     except ModuleNotFoundError as e:
         print(traceback.format_exc())
         #os.system("pip install -r requirements.txt")
