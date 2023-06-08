@@ -664,7 +664,8 @@ class calculated:
         HSV=cv.cvtColor(img,cv.COLOR_BGR2HSV)
         for index,x in enumerate(HSV):
             for index1,x1 in enumerate(HSV[index]):
-                if abs(x1[0] - color[0])<=tolerance and abs(x1[1] - color[1])<=tolerance and abs(x1[2] - color[2])<=tolerance:
+                # 色相保持一致
+                if abs(x1[0] - color[0])=0 and abs(x1[1] - color[1])<=tolerance and abs(x1[2] - color[2])<=tolerance:
                     return (index1, index)
 
     def click_hsv(self, hsv_color, points=(0,0,0,0), offset=(0,0), flag=True, tolerance = 5):
@@ -684,7 +685,7 @@ class calculated:
             x, y = left + width/100*points[0], top + length/100*points[1]
             pos = self.hsv2pos(img_fp, hsv_color, tolerance)
             if pos == None: 
-                time.sleep(1)
+                time.sleep(0.1)
                 if flag == True:
                     continue
                 else:

@@ -270,15 +270,12 @@ class SRA:
 
 def commission(platform="PC", n=4):
     log.info("脚本将自动切换至游戏窗口，请保持游戏窗口激活，暂时只测试PC")
-
     cms = Commission(n)
-
     if platform == "PC":
         cms.calculated.switch_window()
         time.sleep(0.5)
     else:
         return
-
     cms.open()
     cms.run()
     cms.close()
@@ -370,7 +367,7 @@ if __name__ == "__main__":
                     options[platform]()
                 else:
                     title = _("请选择操作")
-                    options = [_('大世界'), _('模拟宇宙')]
+                    options = [_('大世界'), _('模拟宇宙'), _('派遣委托')]
                     option = questionary.select(title, options).ask()
                     if option:
                         if option == _("大世界"):
@@ -378,6 +375,8 @@ if __name__ == "__main__":
                         elif option == _("模拟宇宙"):
                             ''''''
                             #main(1, platform)
+                        elif option == _("派遣委托"):
+                            commission()
                     else:
                         if questionary.select(_("请问要退出脚本吗？"), [_("退出"), _("返回主菜单")]).ask() == _("返回主菜单"):
                             select()

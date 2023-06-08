@@ -12,7 +12,7 @@ def get_percentile(rect, shape):
 class Commission():
     def __init__(self, n=4):
         self.n = n
-        self.calculated = calculated("PC")
+        self.calculated = calculated(title="崩坏：星穹铁道", platform="PC")
 
 
     def open(self):
@@ -30,14 +30,15 @@ class Commission():
             points2 = get_percentile([350,280,350+480,280+600],[1920,1080])
 
             self.calculated.take_screenshot()
-            # self.calculated.click_target('./temp/red_dot.jpg', 0.98, points=points1 )
-            # self.calculated.click_target('./temp/red_dot.jpg', 0.98, points=points2 )
+            self.calculated.click_hsv([0,201,212], points=points1, offset=[-20,20], flag=True, tolerance=3)
+            self.calculated.click_hsv([0,201,212], points=points2, offset=[-20,20], flag=True, tolerance=3)
 
             self.calculated.ocr_click('领取')
             self.calculated.ocr_click('再次派遣')
             time.sleep(5)
     def close(self):
-        self.calculated.click_target('./temp/commission_close.jpg', 0.98)
+        self.calculated.ocr_click('委托')
+        pyautogui.press('esc')
         time.sleep(1.5)
         pyautogui.press('esc')
         log.info("执行完毕")
