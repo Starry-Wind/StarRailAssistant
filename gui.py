@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-04 03:17:36
+LastEditTime: 2023-06-08 20:44:45
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -522,9 +522,9 @@ def page_main(page: ft.Page):
     }
 
     page.theme = ft.Theme(font_family="Kanit")
-    button_dict = {
+    sra.option_dict = {
     }
-    button_dict = sra.run_plugins(button_dict)[0]
+    button_dict = sra.run_plugins()[0]
     add(
         [
             ft.Text(_("星穹铁道小助手"), size=50),

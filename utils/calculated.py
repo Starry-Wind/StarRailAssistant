@@ -25,12 +25,15 @@ from .exceptions import Exception
 
 class calculated:
 
-    def __init__(self, title=_("崩坏：星穹铁道"), platform=_("PC"), order="127.0.0.1:62001", adb_path="temp\\adb\\adb"):
+    def __init__(self, title=_("崩坏：星穹铁道"), platform=_("PC"), order="127.0.0.1:62001", adb_path="temp\\adb\\adb", det_model_name="ch_PP-OCRv3_det", rec_model_name= "densenet_lite_114-fc", number=False):
         """
         参数: 
             :param platform: 运行设备
             :param order: ADB端口
             :param adb_path: ADB可执行文件路径
+            :param det_model_name: 文字定位模型
+            :param rec_model_name: 文字识别模型
+            :param number: 是否只考虑数字
         """
         self.platform = platform
         self.order = order
@@ -41,7 +44,7 @@ class calculated:
         self.scaling = read_json_file(CONFIG_FILE_NAME).get("scaling", 1)
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
-        self.ocr = CnOcr(det_model_name='ch_PP-OCRv3_det', rec_model_name='densenet_lite_114-fc')
+        self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name) if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name, cand_alphabet='0123456789')
         #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
         self.check_list = abc = lambda x,y: re.match(x, str(y)) != None
         if platform == _("PC"):
@@ -112,7 +115,7 @@ class calculated:
                 log.info(_(_("识别超时")))
                 break
 
-    def Relative_click(self, points):
+    def Relative_click(self, points, click_time=0.5):
         """
         说明：
             点击相对坐标
@@ -127,7 +130,6 @@ class calculated:
         x, y = int(left + (right - left) / 100 * points[0]), int(
             top + (bottom - top) / 100 * points[1]
         )
-        log.info((x, y))
         log.debug((x, y))
         if self.platform == _("PC"):
             """
@@ -139,7 +141,7 @@ class calculated:
             """
             self.mouse.position = (x, y)
             self.mouse.press(mouse.Button.left)
-            time.sleep(0.5)
+            time.sleep(click_time)
             self.mouse.release(mouse.Button.left)
         elif self.platform == _("模拟器"):
             self.adb.input_tap((x, y))
@@ -595,7 +597,7 @@ class calculated:
         pos = ((data[characters][2][0]+data[characters][0][0])/2, (data[characters][2][1]+data[characters][0][1])/2) if characters in data else None
         return characters, pos
     
-    def part_ocr(self,points = (0,0,0,0)):
+    def part_ocr(self,points = (0,0,0,0), debug=False):
         """
         说明：
             返回图片文字和坐标
@@ -605,6 +607,9 @@ class calculated:
             :return data: 文字: 坐标
         """
         img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
+        if debug:
+            show_img(img_fp)
+            cv.imwrite("H://xqtd//xl//test.png",img_fp)
         x, y = width/100*points[0], length/100*points[1]
         out = self.ocr.ocr(img_fp)
         data = {i['text']: (int(left+x+(i['position'][2][0]+i['position'][0][0])/2),int(top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
@@ -665,7 +670,7 @@ class calculated:
         for index,x in enumerate(HSV):
             for index1,x1 in enumerate(HSV[index]):
                 # 色相保持一致
-                if abs(x1[0] - color[0])=0 and abs(x1[1] - color[1])<=tolerance and abs(x1[2] - color[2])<=tolerance:
+                if abs(x1[0] - color[0])==0 and abs(x1[1] - color[1])<=tolerance and abs(x1[2] - color[2])<=tolerance:
                     return (index1, index)
 
     def click_hsv(self, hsv_color, points=(0,0,0,0), offset=(0,0), flag=True, tolerance = 5):
