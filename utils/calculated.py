@@ -748,7 +748,7 @@ class calculated:
                 time.sleep(0.3) # 防止未打开地图
                 self.img_click((132, 82))
             map_status = self.part_ocr((3,2,10,10)) if self.platform == _("PC") else self.part_ocr((6,2,10,6))
-            if self.check_list(_(".*导.*航.*"), map_status):
+            if self.check_list(_(".*导.*"), map_status):
                 log.info(_("进入地图"))
                 break
             if time.time() - start_time > 10:
