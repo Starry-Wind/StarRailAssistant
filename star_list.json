@@ -21,7 +21,7 @@
   },
   {
     "path": "README.md",
-    "hash": "c5a44e2b1a1a2f7e5520bb055c090f74"
+    "hash": "5935d980c91038f20bba7c0d22cf8d17"
   },
   {
     "path": "README_CHT.md",
@@ -29,7 +29,7 @@
   },
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "706d9d3fa5a4ca957fad350ca0293a6f"
+    "hash": "dcb9c2ebf54b055e78a23bcd91bfa035"
   },
   {
     "path": "whl/cnstd-1.2.2-py3-none-any.whl",
@@ -53,7 +53,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "dc6457821020189f34f09e3f5bd04797"
+    "hash": "1a87fcf7ff133314eadbc093e193f186"
   },
   {
     "path": "utils/adb.py",

@@ -16,6 +16,9 @@ try:
     from utils.config import read_json_file, modify_json_file, init_config_file, add_key_value, CONFIG_FILE_NAME, _
     from utils.simulated_universe import Simulated_Universe
     from utils.update_file import update_file
+    #from utils.simulated_universe import Simulated_Universe
+    from utils.update_file import update_file
+    from utils.commission import Commission
     from utils.calculated import calculated
     from utils.exceptions import Exception
     from utils.map import Map as map_word
@@ -258,6 +261,84 @@ class SRA:
         else:
             for up_data in list(up_data.values()):
                 update_file().update_file_main(**up_data)
+        if option == "手动填写端口号":
+            option = input('请输入端口号:')
+            modify_json_file(CONFIG_FILE_NAME, "adb", option)
+        else:
+            modify_json_file(CONFIG_FILE_NAME, "adb", options[option])
+        modify_json_file(CONFIG_FILE_NAME, "start", True)
+
+def commission(platform="PC", n=4):
+    log.info("脚本将自动切换至游戏窗口，请保持游戏窗口激活，暂时只测试PC")
+    cms = Commission(n)
+    if platform == "PC":
+        cms.calculated.switch_window()
+        time.sleep(0.5)
+    else:
+        return
+    cms.open()
+    cms.run()
+    cms.close()
+
+def up_data():
+    main_start()    # 无config直接更新时初始化config文件
+    ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
+    if "adb" not in read_json_file(CONFIG_FILE_NAME, False):
+        init_config_file(1920, 1080)
+        raise Exception("未检测到必要更新，强制更新脚本，请重新运行脚本")
+
+    rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
+    # asyncio.run(check_file(ghproxy, "map"))
+    # asyncio.run(check_file(ghproxy, "temp"))
+    up_data = {
+        "脚本":{
+            'url_proxy': ghproxy,
+            'raw_proxy': rawghproxy,
+            'skip_verify': False,
+            'type': "star",
+            'version': "main",
+            'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/main.zip",
+            'unzip_path': ".",
+            'keep_folder': ['.git', 'logs', 'temp', 'map', 'tmp', 'venv'],
+            'keep_file': ['config.json', 'version.json', 'star_list.json', 'README_CHT.md', 'README.md'],
+            'zip_path': "StarRailAssistant-main/",
+            'name': "脚本"
+        },
+        "地图":{
+            'url_proxy': ghproxy,
+            'raw_proxy': rawghproxy,
+            'skip_verify': False,
+            'type': "map",
+            'version': "map",
+            'url_zip': "https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/map.zip",
+            'unzip_path': "map",
+            'keep_folder': [],
+            'keep_file': [],
+            'zip_path': "map/",
+            'name': "地图"
+        },
+        "图片":{
+            'url_proxy': ghproxy,
+            'raw_proxy': rawghproxy,
+            'skip_verify': False,
+            'type': "temp",
+            'version': "map",
+            'url_zip': "https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/temp.zip",
+            'unzip_path': "temp",
+            'keep_folder': [],
+            'keep_file': [],
+            'zip_path': "map/",
+            'name': "图片"
+        },
+    }
+    title = "请选择更新项目"
+    options = list(up_data.keys())+["全部更新"]
+    option = questionary.select(title, options).ask()
+    if option != "全部更新":
+        update_file().update_file_main(**up_data[option])
+    else:
+        for up_data in list(up_data.values()):
+            update_file().update_file_main(**up_data)
 
 
 if __name__ == "__main__":
@@ -286,7 +367,7 @@ if __name__ == "__main__":
                     options[platform]()
                 else:
                     title = _("请选择操作")
-                    options = [_('大世界'), _('模拟宇宙')]
+                    options = [_('大世界'), _('模拟宇宙'), _('派遣委托')]
                     option = questionary.select(title, options).ask()
                     if option:
                         if option == _("大世界"):
@@ -294,6 +375,8 @@ if __name__ == "__main__":
                         elif option == _("模拟宇宙"):
                             ''''''
                             #main(1, platform)
+                        elif option == _("派遣委托"):
+                            commission()
                     else:
                         if questionary.select(_("请问要退出脚本吗？"), [_("退出"), _("返回主菜单")]).ask() == _("返回主菜单"):
                             select()

@@ -650,23 +650,25 @@ class calculated:
         red = img[y, x, 2]
         return [blue, green, red]
     
-    def hsv2pos(self, img, color):
+    def hsv2pos(self, img, color, tolerance = 0):
         """
         说明：
             获取指定颜色的坐标
         参数：
             :param img: 图片
             :param color: 颜色
+            :param tolerance: 颜色误差容忍度 0-255
         返回:
             :return 坐标
         """
         HSV=cv.cvtColor(img,cv.COLOR_BGR2HSV)
         for index,x in enumerate(HSV):
             for index1,x1 in enumerate(HSV[index]):
-                if x1[0] == color[0] and x1[1] == color[1] and x1[2] == color[2]:
-                    return (index1, index1)
+                # 色相保持一致
+                if abs(x1[0] - color[0])=0 and abs(x1[1] - color[1])<=tolerance and abs(x1[2] - color[2])<=tolerance:
+                    return (index1, index)
 
-    def click_hsv(self, hsv_color, points=(0,0,0,0), offset=(0,0), flag=True):
+    def click_hsv(self, hsv_color, points=(0,0,0,0), offset=(0,0), flag=True, tolerance = 5):
         """
         说明：
             点击指定hsv颜色，允许偏移
@@ -677,21 +679,19 @@ class calculated:
         返回:
             :return 坐标
         """        
-        # print(points)
-
         while 1:
             img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
-            x, y = left + width/100*points[0]*1.5, top + length/100*points[1]*1.5
-            print([x,y])
-            cv.imwrite('11.png',img_fp)
-            pos = self.hsv2pos(img_fp, hsv_color)
-            if pos == False: 
-                time.sleep(1)
+            cv.imwrite('scr.png', img_fp)
+            x, y = left + width/100*points[0], top + length/100*points[1]
+            pos = self.hsv2pos(img_fp, hsv_color, tolerance)
+            if pos == None: 
+                time.sleep(0.1)
                 if flag == True:
                     continue
                 else:
                     break
             ret = [x + pos[0] + offset[0] , y + pos[1] + offset[1] ]
+            log.info(f'点击坐标{ret}')
             self.Click(ret)
             return
         
