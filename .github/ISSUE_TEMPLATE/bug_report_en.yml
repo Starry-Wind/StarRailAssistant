@@ -1,7 +1,7 @@
 name: Report bugs
 description: Problems encountered in feedback
 labels: [bug]
-title: "[Bug] "
+title: "[Bug] Please briefly describe the BUG, otherwise the Issue will be closed directly"
 body:
   - type: markdown
     attributes:
@@ -41,6 +41,13 @@ body:
       placeholder: 2.7_test
     validations:
       required: true
+  - type: equipment
+    id: equipment
+    attributes:
+      label: What equipment do you work on?
+      options:
+        - PC
+        - 模拟器
   - type: dropdown
     id: server
     attributes:

@@ -28,3 +28,4 @@ xpinyin
 httpx-socks[trio]
 flet
 cryptography
+pluggy

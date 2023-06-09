@@ -1,7 +1,7 @@
 name: 反馈 Bug
 description: 反馈遇到的问题
 labels: [bug]
-title: "[Bug] "
+title: "[Bug] 请在这里简要描述BUG，否则该Issue将直接关闭"
 body:
   - type: markdown
     attributes:
@@ -51,6 +51,13 @@ body:
       description: 目前主要适配国服
     validations:
       required: true
+  - type: equipment
+    id: equipment
+    attributes:
+      label: 运行的客户端
+      options:
+        - PC
+        - 模拟器
   - type: textarea
     id: logs
     attributes:
