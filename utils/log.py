@@ -61,10 +61,8 @@ def get_folder(path) -> list[str]:
         return dirs
 
 loc = locale.getdefaultlocale()
-if not loc:
-    loc = ["zh_CN"]
 if loc[0] not in get_folder("locale"):
-    loc[0] = "zh_CN"
+    loc[0] = ["zh_CN"]
 t = gettext.translation('sra', 'locale', languages=[loc[0]])
 _ = t.gettext
 
