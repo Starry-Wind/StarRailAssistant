@@ -20,10 +20,6 @@
     "hash": "411e902e5d4f69b0178a6b5357998eea"
   },
   {
-    "path": "zh_TW.mo",
-    "hash": "ef66f8b317d24e3eb326e739cb9b00ee"
-  },
-  {
     "path": "README.md",
     "hash": "5935d980c91038f20bba7c0d22cf8d17"
   },
@@ -34,10 +30,6 @@
   {
     "path": "Honkai_Star_Rail.py",
     "hash": "50f5cefc09f92cedf6d3b5d22f2f8a23"
-  },
-  {
-    "path": "zh_TW.po",
-    "hash": "389b2206e8605f80d72005b1a14c521b"
   },
   {
     "path": "locale/zh_TW/LC_MESSAGES/sra.mo",
