@@ -151,7 +151,8 @@ def page_main(page: ft.Page):
             time.sleep(0.5)
             get_width(_("崩坏：星穹铁道"))
             import pyautogui # 缩放纠正
-        map_word(platform=platform.value).auto_map(start)
+        order = read_json_file(CONFIG_FILE_NAME).get("adb", "127.0.0.1:62001")
+        map_word(platform=platform.value,order=order).auto_map(start)
         add(ft.ElevatedButton(_("返回"), on_click=to_page_main))
 
     def to_page_main(e):
