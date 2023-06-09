@@ -405,11 +405,14 @@ class calculated:
             while True:
                 result = self.scan_screenshot(target)
                 if result["max_val"] > 0.9:
-                    #points = self.calculated(result, target.shape)
-                    points = result["max_loc"]
-                    self.Click(points)
-                    log.info(_("开启自动战斗"))
-                    break
+                    time.sleep(0.3)
+                    result = self.scan_screenshot(target)
+                    if result["max_val"] > 0.9:
+                        #points = self.calculated(result, target.shape)
+                        points = result["max_loc"]
+                        self.Click(points)
+                        log.info(_("开启自动战斗"))
+                        break
                 elif time.time() - start_time > 15:
                     break
         else:
@@ -489,13 +492,13 @@ class calculated:
         elif self.platform == _("模拟器"):
             time1 = (time1)*1000
             if com == "w":
-                self.adb.input_swipe((213, 500), (213, 409), time1)
+                self.adb.input_swipe((247, 500), (247, 409), time1)
             elif com == "a":
-                self.adb.input_swipe((155, 560), (90, 560), time1)
+                self.adb.input_swipe((185, 560), (120, 560), time1)
             elif com == "s":
-                self.adb.input_swipe((213, 620), (213, 728), time1)
+                self.adb.input_swipe((247, 620), (247, 728), time1)
             elif com == "d":
-                self.adb.input_swipe((265, 560), (335, 560), time1)
+                self.adb.input_swipe((300, 560), (365, 560), time1)
             elif com == "f":
                 self.adb.input_tap((880, 362))
 
@@ -708,10 +711,17 @@ class calculated:
             进入地图的时间
         """
         start_time = time.time()
+        join1 = False
+        join2 = False
+        compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
         while True:
             result = self.get_pix_bgr((119, 86))
             endtime = time.time() - start_time
-            if result != [18, 18, 18]:
+            if compare_lists([16, 16, 16], result) and compare_lists(result, [19, 19, 19]):
+                join1 = True
+            if (compare_lists(result, [16, 16, 16]) or compare_lists([19, 19, 19], result)) and join1:
+                join2 = True
+            if join1 and join2:
                 log.info(_("已进入地图"))
                 return endtime
             if endtime > 30:
