@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-09 20:18:51
+LastEditTime: 2023-06-10 02:38:12
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -16,6 +16,7 @@ root.withdraw()
 try:
     from utils.exceptions import Exception
     import time
+    import importlib
     import flet as ft
     from re import sub
     from cryptography.fernet import Fernet
@@ -24,6 +25,7 @@ try:
     from utils.log import log,level
     from utils.map import Map as map_word
     from utils.config import read_json_file,modify_json_file , CONFIG_FILE_NAME, _
+    import utils.config
     from utils.update_file import update_file
     from utils.calculated import calculated
     from get_width import get_width
@@ -32,7 +34,7 @@ except:
     messagebox.showerror("运行错误", traceback.format_exc())
 
 sra = SRA()
-
+    
 def page_main(page: ft.Page):
     '''
     if page.session.contains_key("updata_log"):
@@ -283,6 +285,11 @@ def page_main(page: ft.Page):
             "BlueStacks": "127.0.0.1:5555",
             "天天安卓模拟器": "127.0.0.1:5037",
         }
+        language_dict = {
+            "简体中文": "zh_CN",
+            "繁體中文": "zh_TC",
+            #"English": "EN"
+        }
         github_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
         rawgithub_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', '']
         simulator_keys = list(simulator.keys())
@@ -298,6 +305,8 @@ def page_main(page: ft.Page):
         open_map = config.get("open_map", "m")
         level = config.get("level", "INFO")
         adb_path = config.get("adb_path", "temp\\adb\\adb")
+        language = config.get("language", "")
+        language = list(filter(lambda key: language_dict[key] == language, language_dict))[0]
         simulator_dd = ft.Dropdown(
                 label=_("模拟器"),
                 hint_text=_("选择你运行的模拟器"),
@@ -330,6 +339,13 @@ def page_main(page: ft.Page):
                 value=level,
                 width=200,
             )
+        language_dd = ft.Dropdown(
+                label=_("游戏语言"),
+                hint_text=_("设置星穹铁道小助手的语言"),
+                options=[ft.dropdown.Option(i) for i in list(language_dict.keys())],
+                value=language,
+                width=200,
+            )
         adb_path_text = ft.Text(adb_path, size=20)
         def pick_files_result(e: ft.FilePickerResultEvent):
             adb_path_text.value = e.files[0].path
@@ -343,6 +359,7 @@ def page_main(page: ft.Page):
             modify_json_file(CONFIG_FILE_NAME, "level", level_dd.value)
             modify_json_file(CONFIG_FILE_NAME, "adb", simulator[simulator_dd.value])
             modify_json_file(CONFIG_FILE_NAME, "adb_path", adb_path_text.value)
+            modify_json_file(CONFIG_FILE_NAME, "language", language_dict[language_dd.value])
             to_page_main(page)
         page.clean()
         page.overlay.append(pick_files_dialog)
@@ -355,6 +372,7 @@ def page_main(page: ft.Page):
             rawgithub_proxy_dd,
             level_dd,
             open_map_tf,
+            language_dd,
             ft.Row(
                 [
                     adb_path_text,
