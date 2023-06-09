@@ -489,13 +489,13 @@ class calculated:
         elif self.platform == _("模拟器"):
             time1 = (time1)*1000
             if com == "w":
-                self.adb.input_swipe((213, 500), (213, 409), time1)
+                self.adb.input_swipe((247, 500), (247, 409), time1)
             elif com == "a":
-                self.adb.input_swipe((155, 560), (90, 560), time1)
+                self.adb.input_swipe((185, 560), (120, 560), time1)
             elif com == "s":
-                self.adb.input_swipe((213, 620), (213, 728), time1)
+                self.adb.input_swipe((247, 620), (247, 728), time1)
             elif com == "d":
-                self.adb.input_swipe((265, 560), (335, 560), time1)
+                self.adb.input_swipe((300, 560), (365, 560), time1)
             elif com == "f":
                 self.adb.input_tap((880, 362))
 
