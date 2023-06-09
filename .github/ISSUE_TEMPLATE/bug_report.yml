@@ -58,6 +58,8 @@ body:
       options:
         - PC
         - 模拟器
+    validations:
+      required: true
   - type: textarea
     id: logs
     attributes:
