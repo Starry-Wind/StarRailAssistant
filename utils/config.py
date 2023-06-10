@@ -132,7 +132,6 @@ def get_folder(path) -> list[str]:
         return dirs
 
 language = read_json_file("config.json").get("language", "zh_CN")
-print(language)
 t = gettext.translation('sra', 'locale', [language])
 _ = t.gettext
 

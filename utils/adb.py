@@ -2,11 +2,14 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-25 12:54:10
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-28 16:51:28
+LastEditTime: 2023-06-10 15:31:57
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
 '''
+import base64
+import cv2 as cv
+import numpy as np
 from subprocess import run, DEVNULL
 from PIL import ImageGrab, Image
 from typing import Dict, Optional, Any, Union
@@ -70,9 +73,9 @@ class ADB:
             :param path: 手机中截图保存位置
         """
         img_name = path.split("/")[-1]
-        shell = [self.adb_path, "-s", self.order, "shell", "screencap", "-p", path]
+        shell = [self.adb_path, "-s", self.order, "exec-out", "screencap", "-p", ">", f"./{img_name}"]
         run(shell, shell=True)
-        shell = [self.adb_path, "-s", self.order, "pull", path]
-        run(shell, shell=True, stdout=DEVNULL) 
+        #shell = [self.adb_path, "-s", self.order, "pull", path]
+        #run(shell, shell=True, stdout=DEVNULL)
         img = Image.open(f"./{img_name}")
         return img
