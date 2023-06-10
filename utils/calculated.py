@@ -46,7 +46,7 @@ class calculated:
         self.keyboard = KeyboardController()
         self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./temp/cnocr", rec_root="./temp/cnstd") if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name, cand_alphabet='0123456789')
         #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
-        self.check_list = abc = lambda x,y: re.match(x, str(y)) != None
+        self.check_list = lambda x,y: re.match(x, str(y)) != None
         if platform == _("PC"):
             self.window = gw.getWindowsWithTitle(self.title)
             if not self.window:
@@ -445,22 +445,15 @@ class calculated:
             time.sleep(5)
 
         start_time = time.time()  # 开始计算战斗时间
-        target = cv.imread("./temp/pc/finish_fighting.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/finish_fighting.jpg")
         while True:
             if type == 0:
-                result = self.scan_screenshot(target)
-                if result["max_val"] > 0.95 and self.platform == 'PC':
-                    #points = self.calculated(result, target.shape)
-                    points = result["max_loc"]
-                    log.debug(points)
+                end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
+                end_str = str(calculated.part_ocr((0,95,100,100)))
+                if any(substring in end_str for substring in end_list):
                     log.info(_("完成自动战斗"))
                     time.sleep(3)
                     break
-                elif result["max_val"] > 0.92 and self.platform == '模拟器':
-                    points = result["max_loc"]
-                    log.debug(points)
-                    log.info(_("完成自动战斗"))
-                    time.sleep(3)
+                elif time.time() - start_time > 90: # 避免卡死
                     break
             elif type == 1:
                 result = self.part_ocr((6,10,89,88))
