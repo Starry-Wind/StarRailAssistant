@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-10 20:01:29
+LastEditTime: 2023-06-10 23:29:09
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -35,7 +35,7 @@ except:
 
 sra = SRA()
 
-check_console = False
+check_console = True
 
 def page_main(page: ft.Page):
     '''
@@ -289,13 +289,6 @@ def page_main(page: ft.Page):
             "BlueStacks": "127.0.0.1:5555",
             "天天安卓模拟器": "127.0.0.1:5037",
         }
-        language_dict = {
-            "简体中文": "zh_CN",
-            "繁體中文": "zh_TC",
-            #"English": "EN"
-        }
-        github_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
-        rawgithub_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', '']
         simulator_keys = list(simulator.keys())
         simulator_values = list(simulator.values())
         user_adb = config.get("adb", "127.0.0.1:62001")
@@ -304,13 +297,27 @@ def page_main(page: ft.Page):
             simulator_keys.append(_("自定义"))
             simulator[_("自定义")] = user_adb
         adb = simulator_keys[simulator_values.index(user_adb)]
-        github_proxy = config.get("github_proxy", "")
+
+        language_dict = {
+            "简体中文": "zh_CN",
+            "繁體中文": "zh_TC",
+            #"English": "EN"
+        }
+        language = config.get("language", "")
+        language = list(filter(lambda key: language_dict[key] == language, language_dict))[0]
+
+        fighting_list = [_('没打开'), _('打开了'), _('这是什么')]
+        fighting = fighting_list[config.get("auto_battle_persistence", "")]
+
+        github_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', "不设置代理"]
+        github_proxy = config.get("github_proxy", "") 
+        rawgithub_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', "不设置代理"]
         rawgithub_proxy = config.get("rawgithub_proxy", "")
+
         open_map = config.get("open_map", "m")
         level = config.get("level", "INFO")
         adb_path = config.get("adb_path", "temp\\adb\\adb")
-        language = config.get("language", "")
-        language = list(filter(lambda key: language_dict[key] == language, language_dict))[0]
+
         simulator_dd = ft.Dropdown(
                 label=_("模拟器"),
                 hint_text=_("选择你运行的模拟器"),
@@ -350,6 +357,13 @@ def page_main(page: ft.Page):
                 value=language,
                 width=200,
             )
+        fighting_dd = ft.Dropdown(
+                label= _("你游戏打开自动战斗了吗？"),
+                hint_text= _("你游戏打开自动战斗了吗？"),
+                options=[ft.dropdown.Option(i) for i in fighting_list],
+                value=fighting,
+                width=200,
+            )
         adb_path_text = ft.Text(adb_path, size=20)
         def pick_files_result(e: ft.FilePickerResultEvent):
             adb_path_text.value = e.files[0].path
@@ -357,13 +371,14 @@ def page_main(page: ft.Page):
         pick_files_dialog = ft.FilePicker(on_result=pick_files_result)
         open_map_tf = ft.TextField(label=_("打开地图按钮"), value=open_map, width=200)
         def save(e):
-            modify_json_file(CONFIG_FILE_NAME, "github_proxy", github_proxy_dd.value)
-            modify_json_file(CONFIG_FILE_NAME, "rawgithub_proxy", rawgithub_proxy_dd.value)
+            modify_json_file(CONFIG_FILE_NAME, "github_proxy", "" if github_proxy_dd.value == "不设置代理" else github_proxy_dd.value)
+            modify_json_file(CONFIG_FILE_NAME, "rawgithub_proxy", "" if rawgithub_proxy_dd.value == "不设置代理" else rawgithub_proxy_dd.value)
             modify_json_file(CONFIG_FILE_NAME, "open_map", open_map_tf.value)
             modify_json_file(CONFIG_FILE_NAME, "level", level_dd.value)
             modify_json_file(CONFIG_FILE_NAME, "adb", simulator[simulator_dd.value])
             modify_json_file(CONFIG_FILE_NAME, "adb_path", adb_path_text.value)
             modify_json_file(CONFIG_FILE_NAME, "language", language_dict[language_dd.value])
+            modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", fighting_list.index(fighting))
             modify_json_file(CONFIG_FILE_NAME, "start", True)
             to_page_main(page)
         page.clean()
@@ -378,6 +393,7 @@ def page_main(page: ft.Page):
             level_dd,
             open_map_tf,
             language_dd,
+            fighting_dd,
             ft.Row(
                 [
                     adb_path_text,
