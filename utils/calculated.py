@@ -345,18 +345,18 @@ class calculated:
                             self.appoint_click(pos,(pos[0]+60, pos[1]), [40,40,40])
                             break
                         if time.time() - start_time > 5:
-                            log.info(_("地图识别超时"))
                             # 右边列表太长了 尝试向下滚动5秒 再向上滚动5秒
                             # scroll内部sleep 0.5s 大概能10次 目前最长在雅利洛需要向下滚动7次
                             if first_timeout:  # 点击右边的地图列表
-                                self.Relative_click((80, 50) if self.platform == _("PC") else (75, 50), 0.2)
+                                self.Relative_click((80, 50)) if self.platform == _("PC") else self.adb.input_tap((1011, 249))
                                 first_timeout = False
                             if time.time() - start_time < 10:
-                                self.scroll(-10)
+                                self.scroll(-10) if self.platform == _("PC") else self.adb.input_swipe((1003, 255), (1006, 326))
                             else:
-                                self.scroll(10)
+                                self.scroll(10) if self.platform == _("PC") else self.adb.input_swipe((1006, 326), (1003, 255))
 
                         if time.time() - start_time > 15:
+                            log.info(_("地图识别超时"))
                             join = True
                             break
                 elif type(temp_ocr[temp_name]) == tuple:
@@ -372,7 +372,6 @@ class calculated:
                     self.Click(result["max_loc"])
                     break
                 if time.time() - start_time > 5:
-                    log.info(_("地图识别超时"))
                     # 右边列表太长了 尝试向下滚动5秒 再向上滚动5秒
                     # scroll内部sleep 0.5s 大概能10次 目前最长在雅利洛需要向下滚动7次
                     if first_timeout:  # 点击右边的地图列表
@@ -382,6 +381,9 @@ class calculated:
                         self.scroll(-10) if self.platform == _("PC") else self.adb.input_swipe((1003, 255), (1006, 326))
                     else:
                         self.scroll(10) if self.platform == _("PC") else self.adb.input_swipe((1006, 326), (1003, 255))
+                    if time.time() - start_time > 15:
+                        log.info(_("地图识别超时"))
+                        break
                 if flag == False:
                     break
 
