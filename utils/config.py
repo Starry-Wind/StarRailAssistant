@@ -1,7 +1,6 @@
 import os
 import orjson
 import gettext
-import locale
 
 from .log import log
 
@@ -130,9 +129,8 @@ def get_folder(path) -> list[str]:
     """
     for root, dirs, files in os.walk(path):
         return dirs
-
+    
 language = read_json_file("config.json").get("language", "zh_CN")
-print(language)
 t = gettext.translation('sra', 'locale', [language])
 _ = t.gettext
 

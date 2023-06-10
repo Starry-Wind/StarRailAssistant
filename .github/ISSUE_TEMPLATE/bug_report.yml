@@ -51,13 +51,15 @@ body:
       description: 目前主要适配国服
     validations:
       required: true
-  - type: equipment
+  - type: dropdown
     id: equipment
     attributes:
       label: 运行的客户端
       options:
         - PC
         - 模拟器
+    validations:
+      required: true
   - type: textarea
     id: logs
     attributes:
