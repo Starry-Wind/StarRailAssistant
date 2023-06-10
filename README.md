@@ -43,35 +43,18 @@ This software is open source, free of charge and for learning and exchange purpo
 
 ## 使用说明
 
-1：安装[Python 3.11](https://www.microsoft.com/store/productId/9NRWMJP3717K) (其他版本安装依赖项时会有很多问题)
-
-1.1: 输入`pip install -r requirements.txt`安装依赖
-
-1.2：如果您是第一次运行脚本，还请选择：检测更新-全部更新~
-
-2：确认游戏语言为**简体中文**，按键配置皆为默认，灵敏度皆为默认值
-
-3：如果你的电脑分辨率为2560\*1440，请将游戏分辨率调为1920\*1080（窗口化）<br>
-   如果你的电脑分辨率为1920\*1080，请将游戏分辨率调为1920\*1080（全屏幕）
-   
-4：战斗为游戏自带的自动战斗，确保你的队伍有足够实力平推小怪<br>
-   (如启用了沿用自动战斗设定，请把config.json里的 "auto_battle_persistence" 改成 1) 
-
-5：建议不要在地图上追踪任何东西，并且人物初始位置最好在**观景车厢**
-
-6：开怪角色请使用**远程攻击**角色，目前推荐**三月七**，跑图效果较稳定
-
-7：开启**Honkai_Star_Rail.bat**等待程序自动运行至可输入**地图编号**处
-
-8：如果你不知道**地图编号**是什么，或是你想要**重头开始**跑图，输入"0"后回车
-
-9：在等待开始五秒期间，请点回游戏画面，确保没有开启任何菜单及界面，并等待程序运行
-
-10：程序运行期间，**请勿移动**键盘及鼠标，如果移动了极有可能造成**偏离**或**撞墙**的问题
-
-11：使用模拟器请使用1280\*720p分辨率，默认为夜神模拟器，其他模拟器使用请先连接上adb(模拟器卡顿可能会吞操作)
-
-12：跑图过程中出问题了不想跑了想返回主菜单了可以用Ctrl+C并默念<font color= #E2027F>爱门</font>
+ * 安装[Python 3.11](https://www.microsoft.com/store/productId/9NRWMJP3717K) (其他版本安装依赖项时会有很多问题)
+ * 输入`pip install -r requirements.txt`安装依赖
+ * 如果您是第一次运行脚本，还请选择：检测更新-全部更新~
+ * 下载最新版[星穹铁道小助手](https://github.com/Starry-Wind/StarRailAssistant/releases/latest)
+ * 解压文件，并进入文件夹
+ * 复制文件夹路径
+ * 右键开始菜单，选择`终端管理员`，输入`cd 刚刚复制的路径`
+ * 输入`pip config set global.index-url https://mirrors.aliyun.com/pypi/simple`设置国内pip源
+ * 输入`pip install -r requirements.txt`安装依赖
+ * 输入`Python Honkai_Star_Rail.py`运行星穹铁道小助手
+ * 使用模拟器请使用1280\*720p分辨率，默认为夜神模拟器，其他模拟器使用请先连接上adb(模拟器卡顿可能会吞操作)
+ * 跑图过程中出问题了不想跑了想返回主菜单了可以用Ctrl+C并默念<font color= #E2027F>爱门</font>
 
 ## 配置文件说明
 ```json
