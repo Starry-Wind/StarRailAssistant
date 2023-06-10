@@ -1,7 +1,7 @@
 [
   {
     "path": "get_width.py",
-    "hash": "ef485b53c7fd61365f80235f2d3f61fd"
+    "hash": "af1ecbec04bf4e03a08d85423e2675a1"
   },
   {
     "path": "README_EN.md",
@@ -17,7 +17,7 @@
   },
   {
     "path": "gui.py",
-    "hash": "e0effbeff99eec5f689a438766cf8a9a"
+    "hash": "100cf9911917677b661ee45cb0e9eabe"
   },
   {
     "path": "README.md",
@@ -61,7 +61,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "06ab2c1c433de5870e521497d1e1875e"
+    "hash": "2c392b07355bd023e358bf836434059f"
   },
   {
     "path": "utils/adb.py",
