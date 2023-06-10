@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-10 02:38:12
+LastEditTime: 2023-06-10 16:14:24
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -16,7 +16,7 @@ root.withdraw()
 try:
     from utils.exceptions import Exception
     import time
-    import importlib
+    import psutil
     import flet as ft
     from re import sub
     from cryptography.fernet import Fernet
@@ -34,7 +34,14 @@ except:
     messagebox.showerror("运行错误", traceback.format_exc())
 
 sra = SRA()
-    
+
+def check_console():
+	image_name = 'explorer.exe'
+	s = psutil.Process().parent()
+	if s.name() == image_name or s.parent().name() == image_name:
+		return True
+	return False
+
 def page_main(page: ft.Page):
     '''
     if page.session.contains_key("updata_log"):
@@ -236,6 +243,8 @@ def page_main(page: ft.Page):
                 'name': _("图片")
             },
         }
+        if not check_console:
+            del data[_("脚本")]
         def add_updata_log(message):
             message = message[:-1]
             text.value = sub(r"(.{67})", "\\1\r\n", message)
@@ -360,6 +369,7 @@ def page_main(page: ft.Page):
             modify_json_file(CONFIG_FILE_NAME, "adb", simulator[simulator_dd.value])
             modify_json_file(CONFIG_FILE_NAME, "adb_path", adb_path_text.value)
             modify_json_file(CONFIG_FILE_NAME, "language", language_dict[language_dd.value])
+            modify_json_file(CONFIG_FILE_NAME, "start", True)
             to_page_main(page)
         page.clean()
         page.overlay.append(pick_files_dialog)
@@ -544,17 +554,37 @@ def page_main(page: ft.Page):
     sra.option_dict = {
     }
     button_dict = sra.run_plugins()[-1]
-    add(
-        [
+    if check_console:
+        page_list = [
             ft.Text(_("星穹铁道小助手"), size=50),
             ft.Text(VER, size=20),
             ft.ElevatedButton(_("大世界"), on_click=word),
             ft.ElevatedButton(_("模拟宇宙")),
-        ]+[ft.ElevatedButton(i, on_click=lambda x:button_dict[i](page)) for i in list(button_dict.keys())]+
-        [
+        ]+[ft.ElevatedButton(i, on_click=lambda x:button_dict[i](page)) for i in list(button_dict.keys())]+[
             ft.ElevatedButton(_("更新资源"), on_click=updata),
             ft.ElevatedButton(_("编辑配置"), on_click=set_config),
-        ],
+        ]
+    else:
+        page_list = [
+            ft.Text(_("星穹铁道小助手"), size=50),
+            ft.Text(VER, size=20),
+            ft.ElevatedButton(_("大世界"), on_click=word),
+            ft.ElevatedButton(_("模拟宇宙")),
+        ]+[ft.ElevatedButton(i, on_click=lambda x:button_dict[i](page)) for i in list(button_dict.keys())]+[
+            ft.ElevatedButton(_("更新资源"), on_click=updata),
+            ft.ElevatedButton(_("编辑配置"), on_click=set_config),
+        ]
+    if read_json_file(CONFIG_FILE_NAME, False).get('temp_version') == "0" or read_json_file(CONFIG_FILE_NAME, False).get('map_version') == "0":
+        page_list = [
+            ft.Text(_("星穹铁道小助手"), size=50),
+            ft.Text(VER, size=20),
+            ft.ElevatedButton(_("更新资源"), on_click=updata),
+            ft.ElevatedButton(_("编辑配置"), on_click=set_config),
+        ]
+        if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
+            page_list.pop(2)
+    add(
+        page_list,
         left_page=[about_ib]
     )
 

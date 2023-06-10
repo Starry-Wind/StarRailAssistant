@@ -199,6 +199,11 @@ class SRA:
             url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
             option = options[url_ms.index(questionary.select(title, url_ms).ask())]
             modify_json_file(CONFIG_FILE_NAME, "rawgithub_proxy", option)
+            while True:
+                if read_json_file(CONFIG_FILE_NAME, False).get('temp_version') == "0" or read_json_file(CONFIG_FILE_NAME, False).get('map_version') == "0":
+                    sra.up_data()
+                else:
+                    break
             title = _("你游戏里开启了连续自动战斗吗？：")
             options = [_('没打开'), _('打开了'), _('这是什么')]
             option = questionary.select(title, options).ask()
@@ -227,6 +232,9 @@ class SRA:
 
 
     def up_data(self):
+        import utils.config
+        importlib.reload(utils.config)
+        _ = utils.config._
         ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
         if "adb" not in read_json_file(CONFIG_FILE_NAME, False):
             init_config_file(1920, 1080)
