@@ -48,15 +48,15 @@ def get_width(title):
     borderless = True if real_width*scaling == 1920 else False
     left_border = (real_width*scaling-1920)/2
     up_border = (real_height*scaling-1080)-left_border
-    real_width = int(1920/scaling)
-    real_height = int(1080/scaling)
+    real_width1 = int(1920/scaling)
+    real_height1 = int(1080/scaling)
     if not normalize_file_path(CONFIG_FILE_NAME):
-        init_config_file(real_width=real_width, real_height=real_height)
+        init_config_file(real_width=real_width1, real_height=real_height1)
 
     log.info(f"Real resolution: {real_width} x {real_height} x {scaling} x {borderless}")
 
-    modify_json_file(CONFIG_FILE_NAME, "real_width", real_width)
-    modify_json_file(CONFIG_FILE_NAME, "real_height", real_height)
+    modify_json_file(CONFIG_FILE_NAME, "real_width", real_width1)
+    modify_json_file(CONFIG_FILE_NAME, "real_height", real_height1)
     modify_json_file(CONFIG_FILE_NAME, "scaling", scaling)
     modify_json_file(CONFIG_FILE_NAME, "borderless", borderless)
     modify_json_file(CONFIG_FILE_NAME, "left_border", left_border)
