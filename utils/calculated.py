@@ -44,7 +44,7 @@ class calculated:
         self.scaling = read_json_file(CONFIG_FILE_NAME).get("scaling", 1)
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
-        self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name) if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name, cand_alphabet='0123456789')
+        self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./temp/cnocr", rec_root="./temp/cnstd") if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name, cand_alphabet='0123456789')
         #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
         self.check_list = abc = lambda x,y: re.match(x, str(y)) != None
         if platform == _("PC"):
@@ -334,6 +334,7 @@ class calculated:
             else:
                 if type(temp_ocr[temp_name]) == str:
                     start_time = time.time()
+                    first_timeout = True
                     while True:
                         ocr_data = self.part_ocr((77,10,85,97)) if self.platform == _("PC") else self.part_ocr((72,18,80,97))
                         log.debug(temp_ocr[temp_name])
@@ -345,18 +346,42 @@ class calculated:
                             break
                         if time.time() - start_time > 5:
                             log.info(_("地图识别超时"))
+                            # 右边列表太长了 尝试向下滚动5秒 再向上滚动5秒
+                            # scroll内部sleep 0.5s 大概能10次 目前最长在雅利洛需要向下滚动7次
+                            if first_timeout:  # 点击右边的地图列表
+                                self.Relative_click((80, 50) if self.platform == _("PC") else (75, 50), 0.2)
+                                first_timeout = False
+                            if time.time() - start_time < 10:
+                                self.scroll(-10)
+                            else:
+                                self.scroll(10)
+
+                        if time.time() - start_time > 15:
                             join = True
                             break
                 elif type(temp_ocr[temp_name]) == tuple:
                     self.img_click(temp_ocr[temp_name])
         if temp_name not in temp_ocr or join:
             target = cv.imread(target_path)
+            start_time = time.time()
+            first_timeout = True
             while True:
                 result = self.scan_screenshot(target)
                 if result["max_val"] > threshold:
                     #points = self.calculated(result, target.shape)
                     self.Click(result["max_loc"])
                     break
+                if time.time() - start_time > 5:
+                    log.info(_("地图识别超时"))
+                    # 右边列表太长了 尝试向下滚动5秒 再向上滚动5秒
+                    # scroll内部sleep 0.5s 大概能10次 目前最长在雅利洛需要向下滚动7次
+                    if first_timeout:  # 点击右边的地图列表
+                        self.Relative_click((80, 50) if self.platform == _("PC") else (75, 50), 0.2)
+                        first_timeout = False
+                    if time.time() - start_time < 10:
+                        self.scroll(-10)
+                    else:
+                        self.scroll(10)
                 if flag == False:
                     break
 
@@ -716,6 +741,7 @@ class calculated:
         compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
         while True:
             result = self.get_pix_bgr((119, 86))
+            log.debug(result)
             endtime = time.time() - start_time
             if compare_lists([16, 16, 16], result) and compare_lists(result, [19, 19, 19]):
                 join1 = True
