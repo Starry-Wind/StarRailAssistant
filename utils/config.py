@@ -1,7 +1,6 @@
 import os
 import orjson
 import gettext
-import locale
 
 from .log import log
 
@@ -83,7 +82,8 @@ def init_config_file(real_width, real_height, file_name = CONFIG_FILE_NAME):
                         "level": "INFO",
                         "adb": "127.0.0.1:62001",
                         "adb_path": "temp\\adb\\adb",
-                        "proxies": ""
+                        "proxies": "",
+                        "language": "zh_CN",
                     },option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2
                 )
             )
@@ -129,11 +129,9 @@ def get_folder(path) -> list[str]:
     """
     for root, dirs, files in os.walk(path):
         return dirs
-
-loc = locale.getdefaultlocale()
-if loc[0] not in get_folder("locale"):
-    loc[0] = "zh_CN"
-t = gettext.translation('sra', 'locale', languages=[loc[0]])
+    
+language = read_json_file("config.json").get("language", "zh_CN")
+t = gettext.translation('sra', 'locale', [language])
 _ = t.gettext
 
 def add_key_value(dictionary, key, value, position):

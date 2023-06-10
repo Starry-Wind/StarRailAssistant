@@ -430,11 +430,14 @@ class calculated:
             while True:
                 result = self.scan_screenshot(target)
                 if result["max_val"] > 0.9:
-                    #points = self.calculated(result, target.shape)
-                    points = result["max_loc"]
-                    self.Click(points)
-                    log.info(_("开启自动战斗"))
-                    break
+                    time.sleep(0.3)
+                    result = self.scan_screenshot(target)
+                    if result["max_val"] > 0.9:
+                        #points = self.calculated(result, target.shape)
+                        points = result["max_loc"]
+                        self.Click(points)
+                        log.info(_("开启自动战斗"))
+                        break
                 elif time.time() - start_time > 15:
                     break
         else:
@@ -733,10 +736,17 @@ class calculated:
             进入地图的时间
         """
         start_time = time.time()
+        join1 = False
+        join2 = False
+        compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
         while True:
             result = self.get_pix_bgr((119, 86))
             endtime = time.time() - start_time
-            if result != [18, 18, 18]:
+            if compare_lists([16, 16, 16], result) and compare_lists(result, [19, 19, 19]):
+                join1 = True
+            if (compare_lists(result, [16, 16, 16]) or compare_lists([19, 19, 19], result)) and join1:
+                join2 = True
+            if join1 and join2:
                 log.info(_("已进入地图"))
                 return endtime
             if endtime > 30:

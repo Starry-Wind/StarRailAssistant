@@ -126,7 +126,7 @@ class Map:
                     else:
                         time.sleep(value)
                         self.calculated.click_target(key, 0.98)
-                time.sleep(3)
+                #time.sleep(3)
                 count = self.calculated.wait_join()
                 log.info(_('地图加载完毕，加载时间为 {count} 秒').format(count=count))
                 time.sleep(2) # 加2s防止人物未加载
