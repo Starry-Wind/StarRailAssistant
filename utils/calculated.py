@@ -448,7 +448,7 @@ class calculated:
         while True:
             if type == 0:
                 end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
-                end_str = str(calculated.part_ocr((0,95,100,100)))
+                end_str = str(self.part_ocr((0,95,100,100)))
                 if any(substring in end_str for substring in end_list):
                     log.info(_("完成自动战斗"))
                     time.sleep(3)
