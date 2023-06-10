@@ -743,7 +743,7 @@ class calculated:
             if join1 and join2:
                 log.info(_("已进入地图"))
                 return endtime
-            if endtime > 30:
+            if endtime > 8:
                 log.info(_("识别超时"))
                 return endtime
 
