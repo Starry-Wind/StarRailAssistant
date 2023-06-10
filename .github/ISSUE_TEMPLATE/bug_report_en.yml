@@ -41,13 +41,6 @@ body:
       placeholder: 2.7_test
     validations:
       required: true
-  - type: equipment
-    id: equipment
-    attributes:
-      label: What equipment do you work on?
-      options:
-        - PC
-        - 模拟器
   - type: dropdown
     id: server
     attributes:
@@ -56,6 +49,15 @@ body:
         - 国服
         - Global
       description: Currently mainly adapted to Chinese
+    validations:
+      required: true
+  - type: dropdown
+    id: equipment
+    attributes:
+      label: What equipment do you work on?
+      options:
+        - PC
+        - 模拟器
     validations:
       required: true
   - type: textarea
