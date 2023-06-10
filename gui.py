@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-10 16:14:24
+LastEditTime: 2023-06-10 20:01:29
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -35,12 +35,7 @@ except:
 
 sra = SRA()
 
-def check_console():
-	image_name = 'explorer.exe'
-	s = psutil.Process().parent()
-	if s.name() == image_name or s.parent().name() == image_name:
-		return True
-	return False
+check_console = False
 
 def page_main(page: ft.Page):
     '''
