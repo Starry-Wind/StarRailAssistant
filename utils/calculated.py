@@ -741,6 +741,7 @@ class calculated:
         compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
         while True:
             result = self.get_pix_bgr((119, 86))
+            log.debug(result)
             endtime = time.time() - start_time
             if compare_lists([16, 16, 16], result) and compare_lists(result, [19, 19, 19]):
                 join1 = True
