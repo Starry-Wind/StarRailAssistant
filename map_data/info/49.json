@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 49,
+        "name": "行政区 1层",
+        "parent_id": 5,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/02/14/288909604/384bcb6df8482350eace27d25b0b84d5_1731399867420531110.png\"}]],\"origin\":[564,1028],\"total_size\":[1024,2048],\"padding\":[104,435]}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_4586906852887465355.png",
+        "ch_ext": "",
+        "parent_name": "雅利洛-VI"
+    }
+}

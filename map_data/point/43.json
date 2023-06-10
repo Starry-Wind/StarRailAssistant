@@ -1,0 +1,41 @@
+{
+    "point_list": [
+        {
+            "id": 382,
+            "label_id": 73,
+            "x_pos": -320.9373655045424,
+            "y_pos": 23.345070543713177,
+            "author_name": "缪之白凡.",
+            "ctime": "2022-10-26 15:28:06",
+            "display_state": 1
+        },
+        {
+            "id": 381,
+            "label_id": 73,
+            "x_pos": -229.21231730198622,
+            "y_pos": 62.1813381796415,
+            "author_name": "缪之白凡.",
+            "ctime": "2022-10-26 15:28:06",
+            "display_state": 1
+        }
+    ],
+    "label_list": [
+        {
+            "id": 73,
+            "name": "虚卒·篡改者",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/dd91ea96d3a823295bad915dc08bac7a_7698496302549766580.png",
+            "parent_id": 21,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        }
+    ]
+}

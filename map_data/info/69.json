@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 69,
+        "name": "工造司",
+        "parent_id": 24,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/04/27/288909604/44ee3effef05806f4f4d4cd355a0a720_2227014956056658750.png\"}]],\"origin\":[467,967],\"total_size\":[1024,2048],\"padding\":[24,424]}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/04/27/288909604/e17bce526a591f15b1af003cbf578370_3477444087152229739.png",
+        "ch_ext": "",
+        "parent_name": "仙舟「罗浮」"
+    }
+}

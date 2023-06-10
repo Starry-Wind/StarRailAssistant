@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 44,
+        "name": "收容舱段 1层",
+        "parent_id": 1,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/02/14/288909604/a67be6f42412fb8da256898a3cb2e44f_8898903161308671515.png\"}]],\"origin\":[508,274],\"total_size\":[1024,512],\"padding\":[79,53]}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/d610df8d507df71c1d7000e1555b2fd2_5544617915347384965.png",
+        "ch_ext": "",
+        "parent_name": "空间站「黑塔」"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 59,
+        "name": "机械聚落 1层",
+        "parent_id": 5,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/02/14/288909604/856b10df87591691c652289040f075fd_7550418608225160750.png\"}]],\"origin\":[494,535],\"total_size\":[1024,1024],\"padding\":[224,154]}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_6182758427262507075.png",
+        "ch_ext": "",
+        "parent_name": "雅利洛-VI"
+    }
+}

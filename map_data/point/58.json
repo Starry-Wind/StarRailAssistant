@@ -1,0 +1,84 @@
+{
+    "point_list": [
+        {
+            "id": 752,
+            "label_id": 171,
+            "x_pos": -35.23256839180283,
+            "y_pos": -191.87425267765235,
+            "author_name": "饺子不吃瑶瑶",
+            "ctime": "2023-02-17 11:16:59",
+            "display_state": 1
+        },
+        {
+            "id": 751,
+            "label_id": 173,
+            "x_pos": 33.801115742054094,
+            "y_pos": -228.00314368305868,
+            "author_name": "饺子不吃瑶瑶",
+            "ctime": "2023-02-17 11:16:56",
+            "display_state": 1
+        },
+        {
+            "id": 750,
+            "label_id": 172,
+            "x_pos": -2.7205237621206493,
+            "y_pos": -241.44674231053511,
+            "author_name": "饺子不吃瑶瑶",
+            "ctime": "2023-02-17 11:16:52",
+            "display_state": 1
+        }
+    ],
+    "label_list": [
+        {
+            "id": 171,
+            "name": "《贝洛伯格的音乐家》卷四",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/08/288909604/edd7c455cb1426dd6503121c615812e4_4613096490376913533.png",
+            "parent_id": 1,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 173,
+            "name": "《贝洛伯格的音乐家》卷六",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/08/288909604/edd7c455cb1426dd6503121c615812e4_2789796715556196564.png",
+            "parent_id": 1,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 172,
+            "name": "《贝洛伯格的音乐家》卷五",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/08/288909604/edd7c455cb1426dd6503121c615812e4_5466538390378186437.png",
+            "parent_id": 1,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        }
+    ]
+}

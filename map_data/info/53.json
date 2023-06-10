@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 53,
+        "name": "残响回廊",
+        "parent_id": 5,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/02/14/288909604/0ae944a42071e36d738f76ee704ea698_2543228665909153505.png\"}]],\"origin\":[466,1062],\"total_size\":[1024,2048],\"padding\":[152,469]}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_5653629172807449619.png",
+        "ch_ext": "",
+        "parent_name": "雅利洛-VI"
+    }
+}

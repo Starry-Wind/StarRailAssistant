@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": 57,
+        "name": "铆钉镇 1层",
+        "parent_id": 5,
+        "depth": 2,
+        "detail": "{\"slices\":[[{\"url\":\"https://uploadstatic.mihoyo.com/sr-wiki/2023/02/14/288909604/a22e75d3723f5a3b4ec46c020189301c_7512577655180572456.png\"}]],\"origin\":[262,507],\"total_size\":[512,1024],\"padding\":[76,227]}",
+        "node_type": 2,
+        "children": [],
+        "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2022/10/11/288909604/fd1ed3b0f3ebcf2a4aa5338b966884ab_3607445654775603223.png",
+        "ch_ext": "",
+        "parent_name": "雅利洛-VI"
+    }
+}

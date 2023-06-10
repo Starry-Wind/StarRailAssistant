@@ -1,0 +1,58 @@
+{
+    "point_list": [
+        {
+            "id": 374,
+            "label_id": 50,
+            "x_pos": -88,
+            "y_pos": 44,
+            "author_name": "雲瑾千香",
+            "ctime": "2022-10-26 15:00:00",
+            "display_state": 1
+        },
+        {
+            "id": 373,
+            "label_id": 17,
+            "x_pos": 48,
+            "y_pos": -47,
+            "author_name": "雲瑾千香",
+            "ctime": "2022-10-26 15:00:00",
+            "display_state": 1
+        }
+    ],
+    "label_list": [
+        {
+            "id": 50,
+            "name": "商店",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/14/288909604/6df1a26435202a33795439f07b15c9a2_2729930989755626772.png",
+            "parent_id": 23,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        },
+        {
+            "id": 17,
+            "name": "普通战利品",
+            "icon": "https://uploadstatic.mihoyo.com/sr-wiki/2023/02/08/288909604/2464c384cb4ae8d5e36585e9065c0cee_4344535935905106425.png",
+            "parent_id": 16,
+            "depth": 2,
+            "node_type": 2,
+            "jump_type": 0,
+            "jump_target_id": 0,
+            "display_priority": 0,
+            "children": [],
+            "activity_page_label": 0,
+            "area_page_label": [],
+            "is_all_area": false,
+            "ch_ext": "",
+            "sort": 0
+        }
+    ]
+}
