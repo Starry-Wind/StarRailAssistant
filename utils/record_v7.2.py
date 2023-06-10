@@ -13,6 +13,8 @@ import time
 from collections import defaultdict
 from datetime import datetime
 import win32gui
+import win32api
+import win32con
 import orjson
 from PIL import ImageGrab
 from pynput import keyboard
@@ -142,7 +144,8 @@ def on_release(key):
     if key == keyboard.Key.left:
         x = mouse_val * -1
         dx = int(x * 1295 / real_width)
-        mouseController().move(dx, 0)
+        #mouseController().move(dx, 0)
+        win32api.mouse_event(1, dx, 0)
         mouse_move_pos_list.append(
             {"mouse_move_dxy": (x, 0), "time_sleep": current_time - last_time})
         last_time = current_time
@@ -151,7 +154,8 @@ def on_release(key):
     elif key == keyboard.Key.right:
         x = mouse_val  # 200
         dx = int(x * 1295 / real_width)
-        mouseController().move(dx, 0)
+        #mouseController().move(dx, 0)
+        win32api.mouse_event(1, dx, 0)
         mouse_move_pos_list.append(
             {"mouse_move_dxy": (x, 0), "time_sleep": current_time - last_time})
         last_time = current_time
