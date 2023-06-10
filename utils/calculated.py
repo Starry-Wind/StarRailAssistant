@@ -44,9 +44,9 @@ class calculated:
         self.scaling = read_json_file(CONFIG_FILE_NAME).get("scaling", 1)
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
-        self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name) if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name, cand_alphabet='0123456789')
+        self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./temp/cnocr", rec_root="./temp/cnstd") if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name, cand_alphabet='0123456789')
         #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
-        self.check_list = abc = lambda x,y: re.match(x, str(y)) != None
+        self.check_list = lambda x,y: re.match(x, str(y)) != None
         if platform == _("PC"):
             self.window = gw.getWindowsWithTitle(self.title)
             if not self.window:
@@ -430,11 +430,14 @@ class calculated:
             while True:
                 result = self.scan_screenshot(target)
                 if result["max_val"] > 0.9:
-                    #points = self.calculated(result, target.shape)
-                    points = result["max_loc"]
-                    self.Click(points)
-                    log.info(_("开启自动战斗"))
-                    break
+                    time.sleep(0.3)
+                    result = self.scan_screenshot(target)
+                    if result["max_val"] > 0.9:
+                        #points = self.calculated(result, target.shape)
+                        points = result["max_loc"]
+                        self.Click(points)
+                        log.info(_("开启自动战斗"))
+                        break
                 elif time.time() - start_time > 15:
                     break
         else:
@@ -442,22 +445,15 @@ class calculated:
             time.sleep(5)
 
         start_time = time.time()  # 开始计算战斗时间
-        target = cv.imread("./temp/pc/finish_fighting.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/finish_fighting.jpg")
         while True:
             if type == 0:
-                result = self.scan_screenshot(target)
-                if result["max_val"] > 0.95 and self.platform == 'PC':
-                    #points = self.calculated(result, target.shape)
-                    points = result["max_loc"]
-                    log.debug(points)
+                end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
+                end_str = str(calculated.part_ocr((0,95,100,100)))
+                if any(substring in end_str for substring in end_list):
                     log.info(_("完成自动战斗"))
                     time.sleep(3)
                     break
-                elif result["max_val"] > 0.92 and self.platform == '模拟器':
-                    points = result["max_loc"]
-                    log.debug(points)
-                    log.info(_("完成自动战斗"))
-                    time.sleep(3)
+                elif time.time() - start_time > 90: # 避免卡死
                     break
             elif type == 1:
                 result = self.part_ocr((6,10,89,88))
@@ -733,13 +729,21 @@ class calculated:
             进入地图的时间
         """
         start_time = time.time()
+        join1 = False
+        join2 = False
+        compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
         while True:
             result = self.get_pix_bgr((119, 86))
+            log.debug(result)
             endtime = time.time() - start_time
-            if result != [18, 18, 18]:
+            if compare_lists([16, 16, 16], result) and compare_lists(result, [19, 19, 19]):
+                join1 = True
+            if (compare_lists(result, [16, 16, 16]) or compare_lists([19, 19, 19], result)) and join1:
+                join2 = True
+            if join1 and join2:
                 log.info(_("已进入地图"))
                 return endtime
-            if endtime > 30:
+            if endtime > 8:
                 log.info(_("识别超时"))
                 return endtime
 

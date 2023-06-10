@@ -55,7 +55,7 @@ Please note that based on MiHoYo's [FairPlay statement for Honkai Impact 3 - Sta
 
 6. Use a **long-range attack** character as the starter character. Currently, it is recommended to use **March 7** with more stable running.
 
-7. Open **Honkai_Star_Rail.bat** and wait for the program to automatically run to the "map number" entry
+7. Open **Honkai_Star_Rail.py** and wait for the program to automatically run to the "map number" entry
 
 8. If you do not know what the **map number** is or if you want to **start over**running, enter "0" and press Enter.
 

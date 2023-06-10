@@ -120,7 +120,6 @@ class SRA:
 
 
     def main(self, type=0,platform="PC",start=None,role_list=None):
-        self.main_start()
         order = read_json_file(CONFIG_FILE_NAME, False).get('adb', "")
         adb_path = read_json_file(CONFIG_FILE_NAME, False).get('adb_path', "temp\\adb\\adb")
         map_instance = map_word(game_title, platform, order, adb_path)
@@ -147,7 +146,19 @@ class SRA:
 
 
     def main_start(self, start = True):
+        global game_title
         if not read_json_file(CONFIG_FILE_NAME, False).get('start') or not start:
+            title = "请选择你游戏的运行语言:"
+            options = {
+                "简体中文": "zh_CN",
+                "繁體中文": "zh_TC",
+                #"English": "EN"
+            }
+            option = questionary.select(title, options).ask()
+            modify_json_file(CONFIG_FILE_NAME, "language", options[option])
+            import utils.config
+            importlib.reload(utils.config)
+            _ = utils.config._
             title = _("请选择下载代理地址：（不使用代理选空白选项）")
             options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
             url_ms = []
@@ -188,6 +199,11 @@ class SRA:
             url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
             option = options[url_ms.index(questionary.select(title, url_ms).ask())]
             modify_json_file(CONFIG_FILE_NAME, "rawgithub_proxy", option)
+            while True:
+                if read_json_file(CONFIG_FILE_NAME, False).get('temp_version') == "0" or read_json_file(CONFIG_FILE_NAME, False).get('map_version') == "0":
+                    sra.up_data()
+                else:
+                    break
             title = _("你游戏里开启了连续自动战斗吗？：")
             options = [_('没打开'), _('打开了'), _('这是什么')]
             option = questionary.select(title, options).ask()
@@ -207,15 +223,18 @@ class SRA:
             }
             option = questionary.select(title, options).ask()
             if option == "手动填写端口号":
-                option = input('请输入端口号:')
+                option = questionary.text("请输入端口号:", default="127.0.0.1:62001").ask()
                 modify_json_file(CONFIG_FILE_NAME, "adb", option)
             else:
                 modify_json_file(CONFIG_FILE_NAME, "adb", options[option])
             modify_json_file(CONFIG_FILE_NAME, "start", True)
+            raise Exception(_("请重新运行"))
 
 
     def up_data(self):
-        self.main_start()    # 无config直接更新时初始化config文件
+        import utils.config
+        importlib.reload(utils.config)
+        _ = utils.config._
         ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
         if "adb" not in read_json_file(CONFIG_FILE_NAME, False):
             init_config_file(1920, 1080)
@@ -287,11 +306,12 @@ class SRA:
         cms.close()
 
 if __name__ == "__main__":
-    print(_("\033[0;31;40m星穹铁道小助手为开源项目，完全免费\n如果你是购买的那么你被骗了\n开源仓库地址: https://github.com/Starry-Wind/StarRailAssistant\033[0m"))
     sra = SRA()
-    sra.load_plugin()
-    sra.run_plugins()
     try:
+        sra.main_start()    # 无config直接更新时初始化config文件
+        print(_("\033[0;31;40m星穹铁道小助手为开源项目，完全免费\n如果你是购买的那么你被骗了\n开源仓库地址: https://github.com/Starry-Wind/StarRailAssistant\033[0m"))
+        sra.load_plugin()
+        sra.run_plugins()
         if not pyuac.isUserAdmin():
             pyuac.runAsAdmin()
         else:

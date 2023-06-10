@@ -1,8 +1,8 @@
 '''
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-15 21:45:43
-LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
-LastEditTime: 2023-06-02 18:09:56
+LastEditors: Night-stars-1 nujj1042633805@gmail.com
+LastEditTime: 2023-06-10 02:11:27
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -60,10 +60,8 @@ def get_folder(path) -> list[str]:
     for root, dirs, files in os.walk(path):
         return dirs
 
-loc = locale.getdefaultlocale()
-if loc[0] not in get_folder("locale"):
-    loc[0] = "zh_CN"
-t = gettext.translation('sra', 'locale', languages=[loc[0]])
+language = read_json_file("config.json").get("language", "zh_CN")
+t = gettext.translation('sra', 'locale', [language])
 _ = t.gettext
 
 def get_message(*arg):
