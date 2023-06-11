@@ -29,16 +29,20 @@ class Map:
 
         # 进行地图初始化，把地图缩小,需要缩小5次
         if self.platform == _("PC"):
-            target = cv.imread(f'./temp/{self.platform_name}/contraction.jpg')
+            target = cv.imread(f'./temp/pc/contraction.jpg')
             while True:
                 result = self.calculated.scan_screenshot(target)
                 if result['max_val'] > 0.98:
-                    #points = self.calculated.calculated(result, target.shape)
-                    points = result["max_loc"]
-                    log.debug(points)
-                    for i in range(6):
-                        self.calculated.Click(points)
+                    target = cv.imread(f'./temp/pc/map_shrink.png')
+                    shrink_result = self.calculated.scan_screenshot(target,(20,89,40,93))
+                    if shrink_result['max_val'] < 0.98:
+                        #points = self.calculated.calculated(result, target.shape)
+                        points = result["max_loc"]
+                        log.debug(points)
+                        for i in range(6):
+                            self.calculated.Click(points)
                     break
+                time.sleep(0.1)
         elif self.platform == _("模拟器"):
             for i in range(6):
                 self.calculated.img_click((366, 660))
