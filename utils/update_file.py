@@ -103,11 +103,22 @@ class update_file:
                 shutil.copy(src_path, dst_path)
         """
 
-    async def copy_files(self, current_folder:Path, new_folder:Path):
+    async def copy_files(self, source_path:Path, destination_path:Path, copy:List=[]):
         #if os.path.exists(new_folder):
             #shutil.rmtree(new_folder)
         #os.makedirs(new_folder, exist_ok=True)
-        shutil.copytree(current_folder, new_folder, dirs_exist_ok=True)
+        # 创建目标文件夹
+        os.makedirs(destination_path, exist_ok=True)
+        # 遍历文件和文件夹列表
+        for item in copy:
+            item_path = source_path / item
+            destination2_path = destination_path / item
+            # 如果是文件
+            if os.path.isfile(item_path):
+                shutil.copy2(item_path, destination_path)
+            # 如果是文件夹
+            elif os.path.isdir(item_path):
+                shutil.copytree(item_path, destination2_path, dirs_exist_ok=True)
             
     async def update_file(self, url_proxy: str="",
                         raw_proxy: str="",
@@ -178,7 +189,7 @@ class update_file:
 
         if remote_version != local_version:
             if name == _("脚本"):
-                await self.copy_files(Path(), Path() / "StarRailAssistant_backup")
+                await self.copy_files(Path(), Path() / "StarRailAssistant_backup", ["utils", "temp", "map", "config.json", "get_width.py", "Honkai_Star_Rail.py", "gui.py"])
             log.info(_("[资源文件更新]本地版本与远程版本不符，开始更新资源文件->{url_zip}").format(url_zip=url_zip))
             for __ in range(3):
                 try:
