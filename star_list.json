@@ -1,11 +1,11 @@
 [
   {
     "path": "get_width.py",
-    "hash": "ef485b53c7fd61365f80235f2d3f61fd"
+    "hash": "af1ecbec04bf4e03a08d85423e2675a1"
   },
   {
     "path": "README_EN.md",
-    "hash": "9a86da75193b8ea93857e1fbee6e32cd"
+    "hash": "0539c9ba383b31ce5c08704168b8a4cf"
   },
   {
     "path": "map_res_list.py",
@@ -17,11 +17,11 @@
   },
   {
     "path": "gui.py",
-    "hash": "411e902e5d4f69b0178a6b5357998eea"
+    "hash": "100cf9911917677b661ee45cb0e9eabe"
   },
   {
     "path": "README.md",
-    "hash": "5935d980c91038f20bba7c0d22cf8d17"
+    "hash": "26bf156b3159781496d856741dacce43"
   },
   {
     "path": "README_CHT.md",
@@ -29,22 +29,14 @@
   },
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "3dba016f683b37439bc2a97fc9be444e"
-  },
-  {
-    "path": "locale/zh_TW/LC_MESSAGES/sra.mo",
-    "hash": "ef66f8b317d24e3eb326e739cb9b00ee"
+    "hash": "feffa97ab035df1aa30b8e124e564e53"
   },
   {
     "path": "locale/zh_CN/LC_MESSAGES/sra.mo",
     "hash": "5819374a1e0853c814e081b6f5d33823"
   },
   {
-    "path": "locale/zh_MO/LC_MESSAGES/sra.mo",
-    "hash": "ef66f8b317d24e3eb326e739cb9b00ee"
-  },
-  {
-    "path": "locale/zh_HK/LC_MESSAGES/sra.mo",
+    "path": "locale/zh_TC/LC_MESSAGES/sra.mo",
     "hash": "ef66f8b317d24e3eb326e739cb9b00ee"
   },
   {
@@ -69,11 +61,11 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "aae9273b0e27e1a01b3f691b650a8158"
+    "hash": "c4aca1b8356bad3d18c42079011bcc21"
   },
   {
     "path": "utils/adb.py",
-    "hash": "513d63a20573fb0ac3ba3e71579db2b5"
+    "hash": "20961effe5eb9e7c6eb71252bf1749db"
   },
   {
     "path": "utils/commission.py",
@@ -85,7 +77,7 @@
   },
   {
     "path": "utils/map.py",
-    "hash": "701ad1b85a51a08b783d9132e8148a08"
+    "hash": "0a602c04821c307b4402b33919c28aec"
   },
   {
     "path": "utils/requests.py",
@@ -93,7 +85,7 @@
   },
   {
     "path": "utils/record_v7.2.py",
-    "hash": "7828b51751667aafed05f2419651582e"
+    "hash": "da1d31a137404f3eb4d30540bd915f18"
   },
   {
     "path": "utils/update_file.py",
@@ -105,7 +97,7 @@
   },
   {
     "path": "utils/log.py",
-    "hash": "bb3f918366142b8dac304288d5070dd7"
+    "hash": "9b16e81cadbbb2d50b382a8384a4dafa"
   },
   {
     "path": "utils/cv_tools.py",
@@ -113,6 +105,6 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "892bbfd575e7f70001cde28e03d5582d"
+    "hash": "d29edddeb774306177c096aa5e196d99"
   }
 ]

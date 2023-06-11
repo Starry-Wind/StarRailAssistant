@@ -436,9 +436,13 @@ class calculated:
                     time.sleep(0.3)
                     result = self.scan_screenshot(target)
                     if result["max_val"] > 0.9:
-                        #points = self.calculated(result, target.shape)
-                        points = result["max_loc"]
-                        self.Click(points)
+                        if self.platform == _("PC"):
+                            self.keyboard.press("v")
+                            self.keyboard.release("v")
+                        else:
+                            #points = self.calculated(result, target.shape)
+                            points = result["max_loc"]
+                            self.Click(points)
                         log.info(_("开启自动战斗"))
                         break
                 elif time.time() - start_time > 15:
