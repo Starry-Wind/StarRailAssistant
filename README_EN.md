@@ -41,7 +41,7 @@ Please note that based on MiHoYo's [FairPlay statement for Honkai Impact 3 - Sta
 
 ## Usage
 
-1. Install [Python 3.11](https://www.microsoft.com/store/productId/9NRWMJP3717K) (other versions may have many problems when installing dependencies)
+1. Install [Python 3.11](https://www.python.org/downloads/release/python-3113/) (other versions may have many problems when installing dependencies)
     1. Enter `pip install -r requirements.txt` to install dependencies
 2. Confirm that the game language is **Simplified Chinese**, key configuration is default, and sensitivity is default value.
 3. If your computer resolution is 2560\*1440, please adjust the game resolution to 1920\*1080 (windowed); <br> if your computer resolution is 1920\*1080, please adjust the game resolution to 1920\*1080 (full screen).

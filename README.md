@@ -43,7 +43,7 @@ This software is open source, free of charge and for learning and exchange purpo
 
 ## 使用说明
 
-1. 安装[Python 3.11](https://www.microsoft.com/store/productId/9NRWMJP3717K) (其他版本安装依赖项时会有很多问题)
+1. 安装[Python 3.11](https://www.python.org/downloads/release/python-3113/) (其他版本安装依赖项时会有很多问题)
    1. 输入`pip install -r requirements.txt`安装依赖
 2. 如果您是第一次运行脚本，还请选择：检测更新-全部更新~
 3. 下载最新版[星穹铁道小助手](https://github.com/Starry-Wind/StarRailAssistant/releases/latest)

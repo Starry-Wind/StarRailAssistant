@@ -43,7 +43,7 @@ This software is open source, free of charge and for learning and exchange purpo
 
 ## 使用說明
 
-1. 安裝[Python 3.11](https://www.microsoft.com/store/productId/9NRWMJP3717K) (其他版本安裝依賴項時會有很多問題)
+1. 安裝[Python 3.11](https://www.python.org/downloads/release/python-3113/) (其他版本安裝依賴項時會有很多問題)
     1. 输入`pip install -r requirements.txt`安裝依賴
 2. 確認遊戲語言爲**簡體中文**，按鍵配置皆爲默認，靈敏度皆爲默認值
 3. 如果妳的電腦分辨率爲2560\*1440，請將遊戲分辨率調爲1920\*1080（窗口化）<br>

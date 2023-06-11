@@ -814,11 +814,21 @@ class calculated:
         """
         self.move(key, value)
         time.sleep(1) # 等待进入入画
-        target = cv.imread("./temp/pc/finish_fighting.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/finish_fighting.jpg")
-        result = self.scan_screenshot(target)
-        while result["max_val"] < threshold:
-            result = self.scan_screenshot(target)
-        time.sleep(.5) # 缓冲
+        while True:
+            if self.platform == _("PC"):
+                end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
+                end_str = str(self.part_ocr((0,95,100,100)))
+                if any(substring in end_str for substring in end_list):
+                    log.info(_("完成入画"))
+                    break
+            else:
+                target = cv.imread("./temp/mnq/finish_fighting.jpg")
+                result = self.scan_screenshot(target)
+                if result["max_val"] > 0.9:
+                    log.info(_("完成入画"))
+                    break
+            time.sleep(0.5) # 缓冲
+        time.sleep(0.2)
 
     def monthly_pass(self):
         """
