@@ -83,8 +83,6 @@ class update_file:
                     os.remove(item_path)
 
     async def move_file(self, src_folder: Path, dst_folder,keep_folder: Optional[List[str]] = [],keep_file: Optional[List[str]] = []) -> None:
-
-
         for item in get_file(src_folder,keep_folder,keep_file, True):
             if dst_folder in item:
                 dst_path = item.replace(src_folder, "./")
@@ -105,6 +103,10 @@ class update_file:
                 shutil.copy(src_path, dst_path)
         """
 
+    async def copy_files(self, current_folder:Path, new_folder:Path):
+        os.makedirs(new_folder, exist_ok=True)
+        shutil.copytree(current_folder, new_folder)
+            
     async def update_file(self, url_proxy: str="",
                         raw_proxy: str="",
                         rm_all: bool=False, 
@@ -173,6 +175,8 @@ class update_file:
         local_version = read_json_file(CONFIG_FILE_NAME).get(f"{type}_version", "0")
 
         if remote_version != local_version:
+            if name == _("脚本"):
+                await self.copy_files(Path(), Path() / "StarRailAssistant_old")
             log.info(_("[资源文件更新]本地版本与远程版本不符，开始更新资源文件->{url_zip}").format(url_zip=url_zip))
             for __ in range(3):
                 try:
