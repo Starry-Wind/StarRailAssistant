@@ -72,7 +72,8 @@ This software is open source, free of charge and for learning and exchange purpo
     "level": "INFO",
     "adb": "127.0.0.1:62001",（62001为adb端口）
     "adb_path": "temp\\adb\\adb",（adb文件路径）
-    "proxies": ""
+    "proxies": "",
+    "move_excursion": 0（移动偏移）
 }
 ```
 
