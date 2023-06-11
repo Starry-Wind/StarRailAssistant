@@ -44,7 +44,7 @@ class calculated:
         self.scaling = read_json_file(CONFIG_FILE_NAME).get("scaling", 1)
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
-        self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./temp/cnocr", rec_root="./temp/cnstd") if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name, cand_alphabet='0123456789')
+        self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnocr", rec_root="./model/cnstd") if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnocr", rec_root="./model/cnstd", cand_alphabet='0123456789')
         #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
         self.check_list = lambda x,y: re.match(x, str(y)) != None
         if platform == _("PC"):
@@ -516,10 +516,11 @@ class calculated:
             :param com: 键盘操作 wasdf
             :param time 操作时间,单位秒
         '''
+        move_excursion = read_json_file(CONFIG_FILE_NAME).get("move_excursion", 0)
         if self.platform == _("PC"):
             self.keyboard.press(com)
             start_time = time.perf_counter()
-            while time.perf_counter() - start_time < time1:
+            while time.perf_counter() - start_time < (time1+move_excursion):
                 pass
             self.keyboard.release(com)
         elif self.platform == _("模拟器"):
