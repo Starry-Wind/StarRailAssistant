@@ -108,8 +108,8 @@ class calculated:
                 self.mouse.release(mouse.Button.left)
             elif self.platform == _("模拟器"):
                 self.adb.input_tap((x, y))
-            result = self.get_pix_bgr(pos=appoint_points)
-            print(result)
+            result = self.get_pix_bgr(appoint_points)
+            log.debug(result)
             if result == hsv:
                 break
             if time.time() - start_time > 5:
@@ -737,7 +737,7 @@ class calculated:
                 else:
                     break
             ret = [x + pos[0] + offset[0] , y + pos[1] + offset[1] ]
-            log.info(f'点击坐标{ret}')
+            log.info(_('点击坐标{ret}').format(ret=ret))
             self.Click(ret)
             return
         
@@ -754,11 +754,11 @@ class calculated:
         compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
         while True:
             result = self.get_pix_bgr(pos=(119, 86))
-            log.info(result)
+            log.debug(result)
             endtime = time.time() - start_time
-            if compare_lists([12, 12, 12], result) and compare_lists(result, [19, 19, 19]):
+            if compare_lists([0, 0, 0], result) and compare_lists(result, [19, 19, 19]):
                 join1 = True
-            if (compare_lists(result, [12, 12, 12]) or compare_lists([19, 19, 19], result)) and join1:
+            if compare_lists([19, 19, 19], result) and join1:
                 join2 = True
             if join1 and join2:
                 log.info(_("已进入地图"))
@@ -783,7 +783,7 @@ class calculated:
                         w.activate()
                         break
             else:
-                log.info(f'没找到窗口{self.title}')
+                log.info(_('没找到窗口{title}').format(title=self.title))
 
     def open_map(self, open_key):
         while True:
