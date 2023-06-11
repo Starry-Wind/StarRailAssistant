@@ -1,5 +1,5 @@
 from utils.calculated import calculated
-from utils.log import log
+from utils.log import log, _
 import pyautogui
 import time
 
@@ -16,15 +16,15 @@ class Commission():
 
 
     def open(self):
-        log.info(f"即将进行自动重新委托，当前重新委托次数为{self.n}")
+        log.info(_("即将进行自动重新委托，当前重新委托次数为{n}").format(n=self.n))
         pyautogui.press('esc')
         time.sleep(1)
         # self.calculated.click_target('./temp/commission_menu.jpg', 0.98)
-        self.calculated.ocr_click('委托')
+        self.calculated.ocr_click(_('委托'))
 
     def run(self):
         for i in range(self.n):
-            log.info(f"正在进行第{i+1}次重新委托")
+            log.info(_("正在进行第{n}次重新委托").format(n=i+1))
         
             points1 = get_percentile([300,180,300+900,180+100],[1920,1080])
             points2 = get_percentile([350,280,350+480,280+600],[1920,1080])
@@ -33,12 +33,12 @@ class Commission():
             self.calculated.click_hsv([0,201,212], points=points1, offset=[-20,20], flag=True, tolerance=3)
             self.calculated.click_hsv([0,201,212], points=points2, offset=[-20,20], flag=True, tolerance=3)
 
-            self.calculated.ocr_click('领取')
-            self.calculated.ocr_click('再次派遣')
+            self.calculated.ocr_click(_('领取'))
+            self.calculated.ocr_click(_('再次派遣'))
             time.sleep(5)
     def close(self):
-        self.calculated.ocr_click('委托')
+        self.calculated.ocr_click(_('委托'))
         pyautogui.press('esc')
         time.sleep(1.5)
         pyautogui.press('esc')
-        log.info("执行完毕")
+        log.info(_("执行完毕"))
