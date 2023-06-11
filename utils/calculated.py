@@ -331,6 +331,7 @@ class calculated:
                             break
                         if flag == False:
                             break
+                        time.sleep(0.5)
             else:
                 if type(temp_ocr[temp_name]) == str:
                     start_time = time.time()
@@ -386,6 +387,7 @@ class calculated:
                         break
                 if flag == False:
                     break
+                time.sleep(0.5)
 
     def fighting(self, type: int=0):
         """
@@ -419,13 +421,14 @@ class calculated:
                     target = cv.imread("./temp/pc/finish_fighting.jpg")  # 識別是否已進入戰鬥，若已進入則跳出迴圈
                 else:
                     target = cv.imread("./temp/mnq/finish_fighting.jpg")
+                time.sleep(0.3)
                 result = self.scan_screenshot(target)
                 if result["max_val"] < 0.95:
                     break
             elif time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info(_("识别超时,此处可能无敌人"))
                 return
-            time.sleep(0.1)
+            time.sleep(0.5)
         time.sleep(6)
         target = cv.imread("./temp/pc/auto.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/auto.jpg")
         start_time = time.time()
