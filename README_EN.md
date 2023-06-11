@@ -130,6 +130,14 @@ Please note that based on MiHoYo's [FairPlay statement for Honkai Impact 3 - Sta
 
 3. Additional features will be added, such as treasure hunting, field exploration, and litter picking.
 
+## Contributions
+
+[Issue & Report a Bug](https://github.com/Starry-Wind/StarRailAssistant/issues/new/choose) | [Fork & Open a New PR](https://github.com/Starry-Wind/StarRailAssistant/compare)
+
+All kinds of contributions including enhancements, new features, code improvements, issues and bugs reporting are welcome.
+
+- The `main` branch of StarRailAssistant is the stable version, and all development is done in the `main-beta` branch. So if you want to open a Pull Request, your commits need to be submitted to the `main-beta` branch.
+
 ## Contributors
 
 Thanks to the following contributors for their contributions to this project.

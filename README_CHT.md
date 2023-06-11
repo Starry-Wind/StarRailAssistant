@@ -127,6 +127,14 @@ This software is open source, free of charge and for learning and exchange purpo
 
 3：後續將會新增找寶箱、鋤大地順帶撿垃圾等功能
 
+## 贡献
+
+[問題反饋](https://github.com/Starry-Wind/StarRailAssistant/issues/new/choose) | [PR 提交](https://github.com/Starry-Wind/StarRailAssistant/compare)
+
+歡迎各種形式的貢獻，包括但不限於：錯誤修復、代碼改進、功能添加、問題反饋。
+
+- StarRailAssistant 的 `main` 分支是穩定的版本，所有開發均在 `main-beta` 分支進行。所以如果你想開 Pull Request，你的 commits 需要提交至 `main-beta`。
+
 ## 貢獻者
 
 感謝以下貢獻者對本項目做出的貢獻
