@@ -437,6 +437,7 @@ class calculated:
                     if result["max_val"] > 0.9:
                         if self.platform == _("PC"):
                             self.keyboard.press("v")
+                            self.keyboard.release("v")
                         else:
                             #points = self.calculated(result, target.shape)
                             points = result["max_loc"]
