@@ -104,10 +104,10 @@ class update_file:
         """
 
     async def copy_files(self, current_folder:Path, new_folder:Path):
-        if os.path.exists(new_folder):
-            shutil.rmtree(new_folder)
-        os.makedirs(new_folder, exist_ok=True)
-        shutil.copytree(current_folder, new_folder)
+        #if os.path.exists(new_folder):
+            #shutil.rmtree(new_folder)
+        #os.makedirs(new_folder, exist_ok=True)
+        shutil.copytree(current_folder, new_folder, dirs_exist_ok=True)
             
     async def update_file(self, url_proxy: str="",
                         raw_proxy: str="",
