@@ -108,7 +108,7 @@ class calculated:
                 self.mouse.release(mouse.Button.left)
             elif self.platform == _("模拟器"):
                 self.adb.input_tap((x, y))
-            result = self.get_pix_bgr(pos=appoint_points)
+            result = self.get_pix_bgr(appoint_points)
             log.debug(result)
             if result == hsv:
                 break
@@ -339,7 +339,7 @@ class calculated:
                         pos = ocr_data.get(check_dict[0], None) if check_dict else None
                         log.debug(pos)
                         if pos:
-                            self.appoint_click(pos,(pos[0]+60, pos[1]), [154, 154, 154])
+                            self.appoint_click(pos,(pos[0]+60, pos[1]), [40,40,40])
                             break
                         if time.time() - start_time > 5:
                             # 右边列表太长了 尝试向下滚动5秒 再向上滚动5秒
