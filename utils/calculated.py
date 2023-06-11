@@ -827,8 +827,8 @@ class calculated:
                 if result["max_val"] > 0.9:
                     log.info(_("完成入画"))
                     break
-            time.sleep(0.5)
-        time.sleep(0.2) # 缓冲
+            time.sleep(0.5) # 缓冲
+        time.sleep(0.2)
 
     def monthly_pass(self):
         """
