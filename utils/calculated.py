@@ -423,6 +423,7 @@ class calculated:
             elif time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info(_("识别超时,此处可能无敌人"))
                 return
+            time.sleep(0.1)
         time.sleep(6)
         target = cv.imread("./temp/pc/auto.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/auto.jpg")
         start_time = time.time()
@@ -440,6 +441,7 @@ class calculated:
                         break
                 elif time.time() - start_time > 15:
                     break
+                time.sleep(0.5)
         else:
             log.info(_("跳过开启自动战斗（沿用设置）"))
             time.sleep(5)
