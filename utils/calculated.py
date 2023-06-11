@@ -516,10 +516,11 @@ class calculated:
             :param com: 键盘操作 wasdf
             :param time 操作时间,单位秒
         '''
+        move_excursion = read_json_file(CONFIG_FILE_NAME).get("move_excursion", 0)
         if self.platform == _("PC"):
             self.keyboard.press(com)
             start_time = time.perf_counter()
-            while time.perf_counter() - start_time < time1:
+            while time.perf_counter() - start_time < (time1+move_excursion):
                 pass
             self.keyboard.release(com)
         elif self.platform == _("模拟器"):

@@ -84,6 +84,7 @@ def init_config_file(real_width, real_height, file_name = CONFIG_FILE_NAME):
                         "adb_path": "temp\\adb\\adb",
                         "proxies": "",
                         "language": "zh_CN",
+                        "move_excursion": 0,
                     },option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2
                 )
             )
