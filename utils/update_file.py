@@ -104,6 +104,8 @@ class update_file:
         """
 
     async def copy_files(self, current_folder:Path, new_folder:Path):
+        if os.path.exists(new_folder):
+            await self.remove_file(new_folder)
         os.makedirs(new_folder, exist_ok=True)
         shutil.copytree(current_folder, new_folder)
             
@@ -176,7 +178,7 @@ class update_file:
 
         if remote_version != local_version:
             if name == _("脚本"):
-                await self.copy_files(Path(), Path() / "StarRailAssistant_old")
+                await self.copy_files(Path(), Path() / "StarRailAssistant_backup")
             log.info(_("[资源文件更新]本地版本与远程版本不符，开始更新资源文件->{url_zip}").format(url_zip=url_zip))
             for __ in range(3):
                 try:
