@@ -108,7 +108,8 @@ class calculated:
                 self.mouse.release(mouse.Button.left)
             elif self.platform == _("模拟器"):
                 self.adb.input_tap((x, y))
-            result = self.get_pix_bgr(appoint_points)
+            result = self.get_pix_bgr(pos=appoint_points)
+            print(result)
             if result == hsv:
                 break
             if time.time() - start_time > 5:
@@ -227,7 +228,7 @@ class calculated:
         screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
         return (screenshot, left, top, right, bottom, width, length)
 
-    def scan_screenshot(self, prepared:np, screenshot1 = None) -> dict:
+    def scan_screenshot(self, prepared:np, pos = None) -> dict:
         """
         说明：
             比对图片
@@ -235,12 +236,7 @@ class calculated:
             :param prepared: 比对图片地址
             :param prepared: 被比对图片地址
         """
-        if screenshot1:
-            screenshot, left, top, right, bottom, width, length = self.take_screenshot()
-            screenshot = np.array(screenshot1)
-            screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
-        else:
-            screenshot, left, top, right, bottom, width, length = self.take_screenshot()
+        screenshot, left, top, right, bottom, width, length = self.take_screenshot(pos if pos else (0,0,0,0))
         result = cv.matchTemplate(screenshot, prepared, cv.TM_CCORR_NORMED)
         length, width, __ = prepared.shape
         length = int(length)
@@ -331,6 +327,7 @@ class calculated:
                             break
                         if flag == False:
                             break
+                        time.sleep(0.5)
             else:
                 if type(temp_ocr[temp_name]) == str:
                     start_time = time.time()
@@ -386,6 +383,7 @@ class calculated:
                         break
                 if flag == False:
                     break
+                time.sleep(0.5)
 
     def fighting(self, type: int=0):
         """
@@ -419,12 +417,14 @@ class calculated:
                     target = cv.imread("./temp/pc/finish_fighting.jpg")  # 識別是否已進入戰鬥，若已進入則跳出迴圈
                 else:
                     target = cv.imread("./temp/mnq/finish_fighting.jpg")
+                time.sleep(0.3)
                 result = self.scan_screenshot(target)
                 if result["max_val"] < 0.95:
                     break
             elif time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info(_("识别超时,此处可能无敌人"))
                 return
+            time.sleep(0.1)
         time.sleep(6)
         target = cv.imread("./temp/pc/auto.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/auto.jpg")
         start_time = time.time()
@@ -446,6 +446,7 @@ class calculated:
                         break
                 elif time.time() - start_time > 15:
                     break
+                time.sleep(0.1)
         else:
             log.info(_("跳过开启自动战斗（沿用设置）"))
             time.sleep(5)
@@ -453,19 +454,27 @@ class calculated:
         start_time = time.time()  # 开始计算战斗时间
         while True:
             if type == 0:
-                end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
-                end_str = str(self.part_ocr((0,95,100,100)))
-                if any(substring in end_str for substring in end_list):
-                    log.info(_("完成自动战斗"))
-                    time.sleep(3)
-                    break
-                elif time.time() - start_time > 90: # 避免卡死
+                if self.platform == _("PC"):
+                    end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
+                    end_str = str(self.part_ocr((0,95,100,100)))
+                    if any(substring in end_str for substring in end_list):
+                        log.info(_("完成自动战斗"))
+                        time.sleep(3)
+                        break
+                else:
+                    target = cv.imread("./temp/mnq/finish_fighting.jpg")
+                    result = self.scan_screenshot(target)
+                    if result["max_val"] > 0.9:
+                        log.info(_("完成自动战斗"))
+                        break
+                if time.time() - start_time > 90: # 避免卡死
                     break
             elif type == 1:
                 result = self.part_ocr((6,10,89,88))
                 if "选择祝福" in result:
                     log.info(_("完成自动战斗"))
                     break
+            time.sleep(0.5) # 避免长时间ocr
 
     def Mouse_move(self, x):
         """
@@ -659,29 +668,34 @@ class calculated:
         log.debug(data)
         return data
 
-    def get_pix_bgr(self, pos):
+    def get_pix_bgr(self, desktop_pos=None, pos=None):
         """
         说明：
             获取指定坐标的颜色
         参数：
-            :param pos: 坐标
+            :param desktop_pos: 包含桌面的坐标
+            :param pos: 图片的坐标
         返回:
             :return 三色值
         """
         img, left, top, right, bottom, width, length = self.take_screenshot()
         img = np.array(img)
-        if self.platform == _("PC"):
-            x = int(pos[0])-int(left)
-            y = int(pos[1])-int(top)
-        else:
+        if desktop_pos:
+            if self.platform == _("PC"):
+                x = int(desktop_pos[0])-int(left)
+                y = int(desktop_pos[1])-int(top)
+            else:
+                x = int(desktop_pos[0])
+                y = int(desktop_pos[1])
+        elif pos:
             x = int(pos[0])
             y = int(pos[1])
-        px = img[y, x]
+        rgb = img[y, x]
         blue = img[y, x, 0]
         green = img[y, x, 1]
         red = img[y, x, 2]
-        return [blue, green, red]
-    
+        return [blue,green,red]
+
     def hsv2pos(self, img, color, tolerance = 0):
         """
         说明：
@@ -739,12 +753,12 @@ class calculated:
         join2 = False
         compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
         while True:
-            result = self.get_pix_bgr((119, 86))
-            log.debug(result)
+            result = self.get_pix_bgr(pos=(119, 86))
+            log.info(result)
             endtime = time.time() - start_time
-            if compare_lists([16, 16, 16], result) and compare_lists(result, [19, 19, 19]):
+            if compare_lists([12, 12, 12], result) and compare_lists(result, [19, 19, 19]):
                 join1 = True
-            if (compare_lists(result, [16, 16, 16]) or compare_lists([19, 19, 19], result)) and join1:
+            if (compare_lists(result, [12, 12, 12]) or compare_lists([19, 19, 19], result)) and join1:
                 join2 = True
             if join1 and join2:
                 log.info(_("已进入地图"))
@@ -752,6 +766,7 @@ class calculated:
             if endtime > 8:
                 log.info(_("识别超时"))
                 return endtime
+            time.sleep(0.1)
 
     def switch_window(self):
         if self.platform == _("PC"):
