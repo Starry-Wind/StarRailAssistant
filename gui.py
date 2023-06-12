@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-10 23:29:09
+LastEditTime: 2023-06-12 19:00:14
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -307,12 +307,13 @@ def page_main(page: ft.Page):
         language = list(filter(lambda key: language_dict[key] == language, language_dict))[0]
 
         fighting_list = [_('没打开'), _('打开了'), _('这是什么')]
-        fighting = fighting_list[config.get("auto_battle_persistence", "")]
+        fighting = fighting_list[config.get("auto_battle_persistence", 0)]
+        print(fighting)
 
         github_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', "不设置代理"]
-        github_proxy = config.get("github_proxy", "") 
+        github_proxy = config.get("github_proxy", 'https://ghproxy.com/') 
         rawgithub_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', "不设置代理"]
-        rawgithub_proxy = config.get("rawgithub_proxy", "")
+        rawgithub_proxy = config.get("rawgithub_proxy", 'https://ghproxy.com/')
 
         open_map = config.get("open_map", "m")
         level = config.get("level", "INFO")
@@ -378,7 +379,7 @@ def page_main(page: ft.Page):
             modify_json_file(CONFIG_FILE_NAME, "adb", simulator[simulator_dd.value])
             modify_json_file(CONFIG_FILE_NAME, "adb_path", adb_path_text.value)
             modify_json_file(CONFIG_FILE_NAME, "language", language_dict[language_dd.value])
-            modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", fighting_list.index(fighting))
+            modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", fighting_list.index(fighting_dd.value))
             modify_json_file(CONFIG_FILE_NAME, "start", True)
             to_page_main(page)
         page.clean()
@@ -470,7 +471,10 @@ def page_main(page: ft.Page):
     pb = ft.ProgressBar(width=400) #进度条 宽度可更改 pb.width = 400
     ## 更新选项卡
     Column = ft.Column()
-    log_text = ft.Column()
+    log_text = ft.Column(
+        width=page.window_width,
+        spacing=0
+    )
     # 背景图片
     if not page.session.get("start"):
         img_url2 = img_url[read_json_file(CONFIG_FILE_NAME).get("img",0)]

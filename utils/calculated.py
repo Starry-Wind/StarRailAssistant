@@ -44,7 +44,7 @@ class calculated:
         self.scaling = read_json_file(CONFIG_FILE_NAME).get("scaling", 1)
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
-        self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./temp/cnocr", rec_root="./temp/cnstd") if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name, cand_alphabet='0123456789')
+        self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnocr", rec_root="./model/cnstd") if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnocr", rec_root="./model/cnstd", cand_alphabet='0123456789')
         #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
         self.check_list = lambda x,y: re.match(x, str(y)) != None
         if platform == _("PC"):
@@ -348,9 +348,9 @@ class calculated:
                                 self.Relative_click((80, 50)) if self.platform == _("PC") else self.adb.input_tap((1011, 249))
                                 first_timeout = False
                             if time.time() - start_time < 10:
-                                self.scroll(-10) if self.platform == _("PC") else self.adb.input_swipe((1003, 255), (1006, 326))
+                                self.scroll(-10) if self.platform == _("PC") else self.adb.input_swipe((1003, 255), (1006, 326),1000)
                             else:
-                                self.scroll(10) if self.platform == _("PC") else self.adb.input_swipe((1006, 326), (1003, 255))
+                                self.scroll(10) if self.platform == _("PC") else self.adb.input_swipe((1006, 326), (1003, 255),1000)
 
                         if time.time() - start_time > 15:
                             log.info(_("地图识别超时"))
@@ -368,19 +368,6 @@ class calculated:
                     #points = self.calculated(result, target.shape)
                     self.Click(result["max_loc"])
                     break
-                if time.time() - start_time > 5:
-                    # 右边列表太长了 尝试向下滚动5秒 再向上滚动5秒
-                    # scroll内部sleep 0.5s 大概能10次 目前最长在雅利洛需要向下滚动7次
-                    if first_timeout:  # 点击右边的地图列表
-                        self.Relative_click((80, 50)) if self.platform == _("PC") else self.adb.input_tap((1011, 249))
-                        first_timeout = False
-                    if time.time() - start_time < 10:
-                        self.scroll(-10) if self.platform == _("PC") else self.adb.input_swipe((1003, 255), (1006, 326))
-                    else:
-                        self.scroll(10) if self.platform == _("PC") else self.adb.input_swipe((1006, 326), (1003, 255))
-                    if time.time() - start_time > 15:
-                        log.info(_("地图识别超时"))
-                        break
                 if flag == False:
                     break
                 time.sleep(0.5)
@@ -516,10 +503,11 @@ class calculated:
             :param com: 键盘操作 wasdf
             :param time 操作时间,单位秒
         '''
+        move_excursion = read_json_file(CONFIG_FILE_NAME).get("move_excursion", 0)
         if self.platform == _("PC"):
             self.keyboard.press(com)
             start_time = time.perf_counter()
-            while time.perf_counter() - start_time < time1:
+            while time.perf_counter() - start_time < (time1+move_excursion):
                 pass
             self.keyboard.release(com)
         elif self.platform == _("模拟器"):
@@ -763,7 +751,7 @@ class calculated:
             if join1 and join2:
                 log.info(_("已进入地图"))
                 return endtime
-            if endtime > 8:
+            if endtime > (8 if self.platform == _("PC") else 15):
                 log.info(_("识别超时"))
                 return endtime
             time.sleep(0.1)
@@ -812,13 +800,23 @@ class calculated:
             - key 对应按键
             - value 操作时间,单位秒
         """
-        self.move(key, value)
+        self.move(key)
         time.sleep(1) # 等待进入入画
-        target = cv.imread("./temp/pc/finish_fighting.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/finish_fighting.jpg")
-        result = self.scan_screenshot(target)
-        while result["max_val"] < threshold:
-            result = self.scan_screenshot(target)
-        time.sleep(.5) # 缓冲
+        while True:
+            if self.platform == _("PC"):
+                end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
+                end_str = str(self.part_ocr((0,95,100,100)))
+                if any(substring in end_str for substring in end_list):
+                    log.info(_("完成入画"))
+                    break
+            else:
+                target = cv.imread("./temp/mnq/finish_fighting.jpg")
+                result = self.scan_screenshot(target)
+                if result["max_val"] > 0.9:
+                    log.info(_("完成入画"))
+                    break
+            time.sleep(0.5) # 缓冲
+        time.sleep(0.2)
 
     def monthly_pass(self):
         """
