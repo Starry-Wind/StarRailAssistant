@@ -5,7 +5,11 @@
   },
   {
     "path": "README_EN.md",
-    "hash": "ccff5d3e3bc9931299bd7c5a9d16d2d3"
+    "hash": "62cd316b3b5cafca47b24d9647f957ff"
+  },
+  {
+    "path": "mouse_move.py",
+    "hash": "72f9b56fcb49ecb5bb106678c7994f6d"
   },
   {
     "path": "map_res_list.py",
@@ -17,15 +21,15 @@
   },
   {
     "path": "gui.py",
-    "hash": "100cf9911917677b661ee45cb0e9eabe"
+    "hash": "69ac8ed4545bff7fe65f35046c7a62d0"
   },
   {
     "path": "README.md",
-    "hash": "d8774c287c7128cd333efc1ce2e997e6"
+    "hash": "15f2038ef1235c94be5ebb0a2971d1bc"
   },
   {
     "path": "README_CHT.md",
-    "hash": "2db8c0fc14b28090df39487d579414e0"
+    "hash": "fb8c4a106aa2009f36020eea684a1342"
   },
   {
     "path": "Honkai_Star_Rail.py",
@@ -61,7 +65,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "0ff461cb871b79af6f2c8203bb0629e0"
+    "hash": "806e450379ebdaf460e5fb1d33c7434f"
   },
   {
     "path": "utils/adb.py",
@@ -105,6 +109,14 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "d29edddeb774306177c096aa5e196d99"
+    "hash": "2422ead06398065530cb139fa2bc5fd5"
+  },
+  {
+    "path": "model/cnocr/1.2/ppocr/ch_PP-OCRv3_det_infer.onnx",
+    "hash": "5732f8c84bd4cc0dab35094e7260f080"
+  },
+  {
+    "path": "model/cnstd/2.2/densenet_lite_114-fc/cnocr-v2.2-densenet_lite_114-fc-epoch=037-complete_match_epoch=0.7859-model.onnx",
+    "hash": "d661b811419ff7dde7eb8543690cdd2b"
   }
 ]
