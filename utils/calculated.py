@@ -348,9 +348,9 @@ class calculated:
                                 self.Relative_click((80, 50)) if self.platform == _("PC") else self.adb.input_tap((1011, 249))
                                 first_timeout = False
                             if time.time() - start_time < 10:
-                                self.scroll(-10) if self.platform == _("PC") else self.adb.input_swipe((1003, 255), (1006, 326))
+                                self.scroll(-10) if self.platform == _("PC") else self.adb.input_swipe((1003, 255), (1006, 326),1000)
                             else:
-                                self.scroll(10) if self.platform == _("PC") else self.adb.input_swipe((1006, 326), (1003, 255))
+                                self.scroll(10) if self.platform == _("PC") else self.adb.input_swipe((1006, 326), (1003, 255),1000)
 
                         if time.time() - start_time > 15:
                             log.info(_("地图识别超时"))
@@ -368,19 +368,6 @@ class calculated:
                     #points = self.calculated(result, target.shape)
                     self.Click(result["max_loc"])
                     break
-                if time.time() - start_time > 5:
-                    # 右边列表太长了 尝试向下滚动5秒 再向上滚动5秒
-                    # scroll内部sleep 0.5s 大概能10次 目前最长在雅利洛需要向下滚动7次
-                    if first_timeout:  # 点击右边的地图列表
-                        self.Relative_click((80, 50)) if self.platform == _("PC") else self.adb.input_tap((1011, 249))
-                        first_timeout = False
-                    if time.time() - start_time < 10:
-                        self.scroll(-10) if self.platform == _("PC") else self.adb.input_swipe((1003, 255), (1006, 326))
-                    else:
-                        self.scroll(10) if self.platform == _("PC") else self.adb.input_swipe((1006, 326), (1003, 255))
-                    if time.time() - start_time > 15:
-                        log.info(_("地图识别超时"))
-                        break
                 if flag == False:
                     break
                 time.sleep(0.5)
@@ -764,7 +751,7 @@ class calculated:
             if join1 and join2:
                 log.info(_("已进入地图"))
                 return endtime
-            if endtime > 8:
+            if endtime > (8 if self.platform == _("PC") else 15):
                 log.info(_("识别超时"))
                 return endtime
             time.sleep(0.1)
@@ -813,7 +800,7 @@ class calculated:
             - key 对应按键
             - value 操作时间,单位秒
         """
-        self.move(key, value)
+        self.move(key)
         time.sleep(1) # 等待进入入画
         while True:
             if self.platform == _("PC"):
