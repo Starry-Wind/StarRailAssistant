@@ -469,8 +469,8 @@ class calculated:
             视角转动
         """
         # 该公式为不同缩放比之间的转化
-        real_width = read_json_file(CONFIG_FILE_NAME)["real_width"]
-        dx = int(x * 1295 / real_width)
+        scaling = read_json_file(CONFIG_FILE_NAME)["scaling"]
+        dx = int(x * scaling)
         i = int(dx/200)
         last = dx - i*200
         for ii in range(abs(i)):
