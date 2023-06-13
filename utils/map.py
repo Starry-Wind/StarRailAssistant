@@ -19,6 +19,7 @@ class Map:
         self.adb = ADB(order, adb_path)
 
         self.calculated = calculated(title, platform,order,adb_path)
+        self.mouse = self.calculated.mouse
         self.keyboard = self.calculated.keyboard
         self.open_map = read_json_file(CONFIG_FILE_NAME).get("open_map", "m")
         self.map_list = []
@@ -54,6 +55,7 @@ class Map:
             else read_json_file(f"map\\{map}.json")
         )
         map_filename = map
+        join = True
         # 开始寻路
         log.info(_("开始寻路"))
         for map_index, map in enumerate(map_data["map"]):
@@ -61,12 +63,15 @@ class Map:
             key = list(map.keys())[0]
             value = map[key]
             if key in ["w", "s", "a", "d"]:
-                self.calculated.move(key, value)
+                self.calculated.move(key, value, join)
+                join = False
             elif key == "f":
                 self.calculated.teleport(key, value)
+                join = True
             elif key == "mouse_move":
                 self.calculated.Mouse_move(value)
             elif key == "fighting":
+                join = True
                 if value == 1:  # 进战斗
                     if self.platform == '模拟器':
                         self.adb.input_tap((1040, 550))
@@ -134,7 +139,6 @@ class Map:
                 count = self.calculated.wait_join()
                 log.info(_('地图加载完毕，加载时间为 {count} 秒').format(count=count))
                 time.sleep(2) # 加2s防止人物未加载
-
                 self.start_map(map, False)
         else:
             log.info(_('地图编号 {start} 不存在，请尝试检查更新').format(start=start))
