@@ -55,7 +55,6 @@ class Map:
             else read_json_file(f"map\\{map}.json")
         )
         map_filename = map
-        join = True
         # 开始寻路
         log.info(_("开始寻路"))
         for map_index, map in enumerate(map_data["map"]):
@@ -63,15 +62,12 @@ class Map:
             key = list(map.keys())[0]
             value = map[key]
             if key in ["w", "s", "a", "d"]:
-                self.calculated.move(key, value, join)
-                join = False
+                self.calculated.move(key, value)
             elif key == "f":
                 self.calculated.teleport(key, value)
-                join = True
             elif key == "mouse_move":
                 self.calculated.Mouse_move(value)
             elif key == "fighting":
-                join = True
                 if value == 1:  # 进战斗
                     if self.platform == '模拟器':
                         self.adb.input_tap((1040, 550))
