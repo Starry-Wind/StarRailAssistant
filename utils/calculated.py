@@ -282,6 +282,7 @@ class calculated:
             "map_2-4": _("永冬岭"),
             "map_2-5": _("大矿区"),
             "map_2-5_point_1": [(593, 500),(593, 400)],
+            "map_2-5_point_3": _("俯瞰点"),
             "map_2-6": _("铆钉镇"),
             "map_2-7": _("机械聚落"),
             #"orientation_4": _("仙舟「罗浮"),
@@ -300,6 +301,7 @@ class calculated:
             "map_3-4_point_3" : [(593, 346),(400, 346)],
         }
         if temp_name in temp_ocr:
+            log.info(temp_name)
             if "orientation" in temp_name:
                 log.info(_("选择星球"))
             elif "point" in temp_name:
@@ -313,11 +315,28 @@ class calculated:
                         break
             elif "point" in temp_name:
                 if self.platform == _("模拟器"):
-                    # time.sleep(0.5)
-                    self.adb.input_swipe(temp_ocr[temp_name][0],temp_ocr[temp_name][1],200)
-                    temp_ocr.pop(temp_name)
-                    time.sleep(0.5)
-                else:
+                    if type(temp_ocr[temp_name]) == list:
+                        # time.sleep(0.5)
+                        self.adb.input_swipe(temp_ocr[temp_name][0],temp_ocr[temp_name][1],200)
+                        temp_ocr.pop(temp_name)
+                        time.sleep(0.5)
+                    if type(temp_ocr[temp_name]) == str:
+                        start_time = time.time()
+                        first_timeout = True
+                        while True:
+                            ocr_data = self.part_ocr((0,10,75,97)) if self.platform == _("PC") else self.part_ocr((0,18,70,97))
+                            log.debug(temp_ocr[temp_name])
+                            check_dict = list(filter(lambda x: re.match(f'.*{temp_ocr[temp_name]}.*', x) != None, list(ocr_data.keys())))
+                            pos = ocr_data.get(check_dict[0], None) if check_dict else None
+                            log.debug(pos)
+                            if pos:
+                                self.Click(pos)
+                                break
+                            if time.time() - start_time > 15:
+                                log.info(_("传送锚点识别超时"))
+                                join = True
+                                break
+                elif self.platform == _("PC"):
                     target = cv.imread(target_path)
                     while True:
                         result = self.scan_screenshot(target)
@@ -359,11 +378,13 @@ class calculated:
                 elif type(temp_ocr[temp_name]) == tuple:
                     self.img_click(temp_ocr[temp_name])
         if temp_name not in temp_ocr or join:
+            log.info(temp_name)
             target = cv.imread(target_path)
             start_time = time.time()
             first_timeout = True
             while True:
                 result = self.scan_screenshot(target)
+                log.info(result["max_val"])
                 if result["max_val"] > threshold:
                     #points = self.calculated(result, target.shape)
                     self.Click(result["max_loc"])
@@ -395,7 +416,7 @@ class calculated:
                     self.Click(points)
                     break
                 else:
-                    # self.adb.input_tap((1040, 550))
+                    self.adb.input_tap((1040, 550))
                     break
             elif doubt_result["max_val"] > 0.9 or warn_result["max_val"] > 0.95:
                 log.info(_("识别到疑问或是警告,等待怪物开战"))
@@ -495,7 +516,7 @@ class calculated:
                 self.adb.input_swipe((919, 394), (919-last, 394), 200)
         time.sleep(0.5)
 
-    def move(self, com = ["w","a","s","d","f"], time1=1):
+    def move(self, com = ["w","a","s","d","f"], time1=1, join=False):
         '''
         说明:
             移动
@@ -504,10 +525,17 @@ class calculated:
             :param time 操作时间,单位秒
         '''
         move_excursion = read_json_file(CONFIG_FILE_NAME).get("move_excursion", 0)
+        move_division_excursion = read_json_file(CONFIG_FILE_NAME).get("move_division_excursion", 1)
         if self.platform == _("PC"):
             self.keyboard.press(com)
+            if read_json_file(CONFIG_FILE_NAME).get("sprint", False) and join:
+                time.sleep(0.05)
+                position = win32api.GetCursorPos()
+                log.info("疾跑")
+                self.mouse.press(mouse.Button.right)
+                self.mouse.release(mouse.Button.right)
             start_time = time.perf_counter()
-            while time.perf_counter() - start_time < (time1+move_excursion):
+            while time.perf_counter() - start_time < (time1/move_division_excursion+move_excursion):
                 pass
             self.keyboard.release(com)
         elif self.platform == _("模拟器"):
