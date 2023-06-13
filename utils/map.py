@@ -128,12 +128,16 @@ class Map:
                         self.calculated.open_map(self.open_map)
                         self.map_init()
                     else:
-                        time.sleep(value)
-                        self.calculated.click_target(key, 0.98)
-                #time.sleep(3)
+                        if self.platform == _("PC"):
+                            time.sleep(value)
+                            self.calculated.click_target(key, 0.98)
+                        else:
+                            time.sleep(value)
+                            self.calculated.click_target(key, 0.88)  # 模拟器降低置信度可以解决大部分因性能问题导致的截图模糊识别问题  
+                            time.sleep(5) # 为模拟器增加容错，解决模拟器性能导致的加载地图进度卡画面  
                 count = self.calculated.wait_join()
                 log.info(_('地图加载完毕，加载时间为 {count} 秒').format(count=count))
-                time.sleep(2) # 加2s防止人物未加载
+                time.sleep(3) # 加3s防止人物未加载
 
                 self.start_map(map, False)
         else:
