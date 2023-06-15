@@ -8,10 +8,6 @@
     "hash": "62cd316b3b5cafca47b24d9647f957ff"
   },
   {
-    "path": "mouse_move.py",
-    "hash": "72f9b56fcb49ecb5bb106678c7994f6d"
-  },
-  {
     "path": "map_res_list.py",
     "hash": "2027d7dba3a3e12565621b101a2dc1cb"
   },
@@ -65,7 +61,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "0251b3efdb6f5efe28c12183d07cc977"
+    "hash": "5ccef746277c1e5b5a2ab88e5f22828d"
   },
   {
     "path": "utils/adb.py",
@@ -73,7 +69,7 @@
   },
   {
     "path": "utils/commission.py",
-    "hash": "879e816368af403cbd29f4e69583a5e3"
+    "hash": "4c63761e0f60052b6f46cbe2f29280a2"
   },
   {
     "path": "utils/cv_tracker.py",
@@ -81,7 +77,7 @@
   },
   {
     "path": "utils/map.py",
-    "hash": "e37b29fbfb0da62bbbaa2bc68a2e1868"
+    "hash": "6b74f4db7c423fc77b9d08c9ddf99aaa"
   },
   {
     "path": "utils/requests.py",
@@ -89,7 +85,7 @@
   },
   {
     "path": "utils/record_v7.2.py",
-    "hash": "da1d31a137404f3eb4d30540bd915f18"
+    "hash": "87ea10e233817032cb3a239c3f85e971"
   },
   {
     "path": "utils/update_file.py",
@@ -109,7 +105,7 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "2422ead06398065530cb139fa2bc5fd5"
+    "hash": "e131655489eb057a651f917cda8e7269"
   },
   {
     "path": "model/cnocr/1.2/ppocr/ch_PP-OCRv3_det_infer.onnx",
