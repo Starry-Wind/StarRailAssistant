@@ -47,6 +47,7 @@ class calculated:
         self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnocr", rec_root="./model/cnstd") if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnocr", rec_root="./model/cnstd", cand_alphabet='0123456789')
         #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
         self.check_list = lambda x,y: re.match(x, str(y)) != None
+        self.compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
         if platform == _("PC"):
             self.window = gw.getWindowsWithTitle(self.title)
             if not self.window:
@@ -336,6 +337,7 @@ class calculated:
                                 log.info(_("传送锚点识别超时"))
                                 join = True
                                 break
+                            time.sleep(0.5)
                 elif self.platform == _("PC"):
                     target = cv.imread(target_path)
                     while True:
@@ -482,7 +484,7 @@ class calculated:
                 if "选择祝福" in result:
                     log.info(_("完成自动战斗"))
                     break
-            time.sleep(0.5) # 避免长时间ocr
+            time.sleep(1.0) # 避免长时间ocr
 
     def Mouse_move(self, x):
         """
@@ -516,7 +518,7 @@ class calculated:
                 self.adb.input_swipe((919, 394), (919-last, 394), 200)
         time.sleep(0.5)
 
-    def move(self, com = ["w","a","s","d","f"], time1=1, join=False):
+    def move(self, com = ["w","a","s","d","f"], time1=1):
         '''
         说明:
             移动
@@ -528,9 +530,10 @@ class calculated:
         move_division_excursion = read_json_file(CONFIG_FILE_NAME).get("move_division_excursion", 1)
         if self.platform == _("PC"):
             self.keyboard.press(com)
-            if read_json_file(CONFIG_FILE_NAME).get("sprint", False) and join:
+            result = self.get_pix_bgr(pos=(1712, 958))
+            log.info(result)
+            if read_json_file(CONFIG_FILE_NAME).get("sprint", False) and (self.compare_lists(result, [120, 160, 180]) or self.compare_lists([200, 200, 200], result)):
                 time.sleep(0.05)
-                position = win32api.GetCursorPos()
                 log.info("疾跑")
                 self.mouse.press(mouse.Button.right)
                 self.mouse.release(mouse.Button.right)
@@ -767,14 +770,13 @@ class calculated:
         start_time = time.time()
         join1 = False
         join2 = False
-        compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
         while True:
             result = self.get_pix_bgr(pos=(119, 86))
             log.debug(result)
             endtime = time.time() - start_time
-            if compare_lists([0, 0, 0], result) and compare_lists(result, [19, 19, 19]):
+            if self.compare_lists([0, 0, 0], result) and self.compare_lists(result, [19, 19, 19]):
                 join1 = True
-            if compare_lists([19, 19, 19], result) and join1:
+            if self.compare_lists([19, 19, 19], result) and join1:
                 join2 = True
             if join1 and join2:
                 log.info(_("已进入地图"))

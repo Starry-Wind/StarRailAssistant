@@ -55,7 +55,6 @@ class Map:
             else read_json_file(f"map\\{map}.json")
         )
         map_filename = map
-        join = True
         # 开始寻路
         log.info(_("开始寻路"))
         for map_index, map in enumerate(map_data["map"]):
@@ -63,15 +62,12 @@ class Map:
             key = list(map.keys())[0]
             value = map[key]
             if key in ["w", "s", "a", "d"]:
-                self.calculated.move(key, value, join)
-                join = False
+                self.calculated.move(key, value)
             elif key == "f":
                 self.calculated.teleport(key, value)
-                join = True
             elif key == "mouse_move":
                 self.calculated.Mouse_move(value)
             elif key == "fighting":
-                join = True
                 if value == 1:  # 进战斗
                     if self.platform == '模拟器':
                         self.adb.input_tap((1040, 550))
@@ -111,7 +107,7 @@ class Map:
         if (width!=1280 or length!=720) and self.platform == _("模拟器"):
             raise Exception(_("错误的模拟器分辨率，请调整为1280X720，请不要在群里问怎么调整分辨率，小心被踢！"))
         if not (1915<=width<=1925 and 1075<=length<=1085) and self.platform == _("PC"):
-            raise Exception(_("错误的模拟器分辨率，请调整为1920X1080，请不要在群里问怎么调整分辨率，小心被踢！"))
+            raise Exception(_("错误的PC分辨率，请调整为1920X1080，请不要在群里问怎么调整分辨率，小心被踢！"))
         if f'map_{start}.json' in self.map_list:
             map_list = self.map_list[self.map_list.index(f'map_{start}.json'):len(self.map_list)]
             for map in map_list:
