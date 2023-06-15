@@ -47,6 +47,7 @@ class calculated:
         self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnocr", rec_root="./model/cnstd") if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnocr", rec_root="./model/cnstd", cand_alphabet='0123456789')
         #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
         self.check_list = lambda x,y: re.match(x, str(y)) != None
+        self.compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
         if platform == _("PC"):
             self.window = gw.getWindowsWithTitle(self.title)
             if not self.window:
@@ -283,6 +284,7 @@ class calculated:
             "map_2-4": _("永冬岭"),
             "map_2-5": _("大矿区"),
             "map_2-5_point_1": [(593, 500),(593, 400)],
+            "map_2-5_point_3": _("俯瞰点"),
             "map_2-6": _("铆钉镇"),
             "map_2-7": _("机械聚落"),
             #"orientation_4": _("仙舟「罗浮"),
@@ -301,6 +303,7 @@ class calculated:
             "map_3-4_point_3" : [(593, 346),(400, 346)],
         }
         if temp_name in temp_ocr:
+            log.info(temp_name)
             if "orientation" in temp_name:
                 log.info(_("选择星球"))
             elif "point" in temp_name:
@@ -314,11 +317,29 @@ class calculated:
                         break
             elif "point" in temp_name:
                 if self.platform == _("模拟器"):
-                    # time.sleep(0.5)
-                    self.adb.input_swipe(temp_ocr[temp_name][0],temp_ocr[temp_name][1],200)
-                    temp_ocr.pop(temp_name)
-                    time.sleep(0.5)
-                else:
+                    if type(temp_ocr[temp_name]) == list:
+                        # time.sleep(0.5)
+                        self.adb.input_swipe(temp_ocr[temp_name][0],temp_ocr[temp_name][1],200)
+                        temp_ocr.pop(temp_name)
+                        time.sleep(0.5)
+                    if type(temp_ocr[temp_name]) == str:
+                        start_time = time.time()
+                        first_timeout = True
+                        while True:
+                            ocr_data = self.part_ocr((0,10,75,97)) if self.platform == _("PC") else self.part_ocr((0,18,70,97))
+                            log.debug(temp_ocr[temp_name])
+                            check_dict = list(filter(lambda x: re.match(f'.*{temp_ocr[temp_name]}.*', x) != None, list(ocr_data.keys())))
+                            pos = ocr_data.get(check_dict[0], None) if check_dict else None
+                            log.debug(pos)
+                            if pos:
+                                self.Click(pos)
+                                break
+                            if time.time() - start_time > 15:
+                                log.info(_("传送锚点识别超时"))
+                                join = True
+                                break
+                            time.sleep(0.5)
+                elif self.platform == _("PC"):
                     target = cv.imread(target_path)
                     while True:
                         result = self.scan_screenshot(target)
@@ -360,11 +381,13 @@ class calculated:
                 elif type(temp_ocr[temp_name]) == tuple:
                     self.img_click(temp_ocr[temp_name])
         if temp_name not in temp_ocr or join:
+            log.info(temp_name)
             target = cv.imread(target_path)
             start_time = time.time()
             first_timeout = True
             while True:
                 result = self.scan_screenshot(target)
+                log.info(result["max_val"])
                 if result["max_val"] > threshold:
                     #points = self.calculated(result, target.shape)
                     self.Click(result["max_loc"])
@@ -396,7 +419,7 @@ class calculated:
                     self.Click(points)
                     break
                 else:
-                    # self.adb.input_tap((1040, 550))
+                    self.adb.input_tap((1040, 550))
                     break
             elif doubt_result["max_val"] > 0.9 or warn_result["max_val"] > 0.95:
                 log.info(_("识别到疑问或是警告,等待怪物开战"))
@@ -462,7 +485,7 @@ class calculated:
                 if "选择祝福" in result:
                     log.info(_("完成自动战斗"))
                     break
-            time.sleep(0.5) # 避免长时间ocr
+            time.sleep(1.0) # 避免长时间ocr
 
     def Mouse_move(self, x):
         """
@@ -470,8 +493,8 @@ class calculated:
             视角转动
         """
         # 该公式为不同缩放比之间的转化
-        real_width = read_json_file(CONFIG_FILE_NAME)["real_width"]
-        dx = int(x * 1295 / real_width)
+        scaling = read_json_file(CONFIG_FILE_NAME)["scaling"]
+        dx = int(x * scaling)
         i = int(dx/200)
         last = dx - i*200
         for ii in range(abs(i)):
@@ -505,10 +528,18 @@ class calculated:
             :param time 操作时间,单位秒
         '''
         move_excursion = read_json_file(CONFIG_FILE_NAME).get("move_excursion", 0)
+        move_division_excursion = read_json_file(CONFIG_FILE_NAME).get("move_division_excursion", 1)
         if self.platform == _("PC"):
             self.keyboard.press(com)
+            result = self.get_pix_bgr(pos=(1712, 958))
+            log.info(result)
+            if read_json_file(CONFIG_FILE_NAME).get("sprint", False) and (self.compare_lists(result, [120, 160, 180]) or self.compare_lists([200, 200, 200], result)):
+                time.sleep(0.05)
+                log.info("疾跑")
+                self.mouse.press(mouse.Button.right)
+                self.mouse.release(mouse.Button.right)
             start_time = time.perf_counter()
-            while time.perf_counter() - start_time < (time1+move_excursion):
+            while time.perf_counter() - start_time < (time1/move_division_excursion+move_excursion):
                 pass
             self.keyboard.release(com)
         elif self.platform == _("模拟器"):
@@ -740,14 +771,13 @@ class calculated:
         start_time = time.time()
         join1 = False
         join2 = False
-        compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
         while True:
             result = self.get_pix_bgr(pos=(119, 86))
             log.debug(result)
             endtime = time.time() - start_time
-            if compare_lists([0, 0, 0], result) and compare_lists(result, [19, 19, 19]):
+            if self.compare_lists([0, 0, 0], result) and self.compare_lists(result, [19, 19, 19]):
                 join1 = True
-            if compare_lists([19, 19, 19], result) and join1:
+            if self.compare_lists([19, 19, 19], result) and join1:
                 join2 = True
             if join1 and join2:
                 log.info(_("已进入地图"))

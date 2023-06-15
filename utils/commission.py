@@ -1,6 +1,5 @@
 from utils.calculated import calculated
 from utils.log import log, _
-import pyautogui
 import time
 
 def get_percentile(rect, shape):
@@ -17,7 +16,7 @@ class Commission():
 
     def open(self):
         log.info(_("即将进行自动重新委托，当前重新委托次数为{n}").format(n=self.n))
-        pyautogui.press('esc')
+        self.calculated.keyboard.press('esc')
         time.sleep(1)
         # self.calculated.click_target('./temp/commission_menu.jpg', 0.98)
         self.calculated.ocr_click(_('委托'))
@@ -38,7 +37,7 @@ class Commission():
             time.sleep(5)
     def close(self):
         self.calculated.ocr_click(_('委托'))
-        pyautogui.press('esc')
+        self.calculated.keyboard.press('esc')
         time.sleep(1.5)
-        pyautogui.press('esc')
+        self.calculated.keyboard.press('esc')
         log.info(_("执行完毕"))

@@ -2,7 +2,7 @@
 Author: AlisaCat
 Date: 2023-05-07 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-10 00:50:05
+LastEditTime: 2023-06-12 21:15:15
 Description: wasd移动，x是进战斗，鼠标左键是打障碍物等，不要用鼠标移动视角，用方向键左右来移动视角（脚本运行后方向键左右会映射成鼠标）
             F9停止录制并保存
 Copyright (c) 2023 by AlisaCat, All Rights Reserved. 
@@ -99,7 +99,7 @@ def read_json_file(filename: str, path=False):
             else:
                 return data
     
-real_width = read_json_file("config.json")['real_width']
+scaling = read_json_file("config.json")['scaling']
 
 def get_file(path, exclude=[], exclude_file=None, get_path=False) -> list[str]:
     """
@@ -189,7 +189,7 @@ def scan_screenshot(prepared:np, screenshot1 = None) -> dict:
     }
     
 def on_press(key):
-    global last_time, key_down_time, real_width
+    global last_time, key_down_time
     try:
         if key.char in key_list and key.char in key_down_time:
             pass
@@ -232,7 +232,7 @@ def on_release(key):
         pass
     if key == keyboard.Key.left:
         x = mouse_val * -1
-        dx = int(x * 1295 / real_width)
+        dx = int(x * scaling)
         win32api.mouse_event(1, dx, 0)  # 进行视角移动
         mouse_move_pos_list.append(
             {"mouse_move_dxy": (x, 0), "time_sleep": current_time - last_time})
@@ -241,7 +241,7 @@ def on_release(key):
             print("捕捉M:", "mouse_move_dxy", (x, 0), "MExec:", dx)
     elif key == keyboard.Key.right:
         x = mouse_val  # 200
-        dx = int(x * 1295 / real_width)
+        dx = int(x * scaling)
         win32api.mouse_event(1, dx, 0)  # 进行视角移动
         mouse_move_pos_list.append(
             {"mouse_move_dxy": (x, 0), "time_sleep": current_time - last_time})
@@ -322,7 +322,8 @@ def save_json():
         elif 'mouse_move_dxy' in element_save:
             normal_save_dict["map"].append(
                 {"mouse_move": element_save['mouse_move_dxy'][0]})
-
+    if not os.path.exists("map"):
+        os.makedirs("map")
     with open(f'map//{save_name}.json', 'wb') as f:
         f.write(orjson.dumps(normal_save_dict, option=orjson.OPT_INDENT_2))
 
