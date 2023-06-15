@@ -53,7 +53,7 @@ class Map:
             read_json_file(f"map\\old\\{map}.json")
             if old
             else read_json_file(f"map\\{map}.json")
-        )
+        ) if self.platform == _("PC") else read_json_file(f"map\\mnq\\{map}.json")
         map_filename = map
         # 开始寻路
         log.info(_("开始寻路"))
@@ -87,10 +87,10 @@ class Map:
                 raise Exception(_("map数据错误,未匹配对应操作:{map_filename}").format(map_filename=map_filename), map)
 
     def read_maps(self):
-        self.map_list = get_file('./map', ['old'])  # 从'./map'目录获取地图文件列表（排除'old'）
+        self.map_list = get_file('./map', ['old']) if self.platform == _("PC") else get_file('./map/mnq', ['old'])  # 从'./map'目录获取地图文件列表（排除'old'）
         self.map_list_map.clear()
         for map_ in self.map_list:
-            map_data = read_json_file(f"map/{map_}")
+            map_data = read_json_file(f"map/{map_}") if self.platform == _("PC") else read_json_file(f"map/mnq/{map_}")
             key1 = map_[map_.index('_') + 1:map_.index('-')]
             key2 = map_[map_.index('-') + 1:map_.index('.')]
             value = self.map_list_map.get(key1)
@@ -113,7 +113,7 @@ class Map:
             for map in map_list:
                 # 选择地图
                 map = map.split('.')[0]
-                map_data = read_json_file(f"map/{map}.json")
+                map_data = read_json_file(f"map/{map}.json") if self.platform == _("PC") else read_json_file(f"map\\mnq\\{map}.json")
                 name = map_data['name']
                 author = map_data['author']
                 start_dict = map_data['start']
