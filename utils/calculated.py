@@ -409,9 +409,13 @@ class calculated:
         doubt = cv.imread("./temp/pc/doubt.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/doubt.jpg")
         warn = cv.imread("./temp/pc/warn.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/warn.jpg")
         tagz = cv.imread("./temp/pc/tagz.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/tagz.jpg")
+        log.info(_("识别中"))
         while True:
-            log.info(_("识别中"))
-            if self.scan_screenshot(tagz,(40,0,50,15))["max_loc"] < 0.98 : continue  # 没有Z标志时，直接继续
+            
+            if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
+                log.info(_("识别超时,此处可能无敌人"))
+                return
+            if (self.scan_screenshot(tagz, pos=(40,0,50,15))["max_val"]) < 0.98 : continue  # 没有Z标志时，直接继续
             attack_result = self.scan_screenshot(attack)
             if attack_result["max_val"] > 0.98:
                 #points = self.calculated(result, target.shape)
@@ -433,9 +437,6 @@ class calculated:
                 result = self.scan_screenshot(target)
                 if result["max_val"] < 0.95:
                     break
-            elif time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
-                log.info(_("识别超时,此处可能无敌人"))
-                return
             time.sleep(0.1)
         time.sleep(6)
         target = cv.imread("./temp/pc/auto.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/auto.jpg")
@@ -798,8 +799,8 @@ class calculated:
                     # log.debug(w.title)
                     if w.title == self.title:
                         #client.Dispatch("WScript.Shell").SendKeys('%')
-                        kc.press('%')
-                        kc.release('%')
+                        # kc.press('%')
+                        # kc.release('%')
                         w.activate()
                         break
             else:
