@@ -131,7 +131,8 @@ class update_file:
                         keep_folder: Optional[List[str]] = [],
                         keep_file: Optional[List[str]] = [],
                         zip_path: str="",
-                        name: str="") -> bool:
+                        name: str="",
+                        delete_file: bool=False) -> bool:
         """
         说明：
             更新文件
@@ -148,6 +149,7 @@ class update_file:
             :param keep_file: 保存的文件
             :param zip_path: 需要移动的文件地址
             :param name: 更新的文件名称
+            :param delete_file: 是否删除文件
         """
         global tmp_dir
 
@@ -209,7 +211,8 @@ class update_file:
 
 
             #shutil.rmtree("..\StarRailAssistant-beta-2.7")
-            #await self.remove_file(unzip_path, keep_folder, keep_file)
+            if delete_file:
+                await self.remove_file(unzip_path, keep_folder, keep_file)
             await self.move_file(os.path.join(tmp_dir, zip_path), unzip_path, [], keep_file)
 
             log.info(_("[资源文件更新]正在校验资源文件"))
@@ -282,7 +285,8 @@ class update_file:
                         keep_folder: Optional[List[str]] = [],
                         keep_file: Optional[List[str]] = [],
                         zip_path: str="",
-                        name: str=""):
+                        name: str="",
+                        delete_file: bool=False):
         """
         说明：
             更新文件
@@ -298,13 +302,14 @@ class update_file:
             :param keep_file: 保存的文件
             :param zip_path: 需要移动的文件地址
             :param name: 更新的文件名称
+            :param delete_file: 是否删除文件
         """
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         log.info(_("[资源文件更新]即将资源文件更新，本操作会覆盖本地{name}文件..").format(name=name))
-        check_file_status = asyncio.run(self.update_file(url_proxy,raw_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name))
+        check_file_status = asyncio.run(self.update_file(url_proxy,raw_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name,delete_file))
         if check_file_status == "rm_all":
             time.sleep(3)
-            check_file_status = asyncio.run(self.update_file(url_proxy,raw_proxy,True,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name))
+            check_file_status = asyncio.run(self.update_file(url_proxy,raw_proxy,True,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name,delete_file))
         elif check_file_status == "download_error":
-            check_file_status = asyncio.run(self.update_file(url_proxy,raw_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name))
+            check_file_status = asyncio.run(self.update_file(url_proxy,raw_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name,delete_file))
     
