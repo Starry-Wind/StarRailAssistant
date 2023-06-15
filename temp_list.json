@@ -88,10 +88,6 @@
     "hash": "e9b8e048c513a18b2b09c21242f5ccb7"
   },
   {
-    "path": "temp/mnq/map_1-2_point_4.jpg",
-    "hash": "4fca8631ad666fe57234b26d66b3b6bd"
-  },
-  {
     "path": "temp/mnq/map_3-3_point_1.png",
     "hash": "9c0eb7bfdebd8bd398743bad92be5ac6"
   },
@@ -146,10 +142,6 @@
   {
     "path": "temp/mnq/map_2-4_point_3.png",
     "hash": "df51aff5a3dd194def57e798edd46786"
-  },
-  {
-    "path": "temp/mnq/map_2-4_point_4.jpg",
-    "hash": "54ff4f236074923bfa04fe95d338c812"
   },
   {
     "path": "temp/mnq/map_3-1_point_4.png",
@@ -229,7 +221,11 @@
   },
   {
     "path": "temp/mnq/map_3-1_point_3.png",
-    "hash": "9415115e99e30f5ba36f196e05f48f25"
+    "hash": "511c231c2ba6861413a7d8d0135b1fa6"
+  },
+  {
+    "path": "temp/mnq/map_1-2_point_2.png",
+    "hash": "b041d4dd7dd372bb76d25dc9b87e2608"
   },
   {
     "path": "temp/mnq/map_1-2_point_1.jpg",
@@ -244,10 +240,6 @@
     "hash": "6f5cb728400787299102992e25b86381"
   },
   {
-    "path": "temp/mnq/map_1-2_point_3.jpg",
-    "hash": "9cc7ea9cad61f00b53748186fdad64b7"
-  },
-  {
     "path": "temp/mnq/map_3-3_point_2.png",
     "hash": "f0e45ef1a16e133c0b787e51351622ea"
   },
@@ -258,10 +250,6 @@
   {
     "path": "temp/mnq/map_2-5_point_5.png",
     "hash": "e0ac61c2e2d07c07827cddf22d7116ff"
-  },
-  {
-    "path": "temp/mnq/map_1-2_point_2.jpg",
-    "hash": "66b7acbd1a2b9894193b4a8a93ef6627"
   },
   {
     "path": "temp/mnq/map_3-2_point_2.png",
@@ -300,6 +288,10 @@
     "hash": "b0587668e10f686913341adaee964bf3"
   },
   {
+    "path": "temp/cnocr/1.2/ppocr/ch_PP-OCRv3_det_infer.onnx",
+    "hash": "5732f8c84bd4cc0dab35094e7260f080"
+  },
+  {
     "path": "temp/adb/AdbWinApi.dll",
     "hash": "ed5a809dc0024d83cbab4fb9933d598d"
   },
@@ -312,8 +304,8 @@
     "hash": "e885fa349d4b116f4a64c657451e6a53"
   },
   {
-    "path": "temp/pc/map_2-4_point_3.jpg",
-    "hash": "ca4286154efacb66560ab5119ff93ccb"
+    "path": "temp/cnstd/2.2/densenet_lite_114-fc/cnocr-v2.2-densenet_lite_114-fc-epoch=037-complete_match_epoch=0.7859-model.onnx",
+    "hash": "d661b811419ff7dde7eb8543690cdd2b"
   },
   {
     "path": "temp/pc/map_3-2.png",
@@ -326,10 +318,6 @@
   {
     "path": "temp/pc/contraction.jpg",
     "hash": "2bab24d0108cac0cd1bc6534f8e58a50"
-  },
-  {
-    "path": "temp/pc/map_2-4_point_2.jpg",
-    "hash": "9ed4f2e142553c2ca7ef39788d384181"
   },
   {
     "path": "temp/pc/map_3-1_point_1.png",
@@ -400,10 +388,6 @@
     "hash": "c87c33de576bd242ee07587138904688"
   },
   {
-    "path": "temp/pc/map_1-2_point_4.jpg",
-    "hash": "c41133d5e6358be12f9e5aea80952502"
-  },
-  {
     "path": "temp/pc/map_3-3_point_1.png",
     "hash": "b621bf868a72611786c9508277d3abd5"
   },
@@ -418,10 +402,6 @@
   {
     "path": "temp/pc/map_3-3.png",
     "hash": "1535dbda0e5a0142e8ba7fbb9ca3ca46"
-  },
-  {
-    "path": "temp/pc/map_2-4.jpg",
-    "hash": "ac82ea67ea6f7b668e8321b658763b56"
   },
   {
     "path": "temp/pc/map_3-3_point_5.png",
@@ -450,6 +430,10 @@
   {
     "path": "temp/pc/map_2-3_point_5.jpg",
     "hash": "e7212d1da3ea3304a6a40224273db67a"
+  },
+  {
+    "path": "temp/pc/map_shrink.png",
+    "hash": "3d8cfebc497e55ce3db5e035ac3209f8"
   },
   {
     "path": "temp/pc/doubt.jpg",
@@ -545,15 +529,15 @@
   },
   {
     "path": "temp/pc/map_3-1_point_3.png",
-    "hash": "3a4ef4114e60c5c1a8aae242831093b6"
+    "hash": "2c2222fd5e17a62a4bba28e2c2a957fc"
+  },
+  {
+    "path": "temp/pc/map_1-2_point_2.png",
+    "hash": "acdd944555d8bee7ac68a07ea8fe8f8c"
   },
   {
     "path": "temp/pc/map_1-2_point_1.jpg",
     "hash": "493809b6728057a9249fbfa471ef2f26"
-  },
-  {
-    "path": "temp/pc/map_2-4_point_1.jpg",
-    "hash": "c78b84cb9aee5cdaf3a3d367c1302e7d"
   },
   {
     "path": "temp/pc/orientation_1.jpg",
@@ -562,10 +546,6 @@
   {
     "path": "temp/pc/map_3-3_point_3.png",
     "hash": "fcbf4bf79a86daec3b8af3252204b908"
-  },
-  {
-    "path": "temp/pc/map_1-2_point_3.jpg",
-    "hash": "13f1b0b9f2c9c543f445fefec88050f2"
   },
   {
     "path": "temp/pc/map_3-3_point_2.png",
@@ -578,10 +558,6 @@
   {
     "path": "temp/pc/map_2-5_point_5.png",
     "hash": "b0e1d4911fd480b8805e9345d0982076"
-  },
-  {
-    "path": "temp/pc/map_1-2_point_2.jpg",
-    "hash": "583fea6f1caafbaef842d61182a328d9"
   },
   {
     "path": "temp/pc/map_3-2_point_2.png",
