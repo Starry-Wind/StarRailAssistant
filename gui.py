@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-12 19:00:14
+LastEditTime: 2023-06-15 19:46:04
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -209,7 +209,8 @@ def page_main(page: ft.Page):
                 'keep_folder': ['.git', 'logs', 'temp', 'map', 'tmp', 'venv'],
                 'keep_file': ['config.json', 'version.json', 'star_list.json', 'README_CHT.md', 'README.md'],
                 'zip_path': "StarRailAssistant-main/",
-                'name': _("脚本")
+                'name': _("脚本"),
+                'delete_file': False
             },
             _("地图"):{
                 'url_proxy': ghproxy,
@@ -222,7 +223,8 @@ def page_main(page: ft.Page):
                 'keep_folder': [],
                 'keep_file': [],
                 'zip_path': "map/",
-                'name': _("地图")
+                'name': _("地图"),
+                'delete_file': True
             },
             _("图片"):{
                 'url_proxy': ghproxy,
@@ -235,7 +237,8 @@ def page_main(page: ft.Page):
                 'keep_folder': [],
                 'keep_file': [],
                 'zip_path': "map/",
-                'name': _("图片")
+                'name': _("图片"),
+                'delete_file': True
             },
         }
         if not check_console:
