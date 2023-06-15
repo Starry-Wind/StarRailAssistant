@@ -49,7 +49,7 @@ class update_file:
         """
         for i,data in enumerate(json_path):
             file_path = Path() / data["path"]
-            if not os.path.exists(file_path):
+            if not os.path.exists(file_path) and str(file_path) not in keep_file:
                 return False, file_path
             if os.path.isfile(file_path) and str(file_path) not in keep_file:
                 log.debug(hashlib.md5(file_path.read_bytes()).hexdigest())
