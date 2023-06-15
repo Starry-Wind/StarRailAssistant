@@ -107,7 +107,7 @@ class Map:
         if (width!=1280 or length!=720) and self.platform == _("模拟器"):
             raise Exception(_("错误的模拟器分辨率，请调整为1280X720，请不要在群里问怎么调整分辨率，小心被踢！"))
         if not (1915<=width<=1925 and 1075<=length<=1085) and self.platform == _("PC"):
-            raise Exception(_("错误的模拟器分辨率，请调整为1920X1080，请不要在群里问怎么调整分辨率，小心被踢！"))
+            raise Exception(_("错误的PC分辨率，请调整为1920X1080，请不要在群里问怎么调整分辨率，小心被踢！"))
         if f'map_{start}.json' in self.map_list:
             map_list = self.map_list[self.map_list.index(f'map_{start}.json'):len(self.map_list)]
             for map in map_list:

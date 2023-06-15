@@ -322,7 +322,8 @@ def save_json():
         elif 'mouse_move_dxy' in element_save:
             normal_save_dict["map"].append(
                 {"mouse_move": element_save['mouse_move_dxy'][0]})
-
+    if not os.path.exists("map"):
+        os.makedirs("map")
     with open(f'map//{save_name}.json', 'wb') as f:
         f.write(orjson.dumps(normal_save_dict, option=orjson.OPT_INDENT_2))
 

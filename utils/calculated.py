@@ -337,6 +337,7 @@ class calculated:
                                 log.info(_("传送锚点识别超时"))
                                 join = True
                                 break
+                            time.sleep(0.5)
                 elif self.platform == _("PC"):
                     target = cv.imread(target_path)
                     while True:
@@ -483,7 +484,7 @@ class calculated:
                 if "选择祝福" in result:
                     log.info(_("完成自动战斗"))
                     break
-            time.sleep(0.5) # 避免长时间ocr
+            time.sleep(1.0) # 避免长时间ocr
 
     def Mouse_move(self, x):
         """
