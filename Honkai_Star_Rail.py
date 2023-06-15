@@ -255,7 +255,8 @@ class SRA:
                 'keep_folder': ['.git', 'logs', 'temp', 'map', 'tmp', 'venv'],
                 'keep_file': ['config.json', 'version.json', 'star_list.json', 'README_CHT.md', 'README.md'],
                 'zip_path': "StarRailAssistant-main/",
-                'name': _("脚本")
+                'name': _("脚本"),
+                'delete_file': False
             },
             _("地图"):{
                 'url_proxy': ghproxy,
@@ -268,7 +269,8 @@ class SRA:
                 'keep_folder': [],
                 'keep_file': [],
                 'zip_path': "map/",
-                'name': _("地图")
+                'name': _("地图"),
+                'delete_file': True
             },
             _("图片"):{
                 'url_proxy': ghproxy,
@@ -281,7 +283,8 @@ class SRA:
                 'keep_folder': [],
                 'keep_file': [],
                 'zip_path': "map/",
-                'name': _("图片")
+                'name': _("图片"),
+                'delete_file': True
             },
         }
         title = _("请选择更新项目")
