@@ -416,8 +416,8 @@ class calculated:
             
             if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info(_("识别超时,此处可能无敌人"))
-                return
-            if (self.scan_screenshot(tagz, pos=(40,0,50,15))["max_val"]) < 0.98 : continue  # 没有Z标志时，直接继续
+                return False
+            # if (self.scan_screenshot(tagz, pos=(40,0,60,15))["max_val"]) < 0.95 : continue  # 没有Z标志时，直接继续
             attack_result = self.scan_screenshot(attack)
             if attack_result["max_val"] > 0.98:
                 #points = self.calculated(result, target.shape)
