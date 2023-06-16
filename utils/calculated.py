@@ -14,6 +14,7 @@ from PIL import ImageGrab, Image
 from pynput import mouse
 from pynput.mouse import Controller as MouseController
 from pynput.keyboard import Controller as KeyboardController
+from pynput.keyboard import Key as pkey
 from typing import Dict, Optional, Any, Union, Tuple, List, Literal
 
 from .config import read_json_file, CONFIG_FILE_NAME,_
@@ -45,6 +46,7 @@ class calculated:
         self.scaling = self.config_obj.get("scaling", 1)
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
+        self.pkey = pkey
         self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnocr", rec_root="./model/cnstd") if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnocr", rec_root="./model/cnstd", cand_alphabet='0123456789')
         #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
         self.check_list = lambda x,y: re.match(x, str(y)) != None
@@ -674,6 +676,17 @@ class calculated:
         log.debug(data)
         return data
 
+    def read_img(self, path, prefix='./temp/pc/'):
+        """
+        说明：
+            读取图像
+        参数：
+            :param path: 路径
+        返回:
+            :return img: 图像
+        """
+        return cv.imread(f'{prefix}{path}')
+
     def part_ocr_other(self,points = (0,0,0,0)):
         """
         说明：
@@ -789,22 +802,24 @@ class calculated:
                 return endtime
             time.sleep(0.1)
 
-    def switch_window(self):
+    def switch_window(self, dt=0.1):
         if self.platform == _("PC"):
             ws = gw.getWindowsWithTitle(self.title)
             kc = KeyboardController()
+            time.sleep(dt)
             if len(ws) >= 1 :
                 for w in ws:
                     # 避免其他窗口也包含崩坏：星穹铁道，比如正好开着github脚本页面
                     # log.debug(w.title)
                     if w.title == self.title:
                         #client.Dispatch("WScript.Shell").SendKeys('%')
-                        # kc.press('%')
-                        # kc.release('%')
+                        kc.press(self.pkey.right)
+                        kc.release(self.pkey.right)                     
                         w.activate()
                         break
             else:
                 log.info(_('没找到窗口{title}').format(title=self.title))
+            time.sleep(dt)
 
     def open_map(self, open_key):
         while True:
