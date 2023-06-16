@@ -103,7 +103,7 @@ class Map:
                 value = {}
             value[key2] = map_data["name"]
             self.map_list_map[key1] = value
-        self.map_list。排序方式()
+        self.map_list.sort()
         log.debug(self.map_list)
         log.debug(self.map_list_map)
 
