@@ -19,9 +19,9 @@ class Map:
         self.adb = ADB(order, adb_path)
 
         self.calculated = calculated(title, platform,order,adb_path)
-        self.mouse = self.calculated。mouse
-        self.keyboard = self.calculated。keyboard
-        self.open_map = read_json_file(CONFIG_FILE_NAME)。get("open_map", "m")
+        self.mouse = self.calculated.mouse
+        self.keyboard = self.calculated.keyboard
+        self.open_map = read_json_file(CONFIG_FILE_NAME).get("open_map", "m")
         self.map_list = []
         self.map_list_map = {}
         self.read_maps()
@@ -32,21 +32,21 @@ class Map:
         if self.platform == _("PC"):
             target = cv.imread(f'./temp/pc/contraction.jpg')
             while True:
-                result = self.calculated。scan_screenshot(target)
+                result = self.calculated.scan_screenshot(target)
                 if result['max_val'] > 0.98:
                     target = cv.imread(f'./temp/pc/map_shrink.png')
-                    shrink_result = self.calculated。scan_screenshot(target,(20,89,40,93))
+                    shrink_result = self.calculated.scan_screenshot(target,(20,89,40,93))
                     if shrink_result['max_val'] < 0.98:
                         #points = self.calculated.calculated(result, target.shape)
                         points = result["max_loc"]
                         log.debug(points)
                         for i in range(6):
-                            self.calculated。Click(points)
+                            self.calculated.Click(points)
                     break
                 time.sleep(0.1)
         elif self.platform == _("模拟器"):
             for i in range(6):
-                self.calculated。img_click((366, 660))
+                self.calculated.img_click((366, 660))
 
     def start_map(self, map, old=True):
         map_data = (
@@ -58,48 +58,48 @@ class Map:
         # 开始寻路
         log.info(_("开始寻路"))
         for map_index, map in enumerate(map_data["map"]):
-            log.info(_("执行{map_filename}文件:{map_index}/{map_data2} {map}")。format(map_filename=map_filename,map_index=map_index+1,map_data2=len(map_data['map']),map=map))
+            log.info(_("执行{map_filename}文件:{map_index}/{map_data2} {map}").format(map_filename=map_filename,map_index=map_index+1,map_data2=len(map_data['map']),map=map))
             key = list(map.keys())[0]
-            value = map[密钥]
-            if 密钥 in ["w", "s", "a", "d"]:
-                self.calculated。move(key, value)
+            value = map[key]
+            if key in ["w", "s", "a", "d"]:
+                self.calculated.move(key, value)
             elif key == "f":
-                self.calculated。teleport(key, value)
+                self.calculated.teleport(key, value)
             elif key == "mouse_move":
-                self.calculated。Mouse_move(value)
+                self.calculated.Mouse_move(value)
             elif key == "fighting":
                 if value == 1:  # 进战斗
                     if self.platform == '模拟器':
-                        self.adb。input_tap((1040, 550))
-                    ret = self.calculated。fighting()
+                        self.adb.input_tap((1040, 550))
+                    ret = self.calculated.fighting()
 
                     if ret == False:
                         # log没有提供其他的输出路径，暂时用普通文件输出
-                        with 已打开('./logs/战斗日志.log', 'a', encoding='utf-8') as fobj:
-                            fobj.撰写(f'{time.strftime("%Y-%m-%d %H:%M:%S")}: 执行{map_filename}文件:{map_index}/{len(map_data["map"])} {map}时，识别敌人超时 \n')
+                        with open('./logs/战斗日志.log', 'a', encoding='utf-8') as fobj:
+                            fobj.write(f'{time.strftime("%Y-%m-%d %H:%M:%S")}: 执行{map_filename}文件:{map_index}/{len(map_data["map"])} {map}时，识别敌人超时 \n')
                 elif value == 2:  # 障碍物
                     if self.platform == _("PC"):
-                        self.calculated。Click()
+                        self.calculated.Click()
                         time.sleep(1)
                     else:
-                        self.adb。input_tap((1040, 550))
+                        self.adb.input_tap((1040, 550))
                         time.sleep(1)
                 else:
-                    raise Exception(_("map数据错误, fighting参数异常:{map_filename}")。format(map_filename=map_filename), map)
+                    raise Exception(_("map数据错误, fighting参数异常:{map_filename}").format(map_filename=map_filename), map)
             elif key == "scroll":
-                self.calculated。scroll(value)
+                self.calculated.scroll(value)
             else:
-                raise Exception(_("map数据错误,未匹配对应操作:{map_filename}")。format(map_filename=map_filename), map)
+                raise Exception(_("map数据错误,未匹配对应操作:{map_filename}").format(map_filename=map_filename), map)
 
     def read_maps(self):
         self.map_list = get_file('./map', ['old'])  # 从'./map'目录获取地图文件列表（排除'old'）
-        self.map_list_map。clear()
+        self.map_list_map.clear()
         for map_ in self.map_list:
             map_data = read_json_file(f"map/{map_}")
             key1 = map_[map_.index('_') + 1:map_.index('-')]
             key2 = map_[map_.index('-') + 1:map_.index('.')]
-            value = self.map_list_map。get(key1)
-            if value is 无:
+            value = self.map_list_map.get(key1)
+            if value is None:
                 value = {}
             value[key2] = map_data["name"]
             self.map_list_map[key1] = value
@@ -108,31 +108,31 @@ class Map:
         log.debug(self.map_list_map)
 
     def auto_map(self, start):
-        __, __, __, __, __, width, length = self.calculated。take_screenshot()
+        __, __, __, __, __, width, length = self.calculated.take_screenshot()
         log.info((width,length))
-        if (width!=1280  或者 length!=720) 和 self.platform == _("模拟器"):
+        if (width!=1280 or length!=720) and self.platform == _("模拟器"):
             raise Exception(_("错误的模拟器分辨率，请调整为1280X720，请不要在群里问怎么调整分辨率，小心被踢！"))
-        if 不 (1915<=width<=1925 和 1075<=length<=1085) 和 self.platform == _("PC"):
+        if not (1915<=width<=1925 and 1075<=length<=1085) and self.platform == _("PC"):
             raise Exception(_("错误的PC分辨率，请调整为1920X1080，请不要在群里问怎么调整分辨率，小心被踢！"))
         if f'map_{start}.json' in self.map_list:
-            map_list = self.map_list[self.map_list。index(f'map_{start}.json'):len(self.map_list)]
+            map_list = self.map_list[self.map_list.index(f'map_{start}.json'):len(self.map_list)]
             for map in map_list:
                 # 选择地图
-                map = map.分屏('.')[0]
+                map = map.split('.')[0]
                 map_data = read_json_file(f"map/{map}.json")
                 name = map_data['name']
                 author = map_data['author']
                 start_dict = map_data['start']
-                webhook_and_log(_("开始\033[0;34;40m{name}\033[0m锄地")。format(name=name))
-                log.info(_("该路线导航作者：\033[0;31;40m{author}\033[0m")。format(author=author))
+                webhook_and_log(_("开始\033[0;34;40m{name}\033[0m锄地").format(name=name))
+                log.info(_("该路线导航作者：\033[0;31;40m{author}\033[0m").format(author=author))
                 log.info(_("感谢每一位无私奉献的作者"))
                 for start in start_dict:
                     key = list(start.keys())[0]
-                    log.debug(密钥)
-                    value = start[密钥]
+                    log.debug(key)
+                    value = start[key]
                     if key == 'map':
                         time.sleep(1) # 防止卡顿
-                        self.calculated。open_map(self.open_map)
+                        self.calculated.open_map(self.open_map)
                         self.map_init()
                     else:
                         time.sleep(value)
