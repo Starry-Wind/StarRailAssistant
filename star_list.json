@@ -1,51 +1,91 @@
 [
   {
-    "path": "get_width.py",
-    "hash": "af1ecbec04bf4e03a08d85423e2675a1"
+    "path": "README_CHT.md",
+    "hash": "fb8c4a106aa2009f36020eea684a1342"
   },
   {
     "path": "README_EN.md",
     "hash": "62cd316b3b5cafca47b24d9647f957ff"
   },
   {
-    "path": "map_res_list.py",
-    "hash": "2027d7dba3a3e12565621b101a2dc1cb"
+    "path": "gui.py",
+    "hash": "69b405db41de76d0724bca4e31ee95d2"
   },
   {
     "path": "requirements.txt",
     "hash": "68037e80a58eb1b5fc9dc374caa8e868"
   },
   {
-    "path": "gui.py",
-    "hash": "69ac8ed4545bff7fe65f35046c7a62d0"
-  },
-  {
     "path": "README.md",
     "hash": "15f2038ef1235c94be5ebb0a2971d1bc"
   },
   {
-    "path": "README_CHT.md",
-    "hash": "fb8c4a106aa2009f36020eea684a1342"
+    "path": "map_res_list.py",
+    "hash": "2027d7dba3a3e12565621b101a2dc1cb"
   },
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "feffa97ab035df1aa30b8e124e564e53"
+    "hash": "857ba7418b7aca1f64d99a20f8863da7"
   },
   {
-    "path": "locale/zh_CN/LC_MESSAGES/sra.mo",
-    "hash": "5819374a1e0853c814e081b6f5d33823"
+    "path": "get_width.py",
+    "hash": "af1ecbec04bf4e03a08d85423e2675a1"
   },
   {
-    "path": "locale/zh_TC/LC_MESSAGES/sra.mo",
-    "hash": "ef66f8b317d24e3eb326e739cb9b00ee"
+    "path": "utils/record_v7.2.py",
+    "hash": "87ea10e233817032cb3a239c3f85e971"
+  },
+  {
+    "path": "utils/log.py",
+    "hash": "2e6eee17a7a135ed6bec181318f98e5a"
+  },
+  {
+    "path": "utils/map.py",
+    "hash": "6b74f4db7c423fc77b9d08c9ddf99aaa"
+  },
+  {
+    "path": "utils/adb.py",
+    "hash": "20961effe5eb9e7c6eb71252bf1749db"
+  },
+  {
+    "path": "utils/cv_tracker.py",
+    "hash": "b540bcf1f23e64c1443a23c0d382db99"
+  },
+  {
+    "path": "utils/calculated.py",
+    "hash": "18181fca7572fd6d9a31ca6bd0b64b25"
+  },
+  {
+    "path": "utils/commission.py",
+    "hash": "4c63761e0f60052b6f46cbe2f29280a2"
+  },
+  {
+    "path": "utils/exceptions.py",
+    "hash": "772b4ac1f24220955f07568e3359068c"
+  },
+  {
+    "path": "utils/config.py",
+    "hash": "e131655489eb057a651f917cda8e7269"
+  },
+  {
+    "path": "utils/cv_tools.py",
+    "hash": "47d888c1c606f5dea5b690b72e586d32"
+  },
+  {
+    "path": "utils/update_file.py",
+    "hash": "6662f2877c1fda9bb6cb8203f73609a5"
+  },
+  {
+    "path": "utils/simulated_universe.py",
+    "hash": "fd3af60ca5524d8a288c21a0aa206f37"
+  },
+  {
+    "path": "utils/requests.py",
+    "hash": "2960805b0eee0488f5ee70217f8b2964"
   },
   {
     "path": "whl/cnstd-1.2.2-py3-none-any.whl",
     "hash": "2e700dd1d42f71c71b739bd6afa67a8a"
-  },
-  {
-    "path": "whl/Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl",
-    "hash": "0c19795eb68713cde783a434ea636ba9"
   },
   {
     "path": "whl/cnocr-2.2.2.3-py3-none-any.whl",
@@ -56,116 +96,96 @@
     "hash": "43a2cab179598fdaaa21da76cdaaaafc"
   },
   {
-    "path": "utils/exceptions.py",
-    "hash": "772b4ac1f24220955f07568e3359068c"
+    "path": "whl/Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl",
+    "hash": "0c19795eb68713cde783a434ea636ba9"
   },
   {
-    "path": "utils/calculated.py",
-    "hash": "5ccef746277c1e5b5a2ab88e5f22828d"
-  },
-  {
-    "path": "utils/adb.py",
-    "hash": "20961effe5eb9e7c6eb71252bf1749db"
-  },
-  {
-    "path": "utils/commission.py",
-    "hash": "4c63761e0f60052b6f46cbe2f29280a2"
-  },
-  {
-    "path": "utils/cv_tracker.py",
-    "hash": "b540bcf1f23e64c1443a23c0d382db99"
-  },
-  {
-    "path": "utils/map.py",
-    "hash": "6b74f4db7c423fc77b9d08c9ddf99aaa"
-  },
-  {
-    "path": "utils/requests.py",
-    "hash": "2960805b0eee0488f5ee70217f8b2964"
-  },
-  {
-    "path": "utils/record_v7.2.py",
-    "hash": "87ea10e233817032cb3a239c3f85e971"
-  },
-  {
-    "path": "utils/update_file.py",
-    "hash": "854fb7cc9e7e19b79967e4dafb191f0b"
-  },
-  {
-    "path": "utils/simulated_universe.py",
-    "hash": "fd3af60ca5524d8a288c21a0aa206f37"
-  },
-  {
-    "path": "utils/log.py",
-    "hash": "2e6eee17a7a135ed6bec181318f98e5a"
-  },
-  {
-    "path": "utils/cv_tools.py",
-    "hash": "47d888c1c606f5dea5b690b72e586d32"
-  },
-  {
-    "path": "utils/config.py",
-    "hash": "e131655489eb057a651f917cda8e7269"
-  },
-  {
-    "path": "model/cnocr/1.2/ppocr/ch_PP-OCRv3_det_infer.onnx",
-    "hash": "5732f8c84bd4cc0dab35094e7260f080"
-  },
-  {
-    "path": "model/cnstd/2.2/densenet_lite_114-fc/cnocr-v2.2-densenet_lite_114-fc-epoch=037-complete_match_epoch=0.7859-model.onnx",
-    "hash": "d661b811419ff7dde7eb8543690cdd2b"
-  },
-  {
-    "path": "map/map_3-1_1.json",
-    "hash": "bdcbc9efe871415d1d25305543297ca6"
-  },
-  {
-    "path": "map/map_2-3_5.json",
-    "hash": "70f82c49cac30099255e0d4a9310257d"
-  },
-  {
-    "path": "map/map_1-3_1.json",
-    "hash": "b8d3dbfeb8e05f3a4f8d098b84e2e8ce"
-  },
-  {
-    "path": "map/map_1-1_1.json",
-    "hash": "5c95ad37e8bf0bb7cfc058ee0b64b3cf"
-  },
-  {
-    "path": "map/map_3-3_4.json",
-    "hash": "ac52ff7f453cd796097a07968da0b6c3"
-  },
-  {
-    "path": "map/map_2-2_1.json",
-    "hash": "fc73cb26c4bed0ed9c2c26027d6e460f"
-  },
-  {
-    "path": "map/map_2-5_4.json",
-    "hash": "ca4bc7d804d29b42456ba9b86c82f42f"
-  },
-  {
-    "path": "map/map_1-2_1.json",
-    "hash": "36eae9244c9b4d3b1e54adadddc22017"
-  },
-  {
-    "path": "map/map_2-1_2.json",
-    "hash": "f5231b4d007bac4b4d3359838e2df0b0"
-  },
-  {
-    "path": "map/map_3-4_2.json",
-    "hash": "69a0eac94fcf9f782fbd6319043d1856"
+    "path": "map/map_1-3_3.json",
+    "hash": "557ee55c85e29206c5f6bab2f876c792"
   },
   {
     "path": "map/map_2-7_1.json",
     "hash": "b02d929c177726c318a28ad8ea2576fd"
   },
   {
-    "path": "map/map_2-3_1.json",
-    "hash": "d44d71d9353df8559568d718d7f8aaac"
+    "path": "map/map_1-2_1.json",
+    "hash": "36eae9244c9b4d3b1e54adadddc22017"
+  },
+  {
+    "path": "map/map_1-3_1.json",
+    "hash": "b8d3dbfeb8e05f3a4f8d098b84e2e8ce"
+  },
+  {
+    "path": "map/map_3-1_3.json",
+    "hash": "bc60cc7a6bfd9c5ab785ddbfe4e79155"
+  },
+  {
+    "path": "map/map_2-3_3.json",
+    "hash": "d793fef1e53f680b5b2c9e34d18a8cfa"
+  },
+  {
+    "path": "map/map_2-5_4.json",
+    "hash": "ca4bc7d804d29b42456ba9b86c82f42f"
+  },
+  {
+    "path": "map/map_3-4_4.json",
+    "hash": "2cd1665b5579831837b8dc509ba9a594"
+  },
+  {
+    "path": "map/map_3-4_5.json",
+    "hash": "f1199e7da3fa912c1f4e811d3030e0f1"
+  },
+  {
+    "path": "map/map_3-2_1.json",
+    "hash": "767cbe2880e07aaa232a2e27d7c8c876"
+  },
+  {
+    "path": "map/map_2-2_2.json",
+    "hash": "3456e29f1dc35eb5fd1880b7df2516c6"
   },
   {
     "path": "map/map_2-7_2.json",
     "hash": "a00b3fc879a9de62da2b6b4663876ac1"
+  },
+  {
+    "path": "map/map_1-2_2.json",
+    "hash": "6eece354ecdc6e10ad1ae3327c734ae1"
+  },
+  {
+    "path": "map/map_3-4_6.json",
+    "hash": "6df30240549703404580e9058527d785"
+  },
+  {
+    "path": "map/map_3-4_1.json",
+    "hash": "801c44a12777b06a2e2529557794506e"
+  },
+  {
+    "path": "map/map_3-1_2.json",
+    "hash": "01acfe85ad5828f208b4b43bb69fb2bd"
+  },
+  {
+    "path": "map/map_2-5_2.json",
+    "hash": "e7d04aa4087adf352fb12a8de972ca85"
+  },
+  {
+    "path": "map/map_2-6_1.json",
+    "hash": "28e788472d22412c7937c3cbc2dd978f"
+  },
+  {
+    "path": "map/map_2-4_1.json",
+    "hash": "bcef7d27840ed1cd6f95ad02601766fa"
+  },
+  {
+    "path": "map/map_2-5_1.json",
+    "hash": "89b3845327131ecc6291ac12dab0f011"
+  },
+  {
+    "path": "map/map_2-3_2.json",
+    "hash": "9b735dca62c553c4a97a7152a1b02f07"
+  },
+  {
+    "path": "map/map_3-3_4.json",
+    "hash": "ac52ff7f453cd796097a07968da0b6c3"
   },
   {
     "path": "map/map_3-4_7.json",
@@ -176,135 +196,115 @@
     "hash": "49af8b2d66a33221dac076776b406bef"
   },
   {
-    "path": "map/map_2-4_1.json",
-    "hash": "bcef7d27840ed1cd6f95ad02601766fa"
-  },
-  {
-    "path": "map/map_3-4_6.json",
-    "hash": "6df30240549703404580e9058527d785"
-  },
-  {
     "path": "map/map_3-3_1.json",
     "hash": "c56c2f30aa390afbeb68cb351cd9929a"
   },
   {
-    "path": "map/map_2-6_2.json",
-    "hash": "577c88618111d334ae80fb8782d7075a"
-  },
-  {
-    "path": "map/map_3-1_2.json",
-    "hash": "01acfe85ad5828f208b4b43bb69fb2bd"
-  },
-  {
-    "path": "map/map_3-2_4.json",
-    "hash": "8fdc1a4d1784620586244e342cf5d7e7"
-  },
-  {
-    "path": "map/map_2-1_1.json",
-    "hash": "29e230261d3833edb886890f67928f59"
-  },
-  {
-    "path": "map/map_3-2_3.json",
-    "hash": "e712f86838604638189ebba473cd0a18"
-  },
-  {
-    "path": "map/map_2-3_3.json",
-    "hash": "d793fef1e53f680b5b2c9e34d18a8cfa"
-  },
-  {
-    "path": "map/map_3-1_3.json",
-    "hash": "bc60cc7a6bfd9c5ab785ddbfe4e79155"
-  },
-  {
-    "path": "map/map_2-3_4.json",
-    "hash": "f7a180093ebe8a656e61bd2a5564b4fe"
-  },
-  {
-    "path": "map/map_2-4_2.json",
-    "hash": "e9b8bb7b4842d579524cd8568fb89978"
-  },
-  {
-    "path": "map/map_3-2_2.json",
-    "hash": "b66c100f5670e858a083fd12bf6adc8b"
+    "path": "map/map_2-2_1.json",
+    "hash": "fc73cb26c4bed0ed9c2c26027d6e460f"
   },
   {
     "path": "map/map_3-3_2.json",
     "hash": "fcfc25ef2ecfa0afaba53996437ecc2f"
   },
   {
-    "path": "map/map_2-6_1.json",
-    "hash": "28e788472d22412c7937c3cbc2dd978f"
-  },
-  {
-    "path": "map/map_3-4_4.json",
-    "hash": "2cd1665b5579831837b8dc509ba9a594"
-  },
-  {
-    "path": "map/map_3-2_1.json",
-    "hash": "767cbe2880e07aaa232a2e27d7c8c876"
-  },
-  {
-    "path": "map/map_2-5_3.json",
-    "hash": "ee4ad0bf2766095b16aa59fbf2675a2a"
-  },
-  {
-    "path": "map/map_3-4_1.json",
-    "hash": "801c44a12777b06a2e2529557794506e"
-  },
-  {
-    "path": "map/map_1-3_4.json",
-    "hash": "8b427cf795444f0a0af3ac35f3cf4546"
-  },
-  {
-    "path": "map/map_3-4_5.json",
-    "hash": "f1199e7da3fa912c1f4e811d3030e0f1"
-  },
-  {
-    "path": "map/map_1-3_3.json",
-    "hash": "557ee55c85e29206c5f6bab2f876c792"
-  },
-  {
-    "path": "map/map_2-7_3.json",
-    "hash": "dcc411d60fea42677e655dcee513083f"
-  },
-  {
-    "path": "map/map_1-3_2.json",
-    "hash": "7069d94270971a719a68593de53691fd"
+    "path": "map/map_3-2_5.json",
+    "hash": "507c11167830d7b5210f377fd21e60ec"
   },
   {
     "path": "map/map_3-4_3.json",
     "hash": "d500043f80e8d3199b1d443cbf93dbc2"
   },
   {
-    "path": "map/map_2-5_1.json",
-    "hash": "89b3845327131ecc6291ac12dab0f011"
+    "path": "map/map_1-3_4.json",
+    "hash": "8b427cf795444f0a0af3ac35f3cf4546"
   },
   {
-    "path": "map/map_2-5_2.json",
-    "hash": "e7d04aa4087adf352fb12a8de972ca85"
+    "path": "map/map_2-3_5.json",
+    "hash": "70f82c49cac30099255e0d4a9310257d"
+  },
+  {
+    "path": "map/map_2-3_4.json",
+    "hash": "f7a180093ebe8a656e61bd2a5564b4fe"
+  },
+  {
+    "path": "map/map_3-2_3.json",
+    "hash": "e712f86838604638189ebba473cd0a18"
+  },
+  {
+    "path": "map/map_2-6_2.json",
+    "hash": "577c88618111d334ae80fb8782d7075a"
+  },
+  {
+    "path": "map/map_2-5_3.json",
+    "hash": "ee4ad0bf2766095b16aa59fbf2675a2a"
+  },
+  {
+    "path": "map/map_1-3_2.json",
+    "hash": "7069d94270971a719a68593de53691fd"
+  },
+  {
+    "path": "map/map_3-2_4.json",
+    "hash": "8fdc1a4d1784620586244e342cf5d7e7"
+  },
+  {
+    "path": "map/map_2-7_3.json",
+    "hash": "dcc411d60fea42677e655dcee513083f"
   },
   {
     "path": "map/map_1-2_3.json",
     "hash": "769049e4f7f2fb92b8d6a95fdc7526a8"
   },
   {
+    "path": "map/map_3-1_1.json",
+    "hash": "bdcbc9efe871415d1d25305543297ca6"
+  },
+  {
+    "path": "map/map_3-4_2.json",
+    "hash": "69a0eac94fcf9f782fbd6319043d1856"
+  },
+  {
     "path": "map/map_3-1_4.json",
     "hash": "3a2c16a8327ac748061a480de0549f0d"
   },
   {
-    "path": "map/map_2-2_2.json",
-    "hash": "3456e29f1dc35eb5fd1880b7df2516c6"
+    "path": "map/map_2-3_1.json",
+    "hash": "d44d71d9353df8559568d718d7f8aaac"
   },
   {
-    "path": "map/map_2-3_2.json",
-    "hash": "9b735dca62c553c4a97a7152a1b02f07"
+    "path": "map/map_2-1_1.json",
+    "hash": "29e230261d3833edb886890f67928f59"
   },
   {
-    "path": "map/map_3-2_5.json",
-    "hash": "507c11167830d7b5210f377fd21e60ec"
+    "path": "map/map_3-2_2.json",
+    "hash": "b66c100f5670e858a083fd12bf6adc8b"
   },
   {
-    "path": "map/map_1-2_2.json",
-    "hash": "6eece354ecdc6e10ad1ae3327c734ae1"
+    "path": "map/map_1-1_1.json",
+    "hash": "5c95ad37e8bf0bb7cfc058ee0b64b3cf"
+  },
+  {
+    "path": "map/map_2-1_2.json",
+    "hash": "f5231b4d007bac4b4d3359838e2df0b0"
+  },
+  {
+    "path": "map/map_2-4_2.json",
+    "hash": "e9b8bb7b4842d579524cd8568fb89978"
+  },
+  {
+    "path": "locale/zh_TC/LC_MESSAGES/sra.mo",
+    "hash": "ef66f8b317d24e3eb326e739cb9b00ee"
+  },
+  {
+    "path": "locale/zh_CN/LC_MESSAGES/sra.mo",
+    "hash": "5819374a1e0853c814e081b6f5d33823"
+  },
+  {
+    "path": "model/cnocr/1.2/ppocr/ch_PP-OCRv3_det_infer.onnx",
+    "hash": "5732f8c84bd4cc0dab35094e7260f080"
+  },
+  {
+    "path": "model/cnstd/2.2/densenet_lite_114-fc/cnocr-v2.2-densenet_lite_114-fc-epoch=037-complete_match_epoch=0.7859-model.onnx",
+    "hash": "d661b811419ff7dde7eb8543690cdd2b"
   }
 ]
