@@ -1,6 +1,7 @@
 from utils.calculated import calculated
 from utils.log import log, _
 import time
+import pyautogui
 
 def get_percentile(rect, shape):
     #获取长方形的相对坐标
@@ -15,10 +16,17 @@ class Commission():
 
 
     def open(self):
+        log.info(_("等待主界面"))
+        target = self.calculated.read_img("finish_fighting.jpg")
+        while 1:         
+            result = self.calculated.scan_screenshot(target,(90,90,100,100))
+            if result["max_val"] > 0.95:
+                break
+            time.sleep(0.3)
+
         log.info(_("即将进行自动重新委托，当前重新委托次数为{n}").format(n=self.n))
-        self.calculated.keyboard.press('esc')
+        pyautogui.press('esc')
         time.sleep(1)
-        # self.calculated.click_target('./temp/commission_menu.jpg', 0.98)
         self.calculated.ocr_click(_('委托'))
 
     def run(self):
@@ -32,12 +40,12 @@ class Commission():
             self.calculated.click_hsv([0,201,212], points=points1, offset=[-20,20], flag=True, tolerance=3)
             self.calculated.click_hsv([0,201,212], points=points2, offset=[-20,20], flag=True, tolerance=3)
 
-            self.calculated.ocr_click(_('领取'))
-            self.calculated.ocr_click(_('再次派遣'))
+            self.calculated.ocr_click(_('领取'), overtime = 100)
+            self.calculated.ocr_click(_('再次派遣'), overtime = 100)
             time.sleep(5)
     def close(self):
         self.calculated.ocr_click(_('委托'))
-        self.calculated.keyboard.press('esc')
+        pyautogui.press('esc')
         time.sleep(1.5)
-        self.calculated.keyboard.press('esc')
+        pyautogui.press('esc')
         log.info(_("执行完毕"))
