@@ -155,3 +155,47 @@ def add_key_value(dictionary, key, value, position):
     values.insert(position, value)
     new_dictionary = dict(zip(keys, values))
     return new_dictionary
+
+def read_maps(platform):
+    """
+    说明:
+        读取地图
+    """
+    map_list = get_file('./map', ['old']) if platform == _("PC") else get_file('./map/mnq')
+    map_list_map = {}
+    for map_ in map_list:
+        map_data = read_json_file(f"map/{map_}") if platform == _("PC") else read_json_file(f"map/mnq/{map_}")
+        key1 = map_[map_.index('_') + 1:map_.index('-')]
+        key2 = map_[map_.index('-') + 1:map_.index('.')]
+        value = map_list_map.get(key1)
+        if value is None:
+            value = {}
+        value[key2] = map_data["name"]
+        map_list_map[key1] = value
+    log.debug(map_list)
+    log.debug(map_list_map)
+    return map_list, map_list_map
+
+def insert_key(my_dict:dict, new_key, new_value, insert_after_key):
+    """
+    说明:
+        将指定键值对插入指定key后面
+    参数:
+        :param my_dict: 被操作的字典
+        :param new_key: 需要插入的key
+        :param new_value: 需要插入的value
+        :param insert_after_key: 插入到那个key后面
+    """
+    # 创建一个空的 OrderedDict
+    new_dict = {}
+
+    # 遍历原始字典的键值对
+    for key, value in my_dict.items():
+        # 将键值对添加到新的字典中
+        new_dict[key] = value
+        
+        # 在指定键后面插入新的键值对
+        if key == insert_after_key:
+            new_dict[new_key] = new_value
+            
+    return new_dict

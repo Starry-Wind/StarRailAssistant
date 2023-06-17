@@ -9,28 +9,6 @@ import cv2 as cv
 import time
 import os, glob
 
-def find_best_match(img, template, scale_range=(140, 170, 1)):
-    best_match = None
-    max_corr = -1
-
-    
-    for scale_percent in range(scale_range[0], scale_range[1],scale_range[2]):
-        
-        # width = int(template.shape[1] * scale_percent / 100)
-        # height = int(template.shape[0] * scale_percent / 100)
-        # dim = (width, height)
-        # resized_template = cv.resize(template, dim, interpolation=cv.INTER_AREA)
-        resized_template = cv.resize(template, (0,0), fx=scale_percent/100.0, fy=scale_percent/100.0)
-
-        res = cv.matchTemplate(img, resized_template, cv.TM_CCOEFF_NORMED)
-        min_val, max_val, min_loc, max_loc = cv.minMaxLoc(res)
-        log.debug(f'正在匹配 {scale_percent}，相似度{max_val}')
-        if max_val > max_corr:
-            max_corr = max_val
-            max_ret = [scale_percent, max_val, max_loc]
-
-    return max_ret
-
 
 class Tracker():
     """docstring for Tracker"""

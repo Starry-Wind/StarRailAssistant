@@ -1,5 +1,5 @@
 from .calculated import *
-from .config import get_file, read_json_file, CONFIG_FILE_NAME, _
+from .config import get_file, read_json_file, read_maps, CONFIG_FILE_NAME, _
 from .log import log
 from .requests import webhook_and_log
 
@@ -21,13 +21,11 @@ class Map:
         self.calculated = calculated(title, platform,order,adb_path)
         self.mouse = self.calculated.mouse
         self.keyboard = self.calculated.keyboard
-        self.open_map = read_json_file(CONFIG_FILE_NAME).get("open_map", "m")
-        self.map_list = []
-        self.map_list_map = {}
-        self.read_maps()
+        self.data = read_json_file(CONFIG_FILE_NAME)
+        self.open_map = self.data.get("open_map", "m")
+        self.map_list, self.map_list_map = read_maps(platform)
 
     def map_init(self):
-
         # 进行地图初始化，把地图缩小,需要缩小5次
         if self.platform == _("PC"):
             target = cv.imread(f'./temp/pc/contraction.jpg')
@@ -48,12 +46,8 @@ class Map:
             for i in range(6):
                 self.calculated.img_click((366, 660))
 
-    def start_map(self, map, old=True):
-        map_data = (
-            read_json_file(f"map\\old\\{map}.json")
-            if old
-            else read_json_file(f"map\\{map}.json")
-        )
+    def start_map(self, map, map_name):
+        map_data = read_json_file(f"map\\{map}.json") if self.platform == _("PC") else read_json_file(f"map\\mnq\\{map}.json")
         map_filename = map
         # 开始寻路
         log.info(_("开始寻路"))
@@ -62,7 +56,8 @@ class Map:
             key = list(map.keys())[0]
             value = map[key]
             if key in ["w", "s", "a", "d"]:
-                self.calculated.move(key, value)
+                pos = self.calculated.move(key, value, map_name)
+                num = map_data["map"].index(map)
             elif key == "f":
                 self.calculated.teleport(key, value)
             elif key == "mouse_move":
@@ -83,23 +78,10 @@ class Map:
                     raise Exception(_("map数据错误, fighting参数异常:{map_filename}").format(map_filename=map_filename), map)
             elif key == "scroll":
                 self.calculated.scroll(value)
+            '''
             else:
                 raise Exception(_("map数据错误,未匹配对应操作:{map_filename}").format(map_filename=map_filename), map)
-
-    def read_maps(self):
-        self.map_list = get_file('./map', ['old'])  # 从'./map'目录获取地图文件列表（排除'old'）
-        self.map_list_map.clear()
-        for map_ in self.map_list:
-            map_data = read_json_file(f"map/{map_}")
-            key1 = map_[map_.index('_') + 1:map_.index('-')]
-            key2 = map_[map_.index('-') + 1:map_.index('.')]
-            value = self.map_list_map.get(key1)
-            if value is None:
-                value = {}
-            value[key2] = map_data["name"]
-            self.map_list_map[key1] = value
-        log.debug(self.map_list)
-        log.debug(self.map_list_map)
+            '''
 
     def auto_map(self, start):
         __, __, __, __, __, width, length = self.calculated.take_screenshot()
@@ -113,8 +95,8 @@ class Map:
             for map in map_list:
                 # 选择地图
                 map = map.split('.')[0]
-                map_data = read_json_file(f"map/{map}.json")
-                name = map_data['name']
+                map_data = read_json_file(f"map/{map}.json") if self.platform == _("PC") else read_json_file(f"map\\mnq\\{map}.json")
+                name:str = map_data['name']
                 author = map_data['author']
                 start_dict = map_data['start']
                 webhook_and_log(_("开始\033[0;34;40m{name}\033[0m锄地").format(name=name))
@@ -135,6 +117,7 @@ class Map:
                 count = self.calculated.wait_join()
                 log.info(_('地图加载完毕，加载时间为 {count} 秒').format(count=count))
                 time.sleep(2) # 加2s防止人物未加载
-                self.start_map(map, False)
+                map_name = name.split("-")[0]
+                self.start_map(map, map_name)
         else:
             log.info(_('地图编号 {start} 不存在，请尝试检查更新').format(start=start))
