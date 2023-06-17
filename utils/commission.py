@@ -1,5 +1,15 @@
+'''
+Author: Night-stars-1 nujj1042633805@gmail.com
+Date: 2023-06-08 20:21:02
+LastEditors: Night-stars-1 nujj1042633805@gmail.com
+LastEditTime: 2023-06-16 21:00:23
+Description: 
+
+Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
+'''
 from utils.calculated import calculated
 from utils.log import log, _
+from pynput.keyboard import Key
 import time
 import pyautogui
 
@@ -10,10 +20,14 @@ def get_percentile(rect, shape):
     return [x1/w*100,y1/h*100,x2/w*100,y2/h*100]
 
 class Commission():
-    def __init__(self, n=4):
+    def __init__(self, n:int=4, title = _("崩坏：星穹铁道"), platform=_("PC"),order="127.0.0.1:62001",adb_path="temp\\adb\\adb"):
         self.n = n
-        self.calculated = calculated(title="崩坏：星穹铁道", platform="PC")
+        self.calculated = calculated(title, platform,order,adb_path)
 
+    def start(self):
+        self.open()
+        self.run()
+        self.close()
 
     def open(self):
         log.info(_("等待主界面"))
@@ -25,7 +39,9 @@ class Commission():
             time.sleep(0.3)
 
         log.info(_("即将进行自动重新委托，当前重新委托次数为{n}").format(n=self.n))
-        pyautogui.press('esc')
+        self.calculated.keyboard.press(Key.esc)
+        time.sleep(0.5)
+        self.calculated.keyboard.release(Key.esc)
         time.sleep(1)
         self.calculated.ocr_click(_('委托'))
 
@@ -45,7 +61,7 @@ class Commission():
             time.sleep(5)
     def close(self):
         self.calculated.ocr_click(_('委托'))
-        pyautogui.press('esc')
+        self.calculated.keyboard.press(Key.esc)
         time.sleep(1.5)
-        pyautogui.press('esc')
+        self.calculated.keyboard.press(Key.esc)
         log.info(_("执行完毕"))

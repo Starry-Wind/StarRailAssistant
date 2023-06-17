@@ -2,7 +2,7 @@
 Author: Xe-No
 Date: 2023-05-17 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-05-27 01:28:50
+LastEditTime: 2023-06-16 20:26:54
 Description: 一些cv工具
 
 Copyright (c) 2023 by Xe-No, All Rights Reserved. 
@@ -18,6 +18,8 @@ import pygetwindow as gw
 from PIL import ImageGrab, Image
 from pynput.mouse import Controller as MouseController
 
+from .log import log
+
 def get_binary(img, threshold=200):
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     _, binary = cv.threshold(gray, threshold, 255, cv.THRESH_BINARY)
@@ -28,7 +30,7 @@ def show_img(img, scale=1, title='Image'):
     h, w = img.shape[:2]
     img = cv.resize( img ,(int(w*scale), int(h*scale))  )
     cv.imshow(title, img)
-    cv.waitKey(0)
+    cv.waitKey(1000)  # 显示图像并等待5秒
     cv.destroyAllWindows()  
 
 def show_imgs(imgs, title='Image'):
@@ -149,6 +151,41 @@ def get_furthest_point(points):
 			max_distance = distance
 			furthest_point = point
 	return furthest_point
+
+def find_best_match(img, template, scale_range=(140, 170, 1)):
+    """
+    说明:
+        缩放图片并与进行模板匹配
+    参数:
+        :param img: 图片
+        :param img: 匹配的模板
+        :param img: 缩放区间以及步长
+    返回:
+        最佳缩放大小, 最大匹配度, 最近位置, 模板缩放后的长度, 模板缩放后的宽度
+    """
+    best_match = None
+    max_corr = 0
+    length = 0
+    width = 0
+    
+    for scale_percent in range(scale_range[0], scale_range[1],scale_range[2]):
+        
+        # width = int(template.shape[1] * scale_percent / 100)
+        # height = int(template.shape[0] * scale_percent / 100)
+        # dim = (width, height)
+        # resized_template = cv.resize(template, dim, interpolation=cv.INTER_AREA)
+        resized_template = cv.resize(template, (0,0), fx=scale_percent/100.0, fy=scale_percent/100.0)
+
+        res = cv.matchTemplate(img, resized_template, cv.TM_CCOEFF_NORMED)
+        min_val, max_val, min_loc, max_loc = cv.minMaxLoc(res)
+        log.debug(f'正在匹配 {scale_percent}，相似度{max_loc}')
+        if max_val > max_corr:
+            length, width, __ = resized_template.shape
+            length = int(length)
+            width = int(width)
+            max_corr = max_val
+
+    return scale_percent, max_corr, max_loc, length, width
 
 def get_angle(debug=False, use_sample_image=False):
 	x,y = [117,128]
