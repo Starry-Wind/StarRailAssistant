@@ -14,6 +14,7 @@ from PIL import ImageGrab, Image
 from pynput import mouse
 from pynput.mouse import Controller as MouseController
 from pynput.keyboard import Controller as KeyboardController
+from pynput.keyboard import Key
 from typing import Dict, Optional, Any, Union, Tuple, List, Literal
 from .config import read_json_file, CONFIG_FILE_NAME, get_file, _
 from .exceptions import Exception
@@ -159,8 +160,7 @@ class calculated:
             :param points: 坐标
         """
         if self.platform == _("PC"):
-            scaling = self.data["scaling"]
-            left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
+            left, top, __, __ = self.window.left, self.window.top, self.window.right, self.window.bottom
             x, y = int(left + points[0]), int(top + points[1])
         elif self.platform == _("模拟器"):
             x, y = int(points[0]), int(points[1])
@@ -190,8 +190,8 @@ class calculated:
         for i in range(frequency):
             start_time = time.time()
             while True:
-                img_fp, left, top, right, bottom, width, length = self.take_screenshot()
-                text, pos = self.ocr_pos(img_fp, characters)
+                img_fp, left, top, __, __, __, __ = self.take_screenshot()
+                __, pos = self.ocr_pos(img_fp, characters)
                 if pos:
                     if self.platform == _("PC"):
                         self.Click((left+pos[0], top+pos[1]))
@@ -214,7 +214,7 @@ class calculated:
             :return 坐标
         """        
         while 1:
-            img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
+            img_fp, left, top, __, __, width, length = self.take_screenshot(points)
             cv.imwrite('scr.png', img_fp)
             x, y = left + width/100*points[0], top + length/100*points[1]
             pos = self.hsv2pos(img_fp, hsv_color, tolerance)
@@ -237,7 +237,6 @@ class calculated:
             :param points: 图像截取范围
         """
         if self.platform == _("PC"):
-            scaling = self.data.get("scaling", 1.0)
             borderless = self.data.get("borderless", False)
             left_border = self.data.get("left_border", 11)
             up_border = self.data.get("up_border", 56)
@@ -267,7 +266,7 @@ class calculated:
             :param prepared: 比对图片地址
             :param prepared: 被比对图片地址
         """
-        screenshot, left, top, right, bottom, width, length = self.take_screenshot(pos if pos else (0,0,0,0))
+        screenshot, left, top, __, __, width, length = self.take_screenshot(pos if pos else (0,0,0,0))
         result = cv.matchTemplate(screenshot, prepared, cv.TM_CCORR_NORMED)
         length, width, __ = prepared.shape
         length = int(length)
@@ -475,23 +474,22 @@ class calculated:
                 result = self.scan_screenshot(target)
                 if result["max_val"] > 0.9:
                     time.sleep(0.3)
-                    result = self.scan_screenshot(target)
-                    if result["max_val"] > 0.9:
-                        if self.platform == _("PC"):
-                            self.keyboard.press("v")
-                            self.keyboard.release("v")
-                        else:
-                            #points = self.calculated(result, target.shape)
-                            points = result["max_loc"]
-                            self.Click(points)
-                        log.info(_("开启自动战斗"))
-                        break
+                    if self.platform == _("PC"):
+                        self.keyboard.press("v")
+                        self.keyboard.release("v")
+                    else:
+                        #points = self.calculated(result, target.shape)
+                        points = result["max_loc"]
+                        self.Click(points)
+                    log.info(_("开启自动战斗"))
+                    break
                 elif time.time() - start_time > 15:
                     break
                 time.sleep(0.1)
         else:
             log.info(_("跳过开启自动战斗（沿用设置）"))
             time.sleep(5)
+
 
         start_time = time.time()  # 开始计算战斗时间
         while True:
@@ -731,7 +729,7 @@ class calculated:
         log.debug(data)
         return data
 
-    def get_pix_bgr(self, desktop_pos=None, pos=None):
+    def get_pix_bgr(self, desktop_pos=None, pos=None, points=(0, 0, 0, 0)):
         """
         说明：
             获取指定坐标的颜色
@@ -741,7 +739,7 @@ class calculated:
         返回:
             :return 三色值
         """
-        img, left, top, right, bottom, width, length = self.take_screenshot()
+        img, left, top, __, __, __, __ = self.take_screenshot(points)
         img = np.array(img)
         if desktop_pos:
             if self.platform == _("PC"):
@@ -806,7 +804,6 @@ class calculated:
     def switch_window(self, dt=0.1):
         if self.platform == _("PC"):
             ws = gw.getWindowsWithTitle(self.title)
-            kc = KeyboardController()
             time.sleep(dt)
             if len(ws) >= 1 :
                 for w in ws:
@@ -814,8 +811,8 @@ class calculated:
                     # log.debug(w.title)
                     if w.title == self.title:
                         #client.Dispatch("WScript.Shell").SendKeys('%')
-                        kc.press(self.pkey.right)
-                        kc.release(self.pkey.right)                     
+                        self.keyboard.press(Key.right)
+                        self.keyboard.release(Key.right)                     
                         w.activate()
                         break
             else:

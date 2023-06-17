@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-15 19:46:04
+LastEditTime: 2023-06-17 23:25:03
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -24,7 +24,7 @@ try:
 
     from utils.log import log,level
     from utils.map import Map as map_word
-    from utils.config import read_json_file,modify_json_file , CONFIG_FILE_NAME, _
+    from utils.config import read_json_file,modify_json_file, read_maps, CONFIG_FILE_NAME, _
     import utils.config
     from utils.update_file import update_file
     from utils.calculated import calculated
@@ -42,7 +42,9 @@ def page_main(page: ft.Page):
     if page.session.contains_key("updata_log"):
         page.session.remove("updata_log")
     '''
-    map_dict = map_word(platform=_("模拟器")).map_list_map
+    __, map_dict = read_maps(platform=_("PC"))
+    print(map_dict)
+    #map_dict = map_word(platform=_("模拟器")).map_list_map
     VER = str(read_json_file("config.json").get("star_version",0))+"/"+str(read_json_file("config.json").get("temp_version",0))+"/"+str(read_json_file("config.json").get("map_version",0))
     img_url = [
         "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC",
