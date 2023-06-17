@@ -559,8 +559,8 @@ class calculated:
         move_excursion = self.data.get("move_excursion", 0)
         move_division_excursion = self.data.get("move_division_excursion", 1)
         if self.platform == _("PC"):
-            loc = self.get_loc(map_name=map_name)
-            log.info(loc)
+            #loc = self.get_loc(map_name=map_name)
+            #log.info(loc)
             self.keyboard.press(com)
             result = self.get_pix_bgr(pos=(1712, 958))
             if self.data.get("sprint", False) and (self.compare_lists(result, [120, 160, 180]) or self.compare_lists([200, 200, 200], result)):
