@@ -572,7 +572,7 @@ class calculated:
             while time.perf_counter() - start_time < (time1/move_division_excursion+move_excursion):
                 pass
             self.keyboard.release(com)
-            return loc
+            return 0
         elif self.platform == _("模拟器"):
             time1 = (time1)*1000
             if com == "w":

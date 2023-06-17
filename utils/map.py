@@ -57,7 +57,7 @@ class Map:
             value = map[key]
             if key in ["w", "s", "a", "d"]:
                 pos = self.calculated.move(key, value, map_name)
-                num = map_data["map"].index(map)
+                #num = map_data["map"].index(map)
             elif key == "f":
                 self.calculated.teleport(key, value)
             elif key == "mouse_move":
