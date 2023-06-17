@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-06-08 20:21:02
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-16 21:00:23
+LastEditTime: 2023-06-17 23:00:30
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -11,7 +11,6 @@ from utils.calculated import calculated
 from utils.log import log, _
 from pynput.keyboard import Key
 import time
-import pyautogui
 
 def get_percentile(rect, shape):
     #获取长方形的相对坐标
