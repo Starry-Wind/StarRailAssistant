@@ -301,6 +301,7 @@ class calculated:
             "map_1_point" : [(593, 346),(593, 556)],
             "transfer": _("传送"),
             "map_1-2": _("收容舱段"),
+            "map_1-2_point_2": [(700, 346),(600, 346)],
             "map_1-3": _("支援舱段"),
             "map_1-3_point_1": [(593, 346),(700, 346)],
             #"orientation_3": _("雅利洛-VI"),
@@ -442,8 +443,8 @@ class calculated:
             
             if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info(_("识别超时,此处可能无敌人"))
-                return
-            if (self.scan_screenshot(tagz, pos=(40,0,50,15))["max_val"]) < 0.98 : continue  # 没有Z标志时，直接继续
+                return False
+            # if (self.scan_screenshot(tagz, pos=(40,0,60,15))["max_val"]) < 0.95 : continue  # 没有Z标志时，直接继续
             attack_result = self.scan_screenshot(attack)
             if attack_result["max_val"] > 0.98:
                 #points = self.calculated(result, target.shape)
@@ -703,6 +704,17 @@ class calculated:
         log.debug(data)
         return data
 
+    def read_img(self, path, prefix='./temp/pc/'):
+        """
+        说明：
+            读取图像
+        参数：
+            :param path: 路径
+        返回:
+            :return img: 图像
+        """
+        return cv.imread(f'{prefix}{path}')
+
     def part_ocr_other(self,points = (0,0,0,0)):
         """
         说明：
@@ -791,22 +803,24 @@ class calculated:
                 return endtime
             time.sleep(0.1)
 
-    def switch_window(self):
+    def switch_window(self, dt=0.1):
         if self.platform == _("PC"):
             ws = gw.getWindowsWithTitle(self.title)
             kc = KeyboardController()
+            time.sleep(dt)
             if len(ws) >= 1 :
                 for w in ws:
                     # 避免其他窗口也包含崩坏：星穹铁道，比如正好开着github脚本页面
                     # log.debug(w.title)
                     if w.title == self.title:
                         #client.Dispatch("WScript.Shell").SendKeys('%')
-                        # kc.press('%')
-                        # kc.release('%')
+                        kc.press(self.pkey.right)
+                        kc.release(self.pkey.right)                     
                         w.activate()
                         break
             else:
                 log.info(_('没找到窗口{title}').format(title=self.title))
+            time.sleep(dt)
 
     def open_map(self, open_key):
         while True:

@@ -2,7 +2,7 @@ from .calculated import *
 from .config import get_file, read_json_file, read_maps, CONFIG_FILE_NAME, _
 from .log import log
 from .requests import webhook_and_log
-
+import time
 
 class Map:
     def __init__(self,title = _("崩坏：星穹铁道"), platform=_("PC"),order="127.0.0.1:62001",adb_path="temp\\adb\\adb"):
@@ -66,7 +66,12 @@ class Map:
                 if value == 1:  # 进战斗
                     if self.platform == '模拟器':
                         self.adb.input_tap((1040, 550))
-                    self.calculated.fighting()
+                    ret = self.calculated.fighting()
+
+                    if ret == False:
+                        # log没有提供其他的输出路径，暂时用普通文件输出
+                        with open('./logs/战斗日志.log', 'a', encoding='utf-8') as fobj:
+                            fobj.write(f'{time.strftime("%Y-%m-%d %H:%M:%S")}: 执行{map_filename}文件:{map_index}/{len(map_data["map"])} {map}时，识别敌人超时 \n')
                 elif value == 2:  # 障碍物
                     if self.platform == _("PC"):
                         self.calculated.Click()
