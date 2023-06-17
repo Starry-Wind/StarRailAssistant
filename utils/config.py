@@ -161,7 +161,8 @@ def read_maps(platform):
     说明:
         读取地图
     """
-    map_list = get_file('./map', ['old']) if platform == _("PC") else get_file('./map/mnq')
+    map_list = get_file('./map') if platform == _("PC") else get_file('./map/mnq')
+    print(map_list)
     map_list_map = {}
     for map_ in map_list:
         map_data = read_json_file(f"map/{map_}") if platform == _("PC") else read_json_file(f"map/mnq/{map_}")
