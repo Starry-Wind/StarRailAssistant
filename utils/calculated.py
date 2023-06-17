@@ -351,7 +351,7 @@ class calculated:
                         self.adb.input_swipe(temp_ocr[temp_name][0],temp_ocr[temp_name][1],200)
                         temp_ocr.pop(temp_name)
                         time.sleep(0.5)
-                    if type(temp_ocr[temp_name]) == str:
+                    elif type(temp_ocr[temp_name]) == str:
                         start_time = time.time()
                         first_timeout = True
                         while True:
@@ -436,7 +436,7 @@ class calculated:
         attack = cv.imread("./temp/pc/attack.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/attack.jpg")
         doubt = cv.imread("./temp/pc/doubt.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/doubt.jpg")
         warn = cv.imread("./temp/pc/warn.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/warn.jpg")
-        tagz = cv.imread("./temp/pc/tagz.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/tagz.jpg")
+        # tagz = cv.imread("./temp/pc/tagz.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/tagz.jpg")
         log.info(_("识别中"))
         while True:
             
