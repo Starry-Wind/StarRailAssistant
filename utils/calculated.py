@@ -439,10 +439,11 @@ class calculated:
         doubt = cv.imread("./temp/pc/doubt.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/doubt.jpg")
         warn = cv.imread("./temp/pc/warn.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/warn.jpg")
         tagz = cv.imread("./temp/pc/tagz.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/tagz.jpg")
+        finish = cv.imread("./temp/pc/finish_fighting.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/finish_fighting.jpg")
         log.info(_("识别中"))
         while True:
             
-            if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
+            if time.time() - start_time > 8:  # 如果已经识别了8秒还未找到目标图片，则退出循环
                 log.info(_("识别超时,此处可能无敌人"))
                 return False
             # if (self.scan_screenshot(tagz, pos=(40,0,60,15))["max_val"]) < 0.95 : continue  # 没有Z标志时，直接继续
@@ -452,19 +453,53 @@ class calculated:
                 points = attack_result["max_loc"] # 这里好像没有必要点击攻击标志
                 if self.platform == _("PC"):
                     self.Click(points)
+                    #再次识别,避免空枪
+                    time.sleep(1)
+                    kqw = 0
+                    Click_result = self.scan_screenshot(finish) #检测是否进入战斗
+                    while Click_result["max_val"] > 0.98:
+                        self.Click(points)
+                        log.info(_("空枪警告~!"))
+                        kqw = kqw + 1
+                        time.sleep(1)
+                        Click_result = self.scan_screenshot(finish)
+                        time.sleep(0.3)
+                        if Click_result["max_val"] < 0.98:
+                           log.info(_("补枪成功进入战斗~!"))
+                           break
+                        if kqw == 3:
+                           log.info(_("三枪警告完毕~!"))
+                           break
                     break
                 else:
                     self.adb.input_tap((1040, 550))
+                    #再次识别,避免空枪
+                    time.sleep(1)
+                    kqw = 0
+                    Click_result = self.scan_screenshot(finish) #检测是否进入战斗
+                    while Click_result["max_val"] > 0.98:
+                        self.adb.input_tap((1040, 550))
+                        log.info(_("空枪警告~!"))
+                        kqw = kqw + 1
+                        time.sleep(1)
+                        Click_result = self.scan_screenshot(finish)
+                        time.sleep(0.3)
+                        if Click_result["max_val"] < 0.98:
+                           log.info(_("补枪成功进入战斗~!"))
+                           break
+                        if kqw == 3:
+                           log.info(_("三枪警告完毕~!"))
+                           break                    
                     break
             elif self.scan_screenshot(doubt)["max_val"] > 0.9 or self.scan_screenshot(warn)["max_val"] > 0.95: # if A or B，顺次执行，A为真时不会执行B，减少开销
                 log.info(_("识别到疑问或是警告,等待怪物开战"))
-                time.sleep(3)
-                if  self.platform == _("PC"):
-                    target = cv.imread("./temp/pc/finish_fighting.jpg")  # 識別是否已進入戰鬥，若已進入則跳出迴圈
+                time.sleep(1.5)
+                if  self.platform == _("PC"): #为模拟器用户添加支持 被警告在开一枪
+                    self.Click()
                 else:
-                    target = cv.imread("./temp/mnq/finish_fighting.jpg")
-                time.sleep(0.3)
-                result = self.scan_screenshot(target)
+                    self.adb.input_tap((1040, 550))           
+                time.sleep(3)
+                result = self.scan_screenshot(finish) # 識別是否已進入戰鬥，若已進入則跳出迴圈
                 if result["max_val"] < 0.95:
                     break
             time.sleep(0.1)
@@ -504,8 +539,8 @@ class calculated:
                         time.sleep(3)
                         break
                 else:
-                    target = cv.imread("./temp/mnq/finish_fighting.jpg")
-                    result = self.scan_screenshot(target)
+                    #target = cv.imread("./temp/mnq/finish_fighting.jpg") 代码优化
+                    result = self.scan_screenshot(finish)
                     if result["max_val"] > 0.9:
                         log.info(_("完成自动战斗"))
                         break
