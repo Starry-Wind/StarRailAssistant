@@ -340,7 +340,9 @@ class calculated:
             elif "map" in temp_name:
                 log.info(_("选择地图"))
             if "map" not in temp_name:
-                self.ocr_click(temp_ocr[temp_name])
+                success = self.ocr_click(temp_ocr[temp_name])
+                if not success:
+                    join = True
                 while True:
                     if not self.is_blackscreen():
                         break
