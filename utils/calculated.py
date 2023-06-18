@@ -340,9 +340,7 @@ class calculated:
             elif "map" in temp_name:
                 log.info(_("选择地图"))
             if "map" not in temp_name:
-                success = self.ocr_click(temp_ocr[temp_name])
-                if not success:
-                    join = True
+                self.ocr_click(temp_ocr[temp_name])
                 while True:
                     if not self.is_blackscreen():
                         break
@@ -455,14 +453,14 @@ class calculated:
                     self.Click(points)
                     #再次识别,避免空枪
                     time.sleep(1)
-                    kqw = 0
-                    Click_result = self.scan_screenshot(finish) #检测是否进入战斗
+                    kqw = 0					
+                    Click_result = self.scan_screenshot(finish,pos=(0,95,100,100)) #检测是否进入战斗
                     while Click_result["max_val"] > 0.98:
                         self.Click(points)
                         log.info(_("空枪警告~!"))
                         kqw = kqw + 1
                         time.sleep(1)
-                        Click_result = self.scan_screenshot(finish)
+                        Click_result = self.scan_screenshot(finish,pos=(0,95,100,100))
                         time.sleep(0.3)
                         if Click_result["max_val"] < 0.98:
                            log.info(_("补枪成功进入战斗~!"))
@@ -476,13 +474,13 @@ class calculated:
                     #再次识别,避免空枪
                     time.sleep(1)
                     kqw = 0
-                    Click_result = self.scan_screenshot(finish) #检测是否进入战斗
+                    Click_result = self.scan_screenshot(finish,pos=(0,95,100,100)) #检测是否进入战斗
                     while Click_result["max_val"] > 0.98:
                         self.adb.input_tap((1040, 550))
                         log.info(_("空枪警告~!"))
                         kqw = kqw + 1
                         time.sleep(1)
-                        Click_result = self.scan_screenshot(finish)
+                        Click_result = self.scan_screenshot(finish,pos=(0,95,100,100))
                         time.sleep(0.3)
                         if Click_result["max_val"] < 0.98:
                            log.info(_("补枪成功进入战斗~!"))
@@ -499,7 +497,7 @@ class calculated:
                 else:
                     self.adb.input_tap((1040, 550))           
                 time.sleep(3)
-                result = self.scan_screenshot(finish) # 識別是否已進入戰鬥，若已進入則跳出迴圈
+                result = self.scan_screenshot(finish,pos=(0,95,100,100)) # 識別是否已進入戰鬥，若已進入則跳出迴圈
                 if result["max_val"] < 0.95:
                     break
             time.sleep(0.1)
@@ -883,22 +881,25 @@ class calculated:
             - key 对应按键
             - value 操作时间,单位秒
         """
-        self.move(key)
-        time.sleep(1) # 等待进入入画
-        while True:
-            if self.platform == _("PC"):
-                end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
-                end_str = str(self.part_ocr((0,95,100,100)))
-                if any(substring in end_str for substring in end_list):
-                    log.info(_("完成入画"))
-                    break
-            else:
-                target = cv.imread("./temp/mnq/finish_fighting.jpg")
-                result = self.scan_screenshot(target)
-                if result["max_val"] > 0.9:
-                    log.info(_("完成入画"))
-                    break
-            time.sleep(0.5) # 缓冲
+        #重写为了支持模拟器
+        if self.platform == _("PC"):
+          self.move(key)
+          time.sleep(1) # 等待进入入画
+          end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
+          end_str = str(self.part_ocr((0,95,100,100)))
+          time.sleep(0.3) # 缓冲
+          if any(substring in end_str for substring in end_list):
+             log.info(_("完成入画"))
+             time.sleep(0.3) # 缓冲
+        else:
+          self.adb.input_tap((1040, 550))#不会找点位，请直接找一下
+          time.sleep(1) # 等待进入入画
+          target = cv.imread("./temp/mnq/finish_fighting.jpg")
+          result = self.scan_screenshot(target)
+          time.sleep(0.3) # 缓冲                    
+          if result["max_val"] > 0.9:
+            log.info(_("完成入画"))
+            time.sleep(0.3) # 缓冲
         time.sleep(0.2)
 
     def monthly_pass(self):
