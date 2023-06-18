@@ -1,6 +1,6 @@
 {
     "name": "残响回廊-4",
-    "author": "Starry-Wind",
+    "author": "Starry-Wind,CDCP",
     "start": [
         {"map": 1},
         {"temp\\map_2-3_point_4.jpg": 1.5},
@@ -18,6 +18,18 @@
         },
         {
             "fighting": 1
+        },
+        {
+            "fighting": 2
+        },
+        {
+            "fighting": 2
+        },
+        {
+            "d": 3.824272108078003
+        },
+        {
+            "fighting": 2
         }
     ]
 }
