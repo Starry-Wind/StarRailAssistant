@@ -440,7 +440,7 @@ class calculated:
         log.info(_("识别中"))
         while True:
             
-            if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
+            if time.time() - start_time > 8:  # 如果已经识别了8秒还未找到目标图片，则退出循环
                 log.info(_("识别超时,此处可能无敌人"))
                 return False
             # if (self.scan_screenshot(tagz, pos=(40,0,60,15))["max_val"]) < 0.95 : continue  # 没有Z标志时，直接继续
@@ -450,12 +450,27 @@ class calculated:
                 points = attack_result["max_loc"] # 这里好像没有必要点击攻击标志
                 if self.platform == _("PC"):
                     self.Click(points)
+                    #再次识别,避免空枪
+                    time.sleep(1)
+                    kqw = 0
+                    target_Click = cv.imread("./temp/pc/finish_fighting.jpg")
+                    Click_result = self.scan_screenshot(target_Click)
+                    while Click_result["max_val"] > 0.98:
+                        self.Click(points)
+                        log.info(_("空枪警告~!"))
+                        kqw = kqw + 1
+                        time.sleep(0.5)	
+                        if kqw == 3:
+                           log.info(_("三枪警告完毕~!"))
+                           break                                                                
                     break
                 else:
                     self.adb.input_tap((1040, 550))
                     break
             elif self.scan_screenshot(doubt)["max_val"] > 0.9 or self.scan_screenshot(warn)["max_val"] > 0.95: # if A or B，顺次执行，A为真时不会执行B，减少开销
                 log.info(_("识别到疑问或是警告,等待怪物开战"))
+                time.sleep(0.5)
+                self.Click()#警告在开一枪
                 time.sleep(3)
                 if  self.platform == _("PC"):
                     target = cv.imread("./temp/pc/finish_fighting.jpg")  # 識別是否已進入戰鬥，若已進入則跳出迴圈
