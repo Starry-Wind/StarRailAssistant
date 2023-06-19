@@ -146,6 +146,6 @@ class Map:
                     self.start_map(map, map_name)
             else:
                 log.info(_('地图编号 {start} 不存在，请尝试检查更新').format(start=start))
-        #start_map(self, start)
+        start_map(self, start)
         # 捡漏
         start_map(self, start, True)
