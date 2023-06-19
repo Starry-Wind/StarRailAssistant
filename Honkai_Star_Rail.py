@@ -81,19 +81,23 @@ class SRA:
 
     def choose_map(self, option:str=_('大世界'), platform = "PC"):
         if option == _("大世界"):
-            title_ = _("请选择起始星球：")
-            options_map = {_("空间站「黑塔」"): "1", _("雅利洛-VI"): "2", _("仙舟「罗浮」"): "3"}
-            option_ = questionary.select(title_, list(options_map.keys())).ask()
-            main_map = options_map.get(option_)
-            title_ = _("请选择起始地图：")
-            __, map_list_map = read_maps(platform)
-            options_map = map_list_map.get(main_map)
-            if not options_map:
-                return None, _("你没下载地图，拿什么选？")
-            keys = list(options_map.keys())
-            values = list(options_map.values())
-            option_ = questionary.select(title_, values).ask()
-            side_map = keys[values.index(option_)]
+            if read_json_file(CONFIG_FILE_NAME).get("choose_map", False):
+                title_ = _("请选择起始星球：")
+                options_map = {_("空间站「黑塔」"): "1", _("雅利洛-VI"): "2", _("仙舟「罗浮」"): "3"}
+                option_ = questionary.select(title_, list(options_map.keys())).ask()
+                main_map = options_map.get(option_)
+                title_ = _("请选择起始地图：")
+                __, map_list_map = read_maps(platform)
+                options_map = map_list_map.get(main_map)
+                if not options_map:
+                    return None, _("你没下载地图，拿什么选？")
+                keys = list(options_map.keys())
+                values = list(options_map.values())
+                option_ = questionary.select(title_, values).ask()
+                side_map = keys[values.index(option_)]
+            else:
+                main_map = "1"
+                side_map = "1"
             return f"{main_map}-{side_map}", None
         elif option == _("模拟宇宙"):
             title_ = _("请选择第几宇宙：")

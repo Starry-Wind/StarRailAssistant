@@ -1,5 +1,5 @@
 from .calculated import *
-from .config import get_file, read_json_file, read_maps, CONFIG_FILE_NAME, _
+from .config import get_file, read_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
 from .log import log
 from .requests import webhook_and_log
 import time
@@ -23,6 +23,7 @@ class Map:
         self.keyboard = self.calculated.keyboard
         self.data = read_json_file(CONFIG_FILE_NAME)
         self.open_map = self.data.get("open_map", "m")
+        self.DEBUG = self.data.get("debug", False)
         self.map_list, self.map_list_map = read_maps(platform)
 
     def map_init(self):
@@ -57,7 +58,9 @@ class Map:
             value = map[key]
             if key in ["w", "s", "a", "d"]:
                 pos = self.calculated.move(key, value, map_name)
-                #num = map_data["map"].index(map)
+                if self.DEBUG:
+                    map_data["map"][map_index]["pos"] = pos
+                    log.debug(map_data["map"])
             elif key == "f":
                 self.calculated.teleport(key, value)
             elif key == "mouse_move":
@@ -117,7 +120,11 @@ class Map:
                         self.map_init()
                     else:
                         time.sleep(value)
-                        self.calculated.click_target(key, 0.98)
+                        lmap = self.calculated.click_target(key, 0.98)
+                        if lmap == False:
+                            # log没有提供其他的输出路径，暂时用普通文件输出
+                            with open('./logs/地图日志.log', 'a', encoding='utf-8') as fobj1:
+                                fobj1.write(f'{time.strftime("%Y-%m-%d %H:%M:%S")}: 执行{name}地图时无法找到{key}传送点，识别地图传送超时 \n')
                 #time.sleep(3)
                 count = self.calculated.wait_join()
                 log.info(_('地图加载完毕，加载时间为 {count} 秒').format(count=count))
