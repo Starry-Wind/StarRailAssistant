@@ -97,7 +97,7 @@ class SRA:
                 side_map = keys[values.index(option_)]
             else:
                 main_map = "1"
-                side_map = "1"
+                side_map = "1_1"
             return f"{main_map}-{side_map}", None
         elif option == _("模拟宇宙"):
             title_ = _("请选择第几宇宙：")
