@@ -80,6 +80,7 @@ def init_config_file(real_width, real_height, file_name = CONFIG_FILE_NAME):
                         "star_version": "0",
                         "open_map": "m",
                         "level": "INFO",
+                        "debug": False,
                         "adb": "127.0.0.1:62001",
                         "adb_path": "temp\\adb\\adb",
                         "proxies": "",
@@ -87,6 +88,7 @@ def init_config_file(real_width, real_height, file_name = CONFIG_FILE_NAME):
                         "move_excursion": 0,
                         "move_division_excursion": 1,
                         "sprint": False,
+                        "choose_map": False,
                     },option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2
                 )
             )
@@ -162,7 +164,6 @@ def read_maps(platform):
         读取地图
     """
     map_list = get_file('./map') if platform == _("PC") else get_file('./map/mnq')
-    print(map_list)
     map_list_map = {}
     for map_ in map_list:
         map_data = read_json_file(f"map/{map_}") if platform == _("PC") else read_json_file(f"map/mnq/{map_}")
