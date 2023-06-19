@@ -1,31 +1,26 @@
 import os
 import traceback
-try:
-    from utils.log import log
-    import time
-    import pyuac
-    import asyncio
-    import questionary
-    import importlib
-    import tqdm
-    from questionary import ValidationError
-    from httpx import ReadTimeout, ConnectError, ConnectTimeout
-    from pluggy import PluginManager
+import time
+import pyuac
+import asyncio
+import questionary
+import importlib
+import tqdm
+from questionary import ValidationError
+from httpx import ReadTimeout, ConnectError, ConnectTimeout
+from pluggy import PluginManager
 
-    from get_width import get_width
-    from utils.config import read_json_file, modify_json_file, init_config_file, add_key_value, read_maps, CONFIG_FILE_NAME, _
-    from utils.simulated_universe import Simulated_Universe
-    from utils.update_file import update_file
-    from utils.commission import Commission
-    from utils.calculated import calculated
-    from utils.exceptions import Exception
-    from utils.map import Map as map_word
-    from utils.requests import *
-    from utils.adb import ADB
-except:
-    print(traceback.format_exc())
-    os.system("pip install -r requirements.txt")
-    print("请重新运行")
+from get_width import get_width
+from utils.log import log
+from utils.config import read_json_file, modify_json_file, init_config_file, add_key_value, read_maps, CONFIG_FILE_NAME, _
+from utils.simulated_universe import Simulated_Universe
+from utils.update_file import update_file
+from utils.commission import Commission
+from utils.calculated import calculated
+from utils.exceptions import Exception
+from utils.map import Map as map_word
+from utils.requests import *
+from utils.adb import ADB
 
 game_title = _("崩坏：星穹铁道")
 plugins_path = "plugins"
@@ -331,14 +326,6 @@ if __name__ == "__main__":
                             select()
             select()
             #sra.end()
-    except ModuleNotFoundError as e:
-        print(traceback.format_exc())
-        #os.system("pip install -r requirements.txt")
-        print("请重新运行")
-    except NameError as e:
-        print(traceback.format_exc())
-        #os.system("pip install -r requirements.txt")
-        print("请重新运行")
     except KeyboardInterrupt:
         log.error(_("监控到退出"))
     except Exception:
