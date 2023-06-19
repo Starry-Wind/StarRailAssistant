@@ -939,7 +939,7 @@ class calculated:
           while result["max_val"] < threshold:
                 result = self.scan_screenshot(target)
           log.info(_("完成入画"))
-          time.sleep(0.3) # 缓冲
+          time.sleep(0.3) # 缓冲 
 
     def monthly_pass(self):
         """
