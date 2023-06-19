@@ -353,7 +353,7 @@ class calculated:
                         self.adb.input_swipe(temp_ocr[temp_name][0],temp_ocr[temp_name][1],200)
                         temp_ocr.pop(temp_name)
                         time.sleep(0.5)
-                    if type(temp_ocr[temp_name]) == str:
+                    elif type(temp_ocr[temp_name]) == str:
                         start_time = time.time()
                         first_timeout = True
                         while True:
@@ -391,7 +391,7 @@ class calculated:
                     start_time = time.time()
                     first_timeout = True
                     while True:
-                        ocr_data = self.part_ocr((77,10,85,97)) if self.platform == _("PC") else self.part_ocr((72,18,80,97))
+                        ocr_data = self.part_ocr((77,20,85,97)) if self.platform == _("PC") else self.part_ocr((72,18,80,97))
                         log.debug(temp_ocr[temp_name])
                         check_dict = list(filter(lambda x: re.match(f'.*{temp_ocr[temp_name]}.*', x) != None, list(ocr_data.keys())))
                         pos = ocr_data.get(check_dict[0], None) if check_dict else None
@@ -456,7 +456,6 @@ class calculated:
         auto = cv.imread("./temp/pc/auto.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/auto.jpg")
         log.info(_("识别中"))
         while True:
-
             if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info(_("识别超时,此处可能无敌人"))
                 return False
