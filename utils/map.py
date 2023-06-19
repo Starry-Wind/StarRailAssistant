@@ -1,5 +1,5 @@
 from .calculated import *
-from .config import get_file, read_json_file, read_maps, CONFIG_FILE_NAME, _
+from .config import get_file, read_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
 from .log import log
 from .requests import webhook_and_log
 import time
@@ -23,6 +23,7 @@ class Map:
         self.keyboard = self.calculated.keyboard
         self.data = read_json_file(CONFIG_FILE_NAME)
         self.open_map = self.data.get("open_map", "m")
+        self.DEBUG = self.data.get("debug", False)
         self.map_list, self.map_list_map = read_maps(platform)
 
     def map_init(self):
@@ -57,7 +58,9 @@ class Map:
             value = map[key]
             if key in ["w", "s", "a", "d"]:
                 pos = self.calculated.move(key, value, map_name)
-                #num = map_data["map"].index(map)
+                if self.DEBUG:
+                    map_data["map"][map_index]["pos"] = pos
+                    log.debug(map_data["map"])
             elif key == "f":
                 self.calculated.teleport(key, value)
             elif key == "mouse_move":

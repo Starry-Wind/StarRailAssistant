@@ -45,6 +45,7 @@ class calculated:
         self.adb = ADB(order, adb_path)
         self.data = read_json_file(CONFIG_FILE_NAME)
         self.scaling = self.data.get("scaling", 1)
+        self.DEBUG = self.data.get("debug", False)
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
         if start:
@@ -614,8 +615,8 @@ class calculated:
         move_excursion = self.data.get("move_excursion", 0)
         move_division_excursion = self.data.get("move_division_excursion", 1)
         if self.platform == _("PC"):
-            #loc = self.get_loc(map_name=map_name)
-            #log.info(loc)
+            loc = self.get_loc(map_name=map_name)
+            log.debug(loc)
             self.keyboard.press(com)
             result = self.get_pix_bgr(pos=(1712, 958))
             if self.data.get("sprint", False) and (self.compare_lists(result, [120, 160, 180]) or self.compare_lists([200, 200, 200], result)):
@@ -627,7 +628,7 @@ class calculated:
             while time.perf_counter() - start_time < (time1/move_division_excursion+move_excursion):
                 pass
             self.keyboard.release(com)
-            return 0
+            return loc
         elif self.platform == _("模拟器"):
             time1 = (time1)*1000
             if com == "w":
@@ -948,15 +949,18 @@ class calculated:
         返回:
             (x, y)
         """
-        map_name2id = {
-            "基座舱段": 1,
-            "收容舱段": 2,
-            "支援舱段": 3
-        }
-        map_id = map_name2id.get(map_name, 1) if not map_id else map_id
-        img = cv.imread(f"./temp/maps/{map_id}.png")
-        template = self.take_screenshot((4,8,10,20))[0]
-        __, __, max_loc, length, width = find_best_match(img, template,(100,120,5))
-        #cv.rectangle(img, max_loc, (max_loc[0] + width, max_loc[1] + length), (0, 255, 0), 2)
-        #show_img(img)
-        return (max_loc[0] + width/2, max_loc[1] + length/2)
+        if self.DEBUG:
+            map_name2id = {
+                "基座舱段": 1,
+                "收容舱段": 2,
+                "支援舱段": 3
+            }
+            map_id = map_name2id.get(map_name, 1) if not map_id else map_id
+            img = cv.imread(f"./temp/maps/{map_id}.png")
+            template = self.take_screenshot((4,8,10,20))[0]
+            __, __, max_loc, length, width = find_best_match(img, template,(100,120,5))
+            cv.rectangle(img, max_loc, (max_loc[0] + width, max_loc[1] + length), (0, 255, 0), 2)
+            show_img(img)
+            return (max_loc[0] + width/2, max_loc[1] + length/2)
+        else:
+            return (0, 0)
