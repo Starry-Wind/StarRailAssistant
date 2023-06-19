@@ -438,6 +438,7 @@ class calculated:
         warn = cv.imread("./temp/pc/warn.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/warn.jpg")
         tagz = cv.imread("./temp/pc/tagz.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/tagz.jpg")
         finish = cv.imread("./temp/pc/finish_fighting.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/finish_fighting.jpg")
+        auto = cv.imread("./temp/pc/auto.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/auto.jpg")
         log.info(_("识别中"))
         while True:
             
@@ -452,42 +453,23 @@ class calculated:
                 if self.platform == _("PC"):
                     self.Click(points)
                     #再次识别,避免空枪
-                    time.sleep(1)
-                    kqw = 0					
-                    Click_result = self.scan_screenshot(finish,pos=(0,95,100,100)) #检测是否进入战斗
-                    while Click_result["max_val"] > 0.98:
-                        self.Click(points)
-                        log.info(_("空枪警告~!"))
-                        kqw = kqw + 1
-                        time.sleep(1)
-                        Click_result = self.scan_screenshot(finish,pos=(0,95,100,100))
-                        time.sleep(0.3)
-                        if Click_result["max_val"] < 0.98:
-                           log.info(_("补枪成功进入战斗~!"))
-                           break
-                        if kqw == 3:
-                           log.info(_("三枪警告完毕~!"))
-                           break
+                    time.sleep(1)               
+                    finish_result = self.scan_screenshot(finish,pos=(0,95,100,100)) #检测是否进入战斗
+                    time.sleep(0.5)                 
+                    if finish_result["max_val"] < 0.98:
+                       time.sleep(1.5)
+                       self.Click(points)
+                       break
                     break
                 else:
                     self.adb.input_tap((1040, 550))
                     #再次识别,避免空枪
                     time.sleep(1)
-                    kqw = 0
-                    Click_result = self.scan_screenshot(finish,pos=(0,95,100,100)) #检测是否进入战斗
-                    while Click_result["max_val"] > 0.98:
-                        self.adb.input_tap((1040, 550))
-                        log.info(_("空枪警告~!"))
-                        kqw = kqw + 1
-                        time.sleep(1)
-                        Click_result = self.scan_screenshot(finish,pos=(0,95,100,100))
-                        time.sleep(0.3)
-                        if Click_result["max_val"] < 0.98:
-                           log.info(_("补枪成功进入战斗~!"))
-                           break
-                        if kqw == 3:
-                           log.info(_("三枪警告完毕~!"))
-                           break                    
+                    finish_result = self.scan_screenshot(finish,pos=(0,95,100,100)) #检测是否进入战斗                    
+                    if finish_result["max_val"] < 0.98:
+                       time.sleep(1.5)
+                       self.adb.input_tap((1040, 550))
+                       break                           
                     break
             elif self.scan_screenshot(doubt)["max_val"] > 0.9 or self.scan_screenshot(warn)["max_val"] > 0.95: # if A or B，顺次执行，A为真时不会执行B，减少开销
                 log.info(_("识别到疑问或是警告,等待怪物开战"))
@@ -497,24 +479,24 @@ class calculated:
                 else:
                     self.adb.input_tap((1040, 550))           
                 time.sleep(3)
-                result = self.scan_screenshot(finish,pos=(0,95,100,100)) # 識別是否已進入戰鬥，若已進入則跳出迴圈
-                if result["max_val"] < 0.95:
+                finish_result = self.scan_screenshot(finish,pos=(0,95,100,100)) # 識別是否已進入戰鬥，若已進入則跳出迴圈
+                if finish_result["max_val"] < 0.95:
                     break
             time.sleep(0.1)
-        time.sleep(6)
-        target = cv.imread("./temp/pc/auto.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/auto.jpg")
+        time.sleep(5)
+        #进入战斗
         start_time = time.time()
         if self.data["auto_battle_persistence"] != 1:
             while True:
-                result = self.scan_screenshot(target)
-                if result["max_val"] > 0.9:
+                auto_result = self.scan_screenshot(auto)
+                if auto_result["max_val"] > 0.9:
                     time.sleep(0.3)
                     if self.platform == _("PC"):
                         self.keyboard.press("v")
                         self.keyboard.release("v")
                     else:
                         #points = self.calculated(result, target.shape)
-                        points = result["max_loc"]
+                        points = auto_result["max_loc"]
                         self.Click(points)
                     log.info(_("开启自动战斗"))
                     break
@@ -525,21 +507,19 @@ class calculated:
             log.info(_("跳过开启自动战斗（沿用设置）"))
             time.sleep(5)
 
-
         start_time = time.time()  # 开始计算战斗时间
         while True:
             if type == 0:
-                if self.platform == _("PC"):
-                    end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
-                    end_str = str(self.part_ocr((0,95,100,100)))
-                    if any(substring in end_str for substring in end_list):
+                if self.platform == _("PC"):                 
+                    finish_result = self.scan_screenshot(finish,pos=(0,95,100,100))
+                    if finish_result["max_val"] > 0.98:
                         log.info(_("完成自动战斗"))
                         time.sleep(3)
                         break
                 else:
                     #target = cv.imread("./temp/mnq/finish_fighting.jpg") 代码优化
-                    result = self.scan_screenshot(finish)
-                    if result["max_val"] > 0.9:
+                    finish_result = self.scan_screenshot(finish)
+                    if finish_result["max_val"] > 0.9:
                         log.info(_("完成自动战斗"))
                         break
                 if time.time() - start_time > 90: # 避免卡死
