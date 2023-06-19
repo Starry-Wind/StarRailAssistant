@@ -291,7 +291,7 @@ class calculated:
         }
 
     # flag为true一定要找到
-    def click_target(self, target_path: str, threshold, flag=True):
+    def click_target(self, target_path: str, threshold, flag:bool=True, check:bool=False):
         """
         说明:
             识别图片并点击
@@ -342,7 +342,6 @@ class calculated:
             "map_3-4_point_2":[(593, 500),(593, 400)],
             "map_3-4_point_3" : [(593, 346),(400, 346)],
         }
-        temp_ocr ={}
         if temp_name in temp_ocr:
             log.info(temp_name)
             if "orientation" in temp_name:
