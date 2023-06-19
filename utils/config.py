@@ -88,7 +88,6 @@ def init_config_file(real_width, real_height, file_name = CONFIG_FILE_NAME):
                         "move_excursion": 0,
                         "move_division_excursion": 1,
                         "sprint": False,
-                        "choose_map": False,
                     },option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2
                 )
             )
