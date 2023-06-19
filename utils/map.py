@@ -121,7 +121,7 @@ class Map:
                         if lmap == False:
                             # log没有提供其他的输出路径，暂时用普通文件输出
                             with open('./logs/地图日志.log', 'a', encoding='utf-8') as fobj1:
-                                fobj1.write(f'{time.strftime("%Y-%m-%d %H:%M:%S")}: 执行{name}地图时无法找到{key}传送点，识别地图传送超时 \n')
+                                fobj1.write(f'{time.strftime("%Y-%m-%d %H:%M:%S")}: 执行{name}地图时无法找到{key}传送点，识别地图传送超时 \n')                   
                 #time.sleep(3)
                 count = self.calculated.wait_join()
                 log.info(_('地图加载完毕，加载时间为 {count} 秒').format(count=count))
