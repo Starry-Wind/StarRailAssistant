@@ -11,7 +11,7 @@ from httpx import ReadTimeout, ConnectError, ConnectTimeout
 from pluggy import PluginManager
 
 from get_width import get_width
-from utils.log import log
+from utils.log import log, fight_log
 from utils.config import read_json_file, modify_json_file, init_config_file, add_key_value, read_maps, CONFIG_FILE_NAME, _
 from utils.simulated_universe import Simulated_Universe
 from utils.update_file import update_file
@@ -291,6 +291,7 @@ class SRA:
             raise Exception(role_list)
 
 if __name__ == "__main__":
+    fight_log.info("151")
     sra = SRA()
     try:
         sra.set_config()    # 无config直接更新时初始化config文件
