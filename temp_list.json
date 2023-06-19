@@ -172,6 +172,10 @@
     "hash": "ab1b1efb61b806c93d0fbbda3c04cc13"
   },
   {
+    "path": "temp/pc/orientation_3.png",
+    "hash": "e274917fe1950f7d8105c0a435ac44f2"
+  },
+  {
     "path": "temp/pc/map_3-3_point_5.png",
     "hash": "cac3729b507c7e5a6f794b4048ee4ecd"
   },
@@ -458,6 +462,10 @@
   {
     "path": "temp/mnq/map_3-1_point_4.png",
     "hash": "f57bde5d21bd6b930415af229d12196c"
+  },
+  {
+    "path": "temp/mnq/orientation_3.png",
+    "hash": "63211292415802a8c65dfc4002f868c0"
   },
   {
     "path": "temp/mnq/map_3-3_point_5.png",
