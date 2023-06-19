@@ -921,22 +921,25 @@ class calculated:
         if self.platform == _("PC"):
           self.move(key)
           time.sleep(1) # 等待进入入画
-          end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
-          end_str = str(self.part_ocr((0,95,100,100)))
+          log.info(_("等待入画结束"))
+          target = cv.imread("./temp/pc/finish_fighting.jpg")
+          result = self.scan_screenshot(target,pos=(0,95,100,100))
           time.sleep(0.3) # 缓冲
-          if any(substring in end_str for substring in end_list):
-             log.info(_("完成入画"))
-             time.sleep(0.3) # 缓冲
+          while result["max_val"] < threshold:
+                result = self.scan_screenshot(target)
+          log.info(_("完成入画"))
+          time.sleep(0.3) # 缓冲
         else:
           self.adb.input_tap((1040, 550))#不会找点位，请直接找一下
           time.sleep(1) # 等待进入入画
+          log.info(_("等待入画结束"))
           target = cv.imread("./temp/mnq/finish_fighting.jpg")
-          result = self.scan_screenshot(target)
+          result = self.scan_screenshot(target,pos=(0,95,100,100))
           time.sleep(0.3) # 缓冲                    
-          if result["max_val"] > 0.9:
-            log.info(_("完成入画"))
-            time.sleep(0.3) # 缓冲
-        time.sleep(0.2)
+          while result["max_val"] < threshold:
+                result = self.scan_screenshot(target)
+          log.info(_("完成入画"))
+          time.sleep(0.3) # 缓冲 
 
     def monthly_pass(self):
         """
