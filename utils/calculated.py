@@ -27,7 +27,7 @@ class calculated:
 
     def __init__(self, title=_("崩坏：星穹铁道"), platform=_("PC"), order="127.0.0.1:62001", adb_path="temp\\adb\\adb", det_model_name="ch_PP-OCRv3_det", rec_model_name= "densenet_lite_114-fc", number=False, start=True):
         """
-        参数: 
+        参数:
             :param platform: 运行设备
             :param order: ADB端口
             :param adb_path: ADB可执行文件路径
@@ -212,13 +212,13 @@ class calculated:
             :offset: 坐标偏移
         返回:
             :return 坐标
-        """        
+        """
         while 1:
             img_fp, left, top, __, __, width, length = self.take_screenshot(points)
             cv.imwrite('scr.png', img_fp)
             x, y = left + width/100*points[0], top + length/100*points[1]
             pos = self.hsv2pos(img_fp, hsv_color, tolerance)
-            if pos == None: 
+            if pos == None:
                 time.sleep(0.1)
                 if flag == True:
                     continue
@@ -228,7 +228,7 @@ class calculated:
             log.info(_('点击坐标{ret}').format(ret=ret))
             self.Click(ret)
             return
-        
+
     def take_screenshot(self,points=(0,0,0,0)):
         """
         说明:
@@ -290,6 +290,7 @@ class calculated:
             :param threshold: 可信度阈值
             :param flag: 是否必须找到
         """
+        target_path_temp = target_path
         target_path = target_path.replace("temp\\","temp\\pc\\") if self.platform == _("PC") else target_path.replace("temp\\","temp\\mnq\\")
         temp_name = target_path.split("\\")[-1].split(".")[0]
         join = False # 强制进行传统模板匹配
@@ -340,9 +341,7 @@ class calculated:
             elif "map" in temp_name:
                 log.info(_("选择地图"))
             if "map" not in temp_name:
-                success = self.ocr_click(temp_ocr[temp_name])
-                if not success:
-                    join = True
+                self.ocr_click(temp_ocr[temp_name])
                 while True:
                     if not self.is_blackscreen():
                         break
@@ -372,6 +371,7 @@ class calculated:
                             time.sleep(0.5)
                 elif self.platform == _("PC"):
                     target = cv.imread(target_path)
+                    start_time = time.time()
                     while True:
                         result = self.scan_screenshot(target)
                         if result["max_val"] > threshold:
@@ -380,6 +380,10 @@ class calculated:
                             break
                         if flag == False:
                             break
+                        if time.time() - start_time > 5:
+                                log.info(_("传送锚点识别超时"))
+                                join = True
+                                break
                         time.sleep(0.5)
             else:
                 if type(temp_ocr[temp_name]) == str:
@@ -405,7 +409,7 @@ class calculated:
                             else:
                                 self.scroll(10) if self.platform == _("PC") else self.adb.input_swipe((1006, 326), (1003, 255),1000)
 
-                        if time.time() - start_time > 15:
+                        if time.time() - start_time > 5:
                             log.info(_("地图识别超时"))
                             join = True
                             break
@@ -422,6 +426,14 @@ class calculated:
                 if result["max_val"] > threshold:
                     #points = self.calculated(result, target.shape)
                     self.Click(result["max_loc"])
+                    break
+                if time.time() - start_time > 5: #防止卡死.重启线程
+                    log.info(_("传送识别超时"))
+                    esc_target = cv.imread("./temp/pc/map_esc.jpg")
+                    result = self.scan_screenshot(esc_target)   #不会换算坐标帮忙写一下哈
+                    time.sleep(0.5)
+                    self.Click(result["max_loc"])
+                    return False
                     break
                 if flag == False:
                     break
@@ -440,83 +452,91 @@ class calculated:
         warn = cv.imread("./temp/pc/warn.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/warn.jpg")
         tagz = cv.imread("./temp/pc/tagz.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/tagz.jpg")
         finish = cv.imread("./temp/pc/finish_fighting.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/finish_fighting.jpg")
+        auto = cv.imread("./temp/pc/auto.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/auto.jpg")
         log.info(_("识别中"))
         while True:
-            
-            if time.time() - start_time > 8:  # 如果已经识别了8秒还未找到目标图片，则退出循环
+
+            if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info(_("识别超时,此处可能无敌人"))
                 return False
             # if (self.scan_screenshot(tagz, pos=(40,0,60,15))["max_val"]) < 0.95 : continue  # 没有Z标志时，直接继续
             attack_result = self.scan_screenshot(attack)
-            if attack_result["max_val"] > 0.98:
+            if attack_result["max_val"] > 0.97:
                 #points = self.calculated(result, target.shape)
-                points = attack_result["max_loc"] # 这里好像没有必要点击攻击标志
-                if self.platform == _("PC"):
-                    self.Click(points)
-                    #再次识别,避免空枪
-                    time.sleep(1)
-                    kqw = 0
-                    Click_result = self.scan_screenshot(finish) #检测是否进入战斗
-                    while Click_result["max_val"] > 0.98:
-                        self.Click(points)
-                        log.info(_("空枪警告~!"))
-                        kqw = kqw + 1
-                        time.sleep(1)
-                        Click_result = self.scan_screenshot(finish)
-                        time.sleep(0.3)
-                        if Click_result["max_val"] < 0.98:
-                           log.info(_("补枪成功进入战斗~!"))
-                           break
-                        if kqw == 3:
-                           log.info(_("三枪警告完毕~!"))
-                           break
-                    break
-                else:
-                    self.adb.input_tap((1040, 550))
-                    #再次识别,避免空枪
-                    time.sleep(1)
-                    kqw = 0
-                    Click_result = self.scan_screenshot(finish) #检测是否进入战斗
-                    while Click_result["max_val"] > 0.98:
-                        self.adb.input_tap((1040, 550))
-                        log.info(_("空枪警告~!"))
-                        kqw = kqw + 1
-                        time.sleep(1)
-                        Click_result = self.scan_screenshot(finish)
-                        time.sleep(0.3)
-                        if Click_result["max_val"] < 0.98:
-                           log.info(_("补枪成功进入战斗~!"))
-                           break
-                        if kqw == 3:
-                           log.info(_("三枪警告完毕~!"))
-                           break                    
-                    break
-            elif self.scan_screenshot(doubt)["max_val"] > 0.9 or self.scan_screenshot(warn)["max_val"] > 0.95: # if A or B，顺次执行，A为真时不会执行B，减少开销
-                log.info(_("识别到疑问或是警告,等待怪物开战"))
-                time.sleep(1.5)
-                if  self.platform == _("PC"): #为模拟器用户添加支持 被警告在开一枪
-                    self.Click()
-                else:
-                    self.adb.input_tap((1040, 550))           
-                time.sleep(3)
-                result = self.scan_screenshot(finish) # 識別是否已進入戰鬥，若已進入則跳出迴圈
-                if result["max_val"] < 0.95:
-                    break
-            time.sleep(0.1)
-        time.sleep(6)
-        target = cv.imread("./temp/pc/auto.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/auto.jpg")
+                #points = attack_result["max_loc"] # 这里好像没有必要点击攻击标志
+               if self.platform == _("PC"):
+                  self.Click()
+               else:
+                  self.adb.input_tap((1040, 550))
+                  time.sleep(1)
+               time.sleep(1)
+               doubt_time = time.time()
+               log.info(_("监控疑问或是警告"))
+               jkdoubt = True
+               while jkdoubt:
+                     if self.scan_screenshot(doubt)["max_val"] > 0.95 or self.scan_screenshot(warn)["max_val"] > 0.95:
+                        log.info(_("识别到疑问或是警告,等待怪物开战"))
+                        time.sleep(2)
+                        log.info(_("识别反击"))
+                        if self.platform == _("PC"):
+                           self.Click()
+                        else:
+                           self.adb.input_tap((1040, 550))
+                           time.sleep(1)
+                     result = self.scan_screenshot(finish,pos=(0,95,100,100))
+                     if result["max_val"] < 0.95:
+                        break
+                     if time.time() - doubt_time > 8:
+                        jkdoubt = False
+                        break
+               result = self.scan_screenshot(finish,pos=(0,95,100,100))
+               time.sleep(0.3)
+               if result["max_val"] < 0.95:
+                  break
+               if self.platform == _("PC"):
+                  self.Click()
+               else:
+                  self.adb.input_tap((1040, 550))
+                  time.sleep(1)
+            else:
+                 time.sleep(2)
+                 doubt_time = time.time()
+                 log.info(_("监控疑问或是警告2"))
+                 jkdoubt = True
+                 while jkdoubt:
+                       if self.scan_screenshot(doubt)["max_val"] > 0.95 or self.scan_screenshot(warn)["max_val"] > 0.95:
+                          log.info(_("识别到疑问或是警告,等待怪物开战"))
+                          time.sleep(2)
+                          if self.platform == _("PC"): #为模拟器用户添加支持 被警告在开一枪
+                             log.info(_("识别反击"))
+                             self.Click()
+                          else:
+                             self.adb.input_tap((1040, 550))
+                             time.sleep(1)
+                       finish_result = self.scan_screenshot(finish,pos=(0,95,100,100))
+                       if finish_result["max_val"] < 0.95:
+                          break
+                       if time.time() - doubt_time > 8:
+                          jkdoubt = False
+                          break
+                 finish_result = self.scan_screenshot(finish,pos=(0,95,100,100))
+                 time.sleep(0.3)
+                 if finish_result["max_val"] < 0.95:
+                     break
+            time.sleep(2)
+        #进入战斗
         start_time = time.time()
         if self.data["auto_battle_persistence"] != 1:
             while True:
-                result = self.scan_screenshot(target)
-                if result["max_val"] > 0.9:
+                auto_result = self.scan_screenshot(auto)
+                if auto_result["max_val"] > 0.9:
                     time.sleep(0.3)
                     if self.platform == _("PC"):
                         self.keyboard.press("v")
                         self.keyboard.release("v")
                     else:
                         #points = self.calculated(result, target.shape)
-                        points = result["max_loc"]
+                        points = auto_result["max_loc"]
                         self.Click(points)
                     log.info(_("开启自动战斗"))
                     break
@@ -527,21 +547,19 @@ class calculated:
             log.info(_("跳过开启自动战斗（沿用设置）"))
             time.sleep(5)
 
-
         start_time = time.time()  # 开始计算战斗时间
         while True:
             if type == 0:
                 if self.platform == _("PC"):
-                    end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
-                    end_str = str(self.part_ocr((0,95,100,100)))
-                    if any(substring in end_str for substring in end_list):
+                    finish_result = self.scan_screenshot(finish,pos=(0,95,100,100))
+                    if finish_result["max_val"] > 0.98:
                         log.info(_("完成自动战斗"))
                         time.sleep(3)
                         break
                 else:
                     #target = cv.imread("./temp/mnq/finish_fighting.jpg") 代码优化
-                    result = self.scan_screenshot(finish)
-                    if result["max_val"] > 0.9:
+                    finish_result = self.scan_screenshot(finish)
+                    if finish_result["max_val"] > 0.9:
                         log.info(_("完成自动战斗"))
                         break
                 if time.time() - start_time > 90: # 避免卡死
@@ -719,7 +737,7 @@ class calculated:
         characters = check_list[0] if check_list else None
         pos = ((data[characters][2][0]+data[characters][0][0])/2, (data[characters][2][1]+data[characters][0][1])/2) if characters in data else None
         return characters, pos
-    
+
     def part_ocr(self,points = (0,0,0,0), debug=False):
         """
         说明：
@@ -811,7 +829,7 @@ class calculated:
                 # 色相保持一致
                 if abs(x1[0] - color[0])==0 and abs(x1[1] - color[1])<=tolerance and abs(x1[2] - color[2])<=tolerance:
                     return (index1, index)
-        
+
     def wait_join(self):
         """
         说明：
@@ -849,7 +867,7 @@ class calculated:
                     if w.title == self.title:
                         #client.Dispatch("WScript.Shell").SendKeys('%')
                         self.keyboard.press(Key.right)
-                        self.keyboard.release(Key.right)                     
+                        self.keyboard.release(Key.right)
                         w.activate()
                         break
             else:
@@ -883,22 +901,25 @@ class calculated:
             - key 对应按键
             - value 操作时间,单位秒
         """
-        self.move(key)
-        time.sleep(1) # 等待进入入画
-        while True:
-            if self.platform == _("PC"):
-                end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
-                end_str = str(self.part_ocr((0,95,100,100)))
-                if any(substring in end_str for substring in end_list):
-                    log.info(_("完成入画"))
-                    break
-            else:
-                target = cv.imread("./temp/mnq/finish_fighting.jpg")
-                result = self.scan_screenshot(target)
-                if result["max_val"] > 0.9:
-                    log.info(_("完成入画"))
-                    break
-            time.sleep(0.5) # 缓冲
+        #重写为了支持模拟器
+        if self.platform == _("PC"):
+          self.move(key)
+          time.sleep(1) # 等待进入入画
+          end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
+          end_str = str(self.part_ocr((0,95,100,100)))
+          time.sleep(0.3) # 缓冲
+          if any(substring in end_str for substring in end_list):
+             log.info(_("完成入画"))
+             time.sleep(0.3) # 缓冲
+        else:
+          self.adb.input_tap((1040, 550))#不会找点位，请直接找一下
+          time.sleep(1) # 等待进入入画
+          target = cv.imread("./temp/mnq/finish_fighting.jpg")
+          result = self.scan_screenshot(target)
+          time.sleep(0.3) # 缓冲
+          if result["max_val"] > 0.9:
+            log.info(_("完成入画"))
+            time.sleep(0.3) # 缓冲
         time.sleep(0.2)
 
     def monthly_pass(self):
