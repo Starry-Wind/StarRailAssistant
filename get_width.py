@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-23 17:39:27
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-11 01:09:23
+LastEditTime: 2023-06-19 22:03:54
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -48,8 +48,8 @@ def get_width(title):
     borderless = True if real_width*scaling == 1920 else False
     left_border = (real_width*scaling-1920)/2
     up_border = (real_height*scaling-1080)-left_border
-    real_width1 = int(1920/scaling)
-    real_height1 = int(1080/scaling)
+    real_width1 = 1920
+    real_height1 = 1080
     if not normalize_file_path(CONFIG_FILE_NAME):
         init_config_file(real_width=real_width1, real_height=real_height1)
 

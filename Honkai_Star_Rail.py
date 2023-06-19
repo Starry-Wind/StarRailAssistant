@@ -1,31 +1,26 @@
 import os
 import traceback
-try:
-    from utils.log import log
-    import time
-    import pyuac
-    import asyncio
-    import questionary
-    import importlib
-    import tqdm
-    from questionary import ValidationError
-    from httpx import ReadTimeout, ConnectError, ConnectTimeout
-    from pluggy import PluginManager
+import time
+import pyuac
+import asyncio
+import questionary
+import importlib
+import tqdm
+from questionary import ValidationError
+from httpx import ReadTimeout, ConnectError, ConnectTimeout
+from pluggy import PluginManager
 
-    from get_width import get_width
-    from utils.config import read_json_file, modify_json_file, init_config_file, add_key_value, read_maps, CONFIG_FILE_NAME, _
-    from utils.simulated_universe import Simulated_Universe
-    from utils.update_file import update_file
-    from utils.commission import Commission
-    from utils.calculated import calculated
-    from utils.exceptions import Exception
-    from utils.map import Map as map_word
-    from utils.requests import *
-    from utils.adb import ADB
-except:
-    print(traceback.format_exc())
-    os.system("pip install -r requirements.txt")
-    print("请重新运行")
+from get_width import get_width
+from utils.log import log
+from utils.config import read_json_file, modify_json_file, init_config_file, add_key_value, read_maps, CONFIG_FILE_NAME, _
+from utils.simulated_universe import Simulated_Universe
+from utils.update_file import update_file
+from utils.commission import Commission
+from utils.calculated import calculated
+from utils.exceptions import Exception
+from utils.map import Map as map_word
+from utils.requests import *
+from utils.adb import ADB
 
 game_title = _("崩坏：星穹铁道")
 plugins_path = "plugins"
@@ -81,23 +76,19 @@ class SRA:
 
     def choose_map(self, option:str=_('大世界'), platform = "PC"):
         if option == _("大世界"):
-            if read_json_file(CONFIG_FILE_NAME).get("choose_map", False):
-                title_ = _("请选择起始星球：")
-                options_map = {_("空间站「黑塔」"): "1", _("雅利洛-VI"): "2", _("仙舟「罗浮」"): "3"}
-                option_ = questionary.select(title_, list(options_map.keys())).ask()
-                main_map = options_map.get(option_)
-                title_ = _("请选择起始地图：")
-                __, map_list_map = read_maps(platform)
-                options_map = map_list_map.get(main_map)
-                if not options_map:
-                    return None, _("你没下载地图，拿什么选？")
-                keys = list(options_map.keys())
-                values = list(options_map.values())
-                option_ = questionary.select(title_, values).ask()
-                side_map = keys[values.index(option_)]
-            else:
-                main_map = "1"
-                side_map = "1_1"
+            title_ = _("请选择起始星球：")
+            options_map = {_("空间站「黑塔」"): "1", _("雅利洛-VI"): "2", _("仙舟「罗浮」"): "3"}
+            option_ = questionary.select(title_, list(options_map.keys())).ask()
+            main_map = options_map.get(option_)
+            title_ = _("请选择起始地图：")
+            __, map_list_map = read_maps(platform)
+            options_map = map_list_map.get(main_map)
+            if not options_map:
+                return None, _("你没下载地图，拿什么选？")
+            keys = list(options_map.keys())
+            values = list(options_map.values())
+            option_ = questionary.select(title_, values).ask()
+            side_map = keys[values.index(option_)]
             return f"{main_map}-{side_map}", None
         elif option == _("模拟宇宙"):
             title_ = _("请选择第几宇宙：")
@@ -335,14 +326,6 @@ if __name__ == "__main__":
                             select()
             select()
             #sra.end()
-    except ModuleNotFoundError as e:
-        print(traceback.format_exc())
-        #os.system("pip install -r requirements.txt")
-        print("请重新运行")
-    except NameError as e:
-        print(traceback.format_exc())
-        #os.system("pip install -r requirements.txt")
-        print("请重新运行")
     except KeyboardInterrupt:
         log.error(_("监控到退出"))
     except Exception:
