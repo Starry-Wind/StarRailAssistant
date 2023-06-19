@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-15 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-16 18:34:39
+LastEditTime: 2023-06-19 23:44:13
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -13,10 +13,19 @@ import sys
 import orjson
 import locale
 import gettext
+
+from copy import copy
 from loguru import logger
 
 message = ""
 
+class FileFilter:
+    def __init__(self, file):
+        self.file = file
+
+    def __call__(self, record):
+        return record["extra"].get("file") == self.file
+    
 def normalize_file_path(filename):
     # 尝试在当前目录下读取文件
     current_dir = os.getcwd()
@@ -78,23 +87,31 @@ def get_message(*arg):
             message += f"\n{content}"
     return message
 
+dir_log = "logs"
 data = read_json_file("config.json")
 VER = str(data.get("star_version",0))+"/"+str(data.get("temp_version",0))+"/"+str(data.get("map_version",0))
-level = data.get("level","INFO")
-log = logger
-dir_log = "logs"
 path_log = os.path.join(dir_log, _('日志文件.log'))
-logger.remove()
-logger.add(sys.stdout, level=level, colorize=True,
+fight_path_log = os.path.join(dir_log, _('战斗日志.log'))
+level = data.get("level","INFO")
+log = logger.bind(file=path_log)
+log.remove()
+log.add(sys.stdout, level=level, colorize=True,
             format="<cyan>{module}</cyan>.<cyan>{function}</cyan>"
                     ":<cyan>{line}</cyan> - "+f"<cyan>{VER}</cyan> - "
-                    "<level>{message}</level>"
-            )
+                    "<level>{message}</level>",
+            filter=FileFilter(path_log))
 
 #logger.add(get_message, level=level,format="{message}")
 
-logger.add(path_log,
+log.add(path_log,
             format="{time:HH:mm:ss} - "
                     "{level}\t| "
                     "{module}.{function}:{line} - "+f"<cyan>{VER}</cyan> - "+" {message}",
-            rotation='0:00', enqueue=True, serialize=False, encoding="utf-8", retention="10 days")
+            rotation='0:00', enqueue=True, serialize=False, encoding="utf-8", retention="10 days",filter=FileFilter(path_log))
+
+fight_log = logger.bind(file=fight_path_log)
+fight_log.add(fight_path_log,
+            format="{time:HH:mm:ss} - "
+                    "{level}\t| "
+                    "{module}.{function}:{line} - "+f"<cyan>{VER}</cyan> - "+" {message}",
+            rotation='0:00', enqueue=True, serialize=False, encoding="utf-8", retention="10 days",filter=FileFilter(fight_path_log))

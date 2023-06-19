@@ -28,7 +28,7 @@ class calculated:
 
     def __init__(self, title=_("崩坏：星穹铁道"), platform=_("PC"), order="127.0.0.1:62001", adb_path="temp\\adb\\adb", det_model_name="ch_PP-OCRv3_det", rec_model_name= "densenet_lite_114-fc", number=False, start=True):
         """
-        参数:
+        参数: 
             :param platform: 运行设备
             :param order: ADB端口
             :param adb_path: ADB可执行文件路径
@@ -222,13 +222,13 @@ class calculated:
             :offset: 坐标偏移
         返回:
             :return 坐标
-        """
+        """        
         while 1:
             img_fp, left, top, __, __, width, length = self.take_screenshot(points)
             cv.imwrite('scr.png', img_fp)
             x, y = left + width/100*points[0], top + length/100*points[1]
             pos = self.hsv2pos(img_fp, hsv_color, tolerance)
-            if pos == None:
+            if pos == None: 
                 time.sleep(0.1)
                 if flag == True:
                     continue
@@ -238,7 +238,7 @@ class calculated:
             log.info(_('点击坐标{ret}').format(ret=ret))
             self.Click(ret)
             return
-
+        
     def take_screenshot(self,points=(0,0,0,0)):
         """
         说明:
@@ -291,7 +291,7 @@ class calculated:
         }
 
     # flag为true一定要找到
-    def click_target(self, target_path: str, threshold, flag=True):
+    def click_target(self, target_path: str, threshold, flag:bool=True, check:bool=False):
         """
         说明:
             识别图片并点击
@@ -342,7 +342,6 @@ class calculated:
             "map_3-4_point_2":[(593, 500),(593, 400)],
             "map_3-4_point_3" : [(593, 346),(400, 346)],
         }
-        temp_ocr ={}
         if temp_name in temp_ocr:
             log.info(temp_name)
             if "orientation" in temp_name:
@@ -394,7 +393,7 @@ class calculated:
                         if time.time() - start_time > 5:
                                 log.info(_("传送锚点识别超时"))
                                 join = True
-                                break
+                                break                           
                         time.sleep(0.5)
             else:
                 if type(temp_ocr[temp_name]) == str:
@@ -472,6 +471,7 @@ class calculated:
 
         log.info(_("识别中"))
         while True:
+
             if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info(_("识别超时,此处可能无敌人"))
                 return False
@@ -491,7 +491,7 @@ class calculated:
                 while jkdoubt:
                     if self.scan_screenshot(self.doubt)["max_val"] > 0.95 or self.scan_screenshot(self.warn)["max_val"] > 0.95:
                         log.info(_("识别到疑问或是警告,等待怪物开战"))
-                        time.sleep(2)
+                        time.sleep(2)                            
                         log.info(_("识别反击"))
                         if self.platform == _("PC"):
                             self.Click()
@@ -502,7 +502,6 @@ class calculated:
                     if result["max_val"] < 0.95:
                         break
                     if time.time() - doubt_time > 8:
-                        jkdoubt = False
                         break
                     time.sleep(0.1)
                 result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
@@ -553,7 +552,7 @@ class calculated:
                         self.keyboard.release("v")
                     else:
                         #points = self.calculated(result, target.shape)
-                        points = auto_result["max_loc"]
+                        points = result["max_loc"]
                         self.Click(points)
                     log.info(_("开启自动战斗"))
                     break
@@ -754,7 +753,7 @@ class calculated:
         characters = check_list[0] if check_list else None
         pos = ((data[characters][2][0]+data[characters][0][0])/2, (data[characters][2][1]+data[characters][0][1])/2) if characters in data else None
         return characters, pos
-
+    
     def part_ocr(self,points = (0,0,0,0), debug=False):
         """
         说明：
@@ -846,7 +845,7 @@ class calculated:
                 # 色相保持一致
                 if abs(x1[0] - color[0])==0 and abs(x1[1] - color[1])<=tolerance and abs(x1[2] - color[2])<=tolerance:
                     return (index1, index)
-
+        
     def wait_join(self):
         """
         说明：
@@ -884,7 +883,7 @@ class calculated:
                     if w.title == self.title:
                         #client.Dispatch("WScript.Shell").SendKeys('%')
                         self.keyboard.press(Key.right)
-                        self.keyboard.release(Key.right)
+                        self.keyboard.release(Key.right)                     
                         w.activate()
                         break
             else:
@@ -922,22 +921,25 @@ class calculated:
         if self.platform == _("PC"):
           self.move(key)
           time.sleep(1) # 等待进入入画
-          end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
-          end_str = str(self.part_ocr((0,95,100,100)))
+          log.info(_("等待入画结束"))
+          target = cv.imread("./temp/pc/finish_fighting.jpg")
+          result = self.scan_screenshot(target,pos=(0,95,100,100))
           time.sleep(0.3) # 缓冲
-          if any(substring in end_str for substring in end_list):
-             log.info(_("完成入画"))
-             time.sleep(0.3) # 缓冲
+          while result["max_val"] < threshold:
+                result = self.scan_screenshot(target)
+          log.info(_("完成入画"))
+          time.sleep(0.3) # 缓冲
         else:
           self.adb.input_tap((1040, 550))#不会找点位，请直接找一下
           time.sleep(1) # 等待进入入画
+          log.info(_("等待入画结束"))
           target = cv.imread("./temp/mnq/finish_fighting.jpg")
-          result = self.scan_screenshot(target)
-          time.sleep(0.3) # 缓冲
-          if result["max_val"] > 0.9:
-            log.info(_("完成入画"))
-            time.sleep(0.3) # 缓冲
-        time.sleep(0.2)
+          result = self.scan_screenshot(target,pos=(0,95,100,100))
+          time.sleep(0.3) # 缓冲                    
+          while result["max_val"] < threshold:
+                result = self.scan_screenshot(target)
+          log.info(_("完成入画"))
+          time.sleep(0.3) # 缓冲 
 
     def monthly_pass(self):
         """
