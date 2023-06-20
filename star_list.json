@@ -41,7 +41,7 @@
   },
   {
     "path": "utils/map.py",
-    "hash": "ddc73153fa32e26fda7c0ca343f1a0c6"
+    "hash": "dcaf826e327a7b908d8c73747c0feb8b"
   },
   {
     "path": "utils/adb.py",
@@ -65,7 +65,7 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "d3b7d53a2030792ef76da3b9f166b18a"
+    "hash": "e18304700e0d7ca8b7c10635a2fe24d2"
   },
   {
     "path": "utils/cv_tools.py",
