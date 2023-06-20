@@ -419,7 +419,7 @@ class calculated:
                             else:
                                 self.scroll(10) if self.platform == _("PC") else self.adb.input_swipe((1006, 326), (1003, 255),1000)
 
-                        if time.time() - start_time > 5:
+                        if time.time() - start_time > 15:
                             log.info(_("地图识别超时"))
                             join = True
                             break
