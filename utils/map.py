@@ -135,7 +135,7 @@ class Map:
                                 self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98)
                                 self.calculated.click_target(key.split("_point")[0], 0.98)
                                 self.calculated.click_target(key, 0.98)
-                            elif not check and wrong_map:
+                            elif not check and wrong_map and "point" in key and map.split("_")[-1] != "1":
                                 self.calculated.click_target("temp\\orientation_1.jpg", 0.98)
                                 self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98)
                                 self.calculated.click_target(key.split("_point")[0], 0.98)
