@@ -468,15 +468,13 @@ class calculated:
             :param type: 类型 大世界/模拟宇宙
         """
         start_time = time.time()
-
         log.info(_("识别中"))
         while True:
-
             if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info(_("识别超时,此处可能无敌人"))
                 return False
             # if (self.scan_screenshot(tagz, pos=(40,0,60,15))["max_val"]) < 0.95 : continue  # 没有Z标志时，直接继续
-            if self.scan_screenshot(self.attack)["max_val"] > 0.97:
+            if self.scan_screenshot(self.attack)["max_val"] > 0.95:
                 #points = self.calculated(result, target.shape)
                 #points = attack_result["max_loc"] # 这里好像没有必要点击攻击标志
                 if self.platform == _("PC"):
@@ -484,14 +482,14 @@ class calculated:
                 else:
                     self.adb.input_tap((1040, 550))
                     time.sleep(1)
-                time.sleep(1)
-                doubt_time = time.time()
+                time.sleep(0.5)
+                doubt_time = time.time() + 8
                 log.info(_("监控疑问或是警告"))
-                jkdoubt = True
-                while jkdoubt:
-                    if self.scan_screenshot(self.doubt)["max_val"] > 0.95 or self.scan_screenshot(self.warn)["max_val"] > 0.95:
-                        log.info(_("识别到疑问或是警告,等待怪物开战"))
-                        time.sleep(2)                            
+                while time.time() < doubt_time:
+                    if self.scan_screenshot(self.doubt)["max_val"] > 0.9 or self.scan_screenshot(self.warn)["max_val"] > 0.91: #降低识别精度
+                        time.sleep(0.3)
+                        log.info(_("识别到疑问或是警告,等待怪物开战或反击"))
+                        time.sleep(2)
                         log.info(_("识别反击"))
                         if self.platform == _("PC"):
                             self.Click()
@@ -501,9 +499,7 @@ class calculated:
                     result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
                     if result["max_val"] < 0.95:
                         break
-                    if time.time() - doubt_time > 8:
-                        break
-                    time.sleep(0.1)
+                    time.sleep(0.1)            
                 result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
                 time.sleep(0.3)
                 if result["max_val"] < 0.95:
@@ -514,38 +510,33 @@ class calculated:
                     self.adb.input_tap((1040, 550))
                     time.sleep(1)
             else:
-                time.sleep(2)
-                doubt_time = time.time()
-                log.info(_("监控疑问或是警告2"))
-                jkdoubt = True
-                while jkdoubt:
-                    if self.scan_screenshot(self.doubt)["max_val"] > 0.95 or self.scan_screenshot(self.warn)["max_val"] > 0.95:
-                        log.info(_("识别到疑问或是警告,等待怪物开战"))
+                time.sleep(1)
+                doubt_time = time.time() + 8
+                log.info(_("监控疑问或是警告!"))
+                while time.time() < doubt_time:
+                    if self.scan_screenshot(self.doubt)["max_val"] > 0.9 or self.scan_screenshot(self.warn)["max_val"] > 0.91: #降低识别精度
+                        log.info(_("识别到疑问或是警告,等待怪物开战或反击"))
                         time.sleep(2)
-                        if self.platform == _("PC"): #为模拟器用户添加支持 被警告在开一枪
+                        if self.platform == _("PC"):
                             log.info(_("识别反击"))
                             self.Click()
                         else:
                             self.adb.input_tap((1040, 550))
                             time.sleep(1)
-                    finish_result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
-                    if finish_result["max_val"] < 0.95:
-                        break
-                    if time.time() - doubt_time > 8:
-                        jkdoubt = False
+                    result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
+                    if result["max_val"] < 0.95:
                         break
                     time.sleep(0.1)
-                finish_result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
+                result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
                 time.sleep(0.3)
-                if finish_result["max_val"] < 0.95:
+                if result["max_val"] < 0.95:
                     break
-            time.sleep(2)
         #进入战斗
         start_time = time.time()
-        if self.data["auto_battle_persistence"] != 1:
+        if self.data["auto_battle_persistence"] != 1: #这个设置建议放弃,看了看浪费性能加容易出问题
             while True:
-                auto_result = self.scan_screenshot(self.auto)
-                if auto_result["max_val"] > 0.9:
+                result = self.scan_screenshot(self.auto)
+                if result["max_val"] > 0.9:
                     time.sleep(0.3)
                     if self.platform == _("PC"):
                         self.keyboard.press("v")
@@ -567,15 +558,14 @@ class calculated:
         while True:
             if type == 0:
                 if self.platform == _("PC"):
-                    finish_result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
-                    if finish_result["max_val"] > 0.98:
+                    result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
+                    if result["max_val"] > 0.98:
                         log.info(_("完成自动战斗"))
                         time.sleep(3)
                         break
                 else:
-                    #target = cv.imread("./temp/mnq/finish_fighting.jpg") 代码优化
-                    finish_result = self.scan_screenshot(self.finish)
-                    if finish_result["max_val"] > 0.9:
+                    result = self.scan_screenshot(self.finish)
+                    if result["max_val"] > 0.9:
                         log.info(_("完成自动战斗"))
                         break
                 if time.time() - start_time > 90: # 避免卡死
