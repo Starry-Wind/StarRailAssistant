@@ -173,7 +173,7 @@ def read_maps(platform):
             value = {}
         value[key2] = map_data["name"]
         map_list_map[key1] = value
-    map_list.sort() 
+    map_list.sort()
     log.debug(map_list)
     log.debug(map_list_map)
     return map_list, map_list_map

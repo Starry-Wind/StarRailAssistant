@@ -104,6 +104,7 @@ class Map:
         if not (1915<=width<=1925 and 1075<=length<=1085) and self.platform == _("PC"):
             raise Exception(_("错误的PC分辨率，请调整为1920X1080，请不要在群里问怎么调整分辨率，小心被踢！"))
         def start_map(self:Map, start, check:bool=False):
+            wrong_map = True
             if f'map_{start}.json' in self.map_list:
                 if not check:
                     map_list = self.map_list[self.map_list.index(f'map_{start}.json'):len(self.map_list)] 
@@ -130,14 +131,17 @@ class Map:
                             self.map_init()
                         else:
                             time.sleep(value)
-                            log.info(map.split("_")[-1])
                             if check and "point" in key and map.split("_")[-1] != "1":
-                                log.info(543543)
                                 self.calculated.click_target("temp\\orientation_1.jpg", 0.98)
                                 self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98)
                                 self.calculated.click_target(key.split("_point")[0], 0.98)
                                 self.calculated.click_target(key, 0.98)
-                                check = False
+                            elif not check and wrong_map:
+                                self.calculated.click_target("temp\\orientation_1.jpg", 0.98)
+                                self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98)
+                                self.calculated.click_target(key.split("_point")[0], 0.98)
+                                self.calculated.click_target(key, 0.98)
+                                wrong_map = False
                             else:
                                 self.calculated.click_target(key, 0.98)
                     #time.sleep(3)
