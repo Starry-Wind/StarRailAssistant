@@ -14,8 +14,7 @@ loguru
 opencv_contrib_python
 opencv_python
 Pillow
-Pillow
-PyAutoGUI
+PyAutoGUI==0.9.53
 PyGetWindow
 pynput
 pyuac
