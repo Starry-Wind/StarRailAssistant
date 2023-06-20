@@ -468,10 +468,8 @@ class calculated:
             :param type: 类型 大世界/模拟宇宙
         """
         start_time = time.time()
-
         log.info(_("识别中"))
         while True:
-
             if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info(_("识别超时,此处可能无敌人"))
                 return False
@@ -485,7 +483,7 @@ class calculated:
                     self.adb.input_tap((1040, 550))
                     time.sleep(1)
                 time.sleep(1)
-               doubt_time = time.time() + 8
+                doubt_time = time.time() + 8
                 log.info(_("监控疑问或是警告"))
                 while time.time() < doubt_time:
                     if self.scan_screenshot(self.doubt)["max_val"] > 0.95 or self.scan_screenshot(self.warn)["max_val"] > 0.95:
