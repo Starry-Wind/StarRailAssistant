@@ -25,6 +25,7 @@ class Map:
         self.open_map = self.data.get("open_map", "m")
         self.DEBUG = self.data.get("debug", False)
         self.map_list, self.map_list_map = read_maps(platform)
+        self.fight = self.data.get("fight", False)
 
     def map_init(self):
         # 进行地图初始化，把地图缩小,需要缩小5次
@@ -72,8 +73,9 @@ class Map:
                     ret = self.calculated.fighting()
                     if ret == False and map:
                         fight_log.info(f"执行{map_filename}文件时，识别敌人超时")
-                        fight_data = read_json_file(CONFIG_FILE_NAME).get("fight_data", {})
-                        day_time = datetime.now().strftime('%Y-%m-%d')
+                        if self.fight: #捡漏开关
+                           fight_data = read_json_file(CONFIG_FILE_NAME).get("fight_data", {})
+                           day_time = datetime.now().strftime('%Y-%m-%d')
                         if fight_data.get("day_time", 0) == day_time:
                             fight_data["data"].append(map_filename)
                         else:
@@ -134,7 +136,7 @@ class Map:
                                 self.calculated.click_target("temp\\orientation_1.jpg", 0.95)
                                 self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.95)
                                 self.calculated.click_target(key.split("_point")[0], 0.95)
-                                self.calculated.click_target(key, 0.98)
+                                self.calculated.click_target(key, 0.95)
                                 check = False
                             else:
                                 self.calculated.click_target(key, 0.95)
