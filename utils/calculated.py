@@ -856,6 +856,9 @@ class calculated:
         start_time = time.time()
         join1 = False
         join2 = False
+        join_time = self.data.get("join_time", {})
+        pc_join = join_time.get("pc", 8)
+        mnq_join = join_time.get("mnq", 15)
         while True:
             result = self.get_pix_bgr(pos=(119, 86))
             log.debug(result)
@@ -867,7 +870,7 @@ class calculated:
             if join1 and join2:
                 log.info(_("已进入地图"))
                 return endtime
-            if endtime > (8 if self.platform == _("PC") else 15):
+            if endtime > (pc_join if self.platform == _("PC") else mnq_join):
                 log.info(_("识别超时"))
                 return endtime
             time.sleep(0.1)
