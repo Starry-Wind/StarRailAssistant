@@ -32,10 +32,10 @@ class Map:
             target = cv.imread(f'./temp/pc/contraction.jpg')
             while True:
                 result = self.calculated.scan_screenshot(target)
-                if result['max_val'] > 0.98:
+                if result['max_val'] > 0.95:
                     target = cv.imread(f'./temp/pc/map_shrink.png')
                     shrink_result = self.calculated.scan_screenshot(target,(20,89,40,93))
-                    if shrink_result['max_val'] < 0.98:
+                    if shrink_result['max_val'] < 0.95:
                         #points = self.calculated.calculated(result, target.shape)
                         points = result["max_loc"]
                         log.debug(points)
@@ -131,13 +131,13 @@ class Map:
                         else:
                             time.sleep(value)
                             if check and "point" in key and map.split("_")[-1] != "1":
-                                self.calculated.click_target("temp\\orientation_1.jpg", 0.98)
-                                self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98)
-                                self.calculated.click_target(key.split("_point")[0], 0.98)
+                                self.calculated.click_target("temp\\orientation_1.jpg", 0.95)
+                                self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.95)
+                                self.calculated.click_target(key.split("_point")[0], 0.95)
                                 self.calculated.click_target(key, 0.98)
                                 check = False
                             else:
-                                self.calculated.click_target(key, 0.98)
+                                self.calculated.click_target(key, 0.95)
                     #time.sleep(3)
                     count = self.calculated.wait_join()
                     log.info(_('地图加载完毕，加载时间为 {count} 秒').format(count=count))
