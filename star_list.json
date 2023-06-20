@@ -13,7 +13,7 @@
   },
   {
     "path": "requirements.txt",
-    "hash": "68037e80a58eb1b5fc9dc374caa8e868"
+    "hash": "f92c10b0a13ed3e648c54e470bf0ff42"
   },
   {
     "path": "README.md",
@@ -41,7 +41,7 @@
   },
   {
     "path": "utils/map.py",
-    "hash": "177a2482c07b248f4dc2fe4fac20354f"
+    "hash": "f1938f37dd447c004eb2adbed578b72a"
   },
   {
     "path": "utils/adb.py",
