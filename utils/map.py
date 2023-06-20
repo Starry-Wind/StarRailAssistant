@@ -83,10 +83,9 @@ class Map:
                 elif value == 2:  # 障碍物
                     if self.platform == _("PC"):
                         self.calculated.Click()
-                        time.sleep(1)
                     else:
                         self.adb.input_tap((1040, 550))
-                        time.sleep(1)
+                    time.sleep(1)
                 else:
                     raise Exception(_("map数据错误, fighting参数异常:{map_filename}").format(map_filename=map_filename), map)
             elif key == "scroll":
