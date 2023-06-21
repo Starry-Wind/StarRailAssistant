@@ -65,7 +65,7 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "efbc26ad4b9a6c211ab69362a7443c98"
+    "hash": "4f372b9d0726adadb263c4b56f997216"
   },
   {
     "path": "utils/cv_tools.py",
@@ -105,7 +105,7 @@
   },
   {
     "path": "locale/zh_CN/LC_MESSAGES/sra.mo",
-    "hash": "5819374a1e0853c814e081b6f5d33823"
+    "hash": "0a0ccfe2f4f2da8626fda930bd84ef9c"
   },
   {
     "path": "model/cnocr/1.2/ppocr/ch_PP-OCRv3_det_infer.onnx",
