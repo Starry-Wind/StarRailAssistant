@@ -131,6 +131,7 @@ def get_file(path, exclude=[], exclude_file=None, get_path=False) -> list[str]:
                             file_list.append(path.replace("//", "/"))
                         else:
                             file_list.append(file)
+    return file_list
 
 def get_folder(path) -> list[str]:
     """
