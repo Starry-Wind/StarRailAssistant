@@ -133,3 +133,5 @@ gui.build/
 gui.dist/
 scr.png
 build.bat
+*.pot
+*.po
