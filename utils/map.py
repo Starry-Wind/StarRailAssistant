@@ -156,5 +156,5 @@ class Map:
                 log.info(_('地图编号 {start} 不存在，请尝试检查更新').format(start=start))
         start_map(self, start)
         # 检漏
-        if self.data.get("deficiency"):
+        if self.data.get("deficiency", True):
             start_map(self, start, True)
