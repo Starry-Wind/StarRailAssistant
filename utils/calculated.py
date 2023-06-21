@@ -45,6 +45,7 @@ class calculated:
 
         self.adb = ADB(order, adb_path)
         self.data = read_json_file(CONFIG_FILE_NAME)
+        log.debug(self.data)
         self.scaling = self.data.get("scaling", 1)
         self.DEBUG = self.data.get("debug", False)
         self.mouse = MouseController()
