@@ -115,22 +115,22 @@ def get_file(path, exclude=[], exclude_file=None, get_path=False) -> list[str]:
     file_list = []
     for root, dirs, files in os.walk(path):
         add = True
-        for i in exclude:
-            if i in root:
-                add = False
-        if add:
-            for file in files:
-                add = True
-                for ii in exclude_file:
-                    if ii in file:
-                        add = False
-                if add:
-                    if get_path:
-                        path = root + "/" + file
-                        file_list.append(path.replace("//", "/"))
-                    else:
-                        file_list.append(file)
-    return file_list
+        if dirs == []:
+            for i in exclude:
+                if i in root:
+                    add = False
+            if add:
+                for file in files:
+                    add = True
+                    for ii in exclude_file:
+                        if ii in file:
+                            add = False
+                    if add:
+                        if get_path:
+                            path = root + "/" + file
+                            file_list.append(path.replace("//", "/"))
+                        else:
+                            file_list.append(file)
 
 def get_folder(path) -> list[str]:
     """
