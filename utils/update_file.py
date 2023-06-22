@@ -37,6 +37,7 @@ class update_file:
         """
         self.page = page
         self.pb = pb
+        self.data = read_json_file(CONFIG_FILE_NAME)
 
     async def verify_file_hash(self, json_path: Path, keep_file: Optional[List[str]] = []) -> bool:
         """
@@ -119,7 +120,28 @@ class update_file:
             # 如果是文件夹
             elif os.path.isdir(item_path):
                 shutil.copytree(item_path, destination2_path, dirs_exist_ok=True)
-            
+
+    async def upsra(self):
+        for index, __ in enumerate(range(3)):
+            try:
+                up_url = "https://api.github.com/repos/Starry-Wind/StarRailAssistant/releases/latest"
+                up_reponse = get(up_url)
+                up_reponse = up_reponse.json()
+                version = up_reponse.get("tag_name")
+                break
+            except BaseException as e:
+                if index < 2:
+                    log.info(_("[资源文件更新]获取远程版本失败, 正在重试: {e}").format(e=e))
+                else:
+                    log.info(_("[资源文件更新]获取远程版本失败: {e}").format(e=e))
+                log.info(_("将在10秒后重试"))
+                await asyncio.sleep(10)
+        else:
+            log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
+            raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
+        if version == self.data:
+            ...
+        
     async def update_file(self, url_proxy: str="",
                         raw_proxy: str="",
                         rm_all: bool=False, 
