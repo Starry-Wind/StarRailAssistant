@@ -74,18 +74,22 @@ class Map:
                     if ret == False and map:
                         fight_log.info(f"执行{map_filename}文件时，识别敌人超时")
                         fight_data = read_json_file(CONFIG_FILE_NAME).get("fight_data", {})
-                        if map_filename not in fight_data.get("data", {}):
+                        if "data" in fight_data and (map_filename not in fight_data["data"]):
                             day_time = datetime.now().strftime('%Y-%m-%d')
                             if fight_data.get("day_time", 0) != day_time or self.start:
-                                fight_data={
-                                    "data": [],
-                                    "day_time": day_time
-                                }
                                 fight_data["data"].append(map_filename)
                                 self.start = False
                             else:
+                                fight_data.setdefault("data")
+                                fight_data.setdefault("day_time",0)
                                 fight_data["data"] = [map_filename]
                                 fight_data["day_time"] = day_time
+                        else:
+                            fight_data.setdefault("data")
+                            fight_data.setdefault("day_time",0)
+                            day_time = datetime.now().strftime('%Y-%m-%d')
+                            fight_data["data"] = [map_filename]
+                            fight_data["day_time"] = day_time
                             modify_json_file(CONFIG_FILE_NAME, "fight_data", fight_data)
                 elif value == 2:  # 障碍物
                     if self.platform == _("PC"):
