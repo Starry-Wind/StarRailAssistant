@@ -1,27 +1,11 @@
 [
   {
-    "path": "README_CHT.md",
-    "hash": "fb8c4a106aa2009f36020eea684a1342"
-  },
-  {
-    "path": "README_EN.md",
-    "hash": "62cd316b3b5cafca47b24d9647f957ff"
-  },
-  {
-    "path": "gui.py",
-    "hash": "35d6cd35b8d60e753c641fec682be3b1"
-  },
-  {
-    "path": "requirements.txt",
-    "hash": "f92c10b0a13ed3e648c54e470bf0ff42"
+    "path": "map_res_list.py",
+    "hash": "2027d7dba3a3e12565621b101a2dc1cb"
   },
   {
     "path": "README.md",
     "hash": "15f2038ef1235c94be5ebb0a2971d1bc"
-  },
-  {
-    "path": "map_res_list.py",
-    "hash": "2027d7dba3a3e12565621b101a2dc1cb"
   },
   {
     "path": "Honkai_Star_Rail.py",
@@ -32,56 +16,28 @@
     "hash": "0f32aae400f9f50117bb2dee7eb0f4c7"
   },
   {
-    "path": "utils/record_v7.2.py",
-    "hash": "87ea10e233817032cb3a239c3f85e971"
+    "path": "requirements.txt",
+    "hash": "f92c10b0a13ed3e648c54e470bf0ff42"
   },
   {
-    "path": "utils/log.py",
-    "hash": "1fdd279f145fbc5cbd9351c86b79979b"
+    "path": "README_EN.md",
+    "hash": "62cd316b3b5cafca47b24d9647f957ff"
   },
   {
-    "path": "utils/map.py",
-    "hash": "3ca0b3e847d9c59e80dcad3a822505e5"
+    "path": "README_CHT.md",
+    "hash": "fb8c4a106aa2009f36020eea684a1342"
   },
   {
-    "path": "utils/adb.py",
-    "hash": "20961effe5eb9e7c6eb71252bf1749db"
+    "path": "gui.py",
+    "hash": "35d6cd35b8d60e753c641fec682be3b1"
   },
   {
-    "path": "utils/cv_tracker.py",
-    "hash": "bc3ca6ab9bb7a135959303cfc2097fda"
+    "path": "model/cnstd/2.2/densenet_lite_114-fc/cnocr-v2.2-densenet_lite_114-fc-epoch=037-complete_match_epoch=0.7859-model.onnx",
+    "hash": "d661b811419ff7dde7eb8543690cdd2b"
   },
   {
-    "path": "utils/calculated.py",
-    "hash": "c35ae67898a762e4029ad1323ca589a1"
-  },
-  {
-    "path": "utils/commission.py",
-    "hash": "fd995fce938972df77490993e75e7de0"
-  },
-  {
-    "path": "utils/exceptions.py",
-    "hash": "2fe9316ec5635fe87cfdf70d1c870a32"
-  },
-  {
-    "path": "utils/config.py",
-    "hash": "47d933dd00553037bd4ddb4cd69b1d8a"
-  },
-  {
-    "path": "utils/cv_tools.py",
-    "hash": "6832956ff665af8bcda627a168bd033a"
-  },
-  {
-    "path": "utils/update_file.py",
-    "hash": "6662f2877c1fda9bb6cb8203f73609a5"
-  },
-  {
-    "path": "utils/simulated_universe.py",
-    "hash": "fd3af60ca5524d8a288c21a0aa206f37"
-  },
-  {
-    "path": "utils/requests.py",
-    "hash": "2960805b0eee0488f5ee70217f8b2964"
+    "path": "model/cnocr/1.2/ppocr/ch_PP-OCRv3_det_infer.onnx",
+    "hash": "5732f8c84bd4cc0dab35094e7260f080"
   },
   {
     "path": "whl/cnstd-1.2.2-py3-none-any.whl",
@@ -108,11 +64,55 @@
     "hash": "0a0ccfe2f4f2da8626fda930bd84ef9c"
   },
   {
-    "path": "model/cnocr/1.2/ppocr/ch_PP-OCRv3_det_infer.onnx",
-    "hash": "5732f8c84bd4cc0dab35094e7260f080"
+    "path": "utils/cv_tools.py",
+    "hash": "6832956ff665af8bcda627a168bd033a"
   },
   {
-    "path": "model/cnstd/2.2/densenet_lite_114-fc/cnocr-v2.2-densenet_lite_114-fc-epoch=037-complete_match_epoch=0.7859-model.onnx",
-    "hash": "d661b811419ff7dde7eb8543690cdd2b"
+    "path": "utils/calculated.py",
+    "hash": "c35ae67898a762e4029ad1323ca589a1"
+  },
+  {
+    "path": "utils/exceptions.py",
+    "hash": "2fe9316ec5635fe87cfdf70d1c870a32"
+  },
+  {
+    "path": "utils/update_file.py",
+    "hash": "6662f2877c1fda9bb6cb8203f73609a5"
+  },
+  {
+    "path": "utils/requests.py",
+    "hash": "2960805b0eee0488f5ee70217f8b2964"
+  },
+  {
+    "path": "utils/simulated_universe.py",
+    "hash": "fd3af60ca5524d8a288c21a0aa206f37"
+  },
+  {
+    "path": "utils/log.py",
+    "hash": "1fdd279f145fbc5cbd9351c86b79979b"
+  },
+  {
+    "path": "utils/config.py",
+    "hash": "47d933dd00553037bd4ddb4cd69b1d8a"
+  },
+  {
+    "path": "utils/record_v7.2.py",
+    "hash": "87ea10e233817032cb3a239c3f85e971"
+  },
+  {
+    "path": "utils/adb.py",
+    "hash": "20961effe5eb9e7c6eb71252bf1749db"
+  },
+  {
+    "path": "utils/commission.py",
+    "hash": "fd995fce938972df77490993e75e7de0"
+  },
+  {
+    "path": "utils/map.py",
+    "hash": "6d090262fbcf3d8cdc5d24a385e838f3"
+  },
+  {
+    "path": "utils/cv_tracker.py",
+    "hash": "bc3ca6ab9bb7a135959303cfc2097fda"
   }
 ]
