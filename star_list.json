@@ -77,7 +77,7 @@
   },
   {
     "path": "utils/update_file.py",
-    "hash": "6662f2877c1fda9bb6cb8203f73609a5"
+    "hash": "6104c845075e27d343b38705e5eeae0b"
   },
   {
     "path": "utils/requests.py",
@@ -93,7 +93,7 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "47d933dd00553037bd4ddb4cd69b1d8a"
+    "hash": "9b9a108129a8b7d6551f4648d2425a03"
   },
   {
     "path": "utils/record_v7.2.py",
@@ -109,7 +109,7 @@
   },
   {
     "path": "utils/map.py",
-    "hash": "6d090262fbcf3d8cdc5d24a385e838f3"
+    "hash": "4f40439b9bf5fb120c33ab3fe65405f3"
   },
   {
     "path": "utils/cv_tracker.py",
