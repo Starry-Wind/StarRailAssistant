@@ -77,9 +77,11 @@ class Map:
                         if map_filename not in fight_data.get("data"):
                             day_time = datetime.now().strftime('%Y-%m-%d')
                             if fight_data.get("day_time", 0) != day_time or self.start:
-                                fight_data={}
+                                fight_data={
+                                    "data": [],
+                                    "day_time": day_time
+                                }
                                 fight_data["data"].append(map_filename)
-                                fight_data["day_time"] = day_time
                                 self.start = False
                             else:
                                 fight_data["data"] = [map_filename]
