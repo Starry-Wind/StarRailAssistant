@@ -407,7 +407,7 @@ class calculated:
                         pos = ocr_data.get(check_dict[0], None) if check_dict else None
                         log.debug(pos)
                         if pos:
-                            self.appoint_click(pos,(pos[0]+60, pos[1]), [40,40,40])
+                            self.appoint_click(pos,(pos[0]+60, pos[1]), [57,57,57])
                             break
                         if time.time() - start_time > 5:
                             # 右边列表太长了 尝试向下滚动5秒 再向上滚动5秒
@@ -537,8 +537,8 @@ class calculated:
         start_time = time.time()
         if self.data["auto_battle_persistence"] != 1:  #这个设置建议放弃,看了看浪费性能加容易出问题
             while True:
-                auto_result = self.scan_screenshot(self.auto)
-                if auto_result["max_val"] > 0.9:
+                result = self.scan_screenshot(self.auto)
+                if result["max_val"] > 0.95:
                     time.sleep(0.3)
                     if self.platform == _("PC"):
                         self.keyboard.press("v")
@@ -560,16 +560,16 @@ class calculated:
         while True:
             if type == 0:
                 if self.platform == _("PC"):
-                    finish_result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
-                    if finish_result["max_val"] > 0.98:
+                    result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
+                    if result["max_val"] > 0.98:
                         log.info(_("完成自动战斗"))
-                        time.sleep(3)
+                        time.sleep(2)
                         break
                 else:
-                    #target = cv.imread("./temp/mnq/finish_fighting.jpg") 代码优化
-                    finish_result = self.scan_screenshot(self.finish)
-                    if finish_result["max_val"] > 0.9:
+                    result = self.scan_screenshot(self.finish)
+                    if result["max_val"] > 0.98:
                         log.info(_("完成自动战斗"))
+                        time.sleep(2)                        
                         break
                 if time.time() - start_time > 90: # 避免卡死
                     break
@@ -578,7 +578,7 @@ class calculated:
                 if "选择祝福" in result:
                     log.info(_("完成自动战斗"))
                     break
-            time.sleep(1.0) # 避免长时间ocr
+            time.sleep(1) # 避免长时间ocr
 
     def Mouse_move(self, x):
         """
