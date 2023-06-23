@@ -505,13 +505,13 @@ class calculated:
                 time.sleep(0.3)
                 if result["max_val"] < 0.95:
                     break
+            else:
                 if self.platform == _("PC"):
                     self.Click()
                 else:
                     self.adb.input_tap((1040, 550))
                     time.sleep(1)
-            else:
-                time.sleep(1)
+                time.sleep(1)                
                 doubt_time = time.time() + 8
                 log.info(_("监控疑问或是警告!"))
                 while time.time() < doubt_time:
