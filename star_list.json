@@ -17,7 +17,7 @@
   },
   {
     "path": "requirements.txt",
-    "hash": "1bc612ca51671c4553a68872d9af8db6"
+    "hash": "364fdafc064c46a8dddf127e7f4ab53c"
   },
   {
     "path": "README_EN.md",
@@ -69,7 +69,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "c35ae67898a762e4029ad1323ca589a1"
+    "hash": "497f1bb0fd57a55d3c93387a76ccbe22"
   },
   {
     "path": "utils/exceptions.py",
@@ -93,7 +93,7 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "9b9a108129a8b7d6551f4648d2425a03"
+    "hash": "e74983914f549de6e27e1c278257e05b"
   },
   {
     "path": "utils/record_v7.2.py",
