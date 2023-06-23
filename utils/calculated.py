@@ -563,13 +563,13 @@ class calculated:
                     result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
                     if result["max_val"] > 0.98:
                         log.info(_("完成自动战斗"))
-                        time.sleep(3)
+                        time.sleep(2)
                         break
                 else:
-                    #target = cv.imread("./temp/mnq/finish_fighting.jpg") 代码优化
                     result = self.scan_screenshot(self.finish)
                     if result["max_val"] > 0.98:
                         log.info(_("完成自动战斗"))
+                        time.sleep(2)                        
                         break
                 if time.time() - start_time > 90: # 避免卡死
                     break
@@ -578,7 +578,7 @@ class calculated:
                 if "选择祝福" in result:
                     log.info(_("完成自动战斗"))
                     break
-            time.sleep(1.0) # 避免长时间ocr
+            time.sleep(1) # 避免长时间ocr
 
     def Mouse_move(self, x):
         """
