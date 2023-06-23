@@ -522,7 +522,7 @@ class calculated:
                         else:
                             self.adb.input_tap((1040, 550))
                             time.sleep(1)
-                       log.info(_("识别反击"))
+                        log.info(_("识别反击"))
                     result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
                     if result["max_val"] < 0.95:
                         break
