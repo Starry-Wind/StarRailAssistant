@@ -407,7 +407,7 @@ class calculated:
                         pos = ocr_data.get(check_dict[0], None) if check_dict else None
                         log.debug(pos)
                         if pos:
-                            self.appoint_click(pos,(pos[0]+60, pos[1]), [57,57,57])
+                            self.appoint_click(pos,(pos[0]+60, pos[1]), [40,40,40])
                             break
                         if time.time() - start_time > 5:
                             # 右边列表太长了 尝试向下滚动5秒 再向上滚动5秒
@@ -505,13 +505,13 @@ class calculated:
                 time.sleep(0.3)
                 if result["max_val"] < 0.95:
                     break
+            else:
                 if self.platform == _("PC"):
                     self.Click()
                 else:
                     self.adb.input_tap((1040, 550))
                     time.sleep(1)
-            else:
-                time.sleep(1)
+                time.sleep(1)                
                 doubt_time = time.time() + 8
                 log.info(_("监控疑问或是警告!"))
                 while time.time() < doubt_time:
