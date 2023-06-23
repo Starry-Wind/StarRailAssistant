@@ -28,4 +28,3 @@ httpx-socks[trio]
 flet
 cryptography
 pluggy
-pydantic

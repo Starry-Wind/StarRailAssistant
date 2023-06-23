@@ -407,7 +407,7 @@ class calculated:
                         pos = ocr_data.get(check_dict[0], None) if check_dict else None
                         log.debug(pos)
                         if pos:
-                            self.appoint_click(pos,(pos[0]+60, pos[1]), [40,40,40])
+                            self.appoint_click(pos,(pos[0]+60, pos[1]), [57,57,57])
                             break
                         if time.time() - start_time > 5:
                             # 右边列表太长了 尝试向下滚动5秒 再向上滚动5秒

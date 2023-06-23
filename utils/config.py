@@ -3,7 +3,6 @@ import orjson
 import gettext
 
 from orjson import JSONDecodeError
-from pydantic import BaseModel, ValidationError, BaseSettings, validator
 
 from .log import log
 
@@ -209,78 +208,3 @@ def insert_key(my_dict:dict, new_key, new_value, insert_after_key):
             new_dict[new_key] = new_value
             
     return new_dict
-
-class FightConfig(BaseSettings):
-    """
-    检漏信息
-    """
-    data: list[str]= []
-    '''遗漏的地图'''
-    day_time: str = "0"
-    '''地图写入时间'''
-
-class SRAConfig:
-    """
-    配置文件
-    """
-    def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-    real_width: int = 0
-    '''游戏宽度'''
-    real_height: int = 0
-    '''游戏高度'''
-    scaling: int = 0
-    '''缩放大小'''
-    borderless: bool = False
-    '''是否全屏'''
-    left_border: float = 11.25
-    '''左边框大小'''
-    up_border: float = 44.25
-    '''上边框大小'''
-    auto_battle_persistence: int = 0
-    '''是否要程序开启自动战斗（1为否）'''
-    github_proxy: str = ""
-    '''github代理'''
-    rawgithub_proxy: str = ""
-    '''rawgithub代理代理'''
-    webhook_url: str = ""
-    '''未知'''
-    start: bool = True
-    '''是否第一次运行'''
-    open_map: str = "m"
-    '''打开地图的按钮'''
-    language: str =  "zh_CN"
-    '''语言'''
-    proxies: str = ""
-    '''网络代理'''
-    img: int = 0
-    '''GUI背景图片序号'''
-    move_excursion:int = 0
-    '''角色移动偏移（加减）'''
-    move_division_excursion:int = 1.0
-    '''角色移动偏移（乘除）'''
-    sprint: bool = False
-    '''是否疾跑'''
-    deficiency: bool = True
-    '''是否检漏'''
-
-    map_version: str = "0"
-    '''地图版本'''
-    temp_version: str = "0"
-    '''图片版本'''
-    star_version: str = "0"
-    '''程序版本'''
-
-    level: str = "INFO"
-    '''LOG等级'''
-    adb: str = "127.0.0.1:62001"
-    '''ADB地址'''
-    adb_path: str = "temp\\adb\\adb"
-    '''ADB程序路径地址'''
-
-    fight_data: FightConfig = FightConfig()
-
-settings_data = read_json_file(CONFIG_FILE_NAME)
-plugin_data_obj = SRAConfig(**settings_data)
