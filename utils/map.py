@@ -2,7 +2,6 @@ from .calculated import *
 from .config import get_file, read_json_file, modify_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
 from .log import log, fight_log
 from .requests import webhook_and_log
-from PIL import ImageGrab, Image
 import time
 
 class Map:
