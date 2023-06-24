@@ -89,7 +89,7 @@
   },
   {
     "path": "temp/pc/orientation_3.png",
-    "hash": "e274917fe1950f7d8105c0a435ac44f2"
+    "hash": "be639e8be9034c93d4436fb03b0d1dc9"
   },
   {
     "path": "temp/pc/map_3-3_point_3.png",
@@ -221,7 +221,7 @@
   },
   {
     "path": "temp/pc/attack.jpg",
-    "hash": "5e058bb884e50b730a9e3590bc7b6c03"
+    "hash": "d89765481109879ecdc8e0a46ed73588"
   },
   {
     "path": "temp/pc/map_2-6_point_1.png",
@@ -274,10 +274,6 @@
   {
     "path": "temp/pc/map_2-5_point_3.png",
     "hash": "746e58c3350d2c33ff3c564075684836"
-  },
-  {
-    "path": "temp/pc/map_esc.jpg",
-    "hash": "f6aae0826ef754829be1ba193a072964"
   },
   {
     "path": "temp/pc/finish_fighting.jpg",
