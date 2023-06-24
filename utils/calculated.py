@@ -63,7 +63,7 @@ class calculated:
         self.hwnd = self.window._hWnd  if platform == _("PC") else None
 
         # 初始化
-        self.attack = cv.imread("./temp/pc/attack.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/attack.jpg")
+        self.attack = cv.imread("./temp/pc/attack.png") if self.platform == _("PC") else cv.imread("./temp/mnq/attack.jpg")
         self.doubt = cv.imread("./temp/pc/doubt.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/doubt.jpg")
         self.warn = cv.imread("./temp/pc/warn.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/warn.jpg")
         # tagz = cv.imread("./temp/pc/tagz.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/tagz.jpg")
@@ -257,8 +257,7 @@ class calculated:
             else:
                 left, top, right, bottom = self.window.left+left_border, self.window.top+up_border, self.window.right-left_border, self.window.bottom-left_border
             temp = ImageGrab.grab((left, top, right, bottom))
-            width, length = temp.size
-            #temp.save('1.jpg')            
+            width, length = temp.size           
         elif self.platform == _("模拟器"):
             left, top, right, bottom = 0,0,0,0
             temp = self.adb.screencast()
@@ -266,7 +265,6 @@ class calculated:
         if points != (0,0,0,0):
             #points = (points[0], points[1]+5, points[2], points[3]+5) if self.platform == _("PC") else points
             temp = temp.crop((width/100*points[0], length/100*points[1], width/100*points[2], length/100*points[3]))
-            #temp.save('2.jpg')
         screenshot = np.array(temp)
         screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
         return (screenshot, left, top, right, bottom, width, length)
@@ -475,21 +473,20 @@ class calculated:
         #识别敌人
         while True:
             if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
-                log.info(_("识别超时,此处可能无敌人"))
+                log.info(_("识别超时,此处可能漏怪!"))
                 return False
+                time.sleep(0.3)
             if self.scan_screenshot(self.attack,pos=(3.8,5,12,24))["max_val"] > 0.97: #修改检测机制,精度更高
                 if self.platform == _("PC"):
                     self.Click()
                 else:
                     self.adb.input_tap((1040, 550))
                     time.sleep(1)
-                time.sleep(1)
                 doubt_time = time.time() + 8
-                log.info(_("监控疑问或是警告"))
+                log.info(_("监控疑问或警告"))
                 while time.time() < doubt_time:
                     if self.scan_screenshot(self.doubt)["max_val"] > 0.95 or self.scan_screenshot(self.warn)["max_val"] > 0.95:
-                        time.sleep(0.3)
-                        log.info(_("识别到疑问或是警告,等待怪物开战或反击"))
+                        log.info(_("识别到疑问或警告,等待怪物开战或反击"))
                         time.sleep(1.5)
                         if self.platform == _("PC"):
                             self.Click()
@@ -512,10 +509,10 @@ class calculated:
                     self.adb.input_tap((1040, 550))
                     time.sleep(1)
                 doubt_time = time.time() + 7
-                log.info(_("监控疑问或是警告!"))
+                log.info(_("监控疑问或警告!"))
                 while time.time() < doubt_time:
                     if self.scan_screenshot(self.doubt)["max_val"] > 0.95 or self.scan_screenshot(self.warn)["max_val"] > 0.95:
-                        log.info(_("识别到疑问或是警告,等待怪物开战或反击"))
+                        log.info(_("识别到疑问或警告,等待怪物开战或反击"))
                         time.sleep(1.5)
                         if self.platform == _("PC"):
                             self.Click()
@@ -531,7 +528,7 @@ class calculated:
                 time.sleep(0.3)
                 if result["max_val"] < 0.95:
                     break
-                log.info(_("地图识别未发现敌人!"))    
+                log.info(_("未发现敌人!"))    
                 return True
             time.sleep(2)
         #进入战斗
