@@ -2,6 +2,7 @@ from .calculated import *
 from .config import get_file, read_json_file, modify_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
 from .log import log, fight_log
 from .requests import webhook_and_log
+from PIL import ImageGrab, Image
 import time
 
 class Map:
@@ -25,8 +26,7 @@ class Map:
         self.open_map = self.data.get("open_map", "m")
         self.DEBUG = self.data.get("debug", False)
         self.map_list, self.map_list_map = read_maps(platform)
-        self.start = True
-
+        self.start = True      
     def map_init(self):
         # 进行地图初始化，把地图缩小,需要缩小5次
         if self.platform == _("PC"):
@@ -73,6 +73,10 @@ class Map:
                     ret = self.calculated.fighting()
                     if ret == False and map:
                         fight_log.info(f"执行{map_filename}文件时，识别敌人超时")
+                        image = ImageGrab.grab()
+                        now = datetime.now()
+                        date_time = now.strftime("%m%d%H%M")
+                        image.save(f"logs/image/{map_filename}-{date_time}.jpg") #新增超时截图
                         fight_data = read_json_file(CONFIG_FILE_NAME).get("fight_data", {})
                         if map_filename not in fight_data.get("data", {}):
                             day_time = datetime.now().strftime('%Y-%m-%d')
