@@ -25,7 +25,8 @@ class Map:
         self.open_map = self.data.get("open_map", "m")
         self.DEBUG = self.data.get("debug", False)
         self.map_list, self.map_list_map = read_maps(platform)
-        self.start = True      
+        self.start = True
+
     def map_init(self):
         # 进行地图初始化，把地图缩小,需要缩小5次
         if self.platform == _("PC"):
@@ -73,6 +74,8 @@ class Map:
                     if ret == False and map:
                         fight_log.info(f"执行{map_filename}文件时，识别敌人超时")
                         fight_data = read_json_file(CONFIG_FILE_NAME).get("fight_data", {})
+                        date_time = datetime.now().strftime("%m%d%H%M")
+                        cv.imwrite(f"logs/image/{map_filename}-{date_time}.jpg",self.calculated.take_screenshot()[0]) #识别超时,截图
                         if map_filename not in fight_data.get("data", {}):
                             day_time = datetime.now().strftime('%Y-%m-%d')
                             if fight_data.get("day_time", 0) != day_time or self.start:
