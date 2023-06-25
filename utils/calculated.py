@@ -64,8 +64,8 @@ class calculated:
 
         # 初始化
         self.attack = cv.imread("./temp/pc/attack.png") if self.platform == _("PC") else cv.imread("./temp/mnq/attack.jpg")
-        self.doubt = cv.imread("./temp/pc/doubt.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/doubt.jpg")
-        self.warn = cv.imread("./temp/pc/warn.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/warn.jpg")
+        self.doubt = cv.imread("./temp/pc/doubt.png") if self.platform == _("PC") else cv.imread("./temp/mnq/doubt.jpg")
+        self.warn = cv.imread("./temp/pc/warn.png") if self.platform == _("PC") else cv.imread("./temp/mnq/warn.jpg")
         # tagz = cv.imread("./temp/pc/tagz.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/tagz.jpg")
         self.finish = cv.imread("./temp/pc/finish_fighting.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/finish_fighting.jpg")
         self.auto = cv.imread("./temp/pc/auto.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/auto.jpg")
@@ -482,17 +482,18 @@ class calculated:
                 else:
                     self.adb.input_tap((1040, 550))
                     time.sleep(1)
+                time.sleep(0.3)
                 doubt_time = time.time() + 8
                 log.info(_("监控疑问或警告"))
                 while time.time() < doubt_time:
-                    if self.scan_screenshot(self.doubt)["max_val"] > 0.95 or self.scan_screenshot(self.warn)["max_val"] > 0.95:
+                    if self.scan_screenshot(self.doubt,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95 or self.scan_screenshot(self.warn,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95:
                         log.info(_("识别到疑问或警告,等待怪物开战或反击"))
-                        time.sleep(1.5)
                         if self.platform == _("PC"):
                             self.Click()
                         else:
                             self.adb.input_tap((1040, 550))
                             time.sleep(1)
+                        time.sleep(1.5)
                         log.info(_("识别反击"))
                     result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
                     if result["max_val"] < 0.95:
@@ -508,17 +509,18 @@ class calculated:
                 else:
                     self.adb.input_tap((1040, 550))
                     time.sleep(1)
+                time.sleep(0.3)
                 doubt_time = time.time() + 7
                 log.info(_("监控疑问或警告!"))
                 while time.time() < doubt_time:
-                    if self.scan_screenshot(self.doubt)["max_val"] > 0.95 or self.scan_screenshot(self.warn)["max_val"] > 0.95:
+                    if self.scan_screenshot(self.doubt,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95 or self.scan_screenshot(self.warn,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95:
                         log.info(_("识别到疑问或警告,等待怪物开战或反击"))
-                        time.sleep(1.5)
                         if self.platform == _("PC"):
                             self.Click()
                         else:
                             self.adb.input_tap((1040, 550))
                             time.sleep(1)
+                        time.sleep(1.5)
                         log.info(_("识别反击"))
                     result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
                     if result["max_val"] < 0.95:
