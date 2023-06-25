@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-15 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-19 23:44:13
+LastEditTime: 2023-06-24 01:28:22
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -98,8 +98,7 @@ log.remove()
 log.add(sys.stdout, level=level, colorize=True,
             format="<cyan>{module}</cyan>.<cyan>{function}</cyan>"
                     ":<cyan>{line}</cyan> - "+f"<cyan>{VER}</cyan> - "
-                    "<level>{message}</level>",
-            filter=FileFilter(path_log))
+                    "<level>{message}</level>",filter=FileFilter(path_log))
 
 #logger.add(get_message, level=level,format="{message}")
 
@@ -107,11 +106,11 @@ log.add(path_log,
             format="{time:HH:mm:ss} - "
                     "{level}\t| "
                     "{module}.{function}:{line} - "+f"<cyan>{VER}</cyan> - "+" {message}",
-            rotation='0:00', enqueue=True, serialize=False, encoding="utf-8", retention="10 days",filter=FileFilter(path_log))
+            rotation="1 days", enqueue=True, serialize=False, encoding="utf-8", retention="10 days",filter=FileFilter(path_log))
 
 fight_log = logger.bind(file=fight_path_log)
 fight_log.add(fight_path_log,
             format="{time:HH:mm:ss} - "
                     "{level}\t| "
                     "{module}.{function}:{line} - "+f"<cyan>{VER}</cyan> - "+" {message}",
-            rotation='0:00', enqueue=True, serialize=False, encoding="utf-8", retention="10 days",filter=FileFilter(fight_path_log))
+            rotation="1 days", enqueue=True, serialize=False, encoding="utf-8", retention="10 days",filter=FileFilter(fight_path_log))
