@@ -1,8 +1,9 @@
+import time
+
 from .calculated import *
 from .config import get_file, read_json_file, modify_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
 from .log import log, fight_log
 from .requests import webhook_and_log
-import time
 
 class Map:
     def __init__(self,title = _("崩坏：星穹铁道"), platform=_("PC"),order="127.0.0.1:62001",adb_path="temp\\adb\\adb"):
@@ -54,6 +55,7 @@ class Map:
         # 开始寻路
         log.info(_("开始寻路"))
         for map_index, map in enumerate(map_data["map"]):
+            self.calculated.monthly_pass()
             log.info(_("执行{map_filename}文件:{map_index}/{map_data2} {map}").format(map_filename=map_filename,map_index=map_index+1,map_data2=len(map_data['map']),map=map))
             key = list(map.keys())[0]
             value = map[key]
@@ -128,6 +130,7 @@ class Map:
                     log.info(_("该路线导航作者：\033[0;31;40m{author}\033[0m").format(author=author))
                     log.info(_("感谢每一位无私奉献的作者"))
                     for start in start_dict:
+                        self.calculated.monthly_pass()
                         key:str = list(start.keys())[0]
                         log.debug(key)
                         value = start[key]
@@ -139,12 +142,12 @@ class Map:
                             time.sleep(value)
                             if check and "point" in key and map.split("_")[-1] != "1":
                                 self.calculated.click_target("temp\\orientation_1.jpg", 0.98)
-                                self.calculated.click_target("temp\\orientation_{num}.jpg".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98)
+                                self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98)
                                 self.calculated.click_target(key.split("_point")[0], 0.98)
                                 self.calculated.click_target(key, 0.98)
                             elif not check and wrong_map and "point" in key and map.split("_")[-1] != "1":
                                 self.calculated.click_target("temp\\orientation_1.jpg", 0.98)
-                                self.calculated.click_target("temp\\orientation_{num}.jpg".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98)
+                                self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98)
                                 self.calculated.click_target(key.split("_point")[0], 0.98)
                                 self.calculated.click_target(key, 0.98)
                                 wrong_map = False

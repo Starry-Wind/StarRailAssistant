@@ -98,7 +98,7 @@ log.remove()
 log.add(sys.stdout, level=level, colorize=True,
             format="<cyan>{module}</cyan>.<cyan>{function}</cyan>"
                     ":<cyan>{line}</cyan> - "+f"<cyan>{VER}</cyan> - "
-                    "<level>{message}</level>",filter=FileFilter(fight_path_log))
+                    "<level>{message}</level>",filter=FileFilter(path_log))
 
 #logger.add(get_message, level=level,format="{message}")
 
@@ -106,7 +106,7 @@ log.add(path_log,
             format="{time:HH:mm:ss} - "
                     "{level}\t| "
                     "{module}.{function}:{line} - "+f"<cyan>{VER}</cyan> - "+" {message}",
-            rotation="1 days", enqueue=True, serialize=False, encoding="utf-8", retention="10 days",filter=FileFilter(fight_path_log))
+            rotation="1 days", enqueue=True, serialize=False, encoding="utf-8", retention="10 days",filter=FileFilter(path_log))
 
 fight_log = logger.bind(file=fight_path_log)
 fight_log.add(fight_path_log,

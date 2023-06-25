@@ -83,10 +83,10 @@ class calculated:
         if self.platform == _("PC"):
             '''
             win32api.SetCursorPos((x, y))
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y, 0, 0)
+            win32api.mouse_event(2, x, y, 0, 0)
             #pyautogui.click(x,y, clicks=5, interval=0.1)
             time.sleep(0.5)
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, x, y, 0, 0)
+            win32api.mouse_event(4, x, y, 0, 0)
             '''
             #x = x - (self.window.width-1920)/2
             #y = y - (self.window.height-1070)/2
@@ -203,6 +203,7 @@ class calculated:
             while True:
                 img_fp, left, top, __, __, __, __ = self.take_screenshot()
                 __, pos = self.ocr_pos(img_fp, characters)
+                log.info(characters)
                 if pos:
                     if self.platform == _("PC"):
                         self.Click((left+pos[0], top+pos[1]))
@@ -945,12 +946,9 @@ class calculated:
         dt = datetime.now().strftime('%Y-%m-%d') + " 04:00:00"
         ts = int(time.mktime(time.strptime(dt, "%Y-%m-%d %H:%M:%S")))
         ns = int(start_time)
-        while True:
-            if 0 < ns - ts <= 60:
-                self.ocr_click(_("列车补给"))
-                break
-            if time.time() - start_time > 60:
-                break
+        if -60 < ns - ts <= 60:
+            log.info(_("点击月卡"))
+            self.ocr_click(_("今日补给"))
 
     def get_loc(self, map_name: str="", map_id: int=None):
         """
