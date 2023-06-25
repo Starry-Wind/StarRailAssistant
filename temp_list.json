@@ -60,6 +60,10 @@
     "hash": "493809b6728057a9249fbfa471ef2f26"
   },
   {
+    "path": "temp/pc/doubt.png",
+    "hash": "8ed0630755c15fc6ad442f8e969f381f"
+  },
+  {
     "path": "temp/pc/orientation_3.jpg",
     "hash": "e274917fe1950f7d8105c0a435ac44f2"
   },
@@ -186,6 +190,10 @@
   {
     "path": "temp/pc/map_2-3_point_1.jpg",
     "hash": "ab0ccfb85687fd9450c008e22a66e9d6"
+  },
+  {
+    "path": "temp/pc/warn.png",
+    "hash": "c5e153973e34e082fef94312b7e05df2"
   },
   {
     "path": "temp/pc/map_shrink.png",
