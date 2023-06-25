@@ -7,20 +7,18 @@ Description:
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
 '''
-import logging
+import sys
 import traceback
 import tkinter as tk
 from tkinter import messagebox
 root = tk.Tk()
 root.withdraw()
 try:
-    from utils.exceptions import Exception
     import time
-    import psutil
     import flet as ft
     from re import sub
     from cryptography.fernet import Fernet
-    from flet_core import MainAxisAlignment, CrossAxisAlignment
+    from flet_core import MainAxisAlignment
 
     from utils.log import log,level
     from utils.map import Map as map_word
@@ -35,7 +33,10 @@ except:
 
 sra = SRA()
 
-check_console = True
+if getattr(sys, 'frozen', None):
+    check_console = False
+else:
+    check_console = True
 
 def page_main(page: ft.Page):
     '''
@@ -43,7 +44,6 @@ def page_main(page: ft.Page):
         page.session.remove("updata_log")
     '''
     __, map_dict = read_maps(platform=_("PC"))
-    print(map_dict)
     #map_dict = map_word(platform=_("模拟器")).map_list_map
     VER = str(read_json_file("config.json").get("star_version",0))+"/"+str(read_json_file("config.json").get("temp_version",0))+"/"+str(read_json_file("config.json").get("map_version",0))
     img_url = [
