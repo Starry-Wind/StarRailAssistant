@@ -89,7 +89,7 @@
   },
   {
     "path": "temp/pc/map_3-3_point_5.png",
-    "hash": "cac3729b507c7e5a6f794b4048ee4ecd"
+    "hash": "bca17962a68f059a7ad97ed60114da85"
   },
   {
     "path": "temp/pc/orientation_3.png",
@@ -294,6 +294,10 @@
   {
     "path": "temp/pc/auto.jpg",
     "hash": "e78db3b25d6b818903fef3c8dcfb91cc"
+  },
+  {
+    "path": "temp/pc/map_3-3_point_6.png",
+    "hash": "cbe5052afaa43ab8d2f2739034552ec1"
   },
   {
     "path": "temp/pc/map_3-1_point_4.png",
