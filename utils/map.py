@@ -76,6 +76,8 @@ class Map:
                     if ret == False and map:
                         fight_log.info(f"执行{map_filename}文件时，识别敌人超时")
                         fight_data = read_json_file(CONFIG_FILE_NAME).get("fight_data", {})
+                        date_time = datetime.now().strftime("%m%d%H%M")
+                        cv.imwrite(f"logs/image/{map_filename}-{date_time}.jpg",self.calculated.take_screenshot()[0]) #识别超时,截图
                         if map_filename not in fight_data.get("data", {}):
                             day_time = datetime.now().strftime('%Y-%m-%d')
                             if fight_data.get("day_time", 0) != day_time or self.start:
