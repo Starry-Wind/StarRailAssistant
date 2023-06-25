@@ -70,6 +70,8 @@ class calculated:
         self.finish = cv.imread("./temp/pc/finish_fighting.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/finish_fighting.jpg")
         self.auto = cv.imread("./temp/pc/auto.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/auto.jpg")
 
+        self.end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
+
     def Click(self, points = None):
         """
         说明：
@@ -559,11 +561,11 @@ class calculated:
         while True:
             if type == 0:
                 if self.platform == _("PC"):
-                    result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
-                    if result["max_val"] > 0.98:
+                    end_str = str(self.part_ocr((20,95,100,100)))
+                    if any(substring in end_str for substring in self.end_list):
                         log.info(_("完成自动战斗"))
-                        time.sleep(2)
                         break
+                    time.sleep(1.0) # 缓冲
                 else:
                     result = self.scan_screenshot(self.finish)
                     if result["max_val"] > 0.98:
@@ -571,6 +573,7 @@ class calculated:
                         time.sleep(2)                        
                         break
                 if time.time() - start_time > 90: # 避免卡死
+                    log.info(_("战斗超时"))
                     break
             elif type == 1:
                 result = self.part_ocr((6,10,89,88))
@@ -841,7 +844,7 @@ class calculated:
     def wait_join(self):
         """
         说明：
-            等待进入地图
+            等待进入地图P
         返回:
             进入地图的时间
         """
@@ -918,13 +921,14 @@ class calculated:
           time.sleep(1) # 等待进入入画
           log.info(_("等待入画结束"))
           time.sleep(0.3) # 缓冲
-          result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
-          while result["max_val"] < threshold:
-                result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
-          log.info(_("完成入画"))
-          time.sleep(0.3) # 缓冲
+          while True:
+            end_str = str(self.part_ocr((0,95,100,100)))
+            if any(substring in end_str for substring in self.end_list):
+                log.info(_("完成入画"))
+                break
+            time.sleep(1.0) # 缓冲
         else:
-          self.adb.input_tap((1040, 550))#不会找点位，请自己找一下
+          self.adb.input_tap((1040, 550))
           time.sleep(1) # 等待进入入画
           log.info(_("等待入画结束"))
           time.sleep(0.3) # 缓冲
