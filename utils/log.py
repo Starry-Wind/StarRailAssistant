@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-15 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-24 01:28:22
+LastEditTime: 2023-06-25 20:25:06
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -11,9 +11,9 @@ import os
 import re
 import sys
 import orjson
-import locale
 import gettext
 
+from pathlib import Path
 from copy import copy
 from loguru import logger
 
@@ -70,7 +70,12 @@ def get_folder(path) -> list[str]:
         return dirs
 
 language = read_json_file("config.json").get("language", "zh_CN")
-t = gettext.translation('sra', 'locale', [language])
+if getattr(sys, 'frozen', None):
+    dir = sys._MEIPASS
+else:
+    dir = Path()
+locale_path = os.path.join(dir, "locale")
+t = gettext.translation('sra', locale_path, [language])
 _ = t.gettext
 
 def get_message(*arg):
