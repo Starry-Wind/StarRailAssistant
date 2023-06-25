@@ -63,9 +63,9 @@ class calculated:
         self.hwnd = self.window._hWnd  if platform == _("PC") else None
 
         # 初始化
-        self.attack = cv.imread("./temp/pc/attack.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/attack.jpg")
-        self.doubt = cv.imread("./temp/pc/doubt.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/doubt.jpg")
-        self.warn = cv.imread("./temp/pc/warn.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/warn.jpg")
+        self.attack = cv.imread("./temp/pc/attack.png") if self.platform == _("PC") else cv.imread("./temp/mnq/attack.jpg")
+        self.doubt = cv.imread("./temp/pc/doubt.png") if self.platform == _("PC") else cv.imread("./temp/mnq/doubt.jpg")
+        self.warn = cv.imread("./temp/pc/warn.png") if self.platform == _("PC") else cv.imread("./temp/mnq/warn.jpg")
         # tagz = cv.imread("./temp/pc/tagz.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/tagz.jpg")
         self.finish = cv.imread("./temp/pc/finish_fighting.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/finish_fighting.jpg")
         self.auto = cv.imread("./temp/pc/auto.jpg") if self.platform == _("PC") else cv.imread("./temp/mnq/auto.jpg")
@@ -257,7 +257,7 @@ class calculated:
             else:
                 left, top, right, bottom = self.window.left+left_border, self.window.top+up_border, self.window.right-left_border, self.window.bottom-left_border
             temp = ImageGrab.grab((left, top, right, bottom))
-            width, length = temp.size
+            width, length = temp.size           
         elif self.platform == _("模拟器"):
             left, top, right, bottom = 0,0,0,0
             temp = self.adb.screencast()
@@ -470,33 +470,31 @@ class calculated:
         """
         start_time = time.time()
         log.info(_("识别中"))
+        #识别敌人
         while True:
             if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
-                log.info(_("识别超时,此处可能无敌人"))
+                log.info(_("识别超时,此处可能漏怪!"))
                 return False
-            # if (self.scan_screenshot(tagz, pos=(40,0,60,15))["max_val"]) < 0.95 : continue  # 没有Z标志时，直接继续
-            if self.scan_screenshot(self.attack)["max_val"] > 0.97:
-                #points = self.calculated(result, target.shape)
-                #points = attack_result["max_loc"] # 这里好像没有必要点击攻击标志
+                time.sleep(0.3)
+            if self.scan_screenshot(self.attack,pos=(3.75,5.5,11.6,23))["max_val"] > 0.97: #修改检测机制,精度更高
                 if self.platform == _("PC"):
                     self.Click()
                 else:
                     self.adb.input_tap((1040, 550))
                     time.sleep(1)
-                time.sleep(1)
+                time.sleep(0.3)
                 doubt_time = time.time() + 8
-                log.info(_("监控疑问或是警告"))
+                log.info(_("监控疑问或警告"))
                 while time.time() < doubt_time:
-                    if self.scan_screenshot(self.doubt)["max_val"] > 0.95 or self.scan_screenshot(self.warn)["max_val"] > 0.95:
-                        time.sleep(0.3)
-                        log.info(_("识别到疑问或是警告,等待怪物开战或反击"))
-                        time.sleep(2)
-                        log.info(_("识别反击"))
+                    if self.scan_screenshot(self.doubt,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95 or self.scan_screenshot(self.warn,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95:
+                        log.info(_("识别到疑问或警告,等待怪物开战或反击"))
                         if self.platform == _("PC"):
                             self.Click()
                         else:
                             self.adb.input_tap((1040, 550))
                             time.sleep(1)
+                        time.sleep(1.5)
+                        log.info(_("识别反击"))
                     result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
                     if result["max_val"] < 0.95:
                         break
@@ -511,19 +509,19 @@ class calculated:
                 else:
                     self.adb.input_tap((1040, 550))
                     time.sleep(1)
-                time.sleep(1)                
-                doubt_time = time.time() + 8
-                log.info(_("监控疑问或是警告!"))
+                time.sleep(0.3)
+                doubt_time = time.time() + 7
+                log.info(_("监控疑问或警告!"))
                 while time.time() < doubt_time:
-                    if self.scan_screenshot(self.doubt)["max_val"] > 0.95 or self.scan_screenshot(self.warn)["max_val"] > 0.95:
-                        log.info(_("识别到疑问或是警告,等待怪物开战或反击"))
-                        time.sleep(2)
+                    if self.scan_screenshot(self.doubt,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95 or self.scan_screenshot(self.warn,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95:
+                        log.info(_("识别到疑问或警告,等待怪物开战或反击"))
                         if self.platform == _("PC"):
-                            log.info(_("识别反击"))
                             self.Click()
                         else:
                             self.adb.input_tap((1040, 550))
                             time.sleep(1)
+                        time.sleep(1.5)
+                        log.info(_("识别反击"))
                     result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
                     if result["max_val"] < 0.95:
                         break
@@ -532,6 +530,8 @@ class calculated:
                 time.sleep(0.3)
                 if result["max_val"] < 0.95:
                     break
+                log.info(_("未发现敌人!"))    
+                return True
             time.sleep(2)
         #进入战斗
         start_time = time.time()
@@ -544,7 +544,6 @@ class calculated:
                         self.keyboard.press("v")
                         self.keyboard.release("v")
                     else:
-                        #points = self.calculated(result, target.shape)
                         points = result["max_loc"]
                         self.Click(points)
                     log.info(_("开启自动战斗"))
@@ -555,7 +554,6 @@ class calculated:
         else:
             log.info(_("跳过开启自动战斗（沿用设置）"))
             time.sleep(5)
-
         start_time = time.time()  # 开始计算战斗时间
         while True:
             if type == 0:
