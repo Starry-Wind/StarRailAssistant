@@ -29,7 +29,7 @@
   },
   {
     "path": "gui.py",
-    "hash": "35d6cd35b8d60e753c641fec682be3b1"
+    "hash": "e7ec524e64ca0fa5c4b7d147e9df813b"
   },
   {
     "path": "model/cnstd/2.2/densenet_lite_114-fc/cnocr-v2.2-densenet_lite_114-fc-epoch=037-complete_match_epoch=0.7859-model.onnx",
@@ -69,7 +69,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "61f6cedb29f609dc691fae5cd449fe47"
+    "hash": "12a7b86a8fcf3e60dd5581441d77c3d1"
   },
   {
     "path": "utils/exceptions.py",
@@ -89,7 +89,7 @@
   },
   {
     "path": "utils/log.py",
-    "hash": "231923480b6420b889d5e0e192c26147"
+    "hash": "86fba4f616fb3a8d03cf63a88fd60fff"
   },
   {
     "path": "utils/config.py",
