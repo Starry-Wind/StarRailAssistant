@@ -476,7 +476,7 @@ class calculated:
                 log.info(_("识别超时,此处可能漏怪!"))
                 return False
                 time.sleep(0.3)
-            if self.scan_screenshot(self.attack,pos=(3.8,5,12,24))["max_val"] > 0.97: #修改检测机制,精度更高
+            if self.scan_screenshot(self.attack,pos=(3.75,5.5,11.6,23))["max_val"] > 0.97: #修改检测机制,精度更高
                 if self.platform == _("PC"):
                     self.Click()
                 else:
