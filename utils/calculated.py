@@ -571,6 +571,7 @@ class calculated:
                         time.sleep(2)                        
                         break
                 if time.time() - start_time > 90: # 避免卡死
+                    log.info(_("战斗超时"))
                     break
             elif type == 1:
                 result = self.part_ocr((6,10,89,88))
