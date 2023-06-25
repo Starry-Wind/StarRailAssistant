@@ -114,9 +114,9 @@ def get_file(path, exclude=[], exclude_file=None, get_path=False, only_place=Fal
     if exclude_file is None:
         exclude_file = []
     file_list = []
-    for root, dirs, files in os.walk(path):
+    for index,(root, dirs, files) in enumerate(os.walk(path)):
         add = True
-        if (dirs==[] and only_place) or not only_place:
+        if (index==0 and only_place) or not only_place:
             for i in exclude:
                 if i in root:
                     add = False
