@@ -2,12 +2,13 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-17 23:25:03
+LastEditTime: 2023-06-26 15:01:44
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
 '''
 import sys
+import pyuac
 import traceback
 import tkinter as tk
 from tkinter import messagebox
@@ -608,13 +609,17 @@ def page_main(page: ft.Page):
         left_page=[about_ib]
     )
 
-try:
-    sra.load_plugin()
-    ft.app(target=page_main)
-except KeyboardInterrupt:
-    ...
-except:
-    log.error(traceback.format_exc())
-    messagebox.showerror("运行错误", traceback.format_exc())
-finally:
-    sra.stop()
+if __name__ == "__main__":
+    try:
+        if not pyuac.isUserAdmin():
+            pyuac.runAsAdmin()
+        else:
+            sra.load_plugin()
+            ft.app(target=page_main)
+    except KeyboardInterrupt:
+        ...
+    except:
+        log.error(traceback.format_exc())
+        messagebox.showerror("运行错误", traceback.format_exc())
+    finally:
+        sra.stop()

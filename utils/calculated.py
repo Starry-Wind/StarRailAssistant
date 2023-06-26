@@ -570,7 +570,7 @@ class calculated:
                     result = self.scan_screenshot(self.finish)
                     if result["max_val"] > 0.98:
                         log.info(_("完成自动战斗"))
-                        time.sleep(2)                        
+                        time.sleep(2)
                         break
                 if time.time() - start_time > 90: # 避免卡死
                     break
