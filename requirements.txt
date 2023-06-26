@@ -20,7 +20,6 @@ pynput
 pyuac
 pywin32
 questionary
-torch
 tqdm
 ultralytics
 xpinyin

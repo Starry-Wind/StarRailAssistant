@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-26 19:17:36
+LastEditTime: 2023-06-26 22:28:02
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -301,14 +301,14 @@ def page_main(page: ft.Page):
 
         github_proxy_dd = ft.Dropdown(
                 label=_("GITHUB代理"),
-                hint_text=_("GITHUB代理地址"),
+                hint_text=_("如果你无法下载资源，请设置此代理"),
                 options=[ft.dropdown.Option(i) for i in github_proxy_list],
                 value=github_proxy,
                 width=200,
             )
         rawgithub_proxy_dd = ft.Dropdown(
                 label=_("RAWGITHUB代理"),
-                hint_text=_("RAWGITHUB代理地址"),
+                hint_text=_("如果你无法下载资源，请设置此代理"),
                 options=[ft.dropdown.Option(i) for i in rawgithub_proxy_list],
                 value=rawgithub_proxy,
                 width=200,
@@ -531,7 +531,7 @@ def page_main(page: ft.Page):
 if __name__ == "__main__":
     try:
         if not pyuac.isUserAdmin():
-            pyuac.runAsAdmin()
+            messagebox.showerror("运行错误", "请以管理员权限运行")
         else:
             sra.load_plugin()
             ft.app(target=page_main)
