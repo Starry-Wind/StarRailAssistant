@@ -187,25 +187,6 @@ class SRA:
             options = [_('没打开'), _('打开了'), _('这是什么')]
             option = questionary.select(title, options).ask()
             modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", options.index(option))
-            title = _("请选择模拟器的运行平台(如果你不打算使用模拟器运行请直接回车)")
-            options = {
-                "逍遥游": "127.0.0.1:21503",
-                "夜神模拟器": "127.0.0.1:62001",
-                "海马玩模拟器": "127.0.0.1:26944",
-                "天天模拟器": "127.0.0.1:6555",
-                "雷电安卓模拟器": "127.0.0.1:5555",
-                "安卓模拟器大师": "127.0.0.1:54001",
-                "网易mumu模拟器": "127.0.0.1:7555",
-                "BlueStacks": "127.0.0.1:5555",
-                "天天安卓模拟器": "127.0.0.1:5037",
-                "手动填写端口号": ""
-            }
-            option = questionary.select(title, options).ask()
-            if option == "手动填写端口号":
-                option = questionary.text("请输入端口号:", default="127.0.0.1:62001").ask()
-                modify_json_file(CONFIG_FILE_NAME, "adb", option)
-            else:
-                modify_json_file(CONFIG_FILE_NAME, "adb", options[option])
             modify_json_file(CONFIG_FILE_NAME, "start", True)
             raise Exception(_("请重新运行"))
 
@@ -280,7 +261,7 @@ class SRA:
             :param start: 起始地图编号
             :param role_list: 提示
         """
-        start, role_list = self.choose_map(option) if not start else start, role_list
+        (start, role_list) = self.choose_map(option) if not start else (start, role_list)
         if start:
             log.info(_("脚本将自动切换至游戏窗口，请保持游戏窗口激活"))
             calculated(game_title, "PC", start=False).switch_window()

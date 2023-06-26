@@ -84,16 +84,13 @@ def init_config_file(real_width, real_height, file_name = CONFIG_FILE_NAME):
                         "open_map": "m",
                         "level": "INFO",
                         "debug": False,
-                        "adb": "127.0.0.1:62001",
-                        "adb_path": "temp\\adb\\adb",
                         "proxies": "",
                         "language": "zh_CN",
                         "move_excursion": 0,
                         "move_division_excursion": 1,
                         "sprint": False,
                         "join_time": {
-                            "pc": 8,
-                            "mnq": 15
+                            "pc": 8
                         },
                         "deficiency": True
                     },option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2
