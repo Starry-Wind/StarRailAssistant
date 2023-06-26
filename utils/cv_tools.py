@@ -2,7 +2,7 @@
 Author: Xe-No
 Date: 2023-05-17 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-16 20:26:54
+LastEditTime: 2023-06-26 19:44:15
 Description: 一些cv工具
 
 Copyright (c) 2023 by Xe-No, All Rights Reserved. 
@@ -30,7 +30,7 @@ def show_img(img, scale=1, title='Image'):
     h, w = img.shape[:2]
     img = cv.resize( img ,(int(w*scale), int(h*scale))  )
     cv.imshow(title, img)
-    cv.waitKey(1000)  # 显示图像并等待5秒
+    cv.waitKey(0)  # 显示图像并等待5秒
     cv.destroyAllWindows()  
 
 def show_imgs(imgs, title='Image'):

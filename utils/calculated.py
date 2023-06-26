@@ -612,11 +612,11 @@ class calculated:
     def part_ocr(self,points = (0,0,0,0), debug=False):
         """
         说明：
-            返回图片文字和坐标
+            返回图片文字和坐标(相对于图片的坐标)
         参数：
             :param points: 图像截取范围
         返回:
-            :return data: 文字: 坐标
+            :return data: 文字: 坐标(相对于图片的坐标)
         """
         img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
         if debug:
@@ -639,16 +639,18 @@ class calculated:
         """
         return cv.imread(f'{prefix}{path}')
 
-    def part_ocr_other(self,points = (0,0,0,0)):
+    def part_ocr_other(self,points = (0,0,0,0), debug=False):
         """
         说明：
-            返回图片文字和坐标
+            返回图片文字和坐标(相对于桌面的坐标)
         参数：
             :param points: 图像截取范围
         返回:
-            :return data: 文字: 坐标
+            :return data: 文字: 坐标(相对于桌面的坐标)
         """
         img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
+        if debug:
+            show_img(img_fp)
         x, y = width/100*points[0], length/100*points[1]
         out = self.ocr.ocr(img_fp)
         data = {i['text']: (int(left+x+i['position'][0][0]),int(top+y+i['position'][0][1])) for i in out}
