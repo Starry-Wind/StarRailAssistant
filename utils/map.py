@@ -88,7 +88,7 @@ class Map:
                                 fight_data["data"].append(map_filename)
                                 self.start = False
                             else:
-                                fight_data["data"] = [map_filename]
+                                fight_data["data"].append(map_filename)
                                 fight_data["day_time"] = day_time
                             modify_json_file(CONFIG_FILE_NAME, "fight_data", fight_data)
                 elif value == 2:  # 障碍物
