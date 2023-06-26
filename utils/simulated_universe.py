@@ -30,20 +30,18 @@ from .requests import webhook_and_log
 from .adb import ADB
 
 class Simulated_Universe:
-    def __init__(self, title = _("崩坏：星穹铁道"), platform=_("PC"),order="127.0.0.1:62001", adb_path="temp\\adb\\adb"):
+    def __init__(self, title = _("崩坏：星穹铁道")):
         """
         参数: 
             :param platform: 运行设备
         """
-        self.platform = platform # 运行设备
         self.open_map = read_json_file(CONFIG_FILE_NAME).get("open_map", "m")
-        self.window = gw.getWindowsWithTitle(_('崩坏：星穹铁道'))[0] if platform == _("PC") else None
-        self.hwnd = self.window._hWnd if platform == _("PC") else None
+        self.window = gw.getWindowsWithTitle(_('崩坏：星穹铁道'))[0]
+        self.hwnd = self.window._hWnd
         self.map_list = []
         self.map_list_map = {}
 
-        self.adb = ADB(order, adb_path)
-        self.calculated = calculated(title, platform,order)
+        self.calculated = calculated(title)
         self.p = Pinyin()
         self.keyboard = KeyboardController()
         #self.model = attempt_load_weights("./temp/model/best.pt")
@@ -71,37 +69,20 @@ class Simulated_Universe:
         """
         if level > start:
             for i in range(abs(level - start)):
-                if self.platform == _("PC"):
-                    self.calculated.scroll(1)
-                elif self.platform == _("模拟器"):
-                    self.adb.input_swipe((919, 617), (919, 908), 100)
+                self.calculated.scroll(1)
         elif level < start:
             for i in range(abs(level - start)):
-                if self.platform == _("PC"):
-                    self.calculated.scroll(-1)
-                elif self.platform == _("模拟器"):
-                    self.adb.input_swipe((925, 650), (925, 394), 100)
-        if self.platform == _("PC"):
-            time.sleep(0.5)
-            self.calculated.Relative_click((60, 50))
-        elif self.platform == _("模拟器"):
-            time.sleep(0.5)
-            self.adb.input_tap((895, 394))
+                self.calculated.scroll(-1)
+        time.sleep(0.5)
+        self.calculated.Relative_click((60, 50))
         start_time = time.time()
         while True:
-            if self.platform == _("PC"):
-                left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
-                img_fp = ImageGrab.grab((left, top, right, bottom))
-                text, pos = self.calculated.ocr_pos(img_fp, _("下载初始角色"))
-                if pos:
-                    self.calculated.Click((left+pos[0], top+pos[1]))
-                    break
-            elif self.platform == _("模拟器"):
-                img_fp = self.adb.screencast()
-                text, pos = self.calculated.ocr_pos(img_fp, _("下载初始角色"))
-                if pos:
-                    self.adb.input_tap(pos)
-                    break
+            left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
+            img_fp = ImageGrab.grab((left, top, right, bottom))
+            text, pos = self.calculated.ocr_pos(img_fp, _("下载初始角色"))
+            if pos:
+                self.calculated.Click((left+pos[0], top+pos[1]))
+                break
             if time.time() - start_time > 10:
                 log.info(_("识别超时"))
                 break
@@ -114,11 +95,8 @@ class Simulated_Universe:
             :param roles: 角色列表
         """
         time.sleep(1)
-        if self.platform == _("PC"):
-            left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
-            img_fp = ImageGrab.grab((left, top, right-(right-left)/100*70, bottom))
-        elif self.platform == _("模拟器"):
-            img_fp = self.adb.screencast()
+        left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
+        img_fp = ImageGrab.grab((left, top, right-(right-left)/100*70, bottom))
         start_time = time.time()
         while True:
             for role in roles:
@@ -129,10 +107,7 @@ class Simulated_Universe:
                 if result['max_val'] > 0.90:
                     roles.remove(role)
                     #points = self.calculated.calculated(result, img.shape)
-                    if self.platform == _("PC"):
-                        self.calculated.Click((result['max_loc'][0]+10, result['max_loc'][1]+10))
-                    elif self.platform == _("模拟器"):
-                        self.adb.input_tap((result['max_loc'][0]+10, result['max_loc'][1]+10))
+                    self.calculated.Click((result['max_loc'][0]+10, result['max_loc'][1]+10))
                     time.sleep(0.1)
             if len(roles) == 0:
                 break

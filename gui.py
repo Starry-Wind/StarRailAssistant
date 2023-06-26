@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-26 15:37:42
+LastEditTime: 2023-06-26 19:17:36
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -44,8 +44,7 @@ def page_main(page: ft.Page):
     if page.session.contains_key("updata_log"):
         page.session.remove("updata_log")
     '''
-    __, map_dict = read_maps(platform=_("PC"))
-    #map_dict = map_word(platform=_("模拟器")).map_list_map
+    __, map_dict = read_maps()
     VER = str(read_json_file("config.json").get("star_version",0))+"/"+str(read_json_file("config.json").get("temp_version",0))+"/"+str(read_json_file("config.json").get("map_version",0))
     img_url = [
         "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC",
@@ -67,8 +66,6 @@ def page_main(page: ft.Page):
         bg_img.height = page.window_height-58
         about_ib.width = page.window_width
         about_ib.height = page.window_height-58
-        platform.content.width = page.window_width
-        platform.content.height = page.window_height-58
         first_page = [
                 bg_img,
                 ft.Row(
@@ -153,13 +150,12 @@ def page_main(page: ft.Page):
         page.vertical_alignment = "START"
         page.horizontal_alignment = "START"
         add(log_text)
-        if platform.value == _("PC"):
-            calculated(_("崩坏：星穹铁道"), _("PC")).switch_window()
-            time.sleep(0.5)
-            get_width(_("崩坏：星穹铁道"))
-            import pyautogui # 缩放纠正
+        calculated(_("崩坏：星穹铁道")).switch_window()
+        time.sleep(0.5)
+        get_width(_("崩坏：星穹铁道"))
+        import pyautogui # 缩放纠正
         order = read_json_file(CONFIG_FILE_NAME).get("adb", "127.0.0.1:62001")
-        map_word(platform=platform.value,order=order).auto_map(start)
+        map_word().auto_map(start)
         add(ft.ElevatedButton(_("返回"), on_click=to_page_main))
 
     def to_page_main(e):
@@ -187,7 +183,6 @@ def page_main(page: ft.Page):
             map_select_dd,
             ft.ElevatedButton(_("确认"), on_click=map_confirm),
             ft.ElevatedButton(_("返回"), on_click=to_page_main),
-            left_page=[platform]
         )
 
     def updata(e):
@@ -284,25 +279,6 @@ def page_main(page: ft.Page):
             硬编码配置编辑，带优化
         """
         config = read_json_file(CONFIG_FILE_NAME)
-        simulator = {
-            "逍遥游": "127.0.0.1:21503",
-            "夜神模拟器": "127.0.0.1:62001",
-            "海马玩模拟器": "127.0.0.1:26944",
-            "天天模拟器": "127.0.0.1:6555",
-            "雷电安卓模拟器": "127.0.0.1:5555",
-            "安卓模拟器大师": "127.0.0.1:54001",
-            "网易mumu模拟器": "127.0.0.1:7555",
-            "BlueStacks": "127.0.0.1:5555",
-            "天天安卓模拟器": "127.0.0.1:5037",
-        }
-        simulator_keys = list(simulator.keys())
-        simulator_values = list(simulator.values())
-        user_adb = config.get("adb", "127.0.0.1:62001")
-        if user_adb not in simulator_values:
-            simulator_values.append(user_adb)
-            simulator_keys.append(_("自定义"))
-            simulator[_("自定义")] = user_adb
-        adb = simulator_keys[simulator_values.index(user_adb)]
 
         language_dict = {
             "简体中文": "zh_CN",
@@ -314,7 +290,6 @@ def page_main(page: ft.Page):
 
         fighting_list = [_('没打开'), _('打开了'), _('这是什么')]
         fighting = fighting_list[config.get("auto_battle_persistence", 0)]
-        print(fighting)
 
         github_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', "不设置代理"]
         github_proxy = config.get("github_proxy", 'https://ghproxy.com/') 
@@ -323,15 +298,7 @@ def page_main(page: ft.Page):
 
         open_map = config.get("open_map", "m")
         level = config.get("level", "INFO")
-        adb_path = config.get("adb_path", "temp\\adb\\adb")
 
-        simulator_dd = ft.Dropdown(
-                label=_("模拟器"),
-                hint_text=_("选择你运行的模拟器"),
-                options=[ft.dropdown.Option(i) for i in list(simulator.keys())],
-                value=adb,
-                width=200,
-            )
         github_proxy_dd = ft.Dropdown(
                 label=_("GITHUB代理"),
                 hint_text=_("GITHUB代理地址"),
@@ -371,51 +338,28 @@ def page_main(page: ft.Page):
                 value=fighting,
                 width=200,
             )
-        adb_path_text = ft.Text(adb_path, size=20)
-        def pick_files_result(e: ft.FilePickerResultEvent):
-            adb_path_text.value = e.files[0].path
-            page.update()
-        pick_files_dialog = ft.FilePicker(on_result=pick_files_result)
+
         open_map_tf = ft.TextField(label=_("打开地图按钮"), value=open_map, width=200)
         def save(e):
             modify_json_file(CONFIG_FILE_NAME, "github_proxy", "" if github_proxy_dd.value == "不设置代理" else github_proxy_dd.value)
             modify_json_file(CONFIG_FILE_NAME, "rawgithub_proxy", "" if rawgithub_proxy_dd.value == "不设置代理" else rawgithub_proxy_dd.value)
             modify_json_file(CONFIG_FILE_NAME, "open_map", open_map_tf.value)
             modify_json_file(CONFIG_FILE_NAME, "level", level_dd.value)
-            modify_json_file(CONFIG_FILE_NAME, "adb", simulator[simulator_dd.value])
-            modify_json_file(CONFIG_FILE_NAME, "adb_path", adb_path_text.value)
             modify_json_file(CONFIG_FILE_NAME, "language", language_dict[language_dd.value])
             modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", fighting_list.index(fighting_dd.value))
             modify_json_file(CONFIG_FILE_NAME, "start", True)
             to_page_main(page)
         page.clean()
-        page.overlay.append(pick_files_dialog)
         add(
             ft.Text(_("星穹铁道小助手"), size=50),
             ft.Text(_("大世界"), size=30),
             ft.Text(VER, size=20),
-            simulator_dd,
             github_proxy_dd,
             rawgithub_proxy_dd,
             level_dd,
             open_map_tf,
             language_dd,
             fighting_dd,
-            ft.Row(
-                [
-                    adb_path_text,
-                    ft.ElevatedButton(
-                        _("选择文件"),
-                        icon=ft.icons.UPLOAD_FILE,
-                        on_click=lambda _: pick_files_dialog.pick_files(
-                            allowed_extensions=["exe"],
-                            allow_multiple=True
-                        ),
-                    )
-                ],
-                alignment=ft.MainAxisAlignment.CENTER,
-                vertical_alignment=ft.CrossAxisAlignment.CENTER
-            ),
             ft.ElevatedButton(_("保存"), on_click=save),
         )
 
@@ -468,8 +412,6 @@ def page_main(page: ft.Page):
             bg_img.height = page.window_height-58
             about_ib.width = page.window_width
             about_ib.height = page.window_height-58
-            platform.content.width = page.window_width
-            platform.content.height = page.window_height-58
             page.update()
 
     # 界面参数区
@@ -520,18 +462,6 @@ def page_main(page: ft.Page):
                 horizontal_alignment=ft.CrossAxisAlignment.END,
                 spacing=0
             )
-    # %% 运行设备选择
-    platform = ft.RadioGroup(
-        content=ft.Column(
-            [
-                ft.Radio(value=_("PC"), label=_("PC")),
-                ft.Radio(value=_("模拟器"), label=_("模拟器"))
-            ],
-            alignment=ft.MainAxisAlignment.END,
-            spacing=0
-        ),
-        value=_("PC")
-    )
     ## 星球选项卡
     word_select_rg = ft.RadioGroup(
         content=ft.Row(
@@ -575,26 +505,15 @@ def page_main(page: ft.Page):
     sra.option_dict = {
     }
     button_dict = sra.run_plugins()[-1]
-    if check_console:
-        page_list = [
-            ft.Text(_("星穹铁道小助手"), size=50),
-            ft.Text(VER, size=20),
-            ft.ElevatedButton(_("大世界"), on_click=word),
-            ft.ElevatedButton(_("模拟宇宙")),
-        ]+[ft.ElevatedButton(i, on_click=lambda x:button_dict[i](page)) for i in list(button_dict.keys())]+[
-            ft.ElevatedButton(_("更新资源"), on_click=updata),
-            ft.ElevatedButton(_("编辑配置"), on_click=set_config),
-        ]
-    else:
-        page_list = [
-            ft.Text(_("星穹铁道小助手"), size=50),
-            ft.Text(VER, size=20),
-            ft.ElevatedButton(_("大世界"), on_click=word),
-            ft.ElevatedButton(_("模拟宇宙")),
-        ]+[ft.ElevatedButton(i, on_click=lambda x:button_dict[i](page)) for i in list(button_dict.keys())]+[
-            ft.ElevatedButton(_("更新资源"), on_click=updata),
-            ft.ElevatedButton(_("编辑配置"), on_click=set_config),
-        ]
+    page_list = [
+        ft.Text(_("星穹铁道小助手"), size=50),
+        ft.Text(VER, size=20),
+        ft.ElevatedButton(_("大世界"), on_click=word),
+        #ft.ElevatedButton(_("模拟宇宙")),
+    ]+[ft.ElevatedButton(i, on_click=lambda x:button_dict[i](page)) for i in list(button_dict.keys())]+[
+        ft.ElevatedButton(_("更新资源"), on_click=updata),
+        ft.ElevatedButton(_("编辑配置"), on_click=set_config),
+    ]
     if read_json_file(CONFIG_FILE_NAME, False).get('temp_version') == "0" or read_json_file(CONFIG_FILE_NAME, False).get('map_version') == "0":
         page_list = [
             ft.Text(_("星穹铁道小助手"), size=50),
@@ -615,7 +534,7 @@ if __name__ == "__main__":
             pyuac.runAsAdmin()
         else:
             sra.load_plugin()
-            ft.app(target=page_main, port=3485, view=ft.WEB_BROWSER)
+            ft.app(target=page_main)
     except KeyboardInterrupt:
         ...
     except:
