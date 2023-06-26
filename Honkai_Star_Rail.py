@@ -41,13 +41,13 @@ args = docopt(__doc__) # 命令行快捷参数
 class SRA:
     def __init__(self) -> None:
         plugin_manager.register(self)
-        self.option_list = [_('PC'), _('模拟器'), _('更新资源'), _('配置参数')]
         self.option_dict = {
-            _('PC'): "",
-            _('模拟器'): "",
+            _('大世界'): "",
+            _('派遣委托'): "",
             _('更新资源'): "",
             _('配置参数'): ""
         }
+        self.option_list = list(self.option_dict.keys())
 
     def run_plugins(self):
         try:
@@ -86,14 +86,14 @@ class SRA:
             # 加载通过 setuptools 安装的插件
             plugin_manager.load_setuptools_entrypoints("SRA")
 
-    def choose_map(self, option:str=_('大世界'), platform = "PC"):
+    def choose_map(self, option:str=_('大世界')):
         if option == _("大世界"):
             title_ = _("请选择起始星球：")
             options_map = {_("空间站「黑塔」"): "1", _("雅利洛-VI"): "2", _("仙舟「罗浮」"): "3"}
             option_ = questionary.select(title_, list(options_map.keys())).ask()
             main_map = options_map.get(option_)
             title_ = _("请选择起始地图：")
-            __, map_list_map = read_maps(platform)
+            __, map_list_map = read_maps()
             options_map = map_list_map.get(main_map)
             if not options_map:
                 return None, _("你没下载地图，拿什么选？")
@@ -120,7 +120,7 @@ class SRA:
                 choose_list = [role_list, choose_fate]
                 return side_map, choose_list
             else:
-                Simulated_Universe(platform).choose_presets(option)
+                Simulated_Universe().choose_presets(option)
                 return None, None
         return True, None
 
@@ -274,35 +274,30 @@ class SRA:
             for up_data in list(up_data.values()):
                 update_file().update_file_main(**up_data)
 
-    def main(self, option:str=_('大世界'),platform="PC",start: str=None,role_list: str=None):
+    def main(self, option:str=_('大世界'),start: str=None,role_list: str=None):
         """
         参数:
             :param start: 起始地图编号
             :param role_list: 提示
         """
-        order = read_json_file(CONFIG_FILE_NAME, False).get('adb', "")
-        adb_path = read_json_file(CONFIG_FILE_NAME, False).get('adb_path', "temp\\adb\\adb")
-        start, role_list = self.choose_map(option, platform) if not start else start, role_list
+        start, role_list = self.choose_map(option) if not start else start, role_list
         if start:
-            if platform == "PC":
-                log.info(_("脚本将自动切换至游戏窗口，请保持游戏窗口激活"))
-                calculated(game_title, "PC", start=False).switch_window()
-                time.sleep(0.5)
-                get_width(game_title)
-                #map_instance.calculated.CONFIG = read_json_file(CONFIG_FILE_NAME)
-                import pyautogui # 缩放纠正
-                log.info(_("开始运行，请勿移动鼠标和键盘"))
-                log.info(_("若脚本运行无反应,请使用管理员权限运行"))
-            elif platform == _("模拟器"):
-                ADB(order).connect()
+            log.info(_("脚本将自动切换至游戏窗口，请保持游戏窗口激活"))
+            calculated(game_title, "PC", start=False).switch_window()
+            time.sleep(0.5)
+            get_width(game_title)
+            #map_instance.calculated.CONFIG = read_json_file(CONFIG_FILE_NAME)
+            import pyautogui # 缩放纠正
+            log.info(_("开始运行，请勿移动鼠标和键盘"))
+            log.info(_("若脚本运行无反应,请使用管理员权限运行"))
             if option == _("大世界"):
-                map_instance = map_word(game_title, platform, order, adb_path)
+                map_instance = map_word(game_title)
                 map_instance.auto_map(start)  # 读取配置
             elif option == _("模拟宇宙"):
-                simulated_universe = Simulated_Universe(game_title, platform, order, adb_path)
+                simulated_universe = Simulated_Universe(game_title)
                 simulated_universe.auto_map(start, role_list)  # 读取配置
             elif option == _("派遣委托"):
-                commission = Commission(4, game_title, platform, order, adb_path)
+                commission = Commission(4, game_title)
                 commission.start()  # 读取配置
         else:
             raise Exception(role_list)
@@ -322,23 +317,20 @@ if __name__ == "__main__":
                 title = _("请选择运行平台")
                 options = sra.option_dict
                 options_list = sra.option_list
-                platform = questionary.select(title, list(options.keys())).ask()
-                if platform == _("更新资源"):
+                option = questionary.select(title, options).ask()
+                if option == _("更新资源"):
                     sra.up_data()
                     raise Exception(_("请重新运行"))
-                elif platform == _("配置参数"):
+                elif option == _("配置参数"):
                     sra.set_config(False)
                     raise Exception(_("请重新运行"))
-                elif platform == None:
+                elif option == None:
                     ...
-                elif platform not in options_list:
-                    options[platform]()
+                elif option not in options_list:
+                    options[option]()
                 else:
-                    title = _("请选择操作")
-                    options = [_('大世界'), _('模拟宇宙'), _('派遣委托')]
-                    option = questionary.select(title, options).ask()
                     if option:
-                        sra.main(option, platform)
+                        sra.main(option)
                     else:
                         if questionary.select(_("请问要退出脚本吗？"), [_("退出"), _("返回主菜单")]).ask() == _("返回主菜单"):
                             select()

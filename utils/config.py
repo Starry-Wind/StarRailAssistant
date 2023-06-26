@@ -171,15 +171,15 @@ def add_key_value(dictionary, key, value, position):
     new_dictionary = dict(zip(keys, values))
     return new_dictionary
 
-def read_maps(platform):
+def read_maps():
     """
     说明:
         读取地图
     """
-    map_list = get_file('./map',only_place=True) if platform == _("PC") else get_file('./map/mnq',only_place=True)
+    map_list = get_file('./map',only_place=True)
     map_list_map = {}
     for map_ in map_list:
-        map_data = read_json_file(f"map/{map_}") if platform == _("PC") else read_json_file(f"map/mnq/{map_}")
+        map_data = read_json_file(f"map/{map_}")
         key1 = map_[map_.index('_') + 1:map_.index('-')]
         key2 = map_[map_.index('-') + 1:map_.index('.')]
         value = map_list_map.get(key1)
