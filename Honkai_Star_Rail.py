@@ -138,7 +138,7 @@ class SRA:
             import utils.config
             importlib.reload(utils.config)
             _ = utils.config._
-            title = _("请选择下载代理地址：（不使用代理选空白选项）")
+            title = _("请选择代理地址：（不使用代理选空白选项）")
             options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
             url_ms = []
             pbar = tqdm.tqdm(total=len(options), desc=_('测速中'), unit_scale=True, unit_divisor=1024, colour="green")
@@ -158,13 +158,13 @@ class SRA:
             url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
             option = options[url_ms.index(questionary.select(title, url_ms).ask())]
             modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
-            title = _("请选择代理地址：（不使用代理选空白选项）")
-            options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', '']
+            title = _("请选择下载代理地址：（不使用代理选空白选项）")
+            options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', '']
             url_ms = []
             pbar = tqdm.tqdm(total=len(options), desc=_('测速中'), unit_scale=True, unit_divisor=1024, colour="green")
             for index,url in enumerate(options):
                 if url == "":
-                    url = "https://github.com"
+                    url = "https://raw.githubusercontent.com"
                 elif "https://" not in url:
                     url =  f"https://"+url
                 try:
@@ -261,27 +261,38 @@ class SRA:
             :param start: 起始地图编号
             :param role_list: 提示
         """
-        (start, role_list) = self.choose_map(option) if not start else (start, role_list)
-        if start:
+        if option in self.option_list:
+            (start, role_list) = self.choose_map(option) if not start else (start, role_list)
+            if start:
+                log.info(_("脚本将自动切换至游戏窗口，请保持游戏窗口激活"))
+                calculated(game_title, start=False).switch_window()
+                time.sleep(0.5)
+                get_width(game_title)
+                #map_instance.calculated.CONFIG = read_json_file(CONFIG_FILE_NAME)
+                import pyautogui # 缩放纠正
+                log.info(_("开始运行，请勿移动鼠标和键盘"))
+                log.info(_("若脚本运行无反应,请使用管理员权限运行"))
+                if option == _("大世界"):
+                    map_instance = map_word(game_title)
+                    map_instance.auto_map(start)  # 读取配置
+                elif option == _("模拟宇宙"):
+                    simulated_universe = Simulated_Universe(game_title)
+                    simulated_universe.auto_map(start, role_list)  # 读取配置
+                elif option == _("派遣委托"):
+                    commission = Commission(4, game_title)
+                    commission.start()  # 读取配置
+            else:
+                raise Exception(role_list)
+        else:
             log.info(_("脚本将自动切换至游戏窗口，请保持游戏窗口激活"))
-            calculated(game_title, "PC", start=False).switch_window()
+            calculated(game_title, start=False).switch_window()
             time.sleep(0.5)
             get_width(game_title)
             #map_instance.calculated.CONFIG = read_json_file(CONFIG_FILE_NAME)
             import pyautogui # 缩放纠正
             log.info(_("开始运行，请勿移动鼠标和键盘"))
             log.info(_("若脚本运行无反应,请使用管理员权限运行"))
-            if option == _("大世界"):
-                map_instance = map_word(game_title)
-                map_instance.auto_map(start)  # 读取配置
-            elif option == _("模拟宇宙"):
-                simulated_universe = Simulated_Universe(game_title)
-                simulated_universe.auto_map(start, role_list)  # 读取配置
-            elif option == _("派遣委托"):
-                commission = Commission(4, game_title)
-                commission.start()  # 读取配置
-        else:
-            raise Exception(role_list)
+            self.option_dict[option]()
 
 if __name__ == "__main__":
     fight_log.info("151")
@@ -297,7 +308,6 @@ if __name__ == "__main__":
             def select():
                 title = _("请选择运行平台")
                 options = sra.option_dict
-                options_list = sra.option_list
                 option = questionary.select(title, options).ask()
                 if option == _("更新资源"):
                     sra.up_data()
@@ -307,8 +317,6 @@ if __name__ == "__main__":
                     raise Exception(_("请重新运行"))
                 elif option == None:
                     ...
-                elif option not in options_list:
-                    options[option]()
                 else:
                     if option:
                         sra.main(option)
