@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-26 15:01:44
+LastEditTime: 2023-06-26 15:37:42
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -615,7 +615,7 @@ if __name__ == "__main__":
             pyuac.runAsAdmin()
         else:
             sra.load_plugin()
-            ft.app(target=page_main)
+            ft.app(target=page_main, port=3485, view=ft.WEB_BROWSER)
     except KeyboardInterrupt:
         ...
     except:
