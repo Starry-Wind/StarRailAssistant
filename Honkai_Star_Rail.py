@@ -45,7 +45,7 @@ class SRA:
             _('大世界'): "",
             _('派遣委托'): "",
             _('更新资源'): "",
-            _('配置参数'): ""
+            _('编辑配置'): ""
         }
         self.option_list = list(self.option_dict.keys())
 
@@ -312,9 +312,8 @@ if __name__ == "__main__":
                 if option == _("更新资源"):
                     sra.up_data()
                     raise Exception(_("请重新运行"))
-                elif option == _("配置参数"):
+                elif option == _("编辑配置"):
                     sra.set_config(False)
-                    raise Exception(_("请重新运行"))
                 elif option == None:
                     ...
                 else:
