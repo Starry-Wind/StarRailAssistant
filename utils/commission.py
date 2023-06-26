@@ -19,9 +19,9 @@ def get_percentile(rect, shape):
     return [x1/w*100,y1/h*100,x2/w*100,y2/h*100]
 
 class Commission():
-    def __init__(self, n:int=4, title = _("崩坏：星穹铁道"), platform=_("PC"),order="127.0.0.1:62001",adb_path="temp\\adb\\adb"):
+    def __init__(self, n:int=4, title = _("崩坏：星穹铁道")):
         self.n = n
-        self.calculated = calculated(title, platform,order,adb_path)
+        self.calculated = calculated(title)
 
     def start(self):
         self.open()
