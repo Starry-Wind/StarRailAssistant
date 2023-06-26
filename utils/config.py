@@ -1,7 +1,9 @@
 import os
+import sys
 import orjson
 import gettext
 
+from pathlib import Path
 from orjson import JSONDecodeError
 
 from .log import log
@@ -142,7 +144,12 @@ def get_folder(path) -> list[str]:
         return dirs
     
 language = read_json_file("config.json").get("language", "zh_CN")
-t = gettext.translation('sra', 'locale', [language])
+if getattr(sys, 'frozen', None):
+    dir = sys._MEIPASS
+else:
+    dir = Path()
+locale_path = os.path.join(dir, "locale")
+t = gettext.translation('sra', locale_path, [language])
 _ = t.gettext
 
 def add_key_value(dictionary, key, value, position):

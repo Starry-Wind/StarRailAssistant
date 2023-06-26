@@ -1,3 +1,12 @@
+"""
+Usage:
+    Honkai_Star_Rail.py -h | --help
+    Honkai_Star_Rail.py [--map=<value>]
+
+Options:
+  -h --help                     显示帮助信息
+  --map=<value>                 地图编号，可选
+"""
 import os
 import traceback
 import time
@@ -6,8 +15,9 @@ import asyncio
 import questionary
 import importlib
 import tqdm
+
+from docopt import docopt
 from questionary import ValidationError
-from httpx import ReadTimeout, ConnectError, ConnectTimeout
 from pluggy import PluginManager
 
 from get_width import get_width
@@ -25,6 +35,8 @@ from utils.adb import ADB
 game_title = _("崩坏：星穹铁道")
 plugins_path = "plugins"
 plugin_manager = PluginManager("SRA")
+
+args = docopt(__doc__) # 命令行快捷参数
 
 class SRA:
     def __init__(self) -> None:
@@ -262,10 +274,15 @@ class SRA:
             for up_data in list(up_data.values()):
                 update_file().update_file_main(**up_data)
 
-    def main(self, option:str=_('大世界'),platform="PC",start=None,role_list=None):
+    def main(self, option:str=_('大世界'),platform="PC",start: str=None,role_list: str=None):
+        """
+        参数:
+            :param start: 起始地图编号
+            :param role_list: 提示
+        """
         order = read_json_file(CONFIG_FILE_NAME, False).get('adb', "")
         adb_path = read_json_file(CONFIG_FILE_NAME, False).get('adb_path', "temp\\adb\\adb")
-        start, role_list = self.choose_map(option, platform)
+        start, role_list = self.choose_map(option, platform) if not start else start, role_list
         if start:
             if platform == "PC":
                 log.info(_("脚本将自动切换至游戏窗口，请保持游戏窗口激活"))
@@ -325,8 +342,9 @@ if __name__ == "__main__":
                     else:
                         if questionary.select(_("请问要退出脚本吗？"), [_("退出"), _("返回主菜单")]).ask() == _("返回主菜单"):
                             select()
-            select()
-            #sra.end()
+            serial_map = args.get("--map") if args.get("map") != "default" else "1-1_1" # 地图编号
+            select() if not serial_map else sra.main(start=serial_map)
+            sra.end()
     except KeyboardInterrupt:
         log.error(_("监控到退出"))
     except Exception:
