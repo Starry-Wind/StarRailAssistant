@@ -9,7 +9,7 @@
   },
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "9f3daa5c08ac05affd1e62905a82d507"
+    "hash": "90a2accaa3989e4d6853e2ddde390275"
   },
   {
     "path": "get_width.py",
@@ -36,8 +36,16 @@
     "hash": "d661b811419ff7dde7eb8543690cdd2b"
   },
   {
+    "path": "model/cnstd/2.2/ppocr/en_PP-OCRv3_rec_infer.onnx",
+    "hash": "003da6ca16cae88c5270882fc5e7417b"
+  },
+  {
     "path": "model/cnocr/1.2/ppocr/ch_PP-OCRv3_det_infer.onnx",
     "hash": "5732f8c84bd4cc0dab35094e7260f080"
+  },
+  {
+    "path": "model/cnocr/1.2/ppocr/en_PP-OCRv3_det_infer.onnx",
+    "hash": "72708a3ac241e25fefbc606832dc7529"
   },
   {
     "path": "whl/cnstd-1.2.2-py3-none-any.whl",
@@ -65,11 +73,11 @@
   },
   {
     "path": "utils/cv_tools.py",
-    "hash": "6832956ff665af8bcda627a168bd033a"
+    "hash": "2e81fd5270273728eb6ee1e7b33dcfdb"
   },
   {
     "path": "utils/calculated.py",
-    "hash": "320ed44394d0ad39453e43fe7a449e67"
+    "hash": "f536873e25d9dfac3cb29065972cb170"
   },
   {
     "path": "utils/exceptions.py",
