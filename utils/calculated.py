@@ -2,6 +2,8 @@
 系统控制项，以及玩家控制
 """
 import re
+import os
+import sys
 import time
 import win32api
 import itertools
@@ -11,6 +13,7 @@ import pygetwindow as gw
 
 from cnocr import CnOcr
 from datetime import datetime
+from pathlib import Path
 from PIL import ImageGrab, Image
 from pynput import mouse
 from pynput.mouse import Controller as MouseController
@@ -43,7 +46,11 @@ class calculated:
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
         if start:
-            self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnocr", rec_root="./model/cnstd") if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnocr", rec_root="./model/cnstd", cand_alphabet='0123456789')
+            if getattr(sys, 'frozen', None):
+                dir = sys._MEIPASS
+            else:
+                dir = Path()
+            self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root=os.path.join(dir, "model/cnocr"), rec_root=os.path.join(dir, "model/cnstd")) if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnocr", rec_root="./model/cnstd", cand_alphabet='0123456789')
             #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
         self.check_list = lambda x,y: re.match(x, str(y)) != None
         self.compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
@@ -293,8 +300,11 @@ class calculated:
             elif "map" in temp_name:
                 log.info(_("选择地图"))
             if "map" not in temp_name:
-                self.ocr_click(temp_ocr[temp_name])
+                result = self.ocr_click(temp_ocr[temp_name])
                 while True:
+                    if not result:
+                        log.info(_("使用图片识别兜底"))
+                        break
                     if not self.is_blackscreen():
                         break
             elif "point" in temp_name:
