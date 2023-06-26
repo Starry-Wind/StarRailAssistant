@@ -280,7 +280,7 @@ class SRA:
             :param start: 起始地图编号
             :param role_list: 提示
         """
-        start, role_list = self.choose_map(option) if not start else start, role_list
+        (start, role_list) = self.choose_map(option) if not start else (start, role_list)
         if start:
             log.info(_("脚本将自动切换至游戏窗口，请保持游戏窗口激活"))
             calculated(game_title, "PC", start=False).switch_window()
