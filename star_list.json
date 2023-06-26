@@ -17,7 +17,7 @@
   },
   {
     "path": "requirements.txt",
-    "hash": "364fdafc064c46a8dddf127e7f4ab53c"
+    "hash": "a412c398c6e7105be2c79cdabff14f11"
   },
   {
     "path": "README_EN.md",
@@ -29,7 +29,11 @@
   },
   {
     "path": "gui.py",
-    "hash": "f5761c2d39afa954bf512545fea2e992"
+    "hash": "b1792e5253ebc19babd45cec36c37708"
+  },
+  {
+    "path": "model/label_cn.txt",
+    "hash": "e3f7c9400f4379e05cadbbc8a43dda45"
   },
   {
     "path": "model/cnstd/2.2/densenet_lite_114-fc/cnocr-v2.2-densenet_lite_114-fc-epoch=037-complete_match_epoch=0.7859-model.onnx",
@@ -77,7 +81,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "f536873e25d9dfac3cb29065972cb170"
+    "hash": "3c1d0223b7934fd0abd3c839476bd698"
   },
   {
     "path": "utils/exceptions.py",
