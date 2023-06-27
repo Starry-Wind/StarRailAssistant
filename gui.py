@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-26 22:28:02
+LastEditTime: 2023-06-27 20:49:50
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -283,7 +283,7 @@ def page_main(page: ft.Page):
         language_dict = {
             "简体中文": "zh_CN",
             "繁體中文": "zh_TC",
-            #"English": "EN"
+            "English": "EN"
         }
         language = config.get("language", "")
         language = list(filter(lambda key: language_dict[key] == language, language_dict))[0]

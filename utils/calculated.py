@@ -24,7 +24,7 @@ from .config import read_json_file, CONFIG_FILE_NAME, get_file, _
 from .exceptions import Exception
 from .log import log
 from .adb import ADB
-from .cv_tools import show_img, find_best_match
+from .cv_tools import show_img, find_best_match, match_scaled
 from .exceptions import Exception
 
 class calculated:
@@ -68,7 +68,7 @@ class calculated:
         self.finish = cv.imread("./temp/pc/finish_fighting.jpg")
         self.auto = cv.imread("./temp/pc/auto.jpg")
 
-        self.end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
+        self.end_list = ["Tab", _("轮盘"), _("唤起鼠标"), _("手机"), _("退出")]
 
     def Click(self, points = None):
         """
@@ -146,7 +146,7 @@ class calculated:
         time.sleep(0.5)
         self.mouse.release(mouse.Button.left)
 
-    def ocr_click(self, characters, overtime = 10, frequency = 1):
+    def ocr_click(self, characters, overtime = 10, frequency = 1, points = (0, 0, 0, 0)):
         """
         说明：
             点击文字坐标
@@ -157,11 +157,12 @@ class calculated:
         for i in range(frequency):
             start_time = time.time()
             while True:
-                img_fp, left, top, __, __, __, __ = self.take_screenshot()
-                __, pos = self.ocr_pos(img_fp, characters)
+                #img_fp, left, top, __, __, __, __ = self.take_screenshot()
+                #show_img(img_fp)
+                __, pos = self.ocr_pos(characters, points)
                 log.info(characters)
                 if pos:
-                    self.Click((left+pos[0], top+pos[1]))
+                    self.Click(pos)
                     return True
                 if time.time() - start_time > overtime:
                     log.info(_("识别超时"))
@@ -254,8 +255,11 @@ class calculated:
         temp_name = target_path.split("\\")[-1].split(".")[0]
         join = False # 强制进行传统模板匹配
         temp_ocr = {
-            "orientation_1": _("星轨航图"),
-            #"orientation_2": _("空间站「黑塔"),
+            "orientation_1": {
+                "name": _("星轨航图"),
+                "points": (77, 11, 92, 15)
+            },
+            #"orientation_2": (18, 50), #  _("空间站「黑塔")
             "map_1": _("基座舱段"),
             "map_1_point" : [(593, 346),(593, 556)],
             "transfer": _("传送"),
@@ -263,7 +267,11 @@ class calculated:
             "map_1-2_point_2": [(700, 346),(600, 346)],
             "map_1-3": _("支援舱段"),
             "map_1-3_point_1": [(593, 346),(700, 346)],
-            #"orientation_3": _("雅利洛-VI"),
+            "map_1-3_point_2": {
+                "name": _("电力室"),
+                "points": (40, 67, 63, 79)
+            },
+            #"orientation_3": (52, 23), # _("雅利洛-VI")
             "map_2-1": _("城郊雪原"),
             "map_2-2": _("边缘通路"),
             "map_2-3": _("残响回廊"),
@@ -276,7 +284,7 @@ class calculated:
             "map_2-5_point_3": _("俯瞰点"),
             "map_2-6": _("铆钉镇"),
             "map_2-7": _("机械聚落"),
-            #"orientation_4": _("仙舟「罗浮"),
+            #"orientation_4": (79, 80), # _("仙舟「罗浮")
             "map_3-1": _("流云渡"),
             "map_3-1_point_1" : [(593, 346),(593, 556)],
             "map_3-1_point_2":[(593, 500),(593, 400)],
@@ -300,10 +308,17 @@ class calculated:
             elif "map" in temp_name:
                 log.info(_("选择地图"))
             if "map" not in temp_name:
-                result = self.ocr_click(temp_ocr[temp_name])
+                if type(temp_ocr[temp_name]) == dict:
+                    result = self.ocr_click(temp_ocr[temp_name]["name"], points=temp_ocr[temp_name]["points"])
+                elif type(temp_ocr[temp_name]) == tuple:
+                    self.Relative_click(temp_ocr[temp_name])
+                    result = True
+                else:
+                    result = self.ocr_click(temp_ocr[temp_name])
                 while True:
                     if not result:
                         log.info(_("使用图片识别兜底"))
+                        join = True
                         break
                     if not self.is_blackscreen():
                         break
@@ -311,24 +326,29 @@ class calculated:
                 target = cv.imread(target_path)
                 start_time = time.time()
                 while True:
-                    result = self.scan_screenshot(target)
-                    if result["max_val"] > threshold:
-                        #points = self.calculated(result, target.shape)
-                        self.Click(result["max_loc"])
-                        break
-                    if flag == False:
-                        break
-                    if time.time() - start_time > 5:
-                            log.info(_("传送锚点识别超时"))
-                            join = True
-                            break                           
-                    time.sleep(0.5)
+                    if type(temp_ocr[temp_name]) == dict:
+                        result = self.ocr_click(temp_ocr[temp_name]["name"], points=temp_ocr[temp_name]["points"])
+                        if result:
+                            break
+                    else:
+                        result = self.scan_screenshot(target)
+                        if result["max_val"] > threshold:
+                            #points = self.calculated(result, target.shape)
+                            self.Click(result["max_loc"])
+                            break
+                        if flag == False:
+                            break
+                        if time.time() - start_time > 5:
+                                log.info(_("传送锚点识别超时"))
+                                join = True
+                                break                           
+                        time.sleep(0.5)
             else:
                 if type(temp_ocr[temp_name]) == str:
                     start_time = time.time()
                     first_timeout = True
                     while True:
-                        ocr_data = self.part_ocr((77,20,85,97))
+                        ocr_data = self.part_ocr((77,20,95,97))
                         log.debug(temp_ocr[temp_name])
                         check_dict = list(filter(lambda x: re.match(f'.*{temp_ocr[temp_name]}.*', x) != None, list(ocr_data.keys())))
                         pos = ocr_data.get(check_dict[0], None) if check_dict else None
@@ -599,7 +619,7 @@ class calculated:
         screenshot = cv.cvtColor(self.take_screenshot()[0], cv.COLOR_BGR2GRAY)
         return cv.mean(screenshot)[0] < threshold
 
-    def ocr_pos(self,img_fp: Image, characters:str = None):
+    def ocr_pos(self, characters:str = None, points = (0,0,0,0)):
         """
         说明：
             获取指定文字的坐标
@@ -609,14 +629,17 @@ class calculated:
             :return text: 文字
             :return pos: 坐标
         """
-        out = self.ocr.ocr(img_fp)
-        data = {i['text']: i['position'] for i in out}
+        #img_fp = self.take_screenshot(points)
+        #out = self.ocr.ocr(img_fp)
+        #data = {i['text']: i['position'] for i in out}
+        data = self.part_ocr_other(points)
         log.debug(data)
         if not characters:
             characters = list(data.keys())[0]
         check_list = list(filter(lambda x: re.match(f'.*{characters}.*', x) != None, list(data.keys())))
         characters = check_list[0] if check_list else None
-        pos = ((data[characters][2][0]+data[characters][0][0])/2, (data[characters][2][1]+data[characters][0][1])/2) if characters in data else None
+        #pos = ((data[characters][2][0]+data[characters][0][0])/2, (data[characters][2][1]+data[characters][0][1])/2) if characters in data else None
+        pos = data[characters] if characters in data else None
         return characters, pos
     
     def part_ocr(self,points = (0,0,0,0), debug=False):
@@ -663,7 +686,7 @@ class calculated:
             show_img(img_fp)
         x, y = width/100*points[0], length/100*points[1]
         out = self.ocr.ocr(img_fp)
-        data = {i['text']: (int(left+x+i['position'][0][0]),int(top+y+i['position'][0][1])) for i in out}
+        data = {i['text']: (int(left+x+(i['position'][2][0]+i['position'][0][0])/2),int(top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
         log.debug(data)
         return data
 
@@ -819,11 +842,13 @@ class calculated:
                 "支援舱段": 3
             }
             map_id = map_name2id.get(map_name, 1) if not map_id else map_id
-            img = cv.imread(f"./temp/maps/{map_id}.png")
+            img = cv.imread(f"./maps/{map_id}.png")
             template = self.take_screenshot((4,8,10,20))[0]
-            __, __, max_loc, length, width = find_best_match(img, template,(100,120,5))
-            cv.rectangle(img, max_loc, (max_loc[0] + width, max_loc[1] + length), (0, 255, 0), 2)
-            show_img(img)
-            return (max_loc[0] + width/2, max_loc[1] + length/2)
+            #__, max_vl, max_loc, length, width = find_best_match(img, template,(100,120,5))
+            max_val, max_loc = match_scaled(img, template,2.09)
+            print(max_val)
+            cv.rectangle(img, max_loc, (max_loc[0] + 100, max_loc[1] + 100), (0, 255, 0), 2)
+            #show_img(img)
+            return (max_loc[0] + 100/2, max_loc[1] + 100/2)
         else:
             return (0, 0)
