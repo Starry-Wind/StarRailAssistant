@@ -45,7 +45,7 @@ class SRA:
             _('大世界'): "",
             _('派遣委托'): "",
             _('更新资源'): "",
-            _('配置参数'): ""
+            _('编辑配置'): ""
         }
         self.option_list = list(self.option_dict.keys())
 
@@ -195,10 +195,6 @@ class SRA:
         importlib.reload(utils.config)
         _ = utils.config._
         ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
-        if "adb" not in read_json_file(CONFIG_FILE_NAME, False):
-            init_config_file(1920, 1080)
-            raise Exception(_("未检测到必要更新，强制更新脚本，请重新运行脚本"))
-
         rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
         # asyncio.run(check_file(ghproxy, "map"))
         # asyncio.run(check_file(ghproxy, "temp"))
@@ -312,9 +308,8 @@ if __name__ == "__main__":
                 if option == _("更新资源"):
                     sra.up_data()
                     raise Exception(_("请重新运行"))
-                elif option == _("配置参数"):
+                elif option == _("编辑配置"):
                     sra.set_config(False)
-                    raise Exception(_("请重新运行"))
                 elif option == None:
                     ...
                 else:
