@@ -195,10 +195,6 @@ class SRA:
         importlib.reload(utils.config)
         _ = utils.config._
         ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
-        if "adb" not in read_json_file(CONFIG_FILE_NAME, False):
-            init_config_file(1920, 1080)
-            raise Exception(_("未检测到必要更新，强制更新脚本，请重新运行脚本"))
-
         rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
         # asyncio.run(check_file(ghproxy, "map"))
         # asyncio.run(check_file(ghproxy, "temp"))
