@@ -1,0 +1,29 @@
+{
+    "name": "大矿区-1",
+    "author": "夜里无星,雪见璃,小明",
+    "start": [
+        {
+            "map": 1
+        },
+        {
+            "temp\\orientation_1.jpg": 1.5
+        },
+        {
+            "temp\\orientation_3.jpg": 1.5
+        },
+        {
+            "temp\\map_2-5.png": 2
+        },
+        {
+            "temp\\map_2-5_point_1.png": 1.5
+        },
+        {
+            "temp\\transfer.jpg": 1.5
+        }
+    ],
+    "map": [
+        {
+            "route": "56-1.png"
+        }
+    ]
+}

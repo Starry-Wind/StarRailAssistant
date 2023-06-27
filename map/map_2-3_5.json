@@ -1,0 +1,20 @@
+{
+  "name": "残响回廊-5",
+  "author": "雪见璃,Starry-Wind,小明",
+  "start": [
+    {
+      "map": 1
+    },
+    {
+      "temp\\map_2-3_point_5.jpg": 1.5
+    },
+    {
+      "temp\\transfer.jpg": 1.5
+    }
+  ],
+  "map": [
+    {
+      "route": "53-4.png"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+    "name": "铆钉镇-2",
+    "author": "夜里无星,小明",
+    "start": [
+        {
+            "map": 1
+        },
+        {
+            "temp\\map_2-6_point_2.png": 1.5
+        },
+        {
+            "temp\\transfer.jpg": 1.5
+        }
+    ],
+    "map": [
+        {
+            "route": "57-1.png"
+        }
+    ]
+}
