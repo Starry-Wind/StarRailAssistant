@@ -24,7 +24,7 @@ from .config import read_json_file, CONFIG_FILE_NAME, get_file, _
 from .exceptions import Exception
 from .log import log
 from .adb import ADB
-from .cv_tools import show_img, find_best_match
+from .cv_tools import show_img
 from .exceptions import Exception
 
 class calculated:
@@ -477,6 +477,16 @@ class calculated:
                     log.info(_("完成自动战斗"))
                     break
             time.sleep(1) # 避免长时间ocr
+
+    def Check_fighting(self):
+         while True:
+                end_str = str(self.part_ocr((20,95,100,100)))
+                if any(substring in end_str for substring in self.end_list):
+                    log.info(_("未在战斗状态"))
+                    break
+                else:
+                    log.info(_("处于战斗状态"))
+                time.sleep(1) # 避免长时间ocr
 
     def Mouse_move(self, x):
         """

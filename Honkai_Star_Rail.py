@@ -152,8 +152,8 @@ class SRA:
                     ms = response.elapsed.total_seconds()
                 except:
                     ms = 999
-                finally:
-                    pbar.update(1)
+                # finally:
+                    # pbar.update(1)
                 url_ms.append(options[index]+f" {ms}ms")
             url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
             option = options[url_ms.index(questionary.select(title, url_ms).ask())]

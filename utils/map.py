@@ -1,5 +1,5 @@
 import time
-
+from utils.cv_tracker import Tracker
 from .calculated import *
 from .config import get_file, read_json_file, modify_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
 from .log import log, fight_log
@@ -48,43 +48,45 @@ class Map:
             log.info(_("执行{map_filename}文件:{map_index}/{map_data2} {map}").format(map_filename=map_filename,map_index=map_index+1,map_data2=len(map_data['map']),map=map))
             key = list(map.keys())[0]
             value = map[key]
-            if key in ["w", "s", "a", "d"]:
-                pos = self.calculated.move(key, value, map_name)
-                if self.DEBUG:
-                    map_data["map"][map_index]["pos"] = pos
-                    log.debug(map_data["map"])
-            elif key == "f":
-                self.calculated.teleport(key, value)
-            elif key == "mouse_move":
-                self.calculated.Mouse_move(value)
-            elif key == "fighting":
-                if value == 1:  # 进战斗
-                    ret = self.calculated.fighting()
-                    if ret == False and map:
-                        fight_log.info(f"执行{map_filename}文件时，识别敌人超时")
-                        fight_data = read_json_file(CONFIG_FILE_NAME).get("fight_data", {})
-                        date_time = datetime.now().strftime("%m%d%H%M")
-                        cv.imwrite(f"logs/image/{map_filename}-{date_time}.jpg",self.calculated.take_screenshot()[0]) #识别超时,截图
-                        if map_filename not in fight_data.get("data", {}):
-                            day_time = datetime.now().strftime('%Y-%m-%d')
-                            if fight_data.get("day_time", 0) != day_time or self.start:
-                                fight_data={
-                                    "data": [],
-                                    "day_time": day_time
-                                }
-                                fight_data["data"].append(map_filename)
-                                self.start = False
-                            else:
-                                fight_data["data"].append(map_filename)
-                                fight_data["day_time"] = day_time
-                            modify_json_file(CONFIG_FILE_NAME, "fight_data", fight_data)
-                elif value == 2:  # 障碍物
-                    self.calculated.Click()
-                    time.sleep(1)
-                else:
-                    raise Exception(_("map数据错误, fighting参数异常:{map_filename}").format(map_filename=map_filename), map)
-            elif key == "scroll":
-                self.calculated.scroll(value)
+            tr = Tracker()
+            tr.run_route(value)
+            # if key in ["w", "s", "a", "d"]:
+            #     pos = self.calculated.move(key, value, map_name)
+            #     if self.DEBUG:
+            #         map_data["map"][map_index]["pos"] = pos
+            #         log.debug(map_data["map"])
+            # elif key == "f":
+            #     self.calculated.teleport(key, value)
+            # elif key == "mouse_move":
+            #     self.calculated.Mouse_move(value)
+            # elif key == "fighting":
+            #     if value == 1:  # 进战斗
+            #         ret = self.calculated.fighting()
+            #         if ret == False and map:
+            #             fight_log.info(f"执行{map_filename}文件时，识别敌人超时")
+            #             fight_data = read_json_file(CONFIG_FILE_NAME).get("fight_data", {})
+            #             date_time = datetime.now().strftime("%m%d%H%M")
+            #             cv.imwrite(f"logs/image/{map_filename}-{date_time}.jpg",self.calculated.take_screenshot()[0]) #识别超时,截图
+            #             if map_filename not in fight_data.get("data", {}):
+            #                 day_time = datetime.now().strftime('%Y-%m-%d')
+            #                 if fight_data.get("day_time", 0) != day_time or self.start:
+            #                     fight_data={
+            #                         "data": [],
+            #                         "day_time": day_time
+            #                     }
+            #                     fight_data["data"].append(map_filename)
+            #                     self.start = False
+            #                 else:
+            #                     fight_data["data"].append(map_filename)
+            #                     fight_data["day_time"] = day_time
+            #                 modify_json_file(CONFIG_FILE_NAME, "fight_data", fight_data)
+            #     elif value == 2:  # 障碍物
+            #         self.calculated.Click()
+            #         time.sleep(1)
+            #     else:
+            #         raise Exception(_("map数据错误, fighting参数异常:{map_filename}").format(map_filename=map_filename), map)
+            # elif key == "scroll":
+            #     self.calculated.scroll(value)
             '''
             else:
                 raise Exception(_("map数据错误,未匹配对应操作:{map_filename}").format(map_filename=map_filename), map)
