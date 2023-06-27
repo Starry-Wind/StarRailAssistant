@@ -228,8 +228,8 @@ class update_file:
                 log.info(_("将在10秒后重试"))
                 await asyncio.sleep(10)
             else:
-                log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
-                raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
+                log.info(_("[资源文件更新]重试次数已达上限，更换代理可能可以解决该问题"))
+                raise Exception(_("[资源文件更新]重试次数已达上限，更换代理可能可以解决该问题"))
 
 
             #shutil.rmtree("..\StarRailAssistant-beta-2.7")
