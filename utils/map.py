@@ -11,8 +11,10 @@ class Map:
         参数: 
             :param platform: 运行设备
         """
-
-        self.calculated = calculated(title)
+        if read_json_file(CONFIG_FILE_NAME).get("language") != "EN":
+            self.calculated = calculated(title)
+        else:
+            self.calculated = calculated(title, det_model_name="en_PP-OCRv3_det", rec_model_name="en_number_mobile_v2.0")
         self.mouse = self.calculated.mouse
         self.keyboard = self.calculated.keyboard
         self.data = read_json_file(CONFIG_FILE_NAME)
