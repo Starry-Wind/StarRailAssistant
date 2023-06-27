@@ -131,7 +131,7 @@ class SRA:
             options = {
                 "简体中文": "zh_CN",
                 "繁體中文": "zh_TC",
-                #"English": "EN"
+                "English": "EN"
             }
             option = questionary.select(title, options).ask()
             modify_json_file(CONFIG_FILE_NAME, "language", options[option])

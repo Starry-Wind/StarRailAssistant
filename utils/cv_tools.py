@@ -2,7 +2,7 @@
 Author: Xe-No
 Date: 2023-05-17 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-26 19:44:15
+LastEditTime: 2023-06-27 17:36:19
 Description: 一些cv工具
 
 Copyright (c) 2023 by Xe-No, All Rights Reserved. 
@@ -30,7 +30,7 @@ def show_img(img, scale=1, title='Image'):
     h, w = img.shape[:2]
     img = cv.resize( img ,(int(w*scale), int(h*scale))  )
     cv.imshow(title, img)
-    cv.waitKey(0)  # 显示图像并等待5秒
+    cv.waitKey(1000)  # 显示图像并等待1秒
     cv.destroyAllWindows()  
 
 def show_imgs(imgs, title='Image'):
@@ -151,6 +151,26 @@ def get_furthest_point(points):
 			max_distance = distance
 			furthest_point = point
 	return furthest_point
+
+def match_scaled(img, template, scale, mask=False):
+    # 返回最大相似度，中心点x、y
+    t0 = time.time()
+    # finish = cv.imread(".imgs/finish_fighting.jpg")
+    # while True:
+    #     result = calculated.scan_screenshot(finish,pos=(0,95,100,100))
+    #     if result["max_val"] > 0.98:
+    #         print("未进入战斗")                       
+    #         break
+
+    resized_template = cv.resize(template, (0,0), fx=scale, fy=scale)
+    if mask ==False:
+        res = cv.matchTemplate(img, resized_template, cv.TM_CCORR_NORMED)
+    else:
+        res = cv.matchTemplate(img, resized_template, cv.TM_CCORR_NORMED, mask=resized_template)
+    min_val, max_val, min_loc, max_loc = cv.minMaxLoc(res)
+    h, w = resized_template.shape[:2]
+    x, y = max_loc[0] + w/2, max_loc[1] + h/2
+    return max_val, (int(x), int(y))
 
 def find_best_match(img, template, scale_range=(140, 170, 1)):
     """
