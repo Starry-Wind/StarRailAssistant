@@ -1,15 +1,15 @@
 [
   {
-    "path": "map_res_list.py",
-    "hash": "2027d7dba3a3e12565621b101a2dc1cb"
-  },
-  {
     "path": "README.md",
-    "hash": "47b58da866ff34f812ef707a66a692f1"
+    "hash": "76c71cca70febc6fadd0391415171d5c"
   },
   {
-    "path": "Honkai_Star_Rail.py",
-    "hash": "3742b21b49115b322736500f02b55a74"
+    "path": "gui.py",
+    "hash": "64aceead68d47ade3bf556e6048b8666"
+  },
+  {
+    "path": "README_CHT.md",
+    "hash": "03fe99bddfc640bb2d83f4a29857147d"
   },
   {
     "path": "get_width.py",
@@ -20,28 +20,80 @@
     "hash": "a412c398c6e7105be2c79cdabff14f11"
   },
   {
+    "path": "Honkai_Star_Rail.py",
+    "hash": "3742b21b49115b322736500f02b55a74"
+  },
+  {
     "path": "README_EN.md",
     "hash": "62cd316b3b5cafca47b24d9647f957ff"
   },
   {
-    "path": "README_CHT.md",
-    "hash": "03fe99bddfc640bb2d83f4a29857147d"
+    "path": "map_res_list.py",
+    "hash": "2027d7dba3a3e12565621b101a2dc1cb"
   },
   {
-    "path": "gui.py",
-    "hash": "64aceead68d47ade3bf556e6048b8666"
+    "path": "utils/adb.py",
+    "hash": "20961effe5eb9e7c6eb71252bf1749db"
+  },
+  {
+    "path": "utils/exceptions.py",
+    "hash": "2fe9316ec5635fe87cfdf70d1c870a32"
+  },
+  {
+    "path": "utils/update_file.py",
+    "hash": "42c5aaddc6c315a11a00de2dc88368b2"
+  },
+  {
+    "path": "utils/config.py",
+    "hash": "a7ac7df25837d7c7af92438fe0ca3a54"
+  },
+  {
+    "path": "utils/record_v7.2.py",
+    "hash": "87ea10e233817032cb3a239c3f85e971"
+  },
+  {
+    "path": "utils/log.py",
+    "hash": "86fba4f616fb3a8d03cf63a88fd60fff"
+  },
+  {
+    "path": "utils/map.py",
+    "hash": "eacb997f3d03d6b8fe12d2240eb77a98"
+  },
+  {
+    "path": "utils/requests.py",
+    "hash": "2960805b0eee0488f5ee70217f8b2964"
+  },
+  {
+    "path": "utils/simulated_universe.py",
+    "hash": "f5e7dc8fb0ad37e29ca0d891b0cdb302"
+  },
+  {
+    "path": "utils/cv_tools.py",
+    "hash": "31fba5dc405a60ec5a05eb08a0d65770"
+  },
+  {
+    "path": "utils/cv_tracker.py",
+    "hash": "bc3ca6ab9bb7a135959303cfc2097fda"
+  },
+  {
+    "path": "utils/calculated.py",
+    "hash": "e88d70866692cd3a789fe7586e3bb676"
+  },
+  {
+    "path": "utils/commission.py",
+    "hash": "4ec1b1563cd95423810d1c38add8566b"
   },
   {
     "path": "model/label_cn.txt",
     "hash": "e3f7c9400f4379e05cadbbc8a43dda45"
   },
   {
-    "path": "model/cnstd/2.2/densenet_lite_134-fc/cnocr-v2.2-densenet_lite_134-fc-epoch=034-complete_match_epoch=0.8376-model.onnx",
-    "hash": "332265c72378b39e83ced6b4e42954c4"
-  },
-  {
     "path": "model/cnstd/2.2/densenet_lite_114-fc/cnocr-v2.2-densenet_lite_114-fc-epoch=037-complete_match_epoch=0.7859-model.onnx",
     "hash": "d661b811419ff7dde7eb8543690cdd2b"
+  },
+  {
+    "path": "model/cnstd/2.2/densenet_lite_134-fc/cnocr-v2.2-densenet_lite_134-fc-epoch=034-complete_match_epoch=0.8376-model.onnx",
+    "hash": "332265c72378b39e83ced6b4e42954c4"
   },
   {
     "path": "model/cnstd/2.2/ppocr/en_number_mobile_v2.0_rec_infer.onnx",
@@ -60,20 +112,8 @@
     "hash": "72708a3ac241e25fefbc606832dc7529"
   },
   {
-    "path": "whl/cnstd-1.2.2-py3-none-any.whl",
-    "hash": "2e700dd1d42f71c71b739bd6afa67a8a"
-  },
-  {
-    "path": "whl/cnocr-2.2.2.3-py3-none-any.whl",
-    "hash": "fff249a0f8c75f5bc4f0f97c95880bd8"
-  },
-  {
-    "path": "whl/Polygon3-3.0.9-cp311-cp311-win_amd64.whl",
-    "hash": "43a2cab179598fdaaa21da76cdaaaafc"
-  },
-  {
-    "path": "whl/Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl",
-    "hash": "0c19795eb68713cde783a434ea636ba9"
+    "path": "locale/zh_CN/LC_MESSAGES/sra.mo",
+    "hash": "0a0ccfe2f4f2da8626fda930bd84ef9c"
   },
   {
     "path": "locale/zh_TC/LC_MESSAGES/sra.mo",
@@ -84,59 +124,19 @@
     "hash": "4c9ed87ca1d8f72de21590de507c9d32"
   },
   {
-    "path": "locale/zh_CN/LC_MESSAGES/sra.mo",
-    "hash": "0a0ccfe2f4f2da8626fda930bd84ef9c"
+    "path": "whl/cnocr-2.2.2.3-py3-none-any.whl",
+    "hash": "fff249a0f8c75f5bc4f0f97c95880bd8"
   },
   {
-    "path": "utils/cv_tools.py",
-    "hash": "31fba5dc405a60ec5a05eb08a0d65770"
+    "path": "whl/Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl",
+    "hash": "0c19795eb68713cde783a434ea636ba9"
   },
   {
-    "path": "utils/calculated.py",
-    "hash": "e88d70866692cd3a789fe7586e3bb676"
+    "path": "whl/Polygon3-3.0.9-cp311-cp311-win_amd64.whl",
+    "hash": "43a2cab179598fdaaa21da76cdaaaafc"
   },
   {
-    "path": "utils/exceptions.py",
-    "hash": "2fe9316ec5635fe87cfdf70d1c870a32"
-  },
-  {
-    "path": "utils/update_file.py",
-    "hash": "42c5aaddc6c315a11a00de2dc88368b2"
-  },
-  {
-    "path": "utils/requests.py",
-    "hash": "2960805b0eee0488f5ee70217f8b2964"
-  },
-  {
-    "path": "utils/simulated_universe.py",
-    "hash": "f5e7dc8fb0ad37e29ca0d891b0cdb302"
-  },
-  {
-    "path": "utils/log.py",
-    "hash": "86fba4f616fb3a8d03cf63a88fd60fff"
-  },
-  {
-    "path": "utils/config.py",
-    "hash": "a7ac7df25837d7c7af92438fe0ca3a54"
-  },
-  {
-    "path": "utils/record_v7.2.py",
-    "hash": "87ea10e233817032cb3a239c3f85e971"
-  },
-  {
-    "path": "utils/adb.py",
-    "hash": "20961effe5eb9e7c6eb71252bf1749db"
-  },
-  {
-    "path": "utils/commission.py",
-    "hash": "4ec1b1563cd95423810d1c38add8566b"
-  },
-  {
-    "path": "utils/map.py",
-    "hash": "eacb997f3d03d6b8fe12d2240eb77a98"
-  },
-  {
-    "path": "utils/cv_tracker.py",
-    "hash": "bc3ca6ab9bb7a135959303cfc2097fda"
+    "path": "whl/cnstd-1.2.2-py3-none-any.whl",
+    "hash": "2e700dd1d42f71c71b739bd6afa67a8a"
   }
 ]
