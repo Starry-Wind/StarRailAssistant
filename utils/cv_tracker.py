@@ -309,6 +309,12 @@ class Tracker():
                 angle = np.rad2deg(theta) 
                 r = np.linalg.norm([dx,dy])  
                 print(f'第{i}次定位，移动时间{dt}，将从{[x,y]}移动到{[tx,ty]}，相对位移{[dx,dy]}，匹配度{max_corr}')
+                if i == 0 or max_corr < 0.3:
+                    pyautogui.keyUp("w")
+                    time.sleep(0.2)
+                    pyautogui.keyDown("w")
+
+
                 if max_corr < 0.1:
                     self.cc.Check_fighting()
                 rc0 = np.linalg.norm([x-ix,y-iy])
@@ -335,7 +341,7 @@ class Tracker():
 
     def find_minimap_enemies(self):
         minimap = ct.take_screenshot([77,88,127,127])    # 77,88,127,127 # 110,110,80,80
-        enemies = ct.find_color_points(minimap, self.bgr_minimap_enemy, max_sq = 6000)
+        enemies = ct.find_color_points(minimap, self.bgr_minimap_enemy, max_sq = 12000)
         total_enemies = enemies
         print(total_enemies)
         return total_enemies
