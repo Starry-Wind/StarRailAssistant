@@ -75,9 +75,10 @@ class Tracker():
         self.arrow_rect = [117,128,47,47]
         # 节省时间，只有需要时才调用load_all_masked_maps
         self.masked_maps = None
-        self.bgr_minimap_enemy = [45,45,233] #红
+        self.bgr_minimap_enemy = [48,48,233] #红
         self.bgr_map_way = [0,255,255]# 黄
         self.bgr_map_start = [255,255,0] # 青
+        self.bgr_map_hunt = [0,42,255] #红
 
 
     def load_all_images(self, prefix, flag=cv.IMREAD_UNCHANGED):
@@ -277,9 +278,9 @@ class Tracker():
             if i ==0:
                 x,y = ix,iy
             if dt >1:
-                if len(self.find_minimap_enemies()):
-                    print("开启寻猎")
-                    self.hunt()
+            #     if len(self.find_minimap_enemies()):
+            #         print("开启寻猎")
+            #         self.hunt()
 
                 img_r = ct.take_screenshot(self.minimap_rect)
                 img_s = ct.get_mask_mk2(img_r)
@@ -287,7 +288,7 @@ class Tracker():
                 check1 = [x,y]
                 if check1 == check2:
                     pyautogui.keyDown("s")
-                    time.sleep(0.5)
+                    time.sleep(1.5)
                     pyautogui.keyUp("s")
                 check2 = check1
 
@@ -308,7 +309,7 @@ class Tracker():
                 angle = np.rad2deg(theta) 
                 r = np.linalg.norm([dx,dy])  
                 print(f'第{i}次定位，移动时间{dt}，将从{[x,y]}移动到{[tx,ty]}，相对位移{[dx,dy]}，匹配度{max_corr}')
-                if max_corr < 10:
+                if max_corr < 0.1:
                     self.cc.Check_fighting()
                 rc0 = np.linalg.norm([x-ix,y-iy])
                 # 将dx,dy做旋转变换，dx_rot为 [当前to目标]在[初始to目标]方向上的投影，小于零说明走过头了，dy_rot则为最小距离，很大说明偏离主轴
@@ -333,14 +334,11 @@ class Tracker():
 
 
     def find_minimap_enemies(self):
-        minimap = ct.take_screenshot([100,110,80,80])    # 77,88,127,127
-        enemies = ct.find_color_points(minimap, self.bgr_minimap_enemy)
-        for i in range(len(enemies)):
-             enemies[i][0] += 5
-             # enemies[0][1] -= 10
-
-        print(enemies)
-        return enemies
+        minimap = ct.take_screenshot([77,88,127,127])    # 77,88,127,127 # 110,110,80,80
+        enemies = ct.find_color_points(minimap, self.bgr_minimap_enemy, max_sq = 6000)
+        total_enemies = enemies
+        print(total_enemies)
+        return total_enemies
 
     def hunt(self):
         # 巡猎模式，小地图上有敌人时触发
@@ -353,6 +351,7 @@ class Tracker():
         while 1:
             enemies = self.find_minimap_enemies()
             if len(enemies) >0:
+                print("找到敌人")
                 _, ne = ct.find_nearest_point(enemies, [cx,cy])
             else:
                 break
@@ -365,11 +364,7 @@ class Tracker():
                 pyautogui.keyUp("w")
                 self.cc.fighting()
                 pyautogui.keyDown("w")
-            elif time.time() - start_time > 10:  # 如果超过10秒
-                pyautogui.keyDown("s")
-                time.sleep(0.5)
-                pyautogui.keyUp("s")
-                start_time = time.time()
+
             self.turn_to(angle, moving=1)
         
 
@@ -591,11 +586,17 @@ class Tracker():
 
         # log.info(r.astype(np.uint8))
         way_points = ct.find_color_points(map_bgr, self.bgr_map_way)
+        hunt_point = ct.find_color_points(map_bgr, self.bgr_map_hunt)
         start_point = ct.find_color_points(map_bgr, self.bgr_map_start)[0]
+        
+
         log.info(way_points)
+        log.info(hunt_point)
         log.info(start_point)
 
+        way_points += hunt_point
 
+        log.info(way_points)
         current_point = start_point
         sorted_points = [start_point]
         while 1:
@@ -624,6 +625,9 @@ class Tracker():
 
                 pyautogui.keyDown('w')
             self.move_to([x0, y0], [x1, y1], map_bgra)
+            if sorted_points[i] in hunt_point:
+                print("开启寻猎")
+                self.hunt()
 
         pyautogui.keyUp('w')
         # 最后检查一遍路线终点有无怪物
