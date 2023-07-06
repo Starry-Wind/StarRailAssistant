@@ -76,7 +76,8 @@ class Tracker():
         # 节省时间，只有需要时才调用load_all_masked_maps
         self.masked_maps = None
         self.bgr_minimap_enemy = [48,48,233] #红
-        self.bgr_map_way = [0,255,255]# 黄
+        self.bgr_map_maxway = [0,255,255]# 黄
+        self.bgr_map_minway = [180,254,254]# 浅黄
         self.bgr_map_start = [255,255,0] # 青
         self.bgr_map_hunt = [0,42,255] #红
 
@@ -287,9 +288,12 @@ class Tracker():
                 print(f'识别前位置{[x,y]}')
                 check1 = [x,y]
                 if check1 == check2:
+                    pyautogui.keyUp('w')
                     pyautogui.keyDown("s")
                     time.sleep(1.5)
                     pyautogui.keyUp("s")
+                    time.sleep(0.05)
+                    pyautogui.keyDown('w')
                 check2 = check1
 
                 print(map_b[y-200:y+200,x-200:x+200].shape)
@@ -306,7 +310,8 @@ class Tracker():
                 y+=dy
                 dx,dy = tx-x, ty-y
                 theta = np.arctan2(dy,dx)
-                angle = np.rad2deg(theta) 
+                angle = np.rad2deg(theta)
+                log.info(angle) 
                 r = np.linalg.norm([dx,dy])  
                 print(f'第{i}次定位，移动时间{dt}，将从{[x,y]}移动到{[tx,ty]}，相对位移{[dx,dy]}，匹配度{max_corr}')
                 if i == 0 or max_corr < 0.3:
@@ -328,7 +333,7 @@ class Tracker():
                     self.turn_to(angle,moving=1)
                     t3 =time.time()
                 print(f'转动时间{t3-t2}')
-                time.sleep(0.01)
+                time.sleep(0.1)
                 # 提前停止转向，避免过度转向
                 if dx_rot < 25:
                     rest_r = max(0,r-2)
@@ -342,9 +347,8 @@ class Tracker():
     def find_minimap_enemies(self):
         minimap = ct.take_screenshot([77,88,127,127])    # 77,88,127,127 # 110,110,80,80
         enemies = ct.find_color_points(minimap, self.bgr_minimap_enemy, max_sq = 12000)
-        total_enemies = enemies
-        print(total_enemies)
-        return total_enemies
+        print(enemies)
+        return enemies
 
     def hunt(self):
         # 巡猎模式，小地图上有敌人时触发
@@ -495,7 +499,7 @@ class Tracker():
             y = -30
         else:
             y = x
-        dx = int(9800 * y * 1295 / 1920 / 180 * 0.4624277456647399)
+        dx = int(9800 * y * 1295 / 1920 / 180 * 0.8701432110701552) # 需要校准
 
         win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, 0)  # 进行视角移动
         time.sleep(0.1)
@@ -504,17 +508,24 @@ class Tracker():
 
 
     def turn_to(self, target_angle,speed_factor=1, n=1, moving=0):
-        # print(f'目标{target_angle}度')
+        print(f'目标{target_angle}度')
         # 非移动状态，
+        # if abs(target_angle) >= 90 and abs(target_angle) <= 150:
+        #     log.info(target_angle)
+        #     pyautogui.keyUp('w')
+        #     moving = 0
+
         if moving == 0:
             pyautogui.press('w')
             time.sleep(0.2)
+            pyautogui.keyDown('w')
         # n为校准次数，至少为1 
         for _ in range(n):
             current_angle = self.get_now_direc() 
             turn_angle = target_angle - current_angle
             turn_angle -= round(turn_angle/360)*360
             self.turn_by(turn_angle,speed_factor)
+
  
 
     def turn_to_precise(self, target_angle, tolerance=4.0, moving=0):
@@ -588,31 +599,42 @@ class Tracker():
         map_bgr = cv.imread(f'{path}{map_index}')
         # self.load_all_masked_maps()
 
-        r = np.sum((map_bgr-self.bgr_map_way)**2,axis=-1)<= 64
+        # r = np.sum((map_bgr-self.bgr_map_way)**2,axis=-1)<= 64
 
         # log.info(r.astype(np.uint8))
-        way_points = ct.find_color_points(map_bgr, self.bgr_map_way)
+        way_points_max = ct.find_color_points(map_bgr, self.bgr_map_maxway)
+        way_points_min = ct.find_color_points(map_bgr, self.bgr_map_minway)
         hunt_point = ct.find_color_points(map_bgr, self.bgr_map_hunt)
         start_point = ct.find_color_points(map_bgr, self.bgr_map_start)[0]
         
 
-        log.info(way_points)
+        log.info(way_points_max)
+        log.info(way_points_min)
         log.info(hunt_point)
         log.info(start_point)
 
-        way_points += hunt_point
+        all_points = hunt_point + way_points_max
 
-        log.info(way_points)
+        log.info(all_points)
         current_point = start_point
         sorted_points = [start_point]
         while 1:
-            i, next_point = ct.find_nearest_point(way_points, current_point)
+            if len(way_points_min) > 0:
+                i, next_point = ct.find_nearest_point(way_points_min, current_point)
+                # way_points_min.pop(i)
+                sorted_points.append(way_points_min.pop(i))
+            else:
+                i, next_point = ct.find_nearest_point(all_points, current_point)
+                sorted_points.append(all_points.pop(i))
+
             log.info(next_point)
 
             current_point = next_point
+
+            # sorted_points.append(all_points.pop(i))
             
-            sorted_points.append(way_points.pop(i))
-            if len(way_points) == 0:
+
+            if len(all_points) == 0:
                 break
 
         log.info(sorted_points)
