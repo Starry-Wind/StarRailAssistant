@@ -165,7 +165,7 @@ class calculated:
                 if pos:
                     self.Click(pos)
                     time.sleep(0.3)
-                    return True
+                    return pos
                 if time.time() - start_time > overtime:
                     log.info(_("识别超时")) if overtime != 0 else None
                     return False
@@ -871,7 +871,9 @@ class calculated:
         ns = int(start_time)
         if -60 < ns - ts <= 60:
             log.info(_("点击月卡"))
-            self.ocr_click(_("今日补给"))
+            pos = self.ocr_click(_("今日补给"))
+            time.sleep(0.5)
+            self.Click(pos)
 
     def get_loc(self, map_name: str="", map_id: int=None):
         """
