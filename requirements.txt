@@ -6,7 +6,7 @@ numpy
 packaging
 protobuf
 sympy
-whl//Polygon3-3.0.9-cp311-cp311-win_amd64.whl
+whl\Polygon3-3.0.9-cp311-cp311-win_amd64.whl
 cnocr>=2.2.2.3
 docopt
 httpx
@@ -23,7 +23,8 @@ questionary
 tqdm
 ultralytics
 xpinyin
-httpx-socks[trio]
+whl\httpx_socks-0.7.7-py3-none-any.whl
 flet
 cryptography
 pluggy
+httpcore==0.17.3

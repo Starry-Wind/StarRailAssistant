@@ -17,8 +17,7 @@ from pathlib import Path
 from PIL import ImageGrab, Image
 from pynput import mouse
 from pynput.mouse import Controller as MouseController
-from pynput.keyboard import Controller as KeyboardController
-from pynput.keyboard import Key
+from pynput.keyboard import Controller as KeyboardController, Key
 from typing import Dict, Optional, Any, Union, Tuple, List, Literal
 from .config import read_json_file, CONFIG_FILE_NAME, get_file, _
 from .exceptions import Exception
@@ -84,6 +83,7 @@ class calculated:
         self.mouse.press(mouse.Button.left)
         time.sleep(0.5)
         self.mouse.release(mouse.Button.left)
+        time.sleep(0.3)
 
     def appoint_click(self, points, appoint_points, hsv = [18, 18, 18]):
         """
@@ -102,7 +102,7 @@ class calculated:
             self.mouse.press(mouse.Button.left)
             time.sleep(0.5)
             self.mouse.release(mouse.Button.left)
-            result = self.get_pix_bgr(appoint_points)
+            result = self.get_pix_r(appoint_points)
             log.debug(result)
             if result == hsv:
                 break
@@ -130,6 +130,7 @@ class calculated:
         self.mouse.press(mouse.Button.left)
         time.sleep(click_time)
         self.mouse.release(mouse.Button.left)
+        time.sleep(0.2)
 
     def img_click(self, points):
         """
@@ -163,28 +164,32 @@ class calculated:
                 log.info(characters)
                 if pos:
                     self.Click(pos)
-                    return True
+                    time.sleep(0.3)
+                    return pos
                 if time.time() - start_time > overtime:
-                    log.info(_("识别超时"))
+                    log.info(_("识别超时")) if overtime != 0 else None
                     return False
+                time.sleep(0.5)
 
     def click_hsv(self, hsv_color, points=(0,0,0,0), offset=(0,0), flag=True, tolerance = 5):
         """
         说明：
             点击指定hsv颜色，允许偏移
         参数：
-            :hsv_color: hsv颜色
-            :points: 百分比截取范围
-            :offset: 坐标偏移
-        返回:
-            :return 坐标
-        """        
-        while 1:
+            :param hsv_color: hsv颜色
+            :param points: 百分比截取范围
+            :param offset: 坐标偏移
+        """
+        start_time = time.time()
+        while True:
+            if time.time() - start_time > 10:
+                log.info(_("识别超时"))
+                return False
             img_fp, left, top, __, __, width, length = self.take_screenshot(points)
-            cv.imwrite('scr.png', img_fp)
+            #cv.imwrite('scr.png', img_fp)
             x, y = left + width/100*points[0], top + length/100*points[1]
             pos = self.hsv2pos(img_fp, hsv_color, tolerance)
-            if pos == None: 
+            if pos == None:
                 time.sleep(0.1)
                 if flag == True:
                     continue
@@ -193,7 +198,7 @@ class calculated:
             ret = [x + pos[0] + offset[0] , y + pos[1] + offset[1] ]
             log.info(_('点击坐标{ret}').format(ret=ret))
             self.Click(ret)
-            return
+            return True
         
     def take_screenshot(self,points=(0,0,0,0)):
         """
@@ -407,7 +412,7 @@ class calculated:
                     break
                 time.sleep(0.5)
 
-    def fighting(self, type: int=0):
+    def fighting(self):
         """
         说明：
             攻击
@@ -463,6 +468,15 @@ class calculated:
                 log.info(_("未发现敌人!"))    
                 return True
             time.sleep(2)
+            self.wait_fight_end()
+
+    def wait_fight_end(self, type=0):
+        """
+        说明:
+            等待战斗结束
+        参数:
+            :param type: 0: 大世界 1:副本
+        """
         #进入战斗
         start_time = time.time()
         if self.data["auto_battle_persistence"] != 1:  #这个设置建议放弃,看了看浪费性能加容易出问题
@@ -487,15 +501,18 @@ class calculated:
                 if any(substring in end_str for substring in self.end_list):
                     log.info(_("完成自动战斗"))
                     break
-                time.sleep(1.0) # 缓冲
-                if time.time() - start_time > 90: # 避免卡死
-                    log.info(_("战斗超时"))
-                    break
             elif type == 1:
-                result = self.part_ocr((6,10,89,88))
-                if "选择祝福" in result:
+                end_str = str(self.part_ocr((32, 85, 56, 89)))
+                if self.ocr_click("退出关卡", overtime=0, points=(32, 85, 42, 89)):
                     log.info(_("完成自动战斗"))
                     break
+                if self.ocr_click("返回忘却之庭", overtime=0, points=(44, 85, 56, 89)):
+                    log.info(_("完成自动战斗"))
+                    break
+            time.sleep(1.0) # 缓冲
+            if time.time() - start_time > 90: # 避免卡死
+                log.info(_("战斗超时"))
+                break
             time.sleep(1) # 避免长时间ocr
 
     def Mouse_move(self, x):
@@ -531,8 +548,9 @@ class calculated:
         loc = self.get_loc(map_name=map_name)
         log.debug(loc)
         self.keyboard.press(com)
-        result = self.get_pix_bgr(pos=(1712, 958))
-        if self.data.get("sprint", False) and (self.compare_lists(result, [120, 160, 180]) or self.compare_lists([200, 200, 200], result)):
+        result = self.get_pix_r(pos=(1712, 958))
+        log.debug(result)
+        if self.data.get("sprint", False) and (self.compare_lists(result, [130, 160, 180]) or self.compare_lists([200, 200, 200], result)):
             time.sleep(0.05)
             log.info("疾跑")
             self.mouse.press(mouse.Button.right)
@@ -610,7 +628,7 @@ class calculated:
             :param clicks 滚动单位，正数为向上滚动
         """
         self.mouse.scroll(0, clicks)
-        time.sleep(0.5)
+        time.sleep(0.1)
 
     def is_blackscreen(self, threshold = 30):
         """
@@ -673,25 +691,29 @@ class calculated:
         """
         return cv.imread(f'{prefix}{path}')
 
-    def part_ocr_other(self,points = (0,0,0,0), debug=False):
+    def part_ocr_other(self,points = (0,0,0,0), debug=False, left=False):
         """
         说明：
             返回图片文字和坐标(相对于桌面的坐标)
         参数：
             :param points: 图像截取范围
+            :param left: 是否返回左上角坐标
         返回:
             :return data: 文字: 坐标(相对于桌面的坐标)
         """
-        img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
+        img_fp, game_left, game_top, _, _, width, length = self.take_screenshot(points)
         if debug:
             show_img(img_fp)
         x, y = width/100*points[0], length/100*points[1]
         out = self.ocr.ocr(img_fp)
-        data = {i['text']: (int(left+x+(i['position'][2][0]+i['position'][0][0])/2),int(top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
+        if left:
+            data = {i['text']: (int(game_left+x+i['position'][0][0]), int(game_top+y+i['position'][0][1])) for i in out}
+        else:
+            data = {i['text']: (int(game_left+x+(i['position'][2][0]+i['position'][0][0])/2),int(game_top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
         log.debug(data)
         return data
 
-    def get_pix_bgr(self, desktop_pos=None, pos=None, points=(0, 0, 0, 0)):
+    def get_pix_r(self, desktop_pos: Union[tuple, None]=None, pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
         """
         说明：
             获取指定坐标的颜色
@@ -699,10 +721,11 @@ class calculated:
             :param desktop_pos: 包含桌面的坐标
             :param pos: 图片的坐标
         返回:
-            :return 三色值
+            :return rgb: 颜色
         """
         img, left, top, __, __, __, __ = self.take_screenshot(points)
         img = np.array(img)
+        HSV=cv.cvtColor(img,cv.COLOR_BGR2HSV)
         if desktop_pos:
             x = int(desktop_pos[0])-int(left)
             y = int(desktop_pos[1])-int(top)
@@ -713,6 +736,30 @@ class calculated:
         blue = img[y, x, 0]
         green = img[y, x, 1]
         red = img[y, x, 2]
+        return [blue,green,red]
+
+    def get_pix_rgb(self, desktop_pos: Union[tuple, None]=None, pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
+        """
+        说明：
+            获取指定坐标的颜色
+        参数：
+            :param desktop_pos: 包含桌面的坐标
+            :param pos: 图片的坐标
+        返回:
+            :return rgb: 颜色
+        """
+        img, left, top, __, __, __, __ = self.take_screenshot(points)
+        HSV=cv.cvtColor(img,cv.COLOR_BGR2HSV)
+        if desktop_pos:
+            x = int(desktop_pos[0])-int(left)
+            y = int(desktop_pos[1])-int(top)
+        elif pos:
+            x = int(pos[0])
+            y = int(pos[1])
+        rgb = HSV[y, x]
+        blue = HSV[y, x, 0]
+        green = HSV[y, x, 1]
+        red = HSV[y, x, 2]
         return [blue,green,red]
 
     def hsv2pos(self, img, color, tolerance = 0):
@@ -736,7 +783,7 @@ class calculated:
     def wait_join(self):
         """
         说明：
-            等待进入地图P
+            等待进入地图
         返回:
             进入地图的时间
         """
@@ -747,7 +794,7 @@ class calculated:
         pc_join = join_time.get("pc", 8)
         mnq_join = join_time.get("mnq", 15)
         while True:
-            result = self.get_pix_bgr(pos=(119, 86))
+            result = self.get_pix_r(pos=(119, 86))
             log.debug(result)
             endtime = time.time() - start_time
             if self.compare_lists([0, 0, 0], result) and self.compare_lists(result, [19, 19, 19]):
@@ -824,7 +871,9 @@ class calculated:
         ns = int(start_time)
         if -60 < ns - ts <= 60:
             log.info(_("点击月卡"))
-            self.ocr_click(_("今日补给"))
+            pos = self.ocr_click(_("今日补给"))
+            time.sleep(0.5)
+            self.Click(pos)
 
     def get_loc(self, map_name: str="", map_id: int=None):
         """

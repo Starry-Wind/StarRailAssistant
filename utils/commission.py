@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-06-08 20:21:02
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-17 23:00:30
+LastEditTime: 2023-07-03 14:49:58
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -52,15 +52,23 @@ class Commission():
             points2 = get_percentile([350,280,350+480,280+600],[1920,1080])
 
             self.calculated.take_screenshot()
-            self.calculated.click_hsv([0,201,212], points=points1, offset=[-20,20], flag=True, tolerance=3)
-            self.calculated.click_hsv([0,201,212], points=points2, offset=[-20,20], flag=True, tolerance=3)
-
+            result = self.calculated.click_hsv([0,201,212], points=points1, offset=[-20,20], flag=True, tolerance=3)
+            if not result:
+                log.info("可能没有任务")
+                return False
+            result = self.calculated.click_hsv([0,201,212], points=points2, offset=[-20,20], flag=True, tolerance=3)
+            if not result:
+                log.info("可能没有任务")
+                return False
             self.calculated.ocr_click(_('领取'), overtime = 100)
             self.calculated.ocr_click(_('再次派遣'), overtime = 100)
             time.sleep(5)
+        return True
+        
     def close(self):
         self.calculated.ocr_click(_('委托'))
         self.calculated.keyboard.press(Key.esc)
         time.sleep(1.5)
         self.calculated.keyboard.press(Key.esc)
         log.info(_("执行完毕"))
+        return True

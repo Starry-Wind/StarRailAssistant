@@ -318,7 +318,7 @@ if __name__ == "__main__":
                     else:
                         if questionary.select(_("请问要退出脚本吗？"), [_("退出"), _("返回主菜单")]).ask() == _("返回主菜单"):
                             select()
-            serial_map = args.get("--map") if args.get("map") != "default" else "1-1_1" # 地图编号
+            serial_map = args.get("--map") if args.get("--map") != "default" else "1-1_1" # 地图编号
             select() if not serial_map else sra.main(start=serial_map)
             sra.end()
     except KeyboardInterrupt:
