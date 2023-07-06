@@ -134,7 +134,7 @@ class update_file:
                     log.info(_("[资源文件更新]获取远程版本失败, 正在重试: {e}").format(e=e))
                 else:
                     log.info(_("[资源文件更新]获取远程版本失败: {e}").format(e=e))
-                log.info(_("将在10秒后重试"))
+                log.info(_("将在10秒后重试，你可能需要设置代理"))
                 await asyncio.sleep(10)
         else:
             log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
@@ -201,7 +201,7 @@ class update_file:
                     log.info(_("[资源文件更新]获取远程版本失败, 正在重试: {e}").format(e=e))
                 else:
                     log.info(_("[资源文件更新]获取远程版本失败: {e}").format(e=e))
-                log.info(_("将在10秒后重试"))
+                log.info(_("将在10秒后重试，你可能需要设置代理"))
                 await asyncio.sleep(10)
         else:
             log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
@@ -225,7 +225,7 @@ class update_file:
                     log.info(_("[资源文件更新]下载压缩包失败, 重试中: BadZipFile"))
                 except BaseException as e:
                     log.info(_("[资源文件更新]下载压缩包失败: {e}").format(e=e))
-                log.info(_("将在10秒后重试"))
+                log.info(_("将在10秒后重试，你可能需要设置代理"))
                 await asyncio.sleep(10)
             else:
                 log.info(_("[资源文件更新]重试次数已达上限，更换代理可能可以解决该问题"))
@@ -245,10 +245,10 @@ class update_file:
                     break
                 except BaseException as e:
                     log.info(_("[资源文件更新]校验文件下载失败: {e}").format(e=e))
-                log.info(_("将在10秒后重试"))
+                log.info(_("将在10秒后重试，你可能需要设置代理"))
                 await asyncio.sleep(10)
             else:
-                log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
+                log.info(_("[资源文件更新]重试次数已达上限，退出程序, 请设置代理"))
                 raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
             
             verify, path = await self.verify_file_hash(map_list, keep_file)
@@ -276,7 +276,7 @@ class update_file:
                             log.info(_("[资源文件更新]获取{name}文件列表失败, 正在重试: {e}").format(name=name, e=e))
                         else:
                             log.info(_("[资源文件更新]获取{name}文件列表失败: {e}").format(name=name, e=e))
-                        log.info(_("将在10秒后重试"))
+                        log.info(_("将在10秒后重试，你可能需要设置代理"))
                         await asyncio.sleep(10)
                 else:
                     log.info(_("[资源文件更新]获取{name}文件列表重试次数已达上限，退出程序").format(name=name, e=e))
