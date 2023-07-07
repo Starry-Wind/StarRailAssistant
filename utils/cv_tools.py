@@ -49,7 +49,7 @@ def take_screenshot(rect, platform="PC", order="127.0.0.1:62001", adb_path="temp
         left, top, right, bottom = window.left, window.top, window.right, window.bottom
         #temp = pyautogui.screenshot(region=rect1)
         #print((rect[0],rect[1],rect[3],rect[2]))
-        temp = ImageGrab.grab((rect[0]+left,rect[1]+top,rect[3]+left,rect[2]+top))
+        temp = ImageGrab.grab((rect[0]+left,rect[1]+top,rect[3]+left,rect[2]+top), all_screens=True)
     elif platform == "模拟器":
         os.system(f"{adb_path} -s {order} shell screencap -p /sdcard/Pictures/screencast.png")
         os.system(f"{adb_path} -s {order} pull /sdcard/Pictures/screencast.png")

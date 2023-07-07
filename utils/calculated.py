@@ -215,7 +215,7 @@ class calculated:
             left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
         else:
             left, top, right, bottom = self.window.left+left_border, self.window.top+up_border, self.window.right-left_border, self.window.bottom-left_border
-        temp = ImageGrab.grab((left, top, right, bottom))
+        temp = ImageGrab.grab((left, top, right, bottom), all_screens=True)
         width, length = temp.size           
         if points != (0,0,0,0):
             #points = (points[0], points[1]+5, points[2], points[3]+5)
