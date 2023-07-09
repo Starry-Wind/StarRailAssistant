@@ -11,6 +11,7 @@ from utils.calculated import calculated
 from utils.get_angle import *
 from utils.route_helper import *
 from utils.log import log
+from .config import get_file, read_json_file, modify_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
 
 # from ray_casting import ray_casting
 # import log
@@ -70,9 +71,9 @@ class Tracker():
         self.result_prefix = 'datas/map_result/'
 
         # self.minimap_rect = [47,58,187,187] # 全尺度，只有圆形部分匹配度较差
-        self.minimap_rect = [77,88,127,127]
-        self.full_minimap_rect = [47,58,187,187]
-        self.arrow_rect = [117,128,47,47]
+        self.minimap_rect = (3,6,11,22) # (77,88,127,127)     
+        self.full_minimap_rect = (47,58,187,187)
+        self.arrow_rect =  (6,3,8,15)# (117,128,47,47)
         # 节省时间，只有需要时才调用load_all_masked_maps
         self.masked_maps = None
         self.bgr_minimap_enemy = [48,48,233] #红
@@ -80,6 +81,12 @@ class Tracker():
         self.bgr_map_minway = [180,254,254]# 浅黄
         self.bgr_map_start = [255,255,0] # 青
         self.bgr_map_hunt = [0,42,255] #红
+
+
+        self.data = read_json_file(CONFIG_FILE_NAME)
+        self.DEBUG = self.data.get("debug", False)
+
+
 
 
     def load_all_images(self, prefix, flag=cv.IMREAD_UNCHANGED):
@@ -134,7 +141,7 @@ class Tracker():
         if img_path:
             img_r = cv.imread(prefix + img_path)
         else:
-            img_r = ct.take_screenshot(self.minimap_rect)
+            img_r, *_ = self.cc.take_screenshot(self.minimap_rect)
         return img_r
 
     def get_minimap_mask(self, mini_r, color_range = np.array([[0,0,180],[360,10,255]]) ):
@@ -234,7 +241,7 @@ class Tracker():
         else:
             time.sleep(1)
             while 1:
-                img_r = ct.take_screenshot(self.minimap_rect)
+                img_r, *_ = self.cc.take_screenshot(self.minimap_rect)
                 [x,y,max_corr] = self.get_coord_by_map2( map_bgra, img_r, scale=2.09)
                 x, y = int(x/2), int(y/2)
                 dr = np.linalg.norm([x1-x,y1-y])
@@ -255,7 +262,7 @@ class Tracker():
     def move_to(self, pos0, pos1, map_bgra, v=24):
         ix, iy = pos0
         tx, ty = pos1
-        img_r = ct.take_screenshot(self.minimap_rect)
+        img_r, *_ = self.cc.take_screenshot(self.minimap_rect)
 
         img_s = ct.get_mask_mk2(img_r)
         map_b = ct.get_mask_mk3(map_bgra)
@@ -283,7 +290,7 @@ class Tracker():
             #         print("开启寻猎")
             #         self.hunt()
 
-                img_r = ct.take_screenshot(self.minimap_rect)
+                img_r, *_ = self.cc.take_screenshot(self.minimap_rect)
                 img_s = ct.get_mask_mk2(img_r)
                 print(f'识别前位置{[x,y]}')
                 check1 = [x,y]
@@ -345,7 +352,7 @@ class Tracker():
 
 
     def find_minimap_enemies(self):
-        minimap = ct.take_screenshot([77,88,127,127])    # 77,88,127,127 # 110,110,80,80
+        minimap, *_ = self.cc.take_screenshot(self.minimap_rect)    # 77,88,127,127 # 110,110,80,80
         enemies = ct.find_color_points(minimap, self.bgr_minimap_enemy, max_sq = 12000)
         print(enemies)
         return enemies
@@ -383,7 +390,7 @@ class Tracker():
         tx, ty = pos
         i = 0
         while 1:
-            img_r = ct.take_screenshot(self.minimap_rect)
+            img_r, *_ = self.cc.take_screenshot(self.minimap_rect)
 
             rect = [x-200,y-200,400,400]
             [x,y,max_corr] = self.get_coord_by_map2( map_bgra, img_r, scale=2.09, rect= rect)
@@ -455,7 +462,7 @@ class Tracker():
     def get_now_direc(self):
         blue = np.array([234, 191, 4])
         arrow = cv.imread("temp\pc\loc_arrow.jpg")
-        loc_tp = ct.take_screenshot(self.arrow_rect)
+        loc_tp, *_ = self.cc.take_screenshot(self.arrow_rect)
         loc_tp[np.sum(np.abs(loc_tp - blue), axis=-1) <= 50] = blue
         loc_tp[np.sum(np.abs(loc_tp - blue), axis=-1) > 0] = [0, 0, 0]
         mx_acc = 0
@@ -594,7 +601,7 @@ class Tracker():
         return scale
 
     def run_route(self, map_index, path= 'maps/'):
-        img_r = ct.take_screenshot(self.minimap_rect)
+        img_r, *_ = self.cc.take_screenshot(self.minimap_rect)
         map_bgra = cv.imread(f'{path}{map_index}', cv.IMREAD_UNCHANGED)
         map_bgr = cv.imread(f'{path}{map_index}')
         # self.load_all_masked_maps()
