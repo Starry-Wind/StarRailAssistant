@@ -83,7 +83,6 @@ class calculated:
         self.mouse.press(mouse.Button.left)
         time.sleep(0.5)
         self.mouse.release(mouse.Button.left)
-        time.sleep(0.3)
 
     def appoint_click(self, points, appoint_points, hsv = [18, 18, 18]):
         """
@@ -130,7 +129,6 @@ class calculated:
         self.mouse.press(mouse.Button.left)
         time.sleep(click_time)
         self.mouse.release(mouse.Button.left)
-        time.sleep(0.2)
 
     def img_click(self, points):
         """
@@ -169,7 +167,6 @@ class calculated:
                 if time.time() - start_time > overtime:
                     log.info(_("识别超时")) if overtime != 0 else None
                     return False
-                time.sleep(0.5)
 
     def click_hsv(self, hsv_color, points=(0,0,0,0), offset=(0,0), flag=True, tolerance = 5):
         """
@@ -215,29 +212,32 @@ class calculated:
             left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
         else:
             left, top, right, bottom = self.window.left+left_border, self.window.top+up_border, self.window.right-left_border, self.window.bottom-left_border
-        temp = ImageGrab.grab((left, top, right, bottom))
-        width, length = temp.size           
+        game_img = ImageGrab.grab((left, top, right, bottom))
+        game_width, game_length = game_img.size
         if points != (0,0,0,0):
             #points = (points[0], points[1]+5, points[2], points[3]+5)
-            temp = temp.crop((width/100*points[0], length/100*points[1], width/100*points[2], length/100*points[3]))
-        screenshot = np.array(temp)
+            game_img = game_img.crop((game_width/100*points[0], game_length/100*points[1], game_width/100*points[2], game_length/100*points[3]))
+        screenshot = np.array(game_img)
         screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
-        return (screenshot, left, top, right, bottom, width, length)
+        return (screenshot, left, top, right, bottom, game_width, game_length)
 
-    def scan_screenshot(self, prepared:np, pos = None) -> dict:
+    def scan_screenshot(self, prepared:np, points = None) -> dict:
         """
         说明：
             比对图片
         参数：
             :param prepared: 比对图片地址
-            :param prepared: 被比对图片地址
+            :param pos: 游戏局部截图的坐标
         """
-        screenshot, left, top, __, __, width, length = self.take_screenshot(pos if pos else (0,0,0,0))
+        screenshot, left, top, __, __, game_width, game_length = self.take_screenshot(points if points else (0,0,0,0))
         result = cv.matchTemplate(screenshot, prepared, cv.TM_CCORR_NORMED)
         length, width, __ = prepared.shape
         length = int(length)
         width = int(width)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+        if points:
+            min_loc = (min_loc[0]+game_width/100*points[0], min_loc[1]+game_length/100*points[1])
+            max_loc = (max_loc[0]+game_width/100*points[0], max_loc[1]+game_length/100*points[1])
         return {
             "screenshot": screenshot,
             "min_val": min_val,
@@ -413,6 +413,23 @@ class calculated:
                 time.sleep(0.5)
 
     def fighting(self):
+        start_time = time.time()
+        if self.has_red((4, 7, 10, 19)):
+            while True:
+                result = self.get_pix_rgb(pos=(1336, 58))
+                log.debug(result)
+                if self.compare_lists([0, 0, 225], result):
+                    self.Click()
+                else:
+                    break
+                if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标，则退出循环
+                    log.info(_("识别超时,此处可能漏怪!"))
+                    return False
+            self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
+            return True
+        return True
+
+    def fighting_old(self):
         """
         说明：
             攻击
@@ -426,23 +443,22 @@ class calculated:
             if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info(_("识别超时,此处可能漏怪!"))
                 return False
-                time.sleep(0.3)
-            if self.scan_screenshot(self.attack,pos=(3.75,5.5,11.6,23))["max_val"] > 0.97: #修改检测机制,精度更高
+            if self.scan_screenshot(self.attack,points=(3.75,5.5,11.6,23))["max_val"] > 0.97: #修改检测机制,精度更高
                 self.Click()
                 time.sleep(0.3)
-                doubt_time = time.time() + 8
+                doubt_time = time.time()
                 log.info(_("监控疑问或警告"))
-                while time.time() < doubt_time:
-                    if self.scan_screenshot(self.doubt,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95 or self.scan_screenshot(self.warn,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95:
+                while time.time() - doubt_time < 8:
+                    if self.scan_screenshot(self.doubt,points=(3.75,5.5,11.6,23))["max_val"] > 0.95 or self.scan_screenshot(self.warn,points=(3.75,5.5,11.6,23))["max_val"] > 0.95:
                         log.info(_("识别到疑问或警告,等待怪物开战或反击"))
                         self.Click()
                         time.sleep(1.5)
                         log.info(_("识别反击"))
-                    result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
+                    result = self.scan_screenshot(self.finish,points=(0,95,100,100))
                     if result["max_val"] < 0.95:
                         break
                     time.sleep(0.1)
-                result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
+                result = self.scan_screenshot(self.finish,points=(0,95,100,100))
                 time.sleep(0.3)
                 if result["max_val"] < 0.95:
                     break
@@ -457,18 +473,19 @@ class calculated:
                         self.Click()
                         time.sleep(1.5)
                         log.info(_("识别反击"))
-                    result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
+                        break
+                    result = self.scan_screenshot(self.finish,points=(0,95,100,100))
                     if result["max_val"] < 0.95:
                         break
                     time.sleep(0.1)
-                result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
+                result = self.scan_screenshot(self.finish,points=(0,95,100,100))
                 time.sleep(0.3)
                 if result["max_val"] < 0.95:
                     break
                 log.info(_("未发现敌人!"))    
                 return True
-            time.sleep(2)
-            self.wait_fight_end()
+        time.sleep(2)
+        self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
 
     def wait_fight_end(self, type=0):
         """
@@ -725,7 +742,6 @@ class calculated:
         """
         img, left, top, __, __, __, __ = self.take_screenshot(points)
         img = np.array(img)
-        HSV=cv.cvtColor(img,cv.COLOR_BGR2HSV)
         if desktop_pos:
             x = int(desktop_pos[0])-int(left)
             y = int(desktop_pos[1])-int(top)
@@ -779,7 +795,31 @@ class calculated:
                 # 色相保持一致
                 if abs(x1[0] - color[0])==0 and abs(x1[1] - color[1])<=tolerance and abs(x1[2] - color[2])<=tolerance:
                     return (index1, index)
-        
+
+    def has_red(self, points=(0,0,0,0)):
+        """
+        说明:
+            判断游戏指定位置是否有红色
+        参数:
+            :param points: 图像截取范围
+        """
+        img = self.take_screenshot(points)[0]
+        hsv_img = cv.cvtColor(img, cv.COLOR_BGR2HSV)
+
+        lower_red = np.array([0, 100, 100])
+        upper_red = np.array([10, 255, 255])
+        upper_red2 = np.array([170, 100, 100])
+        lower_red2 = np.array([180, 255, 255])
+
+        mask1 = cv.inRange(hsv_img, lower_red, upper_red)
+        mask2 = cv.inRange(hsv_img, lower_red2, upper_red2)
+        mask = cv.bitwise_or(mask1, mask2)
+
+        # 统计掩膜中的像素数目
+        red_pixel_count = cv.countNonZero(mask)
+        log.debug(red_pixel_count)
+        return red_pixel_count > 30
+
     def wait_join(self):
         """
         说明：
@@ -794,13 +834,13 @@ class calculated:
         pc_join = join_time.get("pc", 8)
         mnq_join = join_time.get("mnq", 15)
         while True:
-            result = self.get_pix_r(pos=(119, 86))
+            result = self.get_pix_r(pos=(960, 86))
             log.debug(result)
             endtime = time.time() - start_time
             if self.compare_lists([0, 0, 0], result) and self.compare_lists(result, [19, 19, 19]):
-                join1 = True
+                join1 = True # 开始传送
             if self.compare_lists([19, 19, 19], result) and join1:
-                join2 = True
+                join2 = True # 进入地图
             if join1 and join2:
                 log.info(_("已进入地图"))
                 return endtime
@@ -858,7 +898,6 @@ class calculated:
                 log.info(_("完成入画"))
                 break
             time.sleep(1.0) # 缓冲
-
 
     def monthly_pass(self):
         """
