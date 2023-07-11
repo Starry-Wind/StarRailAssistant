@@ -442,8 +442,8 @@ class calculated:
                     if result["max_val"] < 0.95:
                         break
                     time.sleep(0.1)
-                result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
                 time.sleep(0.3)
+                result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
                 if result["max_val"] < 0.95:
                     break
             else:
@@ -467,8 +467,9 @@ class calculated:
                     break
                 log.info(_("未发现敌人!"))    
                 return True
-            time.sleep(2)
-            self.wait_fight_end()
+        time.sleep(2)
+        log.info(_("识别到进入战斗"))
+        self.wait_fight_end()
 
     def wait_fight_end(self, type=0):
         """
