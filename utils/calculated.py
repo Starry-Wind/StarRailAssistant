@@ -116,14 +116,12 @@ class calculated:
         参数：
             :param points: 百分比坐标
         """
-
         scaling = self.data["scaling"]
         left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
         real_width = self.data["real_width"]
         real_height = self.data["real_height"]
-        x, y = int(left + (right - left) / 100 * points[0]), int(
-            top + (bottom - top) / 100 * points[1]
-        )
+        x, y = int(left + (right - left) / 100 * points[0]), \
+                int(top + (bottom - top) / 100 * points[1])
         log.debug((x, y))
         self.mouse.position = (x, y)
         self.mouse.press(mouse.Button.left)
@@ -414,6 +412,7 @@ class calculated:
 
     def fighting(self):
         start_time = time.time()
+        self.Click()
         if self.has_red((4, 7, 10, 19)):
             while True:
                 result = self.get_pix_rgb(pos=(1336, 58))
@@ -422,11 +421,16 @@ class calculated:
                     self.Click()
                 else:
                     break
+                time.sleep(0.1)
                 if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标，则退出循环
                     log.info(_("识别超时,此处可能漏怪!"))
                     return False
-            self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
+            self.wait_fight_end()
             return True
+        time.sleep(0.2)
+        result = self.get_pix_rgb(pos=(1336, 58))
+        if not self.compare_lists([0, 0, 225], result):
+            self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
         return True
 
     def fighting_old(self):
