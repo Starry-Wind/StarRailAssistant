@@ -30,7 +30,7 @@ def show_img(img, scale=1, title='Image'):
     h, w = img.shape[:2]
     img = cv.resize( img ,(int(w*scale), int(h*scale))  )
     cv.imshow(title, img)
-    cv.waitKey(1000)  # 显示图像并等待1秒
+    cv.waitKey(0)  # 显示图像并等待1秒
     cv.destroyAllWindows()  
 
 def show_imgs(imgs, title='Image'):

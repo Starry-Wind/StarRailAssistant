@@ -23,6 +23,9 @@ class Map:
         self.map_list, self.map_list_map = read_maps()
         self.start = True
 
+        if not os.path.exists("logs/image/"):
+            os.makedirs("logs/image/")
+
     def map_init(self):
         # 进行地图初始化，把地图缩小,需要缩小5次
         target = cv.imread(f'./temp/pc/contraction.jpg')
