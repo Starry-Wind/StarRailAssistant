@@ -29,7 +29,7 @@
   },
   {
     "path": "README.md",
-    "hash": "76c71cca70febc6fadd0391415171d5c"
+    "hash": "128cc342a20ff51f35219d18e602c21a"
   },
   {
     "path": "model/label_cn.txt",
@@ -69,7 +69,7 @@
   },
   {
     "path": "utils/cv_tools.py",
-    "hash": "490029e70aca7363c8e26ae4ee1d1df6"
+    "hash": "9d0fa27540022bbf5e04059a66c49f73"
   },
   {
     "path": "utils/log.py",
@@ -97,11 +97,11 @@
   },
   {
     "path": "utils/map.py",
-    "hash": "eacb997f3d03d6b8fe12d2240eb77a98"
+    "hash": "6e9ab4714dba4abe377a885a5c57d6de"
   },
   {
     "path": "utils/calculated.py",
-    "hash": "784b5904e60fc93fea5b8705aa2645f9"
+    "hash": "fcff5aa1cc6b8c40b91fe24b928c8e96"
   },
   {
     "path": "utils/update_file.py",
