@@ -152,7 +152,7 @@ def take_screenshot(points=(0,0,0,0)):
         left, top, right, bottom = window.left, window.top, window.right, window.bottom
     else:
         left, top, right, bottom = window.left+left_border, window.top+up_border, window.right-left_border, window.bottom-left_border
-    temp = ImageGrab.grab((left, top, right, bottom))
+    temp = ImageGrab.grab((left, top, right, bottom), all_screens=True)
     width, length = temp.size
     if points != (0,0,0,0):
         #points = (points[0], points[1]+5, points[2], points[3]+5) if self.platform == _("PC") else points
