@@ -157,7 +157,7 @@ class calculated:
                 #img_fp, left, top, __, __, __, __ = self.take_screenshot()
                 #show_img(img_fp)
                 __, pos = self.ocr_pos(characters, points)
-                log.info(characters)
+                log.debug(characters)
                 if pos:
                     self.Click(pos)
                     time.sleep(0.3)
