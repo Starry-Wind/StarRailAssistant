@@ -157,7 +157,7 @@ class calculated:
                 #img_fp, left, top, __, __, __, __ = self.take_screenshot()
                 #show_img(img_fp)
                 __, pos = self.ocr_pos(characters, points)
-                log.info(characters)
+                log.debug(characters)
                 if pos:
                     self.Click(pos)
                     time.sleep(0.3)
@@ -413,6 +413,7 @@ class calculated:
     def fighting(self):
         start_time = time.time()
         self.Click()
+        time.sleep(0.1)
         if self.has_red((4, 7, 10, 19)):
             while True:
                 result = self.get_pix_rgb(pos=(1336, 58))
@@ -834,18 +835,24 @@ class calculated:
         start_time = time.time()
         join1 = False
         join2 = False
+        block_join1 = False
+        block_join2 = False
         join_time = self.data.get("join_time", {})
         pc_join = join_time.get("pc", 8)
-        mnq_join = join_time.get("mnq", 15)
         while True:
             result = self.get_pix_r(pos=(960, 86))
             log.debug(result)
             endtime = time.time() - start_time
-            if self.compare_lists([0, 0, 0], result) and self.compare_lists(result, [19, 19, 19]):
-                join1 = True # 开始传送
-            if self.compare_lists([19, 19, 19], result) and join1:
-                join2 = True # 进入地图
-            if join1 and join2:
+            if self.compare_lists([255, 255, 116], result):
+                block_join1 = True # 进入地图
+            elif self.compare_lists([0, 0, 0], result) and self.compare_lists(result, [190, 190, 190]) and block_join1:
+                block_join2 = True # 进入地图
+            if not block_join2:
+                if self.compare_lists([0, 0, 0], result) and self.compare_lists(result, [19, 19, 19]):
+                    join1 = True # 开始传送
+                elif self.compare_lists([19, 19, 19], result) and join1:
+                    join2 = True # 进入地图
+            if join1 and join2 or (block_join1 and block_join2):
                 log.info(_("已进入地图"))
                 return endtime
             if endtime > pc_join:
@@ -872,7 +879,6 @@ class calculated:
 
     def open_map(self, open_key):
         while True:
-            start_time = time.time()
             self.keyboard.press(open_key)
             time.sleep(0.3) # 修复地图无法打开的问题
             self.keyboard.release(open_key)
@@ -880,9 +886,6 @@ class calculated:
             map_status = self.part_ocr((3,2,10,10))
             if self.check_list(_(".*导.*"), map_status):
                 log.info(_("进入地图"))
-                break
-            if time.time() - start_time > 10:
-                log.info(_("识别超时"))
                 break
 
     def teleport(self, key, value, threshold=0.95):
