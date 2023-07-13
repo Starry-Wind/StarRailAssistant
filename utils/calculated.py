@@ -813,8 +813,8 @@ class calculated:
 
         lower_red = np.array([0, 100, 100])
         upper_red = np.array([10, 255, 255])
-        upper_red2 = np.array([170, 100, 100])
-        lower_red2 = np.array([180, 255, 255])
+        lower_red2 = np.array([170, 100, 100])
+        upper_red2 = np.array([180, 255, 255])
 
         mask1 = cv.inRange(hsv_img, lower_red, upper_red)
         mask2 = cv.inRange(hsv_img, lower_red2, upper_red2)
@@ -822,7 +822,7 @@ class calculated:
 
         # 统计掩膜中的像素数目
         red_pixel_count = cv.countNonZero(mask)
-        log.debug(red_pixel_count)
+        log.info(red_pixel_count)
         return red_pixel_count > 30
 
     def wait_join(self):
