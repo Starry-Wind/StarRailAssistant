@@ -96,6 +96,7 @@ def find_cluster_points(mask):
     retval, labels, stats, centroids = cv.connectedComponentsWithStats(mask, connectivity=8)
     # 输出每个聚类的中心坐标
     result = []
+    # cv.imwrite('debug/mask.png', mask)
     for i in range(1, len(stats)):
         x = int(stats[i][0] + stats[i][2] / 2)
         y = int(stats[i][1] + stats[i][3] / 2)

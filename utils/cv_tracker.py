@@ -259,7 +259,7 @@ class Tracker():
 
 
 
-    def move_to(self, pos0, pos1, map_bgra, v=24):
+    def move_to(self, pos0, pos1, map_bgra, v=24, blind_mode=0):
         ix, iy = pos0
         tx, ty = pos1
         img_r, *_ = self.cc.take_screenshot(self.minimap_rect)
@@ -283,12 +283,16 @@ class Tracker():
         while 1:
             t1 = time.time()
             dt = t1-t0
+
+            lock_angle = 0 # 是否锁定角度，在人物朝向角度小于某个阈值时，锁定
+
             if i ==0:
                 x,y = ix,iy
             if dt >1:
             #     if len(self.find_minimap_enemies()):
             #         print("开启寻猎")
-            #         self.hunt()
+                self.hunt()
+                # self.passive_hunt()
 
                 img_r, *_ = self.cc.take_screenshot(self.minimap_rect)
                 img_s = ct.get_mask_mk2(img_r)
@@ -317,8 +321,11 @@ class Tracker():
                 y+=dy
                 dx,dy = tx-x, ty-y
                 theta = np.arctan2(dy,dx)
-                angle = np.rad2deg(theta)
-                log.info(angle) 
+                angle = np.rad2deg(theta)  # 人物到目标的方位角
+                direc = self.get_now_direc() # 人物朝向的方位角
+                if abs(angle - direc) < 5:
+                    lock_angle = 1 # 已经对准，直接锁定角度
+
                 r = np.linalg.norm([dx,dy])  
                 print(f'第{i}次定位，移动时间{dt}，将从{[x,y]}移动到{[tx,ty]}，相对位移{[dx,dy]}，匹配度{max_corr}')
                 if i == 0 or max_corr < 0.3:
@@ -333,14 +340,29 @@ class Tracker():
                 # 将dx,dy做旋转变换，dx_rot为 [当前to目标]在[初始to目标]方向上的投影，小于零说明走过头了，dy_rot则为最小距离，很大说明偏离主轴
                 dx_rot = dex01 * dx + dey01 * dy 
                 dy_rot = dey01 * dx - dex01 * dy
+                print(f'人物坐标系下，目标相对位置为{[dx_rot, dy_rot]}')
 
                 # if dy_rot <5 and dx_rot > 0:
-                if 1:
+                if not lock_angle:
                     t2 =time.time()
                     self.turn_to(angle,moving=1)
                     t3 =time.time()
-                print(f'转动时间{t3-t2}')
-                time.sleep(0.1)
+                    print(f'转动时间{t3-t2}')
+                else:
+                    # 锁定角度后，通过左右移动微调
+                    if dy_rot > 5:
+                        pyautogui.press('a')
+                    elif dy_rot < -5:
+                        pyautogui.press('d')
+                    elif blind_mode:
+                        # 盲目模式下，锁定角度之后不再进行任何反馈
+                        rest_r = max(0,r-10)
+                        print(f'只剩路程{r}，只走{rest_r}像素，等待{rest_r/v}秒')
+                        time.sleep(r/v)
+                    time.sleep(0.1)
+
+                
+                time.sleep(0.01)
                 # 提前停止转向，避免过度转向
                 if dx_rot < 25:
                     rest_r = max(0,r-2)
@@ -352,10 +374,33 @@ class Tracker():
 
 
     def find_minimap_enemies(self):
-        minimap, *_ = self.cc.take_screenshot(self.minimap_rect)    # 77,88,127,127 # 110,110,80,80
-        enemies = ct.find_color_points(minimap, self.bgr_minimap_enemy, max_sq = 12000)
-        print(enemies)
-        return enemies
+        minimap = ct.take_screenshot([77,88,127,127])    # 77,88,127,127 # 110,110,80,80
+        hsv = cv.cvtColor(minimap, cv.COLOR_BGR2HSV)
+        h,s,v = cv.split(hsv)
+        mask = ((h < 6 ) | ( h > 175 )) * ( s>0.2*255) * (v>0.7*255) 
+        # mask = (s>0.2*255) * (h>175)
+        mask = np.uint8(mask) *255
+        # print(mask)
+
+        enemies = ct.find_cluster_points(mask)
+        # enemies = ct.find_color_points(minimap, self.bgr_minimap_enemy, max_sq = 12000)
+        total_enemies = enemies
+        print(total_enemies)
+        return total_enemies
+
+
+    def find_tagz(self):
+        above_img = ct.take_screenshot([800,0,400,200])
+        tagz = cv.imread('temp/pc/tagz.jpg')
+
+        res = cv.matchTemplate(above_img, tagz, cv.TM_CCORR_NORMED)
+        min_val, max_val, min_loc, max_loc = cv.minMaxLoc(res)
+        if max_val >0.95:
+            return 1
+        else:
+            return 0
+
+
 
     def hunt(self):
         # 巡猎模式，小地图上有敌人时触发
@@ -365,25 +410,39 @@ class Tracker():
         cx,cy = self.minimap_rect[2] / 2, self.minimap_rect[3] / 2
 
         start_time = time.time()
-        while 1:
-            enemies = self.find_minimap_enemies()
-            if len(enemies) >0:
-                print("找到敌人")
-                _, ne = ct.find_nearest_point(enemies, [cx,cy])
-            else:
-                break
-
-            
-            dx,dy = ne[0] - cx, ne[1] - cy
-            angle, r = ct.cart_to_polar([dx,dy])
-            if r < 30:
-                pyautogui.click()
-                pyautogui.keyUp("w")
-                self.cc.fighting()
-                pyautogui.keyDown("w")
-
-            self.turn_to(angle, moving=1)
         
+        enemies = self.find_minimap_enemies()
+        if len(enemies) >0:
+            print("找到敌人")
+            _, ne = ct.find_nearest_point(enemies, [cx,cy])
+        else:
+            return '没有找到敌人'
+
+        
+        dx,dy = ne[0] - cx, ne[1] - cy
+        angle, r = ct.cart_to_polar([dx,dy])
+        if r < 10:
+            if self.find_tagz():
+                # 离得很近却没有Z，说明隔着墙或者其他异常，直接退出
+                return '异常'
+
+            pyautogui.click()
+            pyautogui.keyUp("w")
+            self.cc.fighting()
+            pyautogui.keyDown("w")
+
+            return '正常'
+
+
+            # self.turn_to(angle, moving=1)
+
+    def passive_hunt(self):
+        # 被动巡猎模式，有z标识时触发
+        if self.find_tagz():
+            self.cc.fighting()
+
+
+
 
     def move_to_st(self, pos, map_bgra):
         
@@ -662,8 +721,10 @@ class Tracker():
             self.move_to([x0, y0], [x1, y1], map_bgra)
             if sorted_points[i] in hunt_point:
                 print("开启寻猎")
+                # self.hunt()
                 self.hunt()
+                time.sleep(0.1)
 
         pyautogui.keyUp('w')
         # 最后检查一遍路线终点有无怪物
-        self.cc.fighting()
+        self.hunt()
