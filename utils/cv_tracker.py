@@ -11,6 +11,7 @@ from utils.calculated import calculated
 from utils.get_angle import *
 from utils.route_helper import *
 from utils.log import log
+from .config import get_file, read_json_file, modify_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
 
 # from ray_casting import ray_casting
 # import log
@@ -70,15 +71,22 @@ class Tracker():
         self.result_prefix = 'datas/map_result/'
 
         # self.minimap_rect = [47,58,187,187] # 全尺度，只有圆形部分匹配度较差
-        self.minimap_rect = [77,88,127,127]
-        self.full_minimap_rect = [47,58,187,187]
-        self.arrow_rect = [117,128,47,47]
+        self.minimap_rect = (3,6,11,22) # (77,88,127,127)     
+        self.full_minimap_rect = (47,58,187,187)
+        self.arrow_rect =  (6,3,8,15)# (117,128,47,47)
         # 节省时间，只有需要时才调用load_all_masked_maps
         self.masked_maps = None
         self.bgr_minimap_enemy = [48,48,233] #红
-        self.bgr_map_way = [0,255,255]# 黄
+        self.bgr_map_maxway = [0,255,255]# 黄
+        self.bgr_map_minway = [180,254,254]# 浅黄
         self.bgr_map_start = [255,255,0] # 青
         self.bgr_map_hunt = [0,42,255] #红
+
+
+        self.data = read_json_file(CONFIG_FILE_NAME)
+        self.DEBUG = self.data.get("debug", False)
+
+
 
 
     def load_all_images(self, prefix, flag=cv.IMREAD_UNCHANGED):
@@ -133,7 +141,7 @@ class Tracker():
         if img_path:
             img_r = cv.imread(prefix + img_path)
         else:
-            img_r = ct.take_screenshot(self.minimap_rect)
+            img_r, *_ = self.cc.take_screenshot(self.minimap_rect)
         return img_r
 
     def get_minimap_mask(self, mini_r, color_range = np.array([[0,0,180],[360,10,255]]) ):
@@ -233,7 +241,7 @@ class Tracker():
         else:
             time.sleep(1)
             while 1:
-                img_r = ct.take_screenshot(self.minimap_rect)
+                img_r, *_ = self.cc.take_screenshot(self.minimap_rect)
                 [x,y,max_corr] = self.get_coord_by_map2( map_bgra, img_r, scale=2.09)
                 x, y = int(x/2), int(y/2)
                 dr = np.linalg.norm([x1-x,y1-y])
@@ -254,7 +262,7 @@ class Tracker():
     def move_to(self, pos0, pos1, map_bgra, v=24, blind_mode=0):
         ix, iy = pos0
         tx, ty = pos1
-        img_r = ct.take_screenshot(self.minimap_rect)
+        img_r, *_ = self.cc.take_screenshot(self.minimap_rect)
 
         img_s = ct.get_mask_mk2(img_r)
         map_b = ct.get_mask_mk3(map_bgra)
@@ -286,14 +294,17 @@ class Tracker():
                 self.hunt()
                 # self.passive_hunt()
 
-                img_r = ct.take_screenshot(self.minimap_rect)
+                img_r, *_ = self.cc.take_screenshot(self.minimap_rect)
                 img_s = ct.get_mask_mk2(img_r)
                 print(f'识别前位置{[x,y]}')
                 check1 = [x,y]
                 if check1 == check2:
+                    pyautogui.keyUp('w')
                     pyautogui.keyDown("s")
                     time.sleep(1.5)
                     pyautogui.keyUp("s")
+                    time.sleep(0.05)
+                    pyautogui.keyDown('w')
                 check2 = check1
 
                 print(map_b[y-200:y+200,x-200:x+200].shape)
@@ -438,7 +449,7 @@ class Tracker():
         tx, ty = pos
         i = 0
         while 1:
-            img_r = ct.take_screenshot(self.minimap_rect)
+            img_r, *_ = self.cc.take_screenshot(self.minimap_rect)
 
             rect = [x-200,y-200,400,400]
             [x,y,max_corr] = self.get_coord_by_map2( map_bgra, img_r, scale=2.09, rect= rect)
@@ -510,7 +521,7 @@ class Tracker():
     def get_now_direc(self):
         blue = np.array([234, 191, 4])
         arrow = cv.imread("temp\pc\loc_arrow.jpg")
-        loc_tp = ct.take_screenshot(self.arrow_rect)
+        loc_tp, *_ = self.cc.take_screenshot(self.arrow_rect)
         loc_tp[np.sum(np.abs(loc_tp - blue), axis=-1) <= 50] = blue
         loc_tp[np.sum(np.abs(loc_tp - blue), axis=-1) > 0] = [0, 0, 0]
         mx_acc = 0
@@ -554,7 +565,7 @@ class Tracker():
             y = -30
         else:
             y = x
-        dx = int(9800 * y * 1295 / 1920 / 180 * 0.4624277456647399)
+        dx = int(9800 * y * 1295 / 1920 / 180 * 0.8701432110701552) # 需要校准
 
         win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, 0)  # 进行视角移动
         time.sleep(0.1)
@@ -563,17 +574,24 @@ class Tracker():
 
 
     def turn_to(self, target_angle,speed_factor=1, n=1, moving=0):
-        # print(f'目标{target_angle}度')
+        print(f'目标{target_angle}度')
         # 非移动状态，
+        # if abs(target_angle) >= 90 and abs(target_angle) <= 150:
+        #     log.info(target_angle)
+        #     pyautogui.keyUp('w')
+        #     moving = 0
+
         if moving == 0:
             pyautogui.press('w')
             time.sleep(0.2)
+            pyautogui.keyDown('w')
         # n为校准次数，至少为1 
         for _ in range(n):
             current_angle = self.get_now_direc() 
             turn_angle = target_angle - current_angle
             turn_angle -= round(turn_angle/360)*360
             self.turn_by(turn_angle,speed_factor)
+
  
 
     def turn_to_precise(self, target_angle, tolerance=4.0, moving=0):
@@ -642,36 +660,47 @@ class Tracker():
         return scale
 
     def run_route(self, map_index, path= 'maps/'):
-        img_r = ct.take_screenshot(self.minimap_rect)
+        img_r, *_ = self.cc.take_screenshot(self.minimap_rect)
         map_bgra = cv.imread(f'{path}{map_index}', cv.IMREAD_UNCHANGED)
         map_bgr = cv.imread(f'{path}{map_index}')
         # self.load_all_masked_maps()
 
-        r = np.sum((map_bgr-self.bgr_map_way)**2,axis=-1)<= 64
+        # r = np.sum((map_bgr-self.bgr_map_way)**2,axis=-1)<= 64
 
         # log.info(r.astype(np.uint8))
-        way_points = ct.find_color_points(map_bgr, self.bgr_map_way)
+        way_points_max = ct.find_color_points(map_bgr, self.bgr_map_maxway)
+        way_points_min = ct.find_color_points(map_bgr, self.bgr_map_minway)
         hunt_point = ct.find_color_points(map_bgr, self.bgr_map_hunt)
         start_point = ct.find_color_points(map_bgr, self.bgr_map_start)[0]
         
 
-        log.info(way_points)
+        log.info(way_points_max)
+        log.info(way_points_min)
         log.info(hunt_point)
         log.info(start_point)
 
-        way_points += hunt_point
+        all_points = hunt_point + way_points_max
 
-        log.info(way_points)
+        log.info(all_points)
         current_point = start_point
         sorted_points = [start_point]
         while 1:
-            i, next_point = ct.find_nearest_point(way_points, current_point)
+            if len(way_points_min) > 0:
+                i, next_point = ct.find_nearest_point(way_points_min, current_point)
+                # way_points_min.pop(i)
+                sorted_points.append(way_points_min.pop(i))
+            else:
+                i, next_point = ct.find_nearest_point(all_points, current_point)
+                sorted_points.append(all_points.pop(i))
+
             log.info(next_point)
 
             current_point = next_point
+
+            # sorted_points.append(all_points.pop(i))
             
-            sorted_points.append(way_points.pop(i))
-            if len(way_points) == 0:
+
+            if len(all_points) == 0:
                 break
 
         log.info(sorted_points)
