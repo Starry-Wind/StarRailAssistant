@@ -22,7 +22,6 @@ from typing import Dict, Optional, Any, Union, Tuple, List, Literal
 from .config import read_json_file, CONFIG_FILE_NAME, get_file, _
 from .exceptions import Exception
 from .log import log
-from .adb import ADB
 from .cv_tools import show_img, find_best_match, match_scaled
 from .exceptions import Exception
 
@@ -194,7 +193,7 @@ class calculated:
             log.info(_('点击坐标{ret}').format(ret=ret))
             self.Click(ret)
             return True
-        
+
     def take_screenshot(self,points=(0,0,0,0)):
         """
         说明:
@@ -218,6 +217,24 @@ class calculated:
         screenshot = np.array(game_img)
         screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
         return (screenshot, left, top, right, bottom, game_width, game_length)
+
+    def remove_non_white_pixels(self, image):
+        """
+        说明:
+            移除非白色像素
+        参数:
+            :param image: 图像
+        """
+        # 定义白色的HSV范围
+        lower_white = np.array([0, 0, 200], dtype=np.uint8)
+        upper_white = np.array([180, 25, 255], dtype=np.uint8)
+        # 将图像转换为HSV颜色空间
+        hsv_image = cv.cvtColor(image, cv.COLOR_BGR2HSV)
+        # 创建掩膜，将非白色区域设置为黑色
+        mask = cv.inRange(hsv_image, lower_white, upper_white)
+        # 将掩膜应用到原始图像上
+        result = cv.bitwise_and(image, image, mask=mask)
+        return result
 
     def scan_screenshot(self, prepared:np, points = None) -> dict:
         """
@@ -245,7 +262,7 @@ class calculated:
         }
 
     # flag为true一定要找到
-    def click_target(self, target_path: str, threshold, flag:bool=True, check:bool=False):
+    def click_target(self, target_path: str, threshold, flag:bool=True, check:bool=False, map=""):
         """
         说明:
             识别图片并点击
@@ -264,12 +281,9 @@ class calculated:
             },
             #"orientation_2": (18, 50), #  _("空间站「黑塔")
             "map_1": _("基座舱段"),
-            "map_1_point" : [(593, 346),(593, 556)],
             "transfer": _("传送"),
             "map_1-2": _("收容舱段"),
-            "map_1-2_point_2": [(700, 346),(600, 346)],
             "map_1-3": _("支援舱段"),
-            "map_1-3_point_1": [(593, 346),(700, 346)],
             "map_1-3_point_2": {
                 "name": _("电力室"),
                 "points": (40, 67, 63, 79)
@@ -278,30 +292,27 @@ class calculated:
             "map_2-1": _("城郊雪原"),
             "map_2-2": _("边缘通路"),
             "map_2-3": _("残响回廊"),
-            "map_2-3_point_2":[(593, 500),(593, 400)],
-            "map_2-3_point_4":[(593, 500),(593, 400)],
-            "map_2-3_point_5":[(593, 500),(593, 400)],
             "map_2-4": _("永冬岭"),
             "map_2-5": _("大矿区"),
-            "map_2-5_point_1": [(593, 500),(593, 400)],
-            "map_2-5_point_3": _("俯瞰点"),
             "map_2-6": _("铆钉镇"),
             "map_2-7": _("机械聚落"),
             #"orientation_4": (79, 80), # _("仙舟「罗浮")
             "map_3-1": _("流云渡"),
-            "map_3-1_point_1" : [(593, 346),(593, 556)],
-            "map_3-1_point_2":[(593, 500),(593, 400)],
-            "map_3-1_point_3":[(593, 500),(593, 400)],
             "map_3-2": _("迥星港"),
             "map_3-3": _("太卜司"),
-            "map_3-3_point_2":[(593, 500),(693, 400)],
-            "map_3-3_point_4":[(593, 500),(693, 700)],
-            "map_3-3_point_5":[(593, 500),(693, 700)],
             "map_3-4": _("工造司"),
-            "map_3-4_point_1" : [(593, 500),(800, 700)],
-            "map_3-4_point_2":[(593, 500),(593, 400)],
-            "map_3-4_point_3" : [(593, 346),(400, 346)],
         }
+        '''
+        map: 
+            type为str时点击对应文字
+            tyrpe为tuple时点击对应坐标
+        map_*_point:
+            type为dict时在points中点击name
+        其他:
+            type为dict时在points中点击name
+            type为tuple时点击百分比坐标
+            type为str时点击文字
+        '''
         if temp_name in temp_ocr:
             log.info(temp_name)
             if "orientation" in temp_name:
@@ -333,19 +344,6 @@ class calculated:
                         result = self.ocr_click(temp_ocr[temp_name]["name"], points=temp_ocr[temp_name]["points"])
                         if result:
                             break
-                    else:
-                        result = self.scan_screenshot(target)
-                        if result["max_val"] > threshold:
-                            #points = self.calculated(result, target.shape)
-                            self.Click(result["max_loc"])
-                            break
-                        if flag == False:
-                            break
-                        if time.time() - start_time > 5:
-                                log.info(_("传送锚点识别超时"))
-                                join = True
-                                break                           
-                        time.sleep(0.5)
             else:
                 if type(temp_ocr[temp_name]) == str:
                     start_time = time.time()
@@ -372,7 +370,7 @@ class calculated:
 
                         if time.time() - start_time > 15:
                             log.info(_("地图识别超时"))
-                            join = True
+                            # join = True
                             break
                 elif type(temp_ocr[temp_name]) == tuple:
                     self.img_click(temp_ocr[temp_name])
@@ -381,7 +379,7 @@ class calculated:
             target = cv.imread(target_path)
             start_time = time.time()
             first_timeout = True
-            distance_iter = itertools.cycle([200, -200, -200])
+            distance_iter = itertools.cycle([500, -500, -500])
             level_iter = itertools.cycle([(3, 81), (3, 89), (3, 75)])
             while True:
                 result = self.scan_screenshot(target)
@@ -418,7 +416,7 @@ class calculated:
             while True:
                 result = self.get_pix_rgb(pos=(1336, 58))
                 log.debug(result)
-                if self.compare_lists([0, 0, 225], result):
+                if self.compare_lists([0, 0, 222], result) and not self.compare_lists(result, [0, 0, 255]):
                     self.Click()
                 else:
                     break
@@ -430,7 +428,8 @@ class calculated:
             return True
         time.sleep(0.2)
         result = self.get_pix_rgb(pos=(1336, 58))
-        if not self.compare_lists([0, 0, 225], result):
+        log.debug(f"进入战斗取色: {result}")
+        if not self.compare_lists([0, 0, 225], result) and not self.compare_lists(result, [0, 0, 255]):
             self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
         return True
 
@@ -532,7 +531,8 @@ class calculated:
                     log.info(_("完成自动战斗"))
                     break
             time.sleep(1.0) # 缓冲
-            if time.time() - start_time > 90: # 避免卡死
+            fight_time = self.data.get("fight_time", 120)
+            if time.time() - start_time > fight_time: # 避免卡死
                 log.info(_("战斗超时"))
                 break
             time.sleep(1) # 避免长时间ocr
@@ -682,8 +682,8 @@ class calculated:
         #pos = ((data[characters][2][0]+data[characters][0][0])/2, (data[characters][2][1]+data[characters][0][1])/2) if characters in data else None
         pos = data[characters] if characters in data else None
         return characters, pos
-    
-    def part_ocr(self,points = (0,0,0,0), debug=False):
+
+    def part_ocr(self,points = (0,0,0,0), debug=False, only_white=False):
         """
         说明：
             返回图片文字和坐标(相对于图片的坐标)
@@ -693,6 +693,8 @@ class calculated:
             :return data: 文字: 坐标(相对于图片的坐标)
         """
         img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
+        if only_white:
+            img_fp = self.remove_non_white_pixels(img_fp)
         if debug:
             show_img(img_fp)
             cv.imwrite("H://xqtd//xl//test.png",img_fp)
@@ -833,17 +835,20 @@ class calculated:
             进入地图的时间
         """
         start_time = time.time()
+        '''
         join1 = False
         join2 = False
         block_join1 = False
         block_join2 = False
+        '''
         join_time = self.data.get("join_time", {})
         pc_join = join_time.get("pc", 8)
         while True:
+            '''
             result = self.get_pix_r(pos=(960, 86))
-            log.debug(result)
+            log.info(result)
             endtime = time.time() - start_time
-            if self.compare_lists([255, 255, 116], result):
+            if self.compare_lists([222, 222, 116], result):
                 block_join1 = True # 进入地图
             elif self.compare_lists([0, 0, 0], result) and self.compare_lists(result, [190, 190, 190]) and block_join1:
                 block_join2 = True # 进入地图
@@ -853,6 +858,13 @@ class calculated:
                 elif self.compare_lists([19, 19, 19], result) and join1:
                     join2 = True # 进入地图
             if join1 and join2 or (block_join1 and block_join2):
+                log.info(_("已进入地图"))
+                return endtime
+            '''
+            endtime = time.time() - start_time
+            result = self.get_pix_rgb(pos=(1336, 58))
+            log.debug(result)
+            if self.compare_lists([0, 0, 222], result):
                 log.info(_("已进入地图"))
                 return endtime
             if endtime > pc_join:
