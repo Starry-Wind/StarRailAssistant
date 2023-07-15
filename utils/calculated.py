@@ -210,7 +210,9 @@ class calculated:
             left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
         else:
             left, top, right, bottom = self.window.left+left_border, self.window.top+up_border, self.window.right-left_border, self.window.bottom-left_border
-        game_img = ImageGrab.grab((left, top, right, bottom))
+        # log.info(f"{left}, {top}, {right}, {bottom}")
+        game_img = ImageGrab.grab((left, top, right, bottom), all_screens=True)
+        # game_img.save(f"logs/image/image_grab_{int(time.time())}.png", "PNG")
         game_width, game_length = game_img.size
         if points != (0,0,0,0):
             #points = (points[0], points[1]+5, points[2], points[3]+5)
