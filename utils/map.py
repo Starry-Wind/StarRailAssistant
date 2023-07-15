@@ -2,7 +2,7 @@ import time
 
 from .calculated import *
 from .config import get_file, read_json_file, modify_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
-from .log import log, fight_log
+from .log import log, fight_log, set_log
 from .requests import webhook_and_log
 
 class Map:
@@ -100,6 +100,10 @@ class Map:
         log.info((width,length))
         if not (1915<=width<=1925 and 1075<=length<=1085):
             raise Exception(_("错误的PC分辨率，请调整为1920X1080，请不要在群里问怎么调整分辨率，小心被踢！"))
+        roles = self.calculated.part_ocr((88, 27, 92, 57)).keys()
+        log.info(roles)
+        if roles:
+            set_log('-'.join(roles))
         def start_map(self:Map, start, check:bool=False):
             wrong_map = True
             if f'map_{start}.json' in self.map_list:
@@ -111,6 +115,7 @@ class Map:
                 for map in map_list:
                     # 选择地图
                     map = map.split('.')[0]
+                    planet_number=map.split("-")[0]
                     map_data = read_json_file(f"map/{map}.json")
                     name:str = map_data['name']
                     author = map_data['author']
@@ -128,20 +133,30 @@ class Map:
                             self.calculated.open_map(self.open_map)
                             self.map_init()
                         else:
-                            time.sleep(value)
+                            if "orientation" in key:
+                                map_data = {
+                                    "map_1": "空间站",
+                                    "map_2": "雅利洛",
+                                    "map_3": "仙舟"
+                                }
+                                if planet_number in map_data:
+                                    if self.calculated.ocr_pos(map_data[planet_number], (4, 2, 14, 9))[0]:
+                                        continue
+                            else:
+                                time.sleep(value)
                             if check and "point" in key and map.split("_")[-1] != "1":
-                                self.calculated.click_target("temp\\orientation_1.jpg", 0.98)
-                                self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98)
+                                self.calculated.click_target("temp\\orientation_1.jpg", 0.98, map=planet_number)
+                                self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98, map=planet_number)
                                 self.calculated.click_target(key.split("_point")[0], 0.98)
                                 self.calculated.click_target(key, 0.98)
                             elif not check and wrong_map and "point" in key and map.split("_")[-1] != "1":
-                                self.calculated.click_target("temp\\orientation_1.jpg", 0.98)
-                                self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98)
+                                self.calculated.click_target("temp\\orientation_1.jpg", 0.98, map=planet_number)
+                                self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98, map=planet_number)
                                 self.calculated.click_target(key.split("_point")[0], 0.98)
                                 self.calculated.click_target(key, 0.98)
                                 wrong_map = False
                             else:
-                                self.calculated.click_target(key, 0.98)
+                                self.calculated.click_target(key, 0.98, map=planet_number)
                     #time.sleep(3)
                     count = self.calculated.wait_join()
                     log.info(_('地图加载完毕，加载时间为 {count} 秒').format(count=count))
