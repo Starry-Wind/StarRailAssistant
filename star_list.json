@@ -21,7 +21,7 @@
   },
   {
     "path": "get_width.py",
-    "hash": "0f32aae400f9f50117bb2dee7eb0f4c7"
+    "hash": "d3a4eb39449bfef273fd86514a483497"
   },
   {
     "path": "README_CHT.md",
@@ -73,7 +73,7 @@
   },
   {
     "path": "utils/log.py",
-    "hash": "86fba4f616fb3a8d03cf63a88fd60fff"
+    "hash": "2db96be2c3297b0dc6f37c961871dc42"
   },
   {
     "path": "utils/simulated_universe.py",
@@ -97,11 +97,11 @@
   },
   {
     "path": "utils/map.py",
-    "hash": "6e9ab4714dba4abe377a885a5c57d6de"
+    "hash": "cf793f73d18309e8b311c274d4da765e"
   },
   {
     "path": "utils/calculated.py",
-    "hash": "5107b4ad016249721b655742290f9f27"
+    "hash": "ffd85a2e3db0768fb6e46e03f473d6f4"
   },
   {
     "path": "utils/update_file.py",
