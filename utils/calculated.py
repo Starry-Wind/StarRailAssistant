@@ -417,8 +417,8 @@ class calculated:
         if self.has_red((4, 7, 10, 19)):
             while True:
                 result = self.get_pix_rgb(pos=(1336, 58))
-                log.debug(result)
-                if self.compare_lists([0, 0, 222], result) and not self.compare_lists(result, [0, 0, 255]):
+                log.debug(f"进入战斗取色: {result}")
+                if self.compare_lists([0, 0, 222], result) and self.compare_lists(result, [0, 0, 255]):
                     self.Click()
                 else:
                     break
@@ -431,7 +431,7 @@ class calculated:
         time.sleep(0.2)
         result = self.get_pix_rgb(pos=(1336, 58))
         log.debug(f"进入战斗取色: {result}")
-        if not self.compare_lists([0, 0, 225], result) and not self.compare_lists(result, [0, 0, 255]):
+        if not (self.compare_lists([0, 0, 225], result) and self.compare_lists(result, [0, 0, 255])):
             self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
         return True
 
