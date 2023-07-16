@@ -485,7 +485,7 @@ class calculated:
                     log.info(_("未在战斗状态"))
                     break
                 else:
-                    log.info(_("处于战斗状态"))
+                    log.info(_("未知状态,可能遇袭处于战斗状态"))
                 time.sleep(1) # 避免长时间ocr
 
     def Mouse_move(self, x):
