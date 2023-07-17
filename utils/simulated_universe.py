@@ -78,7 +78,7 @@ class Simulated_Universe:
         start_time = time.time()
         while True:
             left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
-            img_fp = ImageGrab.grab((left, top, right, bottom))
+            img_fp = ImageGrab.grab((left, top, right, bottom), all_screens=True)
             text, pos = self.calculated.ocr_pos(img_fp, _("下载初始角色"))
             if pos:
                 self.calculated.Click((left+pos[0], top+pos[1]))
@@ -96,7 +96,7 @@ class Simulated_Universe:
         """
         time.sleep(1)
         left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
-        img_fp = ImageGrab.grab((left, top, right-(right-left)/100*70, bottom))
+        img_fp = ImageGrab.grab((left, top, right-(right-left)/100*70, bottom), all_screens=True)
         start_time = time.time()
         while True:
             for role in roles:
