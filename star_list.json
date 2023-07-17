@@ -5,7 +5,7 @@
   },
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "7243fd192691e7f657f821ea40e4dfb2"
+    "hash": "cadcd06283b68160c99ca71a791482f9"
   },
   {
     "path": "README_EN.md",
@@ -73,7 +73,7 @@
   },
   {
     "path": "utils/log.py",
-    "hash": "2db96be2c3297b0dc6f37c961871dc42"
+    "hash": "76b71a9efcb79996420e23449e73df14"
   },
   {
     "path": "utils/simulated_universe.py",
@@ -105,7 +105,7 @@
   },
   {
     "path": "utils/update_file.py",
-    "hash": "f9cd94b36f2e542a14c6e05968e3c96f"
+    "hash": "1e8cff5d1fd83e8e979a6a9e6d198949"
   },
   {
     "path": "utils/exceptions.py",
