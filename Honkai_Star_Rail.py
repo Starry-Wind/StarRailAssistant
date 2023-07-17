@@ -47,6 +47,44 @@ class SRA:
             _('更新资源'): "",
             _('编辑配置'): ""
         }
+        self.updata_dict = {
+            _("脚本"):{
+                'skip_verify': False,
+                'type': "star",
+                'version': "main",
+                'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/main.zip",
+                'unzip_path': ".",
+                'keep_folder': ['.git', 'logs', 'temp', 'map', 'tmp', 'venv'],
+                'keep_file': ['config.json', 'version.json', 'star_list.json', 'README_CHT.md', 'README.md'],
+                'zip_path': "StarRailAssistant-main/",
+                'name': _("脚本"),
+                'delete_file': False
+            },
+            _("地图"):{
+                'skip_verify': False,
+                'type': "map",
+                'version': "map",
+                'url_zip': "https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/map.zip",
+                'unzip_path': "map",
+                'keep_folder': [],
+                'keep_file': [],
+                'zip_path': "map/",
+                'name': _("地图"),
+                'delete_file': True
+            },
+            _("图片"):{
+                'skip_verify': False,
+                'type': "temp",
+                'version': "map",
+                'url_zip': "https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/temp.zip",
+                'unzip_path': "temp",
+                'keep_folder': [],
+                'keep_file': [],
+                'zip_path': "map/",
+                'name': _("图片"),
+                'delete_file': True
+            },
+        }
         self.option_list = list(self.option_dict.keys())
 
     def run_plugins(self):
@@ -194,63 +232,25 @@ class SRA:
         import utils.config
         importlib.reload(utils.config)
         _ = utils.config._
-        ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
-        rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
         # asyncio.run(check_file(ghproxy, "map"))
         # asyncio.run(check_file(ghproxy, "temp"))
-        up_data = {
-            _("脚本"):{
-                'url_proxy': ghproxy,
-                'raw_proxy': rawghproxy,
-                'skip_verify': False,
-                'type': "star",
-                'version': "main",
-                'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/main.zip",
-                'unzip_path': ".",
-                'keep_folder': ['.git', 'logs', 'temp', 'map', 'tmp', 'venv'],
-                'keep_file': ['config.json', 'version.json', 'star_list.json', 'README_CHT.md', 'README.md'],
-                'zip_path': "StarRailAssistant-main/",
-                'name': _("脚本"),
-                'delete_file': False
-            },
-            _("地图"):{
-                'url_proxy': ghproxy,
-                'raw_proxy': rawghproxy,
-                'skip_verify': False,
-                'type': "map",
-                'version': "map",
-                'url_zip': "https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/map.zip",
-                'unzip_path': "map",
-                'keep_folder': [],
-                'keep_file': [],
-                'zip_path': "map/",
-                'name': _("地图"),
-                'delete_file': True
-            },
-            _("图片"):{
-                'url_proxy': ghproxy,
-                'raw_proxy': rawghproxy,
-                'skip_verify': False,
-                'type': "temp",
-                'version': "map",
-                'url_zip': "https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/temp.zip",
-                'unzip_path': "temp",
-                'keep_folder': [],
-                'keep_file': [],
-                'zip_path': "map/",
-                'name': _("图片"),
-                'delete_file': True
-            },
-        }
+
         title = _("请选择更新项目")
-        options = list(up_data.keys())+[_("全部更新")]
+        options = list(self.updata_dict.keys())+[_("全部更新")]
         option = questionary.select(title, options).ask()
         if option != _("全部更新"):
-            update_file().update_file_main(**up_data[option])
+            update_file().update_file_main(**self.updata_dict[option])
         else:
-            for up_data in list(up_data.values()):
+            for up_data in list(self.updata_dict.values()):
                 update_file().update_file_main(**up_data)
 
+    def is_updata(self):
+        need_updata = []
+        for name, up_data in self.updata_dict.items():
+            if not asyncio.run(update_file().is_latest(type=up_data['type'], version=up_data['version'], is_log=False))[0]:
+                need_updata.append(name)
+        return need_updata
+    
     def main(self, option:str=_('大世界'),start: str=None,role_list: str=None):
         """
         参数:
@@ -302,8 +302,11 @@ if __name__ == "__main__":
             pyuac.runAsAdmin()
         else:
             def select():
-                title = _("请选择运行平台")
-                options = sra.option_dict
+                title = _("请选择运行项目")
+                options = list(sra.option_dict.keys())
+                need_updata = sra.is_updata()
+                if need_updata:
+                    options[options.index(_('更新资源'))] = _("更新资源")+f"({','.join(need_updata)})"
                 option = questionary.select(title, options).ask()
                 if option == _("更新资源"):
                     sra.up_data()
