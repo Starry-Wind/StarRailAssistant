@@ -223,8 +223,34 @@ class update_file:
         elif rm_all:
             sra_config_obj.set_config(key=f"{type}_version", value="0")
 
+<<<<<<< HEAD
         is_latest, remote_version, local_version = await self.is_latest(type, version)
         if not is_latest:
+=======
+        log.info(_("[资源文件更新]正在检查远程版本是否有更新..."))
+
+        for index, __ in enumerate(range(3)):
+            try:
+                remote_version = await get(url_version)
+                remote_version = remote_version.json()["version"]
+                break
+            except BaseException as e:
+                if index < 2:
+                    log.info(_("[资源文件更新]获取远程版本失败, 正在重试: {e}").format(e=e))
+                else:
+                    log.info(_("[资源文件更新]获取远程版本失败: {e}").format(e=e))
+                log.info(_("将在10秒后重试，你可能需要设置代理"))
+                await asyncio.sleep(10)
+        else:
+            log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
+            raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
+
+        log.info(f"[资源文件更新]获取远程版本成功: {remote_version}")
+
+        local_version = read_json_file(CONFIG_FILE_NAME).get(f"{type}_version", "0")
+
+        if remote_version != local_version:
+>>>>>>> origin/main-beta
             if name == _("脚本"):
                 await self.copy_files(Path(), Path() / "StarRailAssistant_backup", ["utils", "temp", "map", "config.json", "get_width.py", "Honkai_Star_Rail.py", "gui.py"])
             log.info(_("[资源文件更新]本地版本与远程版本不符，开始更新资源文件->{url_zip}").format(url_zip=url_zip))

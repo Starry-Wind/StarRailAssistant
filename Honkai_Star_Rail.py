@@ -45,6 +45,7 @@ class SRA:
             _('派遣委托'): "",
             _('更新资源'): "",
             _('编辑配置'): ""
+<<<<<<< HEAD
         }
         self.updata_dict = {
             _("脚本"):{
@@ -83,6 +84,8 @@ class SRA:
                 'name': _("图片"),
                 'delete_file': True
             },
+=======
+>>>>>>> origin/main-beta
         }
         self.option_list = list(self.option_dict.keys())
 
@@ -231,6 +234,11 @@ class SRA:
         import utils.config
         importlib.reload(utils.config)
         _ = utils.config._
+<<<<<<< HEAD
+=======
+        ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
+        rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
+>>>>>>> origin/main-beta
         # asyncio.run(check_file(ghproxy, "map"))
         # asyncio.run(check_file(ghproxy, "temp"))
 

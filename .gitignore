@@ -109,6 +109,8 @@ venv.bak/
 
 # custom 
 logs/
+map/
+maps/
 map_data/
 tmp/
 plugins/
@@ -132,3 +134,4 @@ scr.png
 build.bat
 *.pot
 *.po
+/*.mo

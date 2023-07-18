@@ -11,11 +11,18 @@ class Map:
         参数: 
             :param platform: 运行设备
         """
+<<<<<<< HEAD
         if sra_config_obj.language != "EN":
             self.calculated = calculated(title)
         else:
             self.calculated = calculated(title, det_model_name="en_PP-OCRv3_det", rec_model_name="en_number_mobile_v2.0")
         self.tr = Tracker()
+=======
+        if read_json_file(CONFIG_FILE_NAME).get("language") != "EN":
+            self.calculated = calculated(title)
+        else:
+            self.calculated = calculated(title, det_model_name="en_PP-OCRv3_det", rec_model_name="en_number_mobile_v2.0")
+>>>>>>> origin/main-beta
         self.mouse = self.calculated.mouse
         self.keyboard = self.calculated.keyboard
         self.open_map = sra_config_obj.open_map

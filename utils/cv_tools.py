@@ -14,7 +14,7 @@ import cv2 as cv
 import numpy as np
 import win32gui, win32api, win32con
 import pyautogui
-
+from .log import log
 
 def cart_to_polar(xy):
     x,y = xy
@@ -308,6 +308,26 @@ def sift_match(img1, img2):
     img_match = cv.drawMatches(img1, kp1, img2, kp2, good_matches, None, flags=2)
 
     return img_match
+
+def match_scaled(img, template, scale, mask=False):
+    # 返回最大相似度，中心点x、y
+    t0 = time.time()
+    # finish = cv.imread(".imgs/finish_fighting.jpg")
+    # while True:
+    #     result = calculated.scan_screenshot(finish,pos=(0,95,100,100))
+    #     if result["max_val"] > 0.98:
+    #         print("未进入战斗")                       
+    #         break
+
+    resized_template = cv.resize(template, (0,0), fx=scale, fy=scale)
+    if mask ==False:
+        res = cv.matchTemplate(img, resized_template, cv.TM_CCORR_NORMED)
+    else:
+        res = cv.matchTemplate(img, resized_template, cv.TM_CCORR_NORMED, mask=resized_template)
+    min_val, max_val, min_loc, max_loc = cv.minMaxLoc(res)
+    h, w = resized_template.shape[:2]
+    x, y = max_loc[0] + w/2, max_loc[1] + h/2
+    return max_val, (int(x), int(y))
 
 def match_scaled(img, template, scale, mask=False):
     # 返回最大相似度，中心点x、y

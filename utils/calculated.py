@@ -22,6 +22,10 @@ from typing import Dict, Optional, Any, Union, Tuple, List, Literal
 from .config import sra_config_obj, CONFIG_FILE_NAME, get_file, _
 from .exceptions import Exception
 from .log import log
+<<<<<<< HEAD
+=======
+from .adb import ADB
+>>>>>>> origin/main-beta
 from .cv_tools import show_img, find_best_match, match_scaled
 from .exceptions import Exception
 
@@ -113,7 +117,14 @@ class calculated:
         参数：
             :param points: 百分比坐标
         """
+<<<<<<< HEAD
         left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
+=======
+        scaling = self.data["scaling"]
+        left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
+        real_width = self.data["real_width"]
+        real_height = self.data["real_height"]
+>>>>>>> origin/main-beta
         x, y = int(left + (right - left) / 100 * points[0]), \
                 int(top + (bottom - top) / 100 * points[1])
         log.debug((x, y))
@@ -188,7 +199,11 @@ class calculated:
             log.info(_('点击坐标{ret}').format(ret=ret))
             self.Click(ret)
             return True
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> origin/main-beta
     def take_screenshot(self,points=(0,0,0,0)):
         """
         说明:
@@ -213,6 +228,7 @@ class calculated:
         screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
         return (screenshot, left, top, right, bottom, game_width, game_length)
 
+<<<<<<< HEAD
     def remove_non_white_pixels(self, image):
         """
         说明:
@@ -231,6 +247,8 @@ class calculated:
         result = cv.bitwise_and(image, image, mask=mask)
         return result
 
+=======
+>>>>>>> origin/main-beta
     def scan_screenshot(self, prepared:np, points = None) -> dict:
         """
         说明：
@@ -279,6 +297,10 @@ class calculated:
             "transfer": _("传送"),
             "map_1-2": _("收容舱段"),
             "map_1-3": _("支援舱段"),
+<<<<<<< HEAD
+=======
+            "map_1-3_point_1": [(593, 346),(700, 346)],
+>>>>>>> origin/main-beta
             "map_1-3_point_2": {
                 "name": _("电力室"),
                 "points": (40, 67, 63, 79)
@@ -339,6 +361,22 @@ class calculated:
                         result = self.ocr_click(temp_ocr[temp_name]["name"], points=temp_ocr[temp_name]["points"])
                         if result:
                             break
+<<<<<<< HEAD
+=======
+                    else:
+                        result = self.scan_screenshot(target)
+                        if result["max_val"] > threshold:
+                            #points = self.calculated(result, target.shape)
+                            self.Click(result["max_loc"])
+                            break
+                        if flag == False:
+                            break
+                        if time.time() - start_time > 5:
+                                log.info(_("传送锚点识别超时"))
+                                join = True
+                                break                           
+                        time.sleep(0.5)
+>>>>>>> origin/main-beta
             else:
                 if type(temp_ocr[temp_name]) == str:
                     start_time = time.time()
@@ -409,9 +447,15 @@ class calculated:
         time.sleep(0.1)
         if self.has_red((4, 7, 10, 19)):
             while True:
+<<<<<<< HEAD
                 result = self.get_pix_rgb(pos=(1422, 59))
                 log.debug(f"进入战斗取色: {result}")
                 if self.compare_lists([0, 0, 222], result) and self.compare_lists(result, [0, 0, 255]):
+=======
+                result = self.get_pix_rgb(pos=(1336, 58))
+                log.debug(result)
+                if self.compare_lists([0, 0, 225], result):
+>>>>>>> origin/main-beta
                     self.Click()
                 else:
                     break
@@ -422,6 +466,7 @@ class calculated:
             self.wait_fight_end()
             return True
         time.sleep(0.2)
+<<<<<<< HEAD
         result = self.get_pix_rgb(pos=(1422, 59))
         log.debug(f"进入战斗取色: {result}")
         if not (self.compare_lists([0, 0, 225], result) and self.compare_lists(result, [0, 0, 255])):
@@ -437,6 +482,12 @@ class calculated:
                 else:
                     log.info(_("未知状态,可能遇袭处于战斗状态"))
                 time.sleep(1) # 避免长时间ocr
+=======
+        result = self.get_pix_rgb(pos=(1336, 58))
+        if not self.compare_lists([0, 0, 225], result):
+            self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
+        return True
+>>>>>>> origin/main-beta
 
     def fighting_old(self):
         """
@@ -536,8 +587,12 @@ class calculated:
                     log.info(_("完成自动战斗"))
                     break
             time.sleep(1.0) # 缓冲
+<<<<<<< HEAD
             fight_time = sra_config_obj.fight_time
             if time.time() - start_time > fight_time: # 避免卡死
+=======
+            if time.time() - start_time > 90: # 避免卡死
+>>>>>>> origin/main-beta
                 log.info(_("战斗超时"))
                 break
             time.sleep(1) # 避免长时间ocr
@@ -577,7 +632,11 @@ class calculated:
         self.keyboard.press(com)
         result = self.get_pix_r(pos=(1712, 958))
         log.debug(result)
+<<<<<<< HEAD
         if sra_config_obj.sprint and (self.compare_lists(result, [130, 160, 180]) or self.compare_lists([200, 200, 200], result)):
+=======
+        if self.data.get("sprint", False) and (self.compare_lists(result, [130, 160, 180]) or self.compare_lists([200, 200, 200], result)):
+>>>>>>> origin/main-beta
             time.sleep(0.05)
             log.info("疾跑")
             self.mouse.press(mouse.Button.right)
@@ -820,8 +879,13 @@ class calculated:
 
         lower_red = np.array([0, 100, 100])
         upper_red = np.array([10, 255, 255])
+<<<<<<< HEAD
         lower_red2 = np.array([170, 100, 100])
         upper_red2 = np.array([180, 255, 255])
+=======
+        upper_red2 = np.array([170, 100, 100])
+        lower_red2 = np.array([180, 255, 255])
+>>>>>>> origin/main-beta
 
         mask1 = cv.inRange(hsv_img, lower_red, upper_red)
         mask2 = cv.inRange(hsv_img, lower_red2, upper_red2)
@@ -829,7 +893,11 @@ class calculated:
 
         # 统计掩膜中的像素数目
         red_pixel_count = cv.countNonZero(mask)
+<<<<<<< HEAD
         log.info(red_pixel_count)
+=======
+        log.debug(red_pixel_count)
+>>>>>>> origin/main-beta
         return red_pixel_count > 30
 
     def wait_join(self):
@@ -845,6 +913,7 @@ class calculated:
         join2 = False
         block_join1 = False
         block_join2 = False
+<<<<<<< HEAD
         '''
         join_time = sra_config_obj.join_time
         while True:
@@ -853,6 +922,15 @@ class calculated:
             log.info(result)
             endtime = time.time() - start_time
             if self.compare_lists([222, 222, 116], result):
+=======
+        join_time = self.data.get("join_time", {})
+        pc_join = join_time.get("pc", 8)
+        while True:
+            result = self.get_pix_r(pos=(960, 86))
+            log.debug(result)
+            endtime = time.time() - start_time
+            if self.compare_lists([255, 255, 116], result):
+>>>>>>> origin/main-beta
                 block_join1 = True # 进入地图
             elif self.compare_lists([0, 0, 0], result) and self.compare_lists(result, [190, 190, 190]) and block_join1:
                 block_join2 = True # 进入地图
