@@ -308,6 +308,7 @@ if __name__ == "__main__":
                 if need_updata:
                     options[options.index(_('更新资源'))] = _("更新资源")+f"({','.join(need_updata)})"
                 option = questionary.select(title, options).ask()
+                option = list(sra.option_dict.keys())[options.index(option)]
                 if option == _("更新资源"):
                     sra.up_data()
                     raise Exception(_("请重新运行"))
