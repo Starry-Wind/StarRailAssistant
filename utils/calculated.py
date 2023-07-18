@@ -427,6 +427,16 @@ class calculated:
         if not (self.compare_lists([0, 0, 225], result) and self.compare_lists(result, [0, 0, 255])):
             self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
         return True
+    
+    def Check_fighting(self):
+         while True:
+                end_str = str(self.part_ocr((20,95,100,100)))
+                if any(substring in end_str for substring in self.end_list):
+                    log.info(_("未在战斗状态"))
+                    break
+                else:
+                    log.info(_("未知状态,可能遇袭处于战斗状态"))
+                time.sleep(1) # 避免长时间ocr
 
     def fighting_old(self):
         """
