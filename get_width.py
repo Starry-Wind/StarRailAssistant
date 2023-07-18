@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-23 17:39:27
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-19 22:03:54
+LastEditTime: 2023-07-14 22:44:33
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -11,7 +11,7 @@ import ctypes
 import pygetwindow as gw
 from PIL import ImageGrab
 
-from utils.config import init_config_file, modify_json_file, normalize_file_path, CONFIG_FILE_NAME
+from utils.config import sra_config_obj, normalize_file_path, CONFIG_FILE_NAME
 from utils.log import log
 
 
@@ -50,14 +50,13 @@ def get_width(title):
     up_border = (real_height*scaling-1080)-left_border
     real_width1 = 1920
     real_height1 = 1080
-    if not normalize_file_path(CONFIG_FILE_NAME):
-        init_config_file(real_width=real_width1, real_height=real_height1)
 
     log.info(f"Real resolution: {real_width} x {real_height} x {scaling} x {borderless}")
 
-    modify_json_file(CONFIG_FILE_NAME, "real_width", real_width1)
-    modify_json_file(CONFIG_FILE_NAME, "real_height", real_height1)
-    modify_json_file(CONFIG_FILE_NAME, "scaling", scaling)
-    modify_json_file(CONFIG_FILE_NAME, "borderless", borderless)
-    modify_json_file(CONFIG_FILE_NAME, "left_border", left_border)
-    modify_json_file(CONFIG_FILE_NAME, "up_border", up_border)
+    sra_config_obj.real_width = real_width1
+    sra_config_obj.real_height = real_height1
+    sra_config_obj.scaling = scaling
+    sra_config_obj.borderless = borderless
+    sra_config_obj.left_border = left_border
+    sra_config_obj.up_border = up_border
+    

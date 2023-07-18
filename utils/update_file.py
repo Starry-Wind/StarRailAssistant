@@ -23,7 +23,7 @@ from typing import Dict, Optional, Any, Union, Tuple, List
 from .log import log
 from .requests import *
 from .exceptions import Exception
-from .config import normalize_file_path, modify_json_file, read_json_file, get_file, CONFIG_FILE_NAME, _
+from .config import normalize_file_path, sra_config_obj, get_file, CONFIG_FILE_NAME, _
 
 tmp_dir = "tmp"
 
@@ -37,7 +37,6 @@ class update_file:
         """
         self.page = page
         self.pb = pb
-        self.data = read_json_file(CONFIG_FILE_NAME)
 
     async def verify_file_hash(self, json_path: Path, keep_file: Optional[List[str]] = []) -> bool:
         """
@@ -151,10 +150,10 @@ class update_file:
             :param raw_proxy: 代理
             :param version: 版本验证地址/仓库分支名称 map
         """
-        raw_proxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
+        raw_proxy = sra_config_obj.rawgithub_proxy
         url_version = f"{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/version.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/version.json".replace("raw.githubusercontent.com", raw_proxy)
         log.info(_("[资源文件更新]正在检查远程版本是否有更新...")) if is_log else None
-        local_version = read_json_file(CONFIG_FILE_NAME).get(f"{type}_version", "0")
+        local_version = sra_config_obj.get_config(f"{type}_version") # read_json_file(CONFIG_FILE_NAME).get(f"{type}_version", "0")
         for index, __ in enumerate(range(3)):
             try:
                 remote_version = await get(url_version, timeout=2)
@@ -209,9 +208,8 @@ class update_file:
             :param delete_file: 是否删除文件
         """
         global tmp_dir
-        url_proxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
-        raw_proxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
-        url_version = f"{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/version.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/version.json".replace("raw.githubusercontent.com", raw_proxy)
+        url_proxy = sra_config_obj.github_proxy
+        raw_proxy = sra_config_obj.rawgithub_proxy
         url_zip = url_proxy+url_zip if "http" in url_proxy or url_proxy == "" else url_zip.replace("github.com", url_proxy)
         url_list = f"{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/{type}_list.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/{type}_list.json".replace("raw.githubusercontent.com", raw_proxy)
         
@@ -221,9 +219,9 @@ class update_file:
             os.makedirs(tmp_dir)
         if not os.path.exists(unzip_path):
             os.makedirs(unzip_path)
-            modify_json_file(CONFIG_FILE_NAME, f"{type}_version", "0")
+            sra_config_obj.set_config(key=f"{type}_version", value="0")
         elif rm_all:
-            modify_json_file(CONFIG_FILE_NAME, f"{type}_version", "0")
+            sra_config_obj.set_config(key=f"{type}_version", value="0")
 
         is_latest, remote_version, local_version = await self.is_latest(type, version)
         if not is_latest:
@@ -273,7 +271,7 @@ class update_file:
             log.info(_("[资源文件更新]校验完成, 更新本地{name}文件版本号 {local_version} -> {remote_version}").format(name=name, local_version=local_version, remote_version=remote_version))
 
             # 更新版本号
-            modify_json_file(CONFIG_FILE_NAME, f"{type}_version", remote_version)
+            sra_config_obj.set_config(key=f"{type}_version", value=remote_version)
 
             shutil.rmtree(tmp_dir, ignore_errors=True)
             log.info(_("[资源文件更新]删除临时文件{tmp_dir}").format(tmp_dir=tmp_dir))

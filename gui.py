@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-26 22:28:02
+LastEditTime: 2023-07-18 20:20:13
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -23,7 +23,7 @@ try:
 
     from utils.log import log,level
     from utils.map import Map as map_word
-    from utils.config import read_json_file,modify_json_file, read_maps, CONFIG_FILE_NAME, _
+    from utils.config import read_json_file, sra_config_obj, read_maps, CONFIG_FILE_NAME, _
     import utils.config
     from utils.update_file import update_file
     from utils.calculated import calculated
@@ -45,7 +45,7 @@ def page_main(page: ft.Page):
         page.session.remove("updata_log")
     '''
     __, map_dict = read_maps()
-    VER = str(read_json_file("config.json").get("star_version",0))+"/"+str(read_json_file("config.json").get("temp_version",0))+"/"+str(read_json_file("config.json").get("map_version",0))
+    VER = sra_config_obj.star_version+"/"+sra_config_obj.temp_version+"/"+sra_config_obj.map_version
     img_url = [
         "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC",
         "https://upload-bbs.miyoushe.com/upload/2023/04/04/341589474/5d2239e0352a9b3a561efcf6137b6010_8753232008183647500.jpg",
@@ -154,7 +154,6 @@ def page_main(page: ft.Page):
         time.sleep(0.5)
         get_width(_("崩坏：星穹铁道"))
         import pyautogui # 缩放纠正
-        order = read_json_file(CONFIG_FILE_NAME).get("adb", "127.0.0.1:62001")
         map_word().auto_map(start)
         add(ft.ElevatedButton(_("返回"), on_click=to_page_main))
 
@@ -191,8 +190,8 @@ def page_main(page: ft.Page):
             更新界面
         """
         pb.width = 100
-        ghproxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
-        rawghproxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
+        ghproxy = sra_config_obj.github_proxy
+        rawghproxy = sra_config_obj.raw_github_proxy
         # asyncio.run(check_file(ghproxy, "map"))
         # asyncio.run(check_file(ghproxy, "temp"))
         data = {
@@ -283,7 +282,7 @@ def page_main(page: ft.Page):
         language_dict = {
             "简体中文": "zh_CN",
             "繁體中文": "zh_TC",
-            #"English": "EN"
+            "English": "EN"
         }
         language = config.get("language", "")
         language = list(filter(lambda key: language_dict[key] == language, language_dict))[0]
@@ -341,13 +340,13 @@ def page_main(page: ft.Page):
 
         open_map_tf = ft.TextField(label=_("打开地图按钮"), value=open_map, width=200)
         def save(e):
-            modify_json_file(CONFIG_FILE_NAME, "github_proxy", "" if github_proxy_dd.value == "不设置代理" else github_proxy_dd.value)
-            modify_json_file(CONFIG_FILE_NAME, "rawgithub_proxy", "" if rawgithub_proxy_dd.value == "不设置代理" else rawgithub_proxy_dd.value)
-            modify_json_file(CONFIG_FILE_NAME, "open_map", open_map_tf.value)
-            modify_json_file(CONFIG_FILE_NAME, "level", level_dd.value)
-            modify_json_file(CONFIG_FILE_NAME, "language", language_dict[language_dd.value])
-            modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", fighting_list.index(fighting_dd.value))
-            modify_json_file(CONFIG_FILE_NAME, "start", True)
+            sra_config_obj.github_proxy = "" if github_proxy_dd.value == "不设置代理" else github_proxy_dd.value
+            sra_config_obj.rawgithub_proxy = "" if rawgithub_proxy_dd.value == "不设置代理" else rawgithub_proxy_dd.value
+            sra_config_obj.open_map = open_map_tf.value
+            sra_config_obj.level = level_dd.value
+            sra_config_obj.language = language_dict[language_dd.value]
+            sra_config_obj.auto_battle_persistence = fighting_list.index(fighting_dd.value)
+            sra_config_obj.start = True
             to_page_main(page)
         page.clean()
         add(
@@ -372,7 +371,7 @@ def page_main(page: ft.Page):
         img_v = 0 if img_v+1 >= len(img_url) else img_v+1
         page.session.set("img_v", img_v)
         bg_img.src = img_url[img_v]
-        modify_json_file(CONFIG_FILE_NAME, "img", img_v)
+        sra_config_obj.img = img_v
         page.update()
 
     def about(e):
