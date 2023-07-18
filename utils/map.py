@@ -1,7 +1,7 @@
 import time
 
 from .calculated import *
-from .config import get_file, read_json_file, modify_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
+from .config import get_file, sra_config_obj, read_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
 from .log import log, fight_log, set_log
 from .requests import webhook_and_log
 
@@ -11,15 +11,14 @@ class Map:
         参数: 
             :param platform: 运行设备
         """
-        if read_json_file(CONFIG_FILE_NAME).get("language") != "EN":
+        if sra_config_obj.language != "EN":
             self.calculated = calculated(title)
         else:
             self.calculated = calculated(title, det_model_name="en_PP-OCRv3_det", rec_model_name="en_number_mobile_v2.0")
         self.mouse = self.calculated.mouse
         self.keyboard = self.calculated.keyboard
-        self.data = read_json_file(CONFIG_FILE_NAME)
-        self.open_map = self.data.get("open_map", "m")
-        self.DEBUG = self.data.get("debug", False)
+        self.open_map = sra_config_obj.open_map
+        self.DEBUG = sra_config_obj.debug
         self.map_list, self.map_list_map = read_maps()
         self.start = True
 
@@ -67,7 +66,7 @@ class Map:
                     ret = self.calculated.fighting()
                     if ret == False and map:
                         fight_log.info(f"执行{map_filename}文件时，识别敌人超时")
-                        fight_data = read_json_file(CONFIG_FILE_NAME).get("fight_data", {})
+                        fight_data = sra_config_obj.fight_data
                         date_time = datetime.now().strftime("%m%d%H%M")
                         cv.imwrite(f"logs/image/{map_filename}-{date_time}.jpg",self.calculated.take_screenshot()[0]) #识别超时,截图
                         if map_filename not in fight_data.get("data", {}):
@@ -82,7 +81,7 @@ class Map:
                             else:
                                 fight_data["data"].append(map_filename)
                                 fight_data["day_time"] = day_time
-                            modify_json_file(CONFIG_FILE_NAME, "fight_data", fight_data)
+                            sra_config_obj.fight_data = fight_data
                 elif value == 2:  # 障碍物
                     self.calculated.Click()
                     time.sleep(1)
@@ -111,7 +110,7 @@ class Map:
                     map_list = self.map_list[self.map_list.index(f'map_{start}.json'):len(self.map_list)] 
                 else:
                     log.info("开始捡漏")
-                    map_list = read_json_file(CONFIG_FILE_NAME).get("fight_data", {}).get("data", [])
+                    map_list = sra_config_obj.fight_data.get("data", [])
                 for map in map_list:
                     # 选择地图
                     map = map.split('.')[0]
@@ -167,5 +166,5 @@ class Map:
                 log.info(_('地图编号 {start} 不存在，请尝试检查更新').format(start=start))
         start_map(self, start)
         # 检漏
-        if self.data.get("deficiency", True):
+        if sra_config_obj.deficiency:
             start_map(self, start, True)
