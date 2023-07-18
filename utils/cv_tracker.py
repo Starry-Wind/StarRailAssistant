@@ -18,9 +18,9 @@ from .config import get_file, read_json_file, modify_json_file, read_maps, inser
 import win32api
 import win32con
 import pyautogui
-import math
 
-from PIL import Image
+
+# from PIL import Image
 
 
 def match_scaled(img, template, scale, mask=False):
@@ -575,7 +575,6 @@ class Tracker():
         if moving == 0:
             pyautogui.press('w')
             time.sleep(0.2)
-            pyautogui.keyDown('w')
         # n为校准次数，至少为1 
         for _ in range(n):
             current_angle = self.get_now_direc() 
@@ -657,8 +656,8 @@ class Tracker():
 
         start_point = ct.find_color_points(map_bgr, self.bgr_map_start)[0]
 
-        hsv = cv.cvtColor(map_bgr, cv.COLOR_BGR2HSV)
-        h,s,v = cv.split(hsv)
+        map_hsv = cv.cvtColor(map_bgr, cv.COLOR_BGR2HSV)
+        h,s,v = cv.split(map_hsv)
         mask = ((h < 6 ) | ( h > 175 )) * ( s>0.2*255) * (v>0.7*255) 
         mask = np.uint8(mask) *255
         hunt_point = ct.find_cluster_points(mask)
@@ -669,7 +668,7 @@ class Tracker():
         log.info(f'寻猎点{hunt_point}')
         
         
-        map_hsv = cv.cvtColor(map_bgr, cv.COLOR_BGR2HSV)
+
         all_points = hunt_point + waypoints + [start_point]
 
         sorted_points = ct.get_sorted_waypoints(map_hsv, all_points)

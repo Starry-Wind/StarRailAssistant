@@ -17,13 +17,11 @@ from pathlib import Path
 from PIL import ImageGrab, Image
 from pynput import mouse
 from pynput.mouse import Controller as MouseController
-from pynput.keyboard import Controller as KeyboardController
-from pynput.keyboard import Key
+from pynput.keyboard import Controller as KeyboardController, Key
 from typing import Dict, Optional, Any, Union, Tuple, List, Literal
 from .config import read_json_file, CONFIG_FILE_NAME, get_file, _
 from .exceptions import Exception
 from .log import log
-from .adb import ADB
 from .cv_tools import show_img
 from .exceptions import Exception
 
@@ -68,7 +66,7 @@ class calculated:
         self.finish = cv.imread("./temp/pc/finish_fighting.jpg")
         self.auto = cv.imread("./temp/pc/auto.jpg")
 
-        self.end_list = ["Tab", "轮盘", "唤起鼠标", "手机", "退出"]
+        self.end_list = ["Tab", _("轮盘"), _("唤起鼠标"), _("手机"), _("退出")]
 
     def Click(self, points = None):
         """
@@ -102,7 +100,7 @@ class calculated:
             self.mouse.press(mouse.Button.left)
             time.sleep(0.5)
             self.mouse.release(mouse.Button.left)
-            result = self.get_pix_bgr(appoint_points)
+            result = self.get_pix_r(appoint_points)
             log.debug(result)
             if result == hsv:
                 break
@@ -117,14 +115,12 @@ class calculated:
         参数：
             :param points: 百分比坐标
         """
-
         scaling = self.data["scaling"]
         left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
         real_width = self.data["real_width"]
         real_height = self.data["real_height"]
-        x, y = int(left + (right - left) / 100 * points[0]), int(
-            top + (bottom - top) / 100 * points[1]
-        )
+        x, y = int(left + (right - left) / 100 * points[0]), \
+                int(top + (bottom - top) / 100 * points[1])
         log.debug((x, y))
         self.mouse.position = (x, y)
         self.mouse.press(mouse.Button.left)
@@ -146,7 +142,7 @@ class calculated:
         time.sleep(0.5)
         self.mouse.release(mouse.Button.left)
 
-    def ocr_click(self, characters, overtime = 10, frequency = 1):
+    def ocr_click(self, characters, overtime = 10, frequency = 1, points = (0, 0, 0, 0)):
         """
         说明：
             点击文字坐标
@@ -157,14 +153,16 @@ class calculated:
         for i in range(frequency):
             start_time = time.time()
             while True:
-                img_fp, left, top, __, __, __, __ = self.take_screenshot()
-                __, pos = self.ocr_pos(img_fp, characters)
-                log.info(characters)
+                #img_fp, left, top, __, __, __, __ = self.take_screenshot()
+                #show_img(img_fp)
+                __, pos = self.ocr_pos(characters, points)
+                log.debug(characters)
                 if pos:
-                    self.Click((left+pos[0], top+pos[1]))
-                    return True
+                    self.Click(pos)
+                    time.sleep(0.3)
+                    return pos
                 if time.time() - start_time > overtime:
-                    log.info(_("识别超时"))
+                    log.info(_("识别超时")) if overtime != 0 else None
                     return False
 
     def click_hsv(self, hsv_color, points=(0,0,0,0), offset=(0,0), flag=True, tolerance = 5):
@@ -172,18 +170,20 @@ class calculated:
         说明：
             点击指定hsv颜色，允许偏移
         参数：
-            :hsv_color: hsv颜色
-            :points: 百分比截取范围
-            :offset: 坐标偏移
-        返回:
-            :return 坐标
-        """        
-        while 1:
+            :param hsv_color: hsv颜色
+            :param points: 百分比截取范围
+            :param offset: 坐标偏移
+        """
+        start_time = time.time()
+        while True:
+            if time.time() - start_time > 10:
+                log.info(_("识别超时"))
+                return False
             img_fp, left, top, __, __, width, length = self.take_screenshot(points)
-            cv.imwrite('scr.png', img_fp)
+            #cv.imwrite('scr.png', img_fp)
             x, y = left + width/100*points[0], top + length/100*points[1]
             pos = self.hsv2pos(img_fp, hsv_color, tolerance)
-            if pos == None: 
+            if pos == None:
                 time.sleep(0.1)
                 if flag == True:
                     continue
@@ -192,8 +192,8 @@ class calculated:
             ret = [x + pos[0] + offset[0] , y + pos[1] + offset[1] ]
             log.info(_('点击坐标{ret}').format(ret=ret))
             self.Click(ret)
-            return
-        
+            return True
+
     def take_screenshot(self,points=(0,0,0,0)):
         """
         说明:
@@ -209,29 +209,50 @@ class calculated:
             left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
         else:
             left, top, right, bottom = self.window.left+left_border, self.window.top+up_border, self.window.right-left_border, self.window.bottom-left_border
-        temp = ImageGrab.grab((left, top, right, bottom))
-        width, length = temp.size           
+        game_img = ImageGrab.grab((left, top, right, bottom))
+        game_width, game_length = game_img.size
         if points != (0,0,0,0):
             #points = (points[0], points[1]+5, points[2], points[3]+5)
-            temp = temp.crop((width/100*points[0], length/100*points[1], width/100*points[2], length/100*points[3]))
-        screenshot = np.array(temp)
+            game_img = game_img.crop((game_width/100*points[0], game_length/100*points[1], game_width/100*points[2], game_length/100*points[3]))
+        screenshot = np.array(game_img)
         screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
-        return (screenshot, left, top, right, bottom, width, length)
+        return (screenshot, left, top, right, bottom, game_width, game_length)
 
-    def scan_screenshot(self, prepared:np, pos = None) -> dict:
+    def remove_non_white_pixels(self, image):
+        """
+        说明:
+            移除非白色像素
+        参数:
+            :param image: 图像
+        """
+        # 定义白色的HSV范围
+        lower_white = np.array([0, 0, 200], dtype=np.uint8)
+        upper_white = np.array([180, 25, 255], dtype=np.uint8)
+        # 将图像转换为HSV颜色空间
+        hsv_image = cv.cvtColor(image, cv.COLOR_BGR2HSV)
+        # 创建掩膜，将非白色区域设置为黑色
+        mask = cv.inRange(hsv_image, lower_white, upper_white)
+        # 将掩膜应用到原始图像上
+        result = cv.bitwise_and(image, image, mask=mask)
+        return result
+
+    def scan_screenshot(self, prepared:np, points = None) -> dict:
         """
         说明：
             比对图片
         参数：
             :param prepared: 比对图片地址
-            :param prepared: 被比对图片地址
+            :param pos: 游戏局部截图的坐标
         """
-        screenshot, left, top, __, __, width, length = self.take_screenshot(pos if pos else (0,0,0,0))
+        screenshot, left, top, __, __, game_width, game_length = self.take_screenshot(points if points else (0,0,0,0))
         result = cv.matchTemplate(screenshot, prepared, cv.TM_CCORR_NORMED)
         length, width, __ = prepared.shape
         length = int(length)
         width = int(width)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+        if points:
+            min_loc = (min_loc[0]+game_width/100*points[0], min_loc[1]+game_length/100*points[1])
+            max_loc = (max_loc[0]+game_width/100*points[0], max_loc[1]+game_length/100*points[1])
         return {
             "screenshot": screenshot,
             "min_val": min_val,
@@ -241,7 +262,7 @@ class calculated:
         }
 
     # flag为true一定要找到
-    def click_target(self, target_path: str, threshold, flag:bool=True, check:bool=False):
+    def click_target(self, target_path: str, threshold, flag:bool=True, check:bool=False, map=""):
         """
         说明:
             识别图片并点击
@@ -254,43 +275,44 @@ class calculated:
         temp_name = target_path.split("\\")[-1].split(".")[0]
         join = False # 强制进行传统模板匹配
         temp_ocr = {
-            "orientation_1": _("星轨航图"),
-            #"orientation_2": _("空间站「黑塔"),
+            "orientation_1": {
+                "name": _("星轨航图"),
+                "points": (77, 11, 92, 15)
+            },
+            #"orientation_2": (18, 50), #  _("空间站「黑塔")
             "map_1": _("基座舱段"),
-            "map_1_point" : [(593, 346),(593, 556)],
             "transfer": _("传送"),
             "map_1-2": _("收容舱段"),
-            "map_1-2_point_2": [(700, 346),(600, 346)],
             "map_1-3": _("支援舱段"),
-            "map_1-3_point_1": [(593, 346),(700, 346)],
-            #"orientation_3": _("雅利洛-VI"),
+            "map_1-3_point_2": {
+                "name": _("电力室"),
+                "points": (40, 67, 63, 79)
+            },
+            #"orientation_3": (52, 23), # _("雅利洛-VI")
             "map_2-1": _("城郊雪原"),
             "map_2-2": _("边缘通路"),
             "map_2-3": _("残响回廊"),
-            "map_2-3_point_2":[(593, 500),(593, 400)],
-            "map_2-3_point_4":[(593, 500),(593, 400)],
-            "map_2-3_point_5":[(593, 500),(593, 400)],
             "map_2-4": _("永冬岭"),
             "map_2-5": _("大矿区"),
-            "map_2-5_point_1": [(593, 500),(593, 400)],
-            "map_2-5_point_3": _("俯瞰点"),
             "map_2-6": _("铆钉镇"),
             "map_2-7": _("机械聚落"),
-            #"orientation_4": _("仙舟「罗浮"),
+            #"orientation_4": (79, 80), # _("仙舟「罗浮")
             "map_3-1": _("流云渡"),
-            "map_3-1_point_1" : [(593, 346),(593, 556)],
-            "map_3-1_point_2":[(593, 500),(593, 400)],
-            "map_3-1_point_3":[(593, 500),(593, 400)],
             "map_3-2": _("迥星港"),
             "map_3-3": _("太卜司"),
-            "map_3-3_point_2":[(593, 500),(693, 400)],
-            "map_3-3_point_4":[(593, 500),(693, 700)],
-            "map_3-3_point_5":[(593, 500),(693, 700)],
             "map_3-4": _("工造司"),
-            "map_3-4_point_1" : [(593, 500),(800, 700)],
-            "map_3-4_point_2":[(593, 500),(593, 400)],
-            "map_3-4_point_3" : [(593, 346),(400, 346)],
         }
+        '''
+        map: 
+            type为str时点击对应文字
+            tyrpe为tuple时点击对应坐标
+        map_*_point:
+            type为dict时在points中点击name
+        其他:
+            type为dict时在points中点击name
+            type为tuple时点击百分比坐标
+            type为str时点击文字
+        '''
         if temp_name in temp_ocr:
             log.info(temp_name)
             if "orientation" in temp_name:
@@ -300,10 +322,17 @@ class calculated:
             elif "map" in temp_name:
                 log.info(_("选择地图"))
             if "map" not in temp_name:
-                result = self.ocr_click(temp_ocr[temp_name])
+                if type(temp_ocr[temp_name]) == dict:
+                    result = self.ocr_click(temp_ocr[temp_name]["name"], points=temp_ocr[temp_name]["points"])
+                elif type(temp_ocr[temp_name]) == tuple:
+                    self.Relative_click(temp_ocr[temp_name])
+                    result = True
+                else:
+                    result = self.ocr_click(temp_ocr[temp_name])
                 while True:
                     if not result:
                         log.info(_("使用图片识别兜底"))
+                        join = True
                         break
                     if not self.is_blackscreen():
                         break
@@ -311,24 +340,16 @@ class calculated:
                 target = cv.imread(target_path)
                 start_time = time.time()
                 while True:
-                    result = self.scan_screenshot(target)
-                    if result["max_val"] > threshold:
-                        #points = self.calculated(result, target.shape)
-                        self.Click(result["max_loc"])
-                        break
-                    if flag == False:
-                        break
-                    if time.time() - start_time > 5:
-                            log.info(_("传送锚点识别超时"))
-                            join = True
-                            break                           
-                    time.sleep(0.5)
+                    if type(temp_ocr[temp_name]) == dict:
+                        result = self.ocr_click(temp_ocr[temp_name]["name"], points=temp_ocr[temp_name]["points"])
+                        if result:
+                            break
             else:
                 if type(temp_ocr[temp_name]) == str:
                     start_time = time.time()
                     first_timeout = True
                     while True:
-                        ocr_data = self.part_ocr((77,20,85,97))
+                        ocr_data = self.part_ocr((77,20,95,97))
                         log.debug(temp_ocr[temp_name])
                         check_dict = list(filter(lambda x: re.match(f'.*{temp_ocr[temp_name]}.*', x) != None, list(ocr_data.keys())))
                         pos = ocr_data.get(check_dict[0], None) if check_dict else None
@@ -349,7 +370,7 @@ class calculated:
 
                         if time.time() - start_time > 15:
                             log.info(_("地图识别超时"))
-                            join = True
+                            # join = True
                             break
                 elif type(temp_ocr[temp_name]) == tuple:
                     self.img_click(temp_ocr[temp_name])
@@ -358,7 +379,7 @@ class calculated:
             target = cv.imread(target_path)
             start_time = time.time()
             first_timeout = True
-            distance_iter = itertools.cycle([200, -200, -200])
+            distance_iter = itertools.cycle([500, -500, -500])
             level_iter = itertools.cycle([(3, 81), (3, 89), (3, 75)])
             while True:
                 result = self.scan_screenshot(target)
@@ -387,7 +408,32 @@ class calculated:
                     break
                 time.sleep(0.5)
 
-    def fighting(self, type: int=0):
+    def fighting(self):
+        start_time = time.time()
+        self.Click()
+        time.sleep(0.1)
+        if self.has_red((4, 7, 10, 19)):
+            while True:
+                result = self.get_pix_rgb(pos=(1336, 58))
+                log.debug(f"进入战斗取色: {result}")
+                if self.compare_lists([0, 0, 222], result) and self.compare_lists(result, [0, 0, 255]):
+                    self.Click()
+                else:
+                    break
+                time.sleep(0.1)
+                if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标，则退出循环
+                    log.info(_("识别超时,此处可能漏怪!"))
+                    return False
+            self.wait_fight_end()
+            return True
+        time.sleep(0.2)
+        result = self.get_pix_rgb(pos=(1336, 58))
+        log.debug(f"进入战斗取色: {result}")
+        if not (self.compare_lists([0, 0, 225], result) and self.compare_lists(result, [0, 0, 255])):
+            self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
+        return True
+
+    def fighting_old(self):
         """
         说明：
             攻击
@@ -401,23 +447,22 @@ class calculated:
             if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
                 log.info(_("识别超时,此处可能漏怪!"))
                 return False
-                time.sleep(0.3)
-            if self.scan_screenshot(self.attack,pos=(3.75,5.5,11.6,23))["max_val"] > 0.97: #修改检测机制,精度更高
+            if self.scan_screenshot(self.attack,points=(3.75,5.5,11.6,23))["max_val"] > 0.97: #修改检测机制,精度更高
                 self.Click()
                 time.sleep(0.3)
-                doubt_time = time.time() + 8
+                doubt_time = time.time()
                 log.info(_("监控疑问或警告"))
-                while time.time() < doubt_time:
-                    if self.scan_screenshot(self.doubt,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95 or self.scan_screenshot(self.warn,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95:
+                while time.time() - doubt_time < 8:
+                    if self.scan_screenshot(self.doubt,points=(3.75,5.5,11.6,23))["max_val"] > 0.95 or self.scan_screenshot(self.warn,points=(3.75,5.5,11.6,23))["max_val"] > 0.95:
                         log.info(_("识别到疑问或警告,等待怪物开战或反击"))
                         self.Click()
                         time.sleep(1.5)
                         log.info(_("识别反击"))
-                    result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
+                    result = self.scan_screenshot(self.finish,points=(0,95,100,100))
                     if result["max_val"] < 0.95:
                         break
                     time.sleep(0.1)
-                result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
+                result = self.scan_screenshot(self.finish,points=(0,95,100,100))
                 time.sleep(0.3)
                 if result["max_val"] < 0.95:
                     break
@@ -432,17 +477,27 @@ class calculated:
                         self.Click()
                         time.sleep(1.5)
                         log.info(_("识别反击"))
-                    result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
+                        break
+                    result = self.scan_screenshot(self.finish,points=(0,95,100,100))
                     if result["max_val"] < 0.95:
                         break
                     time.sleep(0.1)
-                result = self.scan_screenshot(self.finish,pos=(0,95,100,100))
+                result = self.scan_screenshot(self.finish,points=(0,95,100,100))
                 time.sleep(0.3)
                 if result["max_val"] < 0.95:
                     break
                 log.info(_("未发现敌人!"))    
                 return True
-            time.sleep(2)
+        time.sleep(2)
+        self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
+
+    def wait_fight_end(self, type=0):
+        """
+        说明:
+            等待战斗结束
+        参数:
+            :param type: 0: 大世界 1:副本
+        """
         #进入战斗
         start_time = time.time()
         if self.data["auto_battle_persistence"] != 1:  #这个设置建议放弃,看了看浪费性能加容易出问题
@@ -467,17 +522,22 @@ class calculated:
                 if any(substring in end_str for substring in self.end_list):
                     log.info(_("完成自动战斗"))
                     break
-                time.sleep(1.0) # 缓冲
-                if time.time() - start_time > 90: # 避免卡死
-                    log.info(_("战斗超时"))
-                    break
             elif type == 1:
-                result = self.part_ocr((6,10,89,88))
-                if "选择祝福" in result:
+                end_str = str(self.part_ocr((32, 85, 56, 89)))
+                if self.ocr_click("退出关卡", overtime=0, points=(32, 85, 42, 89)):
                     log.info(_("完成自动战斗"))
                     break
+                if self.ocr_click("返回忘却之庭", overtime=0, points=(44, 85, 56, 89)):
+                    log.info(_("完成自动战斗"))
+                    break
+            time.sleep(1.0) # 缓冲
+            fight_time = self.data.get("fight_time", 120)
+            if time.time() - start_time > fight_time: # 避免卡死
+                log.info(_("战斗超时"))
+                break
             time.sleep(1) # 避免长时间ocr
 
+    
     def Check_fighting(self):
          while True:
                 end_str = str(self.part_ocr((20,95,100,100)))
@@ -486,8 +546,9 @@ class calculated:
                     break
                 else:
                     log.info(_("未知状态,可能遇袭处于战斗状态"))
-                time.sleep(1) # 避免长时间ocr
+                time.sleep(1) # 避免长时间ocr            
 
+    
     def Mouse_move(self, x):
         """
         说明:
@@ -521,8 +582,9 @@ class calculated:
         loc = self.get_loc(map_name=map_name)
         log.debug(loc)
         self.keyboard.press(com)
-        result = self.get_pix_bgr(pos=(1712, 958))
-        if self.data.get("sprint", False) and (self.compare_lists(result, [120, 160, 180]) or self.compare_lists([200, 200, 200], result)):
+        result = self.get_pix_r(pos=(1712, 958))
+        log.debug(result)
+        if self.data.get("sprint", False) and (self.compare_lists(result, [130, 160, 180]) or self.compare_lists([200, 200, 200], result)):
             time.sleep(0.05)
             log.info("疾跑")
             self.mouse.press(mouse.Button.right)
@@ -600,7 +662,7 @@ class calculated:
             :param clicks 滚动单位，正数为向上滚动
         """
         self.mouse.scroll(0, clicks)
-        time.sleep(0.5)
+        time.sleep(0.1)
 
     def is_blackscreen(self, threshold = 30):
         """
@@ -610,7 +672,7 @@ class calculated:
         screenshot = cv.cvtColor(self.take_screenshot()[0], cv.COLOR_BGR2GRAY)
         return cv.mean(screenshot)[0] < threshold
 
-    def ocr_pos(self,img_fp: Image, characters:str = None):
+    def ocr_pos(self, characters:str = None, points = (0,0,0,0)):
         """
         说明：
             获取指定文字的坐标
@@ -620,17 +682,20 @@ class calculated:
             :return text: 文字
             :return pos: 坐标
         """
-        out = self.ocr.ocr(img_fp)
-        data = {i['text']: i['position'] for i in out}
+        #img_fp = self.take_screenshot(points)
+        #out = self.ocr.ocr(img_fp)
+        #data = {i['text']: i['position'] for i in out}
+        data = self.part_ocr_other(points)
         log.debug(data)
         if not characters:
             characters = list(data.keys())[0]
         check_list = list(filter(lambda x: re.match(f'.*{characters}.*', x) != None, list(data.keys())))
         characters = check_list[0] if check_list else None
-        pos = ((data[characters][2][0]+data[characters][0][0])/2, (data[characters][2][1]+data[characters][0][1])/2) if characters in data else None
+        #pos = ((data[characters][2][0]+data[characters][0][0])/2, (data[characters][2][1]+data[characters][0][1])/2) if characters in data else None
+        pos = data[characters] if characters in data else None
         return characters, pos
-    
-    def part_ocr(self,points = (0,0,0,0), debug=False):
+
+    def part_ocr(self,points = (0,0,0,0), debug=False, only_white=False):
         """
         说明：
             返回图片文字和坐标(相对于图片的坐标)
@@ -640,6 +705,8 @@ class calculated:
             :return data: 文字: 坐标(相对于图片的坐标)
         """
         img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
+        if only_white:
+            img_fp = self.remove_non_white_pixels(img_fp)
         if debug:
             show_img(img_fp)
             cv.imwrite("H://xqtd//xl//test.png",img_fp)
@@ -660,25 +727,29 @@ class calculated:
         """
         return cv.imread(f'{prefix}{path}')
 
-    def part_ocr_other(self,points = (0,0,0,0), debug=False):
+    def part_ocr_other(self,points = (0,0,0,0), debug=False, left=False):
         """
         说明：
             返回图片文字和坐标(相对于桌面的坐标)
         参数：
             :param points: 图像截取范围
+            :param left: 是否返回左上角坐标
         返回:
             :return data: 文字: 坐标(相对于桌面的坐标)
         """
-        img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
+        img_fp, game_left, game_top, _, _, width, length = self.take_screenshot(points)
         if debug:
             show_img(img_fp)
         x, y = width/100*points[0], length/100*points[1]
         out = self.ocr.ocr(img_fp)
-        data = {i['text']: (int(left+x+i['position'][0][0]),int(top+y+i['position'][0][1])) for i in out}
+        if left:
+            data = {i['text']: (int(game_left+x+i['position'][0][0]), int(game_top+y+i['position'][0][1])) for i in out}
+        else:
+            data = {i['text']: (int(game_left+x+(i['position'][2][0]+i['position'][0][0])/2),int(game_top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
         log.debug(data)
         return data
 
-    def get_pix_bgr(self, desktop_pos=None, pos=None, points=(0, 0, 0, 0)):
+    def get_pix_r(self, desktop_pos: Union[tuple, None]=None, pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
         """
         说明：
             获取指定坐标的颜色
@@ -686,7 +757,7 @@ class calculated:
             :param desktop_pos: 包含桌面的坐标
             :param pos: 图片的坐标
         返回:
-            :return 三色值
+            :return rgb: 颜色
         """
         img, left, top, __, __, __, __ = self.take_screenshot(points)
         img = np.array(img)
@@ -700,6 +771,30 @@ class calculated:
         blue = img[y, x, 0]
         green = img[y, x, 1]
         red = img[y, x, 2]
+        return [blue,green,red]
+
+    def get_pix_rgb(self, desktop_pos: Union[tuple, None]=None, pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
+        """
+        说明：
+            获取指定坐标的颜色
+        参数：
+            :param desktop_pos: 包含桌面的坐标
+            :param pos: 图片的坐标
+        返回:
+            :return rgb: 颜色
+        """
+        img, left, top, __, __, __, __ = self.take_screenshot(points)
+        HSV=cv.cvtColor(img,cv.COLOR_BGR2HSV)
+        if desktop_pos:
+            x = int(desktop_pos[0])-int(left)
+            y = int(desktop_pos[1])-int(top)
+        elif pos:
+            x = int(pos[0])
+            y = int(pos[1])
+        rgb = HSV[y, x]
+        blue = HSV[y, x, 0]
+        green = HSV[y, x, 1]
+        red = HSV[y, x, 2]
         return [blue,green,red]
 
     def hsv2pos(self, img, color, tolerance = 0):
@@ -719,29 +814,95 @@ class calculated:
                 # 色相保持一致
                 if abs(x1[0] - color[0])==0 and abs(x1[1] - color[1])<=tolerance and abs(x1[2] - color[2])<=tolerance:
                     return (index1, index)
+
+
+    def has_red(self, points=(0,0,0,0)):
+        """
+        说明:
+            判断游戏指定位置是否有红色
+        参数:
+            :param points: 图像截取范围
+        """
+        img = self.take_screenshot(points)[0]
+        hsv_img = cv.cvtColor(img, cv.COLOR_BGR2HSV)
+
+        lower_red = np.array([0, 100, 100])
+        upper_red = np.array([10, 255, 255])
+        lower_red2 = np.array([170, 100, 100])
+        upper_red2 = np.array([180, 255, 255])
+
+        mask1 = cv.inRange(hsv_img, lower_red, upper_red)
+        mask2 = cv.inRange(hsv_img, lower_red2, upper_red2)
+        mask = cv.bitwise_or(mask1, mask2)
+
+        # 统计掩膜中的像素数目
+        red_pixel_count = cv.countNonZero(mask)
+        log.info(red_pixel_count)
+        return red_pixel_count > 30
+
         
+    def has_red(self, points=(0,0,0,0)):
+        """
+        说明:
+            判断游戏指定位置是否有红色
+        参数:
+            :param points: 图像截取范围
+        """
+        img = self.take_screenshot(points)[0]
+        hsv_img = cv.cvtColor(img, cv.COLOR_BGR2HSV)
+
+        lower_red = np.array([0, 100, 100])
+        upper_red = np.array([10, 255, 255])
+        lower_red2 = np.array([170, 100, 100])
+        upper_red2 = np.array([180, 255, 255])
+
+        mask1 = cv.inRange(hsv_img, lower_red, upper_red)
+        mask2 = cv.inRange(hsv_img, lower_red2, upper_red2)
+        mask = cv.bitwise_or(mask1, mask2)
+
+        # 统计掩膜中的像素数目
+        red_pixel_count = cv.countNonZero(mask)
+        log.info(red_pixel_count)
+        return red_pixel_count > 30
+
     def wait_join(self):
         """
         说明：
-            等待进入地图P
+            等待进入地图
         返回:
             进入地图的时间
         """
         start_time = time.time()
+        '''
         join1 = False
         join2 = False
+        block_join1 = False
+        block_join2 = False
+        '''
         join_time = self.data.get("join_time", {})
         pc_join = join_time.get("pc", 8)
-        mnq_join = join_time.get("mnq", 15)
         while True:
-            result = self.get_pix_bgr(pos=(119, 86))
-            log.debug(result)
+            '''
+            result = self.get_pix_r(pos=(960, 86))
+            log.info(result)
             endtime = time.time() - start_time
-            if self.compare_lists([0, 0, 0], result) and self.compare_lists(result, [19, 19, 19]):
-                join1 = True
-            if self.compare_lists([19, 19, 19], result) and join1:
-                join2 = True
-            if join1 and join2:
+            if self.compare_lists([222, 222, 116], result):
+                block_join1 = True # 进入地图
+            elif self.compare_lists([0, 0, 0], result) and self.compare_lists(result, [190, 190, 190]) and block_join1:
+                block_join2 = True # 进入地图
+            if not block_join2:
+                if self.compare_lists([0, 0, 0], result) and self.compare_lists(result, [19, 19, 19]):
+                    join1 = True # 开始传送
+                elif self.compare_lists([19, 19, 19], result) and join1:
+                    join2 = True # 进入地图
+            if join1 and join2 or (block_join1 and block_join2):
+                log.info(_("已进入地图"))
+                return endtime
+            '''
+            endtime = time.time() - start_time
+            result = self.get_pix_rgb(pos=(1336, 58))
+            log.debug(result)
+            if self.compare_lists([0, 0, 222], result):
                 log.info(_("已进入地图"))
                 return endtime
             if endtime > pc_join:
@@ -768,7 +929,6 @@ class calculated:
 
     def open_map(self, open_key):
         while True:
-            start_time = time.time()
             self.keyboard.press(open_key)
             time.sleep(0.3) # 修复地图无法打开的问题
             self.keyboard.release(open_key)
@@ -776,9 +936,6 @@ class calculated:
             map_status = self.part_ocr((3,2,10,10))
             if self.check_list(_(".*导.*"), map_status):
                 log.info(_("进入地图"))
-                break
-            if time.time() - start_time > 10:
-                log.info(_("识别超时"))
                 break
 
     def teleport(self, key, value, threshold=0.95):
@@ -799,7 +956,6 @@ class calculated:
                 break
             time.sleep(1.0) # 缓冲
 
-
     def monthly_pass(self):
         """
         说明：
@@ -811,7 +967,9 @@ class calculated:
         ns = int(start_time)
         if -60 < ns - ts <= 60:
             log.info(_("点击月卡"))
-            self.ocr_click(_("今日补给"))
+            pos = self.ocr_click(_("今日补给"))
+            time.sleep(0.5)
+            self.Click(pos)
 
     def get_loc(self, map_name: str="", map_id: int=None):
         """
@@ -830,11 +988,13 @@ class calculated:
                 "支援舱段": 3
             }
             map_id = map_name2id.get(map_name, 1) if not map_id else map_id
-            img = cv.imread(f"./temp/maps/{map_id}.png")
+            img = cv.imread(f"./maps/{map_id}.png")
             template = self.take_screenshot((4,8,10,20))[0]
-            __, __, max_loc, length, width = find_best_match(img, template,(100,120,5))
-            cv.rectangle(img, max_loc, (max_loc[0] + width, max_loc[1] + length), (0, 255, 0), 2)
-            show_img(img)
-            return (max_loc[0] + width/2, max_loc[1] + length/2)
+            #__, max_vl, max_loc, length, width = find_best_match(img, template,(100,120,5))
+            max_val, max_loc = match_scaled(img, template,2.09)
+            print(max_val)
+            cv.rectangle(img, max_loc, (max_loc[0] + 100, max_loc[1] + 100), (0, 255, 0), 2)
+            #show_img(img)
+            return (max_loc[0] + 100/2, max_loc[1] + 100/2)
         else:
             return (0, 0)

@@ -1,4 +1,12 @@
+'''
+Author: Xe-No
+Date: 2023-05-17 21:45:43
+LastEditors: Night-stars-1 nujj1042633805@gmail.com
+LastEditTime: 2023-06-27 17:36:19
+Description: 一些cv工具
 
+Copyright (c) 2023 by Xe-No, All Rights Reserved. 
+'''
 
 from utils.get_angle import get_angle
 import time 
@@ -155,8 +163,13 @@ def get_binary(img, threshold=200):
 def show_img(img, scale=1, title='Image'):
     # cv.namedWindow('image', cv.WINDOW_NORMAL)
     h, w = img.shape[:2]
-    img = cv.resize( img, (0,0), fx=scale, fy=scale  )
+    img = cv.resize( img ,(int(w*scale), int(h*scale))  )
     cv.imshow(title, img)
+    cv.waitKey(0)  # 显示图像并等待1秒
+    cv.destroyAllWindows()  
+
+def show_imgs(imgs, title='Image'):
+    cv.imshow(title, np.hstack(imgs))
     cv.waitKey(0)
     cv.destroyAllWindows()  
 

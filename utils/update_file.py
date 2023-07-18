@@ -134,16 +134,53 @@ class update_file:
                     log.info(_("[资源文件更新]获取远程版本失败, 正在重试: {e}").format(e=e))
                 else:
                     log.info(_("[资源文件更新]获取远程版本失败: {e}").format(e=e))
-                log.info(_("将在10秒后重试"))
+                log.info(_("将在10秒后重试，你可能需要设置代理"))
                 await asyncio.sleep(10)
         else:
             log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
             raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
         if version == self.data:
             ...
+
+    async def is_latest(self, type: str, version: str, is_log: bool = True):
+        """
+        说明:
+            是否是最新版
+        参数:
+            :param type: 资源类型
+            :param raw_proxy: 代理
+            :param version: 版本验证地址/仓库分支名称 map
+        """
+        raw_proxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
+        url_version = f"{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/version.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/version.json".replace("raw.githubusercontent.com", raw_proxy)
+        log.info(_("[资源文件更新]正在检查远程版本是否有更新...")) if is_log else None
+        local_version = read_json_file(CONFIG_FILE_NAME).get(f"{type}_version", "0")
+        for index, __ in enumerate(range(3)):
+            try:
+                remote_version = await get(url_version, timeout=2)
+                remote_version = remote_version.json()["version"]
+                break
+            except BaseException as e:
+                if index < 2:
+                    log.info(_("[资源文件更新]获取远程版本失败, 正在重试: {e}").format(e=e)) if is_log else None
+                else:
+                    log.info(_("[资源文件更新]获取远程版本失败: {e}").format(e=e)) if is_log else None
+                log.info(_("将在稍后重试，你可能需要设置代理")) if is_log else None
+        else:
+            if is_log:
+                log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
+                raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
+            else:
+                return True, 0, local_version
+
+        log.info(f"[资源文件更新]获取远程版本成功: {remote_version}") if is_log else None
+
+        if remote_version != local_version:
+            return False, remote_version, local_version
+        else:
+            return True, remote_version, local_version
         
-    async def update_file(self, url_proxy: str="",
-                        raw_proxy: str="",
+    async def update_file(self,
                         rm_all: bool=False, 
                         skip_verify: bool=True,
                         type: str="",
@@ -159,12 +196,10 @@ class update_file:
         说明：
             更新文件
         参数：
-            :param url_proxy: github代理
-            :param raw_proxy: rawgithub代理
             :param rm_all: 是否强制删除文件
             :param skip_verify: 是否跳过检验
             :param type: 更新文件的类型 map\temp
-            :param version: 版本验证地址 map
+            :param version: 版本验证地址/仓库分支名称 map
             :param url_zip: zip下载链接
             :param unzip_path: 解压地址（删除用）
             :param keep_folder: 保存的文件夹
@@ -174,7 +209,8 @@ class update_file:
             :param delete_file: 是否删除文件
         """
         global tmp_dir
-
+        url_proxy = read_json_file(CONFIG_FILE_NAME, False).get('github_proxy', "")
+        raw_proxy = read_json_file(CONFIG_FILE_NAME, False).get('rawgithub_proxy', "")
         url_version = f"{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/version.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/version.json".replace("raw.githubusercontent.com", raw_proxy)
         url_zip = url_proxy+url_zip if "http" in url_proxy or url_proxy == "" else url_zip.replace("github.com", url_proxy)
         url_list = f"{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/{type}_list.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/{type}_list.json".replace("raw.githubusercontent.com", raw_proxy)
@@ -189,29 +225,8 @@ class update_file:
         elif rm_all:
             modify_json_file(CONFIG_FILE_NAME, f"{type}_version", "0")
 
-        log.info(_("[资源文件更新]正在检查远程版本是否有更新..."))
-
-        for index, __ in enumerate(range(3)):
-            try:
-                remote_version = await get(url_version)
-                remote_version = remote_version.json()["version"]
-                break
-            except BaseException as e:
-                if index < 2:
-                    log.info(_("[资源文件更新]获取远程版本失败, 正在重试: {e}").format(e=e))
-                else:
-                    log.info(_("[资源文件更新]获取远程版本失败: {e}").format(e=e))
-                log.info(_("将在10秒后重试"))
-                await asyncio.sleep(10)
-        else:
-            log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
-            raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
-
-        log.info(f"[资源文件更新]获取远程版本成功: {remote_version}")
-
-        local_version = read_json_file(CONFIG_FILE_NAME).get(f"{type}_version", "0")
-
-        if remote_version != local_version:
+        is_latest, remote_version, local_version = await self.is_latest(type, version)
+        if not is_latest:
             if name == _("脚本"):
                 await self.copy_files(Path(), Path() / "StarRailAssistant_backup", ["utils", "temp", "map", "config.json", "get_width.py", "Honkai_Star_Rail.py", "gui.py"])
             log.info(_("[资源文件更新]本地版本与远程版本不符，开始更新资源文件->{url_zip}").format(url_zip=url_zip))
@@ -225,11 +240,11 @@ class update_file:
                     log.info(_("[资源文件更新]下载压缩包失败, 重试中: BadZipFile"))
                 except BaseException as e:
                     log.info(_("[资源文件更新]下载压缩包失败: {e}").format(e=e))
-                log.info(_("将在10秒后重试"))
+                log.info(_("将在10秒后重试，你可能需要设置代理"))
                 await asyncio.sleep(10)
             else:
-                log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
-                raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
+                log.info(_("[资源文件更新]重试次数已达上限，更换代理可能可以解决该问题"))
+                raise Exception(_("[资源文件更新]重试次数已达上限，更换代理可能可以解决该问题"))
 
 
             #shutil.rmtree("..\StarRailAssistant-beta-2.7")
@@ -245,10 +260,10 @@ class update_file:
                     break
                 except BaseException as e:
                     log.info(_("[资源文件更新]校验文件下载失败: {e}").format(e=e))
-                log.info(_("将在10秒后重试"))
+                log.info(_("将在10秒后重试，你可能需要设置代理"))
                 await asyncio.sleep(10)
             else:
-                log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
+                log.info(_("[资源文件更新]重试次数已达上限，退出程序, 请设置代理"))
                 raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
             
             verify, path = await self.verify_file_hash(map_list, keep_file)
@@ -276,7 +291,7 @@ class update_file:
                             log.info(_("[资源文件更新]获取{name}文件列表失败, 正在重试: {e}").format(name=name, e=e))
                         else:
                             log.info(_("[资源文件更新]获取{name}文件列表失败: {e}").format(name=name, e=e))
-                        log.info(_("将在10秒后重试"))
+                        log.info(_("将在10秒后重试，你可能需要设置代理"))
                         await asyncio.sleep(10)
                 else:
                     log.info(_("[资源文件更新]获取{name}文件列表重试次数已达上限，退出程序").format(name=name, e=e))
@@ -296,8 +311,7 @@ class update_file:
         log.info(_("[资源文件更新]更新完成."))
         return True
 
-    def update_file_main(self, url_proxy: str="",
-                        raw_proxy: str="",
+    def update_file_main(self,
                         rm_all: bool=False, 
                         skip_verify: bool=True,
                         type: str="",
@@ -313,11 +327,9 @@ class update_file:
         说明：
             更新文件
         参数：
-            :param url_proxy: github代理
-            :param raw_proxy: rawgithub代理
             :param skip_verify: 是否跳过检验
             :param type: 更新文件的类型 map\temp
-            :param version: 版本验证地址 map
+            :param version: 版本验证地址/仓库分支名称 map
             :param url_zip: zip下载链接
             :param unzip_path: 解压地址（删除用）
             :param keep_folder: 保存的文件夹
@@ -328,10 +340,10 @@ class update_file:
         """
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         log.info(_("[资源文件更新]即将资源文件更新，本操作会覆盖本地{name}文件..").format(name=name))
-        check_file_status = asyncio.run(self.update_file(url_proxy,raw_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name,delete_file))
+        check_file_status = asyncio.run(self.update_file(False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name,delete_file))
         if check_file_status == "rm_all":
             time.sleep(3)
-            check_file_status = asyncio.run(self.update_file(url_proxy,raw_proxy,True,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name,delete_file))
+            check_file_status = asyncio.run(self.update_file(True,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name,delete_file))
         elif check_file_status == "download_error":
-            check_file_status = asyncio.run(self.update_file(url_proxy,raw_proxy,False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name,delete_file))
+            check_file_status = asyncio.run(self.update_file(False,skip_verify,type,version,url_zip,unzip_path,keep_folder,keep_file,zip_path,name,delete_file))
     
