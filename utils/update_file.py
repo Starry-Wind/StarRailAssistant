@@ -225,7 +225,7 @@ class update_file:
         elif rm_all:
             modify_json_file(CONFIG_FILE_NAME, f"{type}_version", "0")
 
-        is_latest, remote_version, local_version = await self.is_latest(type, raw_proxy, version)
+        is_latest, remote_version, local_version = await self.is_latest(type, version)
         if not is_latest:
             if name == _("脚本"):
                 await self.copy_files(Path(), Path() / "StarRailAssistant_backup", ["utils", "temp", "map", "config.json", "get_width.py", "Honkai_Star_Rail.py", "gui.py"])
