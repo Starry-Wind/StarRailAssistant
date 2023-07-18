@@ -22,7 +22,7 @@ from pluggy import PluginManager
 
 from get_width import get_width
 from utils.log import log, fight_log
-from utils.config import read_json_file, modify_json_file, init_config_file, add_key_value, read_maps, CONFIG_FILE_NAME, _
+from utils.config import read_json_file, modify_json_file, add_key_value, read_maps, CONFIG_FILE_NAME, _
 from utils.simulated_universe import Simulated_Universe
 from utils.update_file import update_file
 from utils.commission import Commission
@@ -30,7 +30,6 @@ from utils.calculated import calculated
 from utils.exceptions import Exception
 from utils.map import Map as map_word
 from utils.requests import *
-from utils.adb import ADB
 
 game_title = _("崩坏：星穹铁道")
 plugins_path = "plugins"
@@ -333,4 +332,3 @@ if __name__ == "__main__":
         log.error(traceback.format_exc())
     finally:
         sra.stop()
-        ADB().kill()

@@ -1,7 +1,9 @@
 import os
 import sys
+from typing import Any, get_type_hints
 import orjson
 import gettext
+import inspect
 
 from pathlib import Path
 from orjson import JSONDecodeError
@@ -45,8 +47,7 @@ def read_json_file(filename: str, path=False) -> dict:
             else:
                 return data
     else:
-        init_config_file(1920, 1080, filename)
-        return read_json_file(filename, path)
+        return {}
 
 
 def modify_json_file(filename: str, key, value):
@@ -63,47 +64,6 @@ def modify_json_file(filename: str, key, value):
     data[key] = value
     with open(file_path, "wb") as f:
         f.write(orjson.dumps(data, option=orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2))
-
-
-def init_config_file(real_width, real_height, file_name = CONFIG_FILE_NAME):
-    if file_name == CONFIG_FILE_NAME:
-        with open(CONFIG_FILE_NAME, "wb+") as f:
-            log.info("配置初始化")
-            f.write(
-                orjson.dumps(
-                    {
-                        "real_width": real_width,
-                        "auto_battle_persistence": 0,
-                        "real_height": real_height,
-                        "github_proxy": "",
-                        "rawgithub_proxy": "",
-                        "webhook_url": "",
-                        "start": False,
-                        "temp_version": "0",
-                        "star_version": "0",
-                        "open_map": "m",
-                        "level": "INFO",
-                        "debug": False,
-                        "proxies": "",
-                        "language": "zh_CN",
-                        "move_excursion": 0,
-                        "move_division_excursion": 1,
-                        "sprint": False,
-                        "join_time": {
-                            "pc": 8
-                        },
-                        "deficiency": True
-                    },option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2
-                )
-            )
-    else:
-        with open(file_name, "wb+") as f:
-            log.info("配置初始化")
-            f.write(
-                orjson.dumps(
-                    {},option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2
-                )
-            )
 
 
 def get_file(path, exclude=[], exclude_file=None, get_path=False, only_place=False) -> list[str]:
@@ -212,3 +172,120 @@ def insert_key(my_dict:dict, new_key, new_value, insert_after_key):
             new_dict[new_key] = new_value
             
     return new_dict
+
+
+def get_class_methods(cls):
+    """
+    说明:
+        获取类属性
+    """
+    methods = []
+    for name, member in inspect.getmembers(cls): # 获取类属性
+        if not inspect.isfunction(member) and not name.startswith("__"):
+            methods.append(name)
+    return methods
+
+def load_config_data(cls):
+    """
+    加载配置文件
+    """
+    methods= get_class_methods(cls)
+    sradata = read_json_file(CONFIG_FILE_NAME)
+    lack_methods = set(methods) - set(sradata.keys()) # 获取缺少的配置
+    # 如果缺少配置则添加
+    if lack_methods:
+        for lack_method in lack_methods:
+            sradata[lack_method] = getattr(cls, lack_method)
+            modify_json_file(CONFIG_FILE_NAME, lack_method, getattr(cls, lack_method))
+    # 读取配置
+    for key, value in sradata.items():
+        setattr(cls, key, value)
+
+class SRAData:
+    test: bool = False
+    real_width: int = 0
+    """实际宽度"""
+    real_height: int = 0
+    """实际高度"""
+    scaling: float = 1.5
+    """缩放比例"""
+    borderless:bool = False
+    """是否无边框"""
+    left_border:float = 11.25
+    """左边框距离"""
+    up_border:float = 44.25
+    """上边框距离"""
+    auto_battle_persistence: int = 0
+    """是否开启自动战斗"""
+    github_proxy: str = ""
+    """github代理"""
+    rawgithub_proxy: str = ""
+    """rawgithub代理"""
+    webhook_url: str = ""
+    """webhook地址"""
+    start: bool = False
+    """是否第一次运行"""
+    temp_version: str = "0"
+    """图片版本"""
+    map_version: str = "0"
+    """地图版本"""
+    star_version: str = "0"
+    """小助手版本"""
+    open_map: str = "m"
+    """打开地图的按钮"""
+    level: str = "INFO"
+    """日志等级"""
+    debug: bool = False
+    """是否开启debug"""
+    proxies: str = ""
+    """代理"""
+    language: str = "zh_CN"
+    """游戏语言"""
+    move_excursion: int = 0
+    """移动偏移"""
+    move_division_excursion: int = 1
+    """移动偏移除数"""
+    sprint: bool = False
+    """是否开启冲刺"""
+    join_time: int = 8
+    """进入地图时间"""
+    deficiency: bool = True
+    """是否开启捡漏"""
+    img: int = 0
+    """图片编号"""
+    fight_time:int = 300
+    """战斗时间"""
+    fight_data: dict = {}
+    """战斗数据"""
+
+
+    def __init__(self) -> None:
+        ...
+    
+    def __setattr__(self, __name: str, __value: Any) -> None:
+        type_hints = get_type_hints(self) # 获取所有类属性的类型信息
+        __name_type = type_hints.get(__name)
+        if type(__value) != __name_type:
+            raise TypeError(f"类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
+        modify_json_file(CONFIG_FILE_NAME, __name, __value)
+        return super().__setattr__(__name, __value)
+
+    def __getattribute__(self, __name: str) -> Any:
+        load_config_data(SRAData)
+        return super().__getattribute__(__name)
+    
+    def set_config(self, key, value):
+        """
+        说明:
+            设置配置
+        """
+        setattr(self, key, value)
+
+    def get_config(self, key):
+        """
+        说明:
+            获取配置
+        """
+        return getattr(self, key)
+
+sra_config_obj = SRAData()

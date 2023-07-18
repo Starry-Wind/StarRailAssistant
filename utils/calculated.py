@@ -19,7 +19,7 @@ from pynput import mouse
 from pynput.mouse import Controller as MouseController
 from pynput.keyboard import Controller as KeyboardController, Key
 from typing import Dict, Optional, Any, Union, Tuple, List, Literal
-from .config import read_json_file, CONFIG_FILE_NAME, get_file, _
+from .config import sra_config_obj, CONFIG_FILE_NAME, get_file, _
 from .exceptions import Exception
 from .log import log
 from .cv_tools import show_img, find_best_match, match_scaled
@@ -37,10 +37,8 @@ class calculated:
         """
         self.title = title
 
-        self.data = read_json_file(CONFIG_FILE_NAME)
-        log.debug(self.data)
-        self.scaling = self.data.get("scaling", 1)
-        self.DEBUG = self.data.get("debug", False)
+        self.scaling = sra_config_obj.scaling
+        self.DEBUG = sra_config_obj.debug
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
         if start:
@@ -115,10 +113,7 @@ class calculated:
         参数：
             :param points: 百分比坐标
         """
-        scaling = self.data["scaling"]
         left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
-        real_width = self.data["real_width"]
-        real_height = self.data["real_height"]
         x, y = int(left + (right - left) / 100 * points[0]), \
                 int(top + (bottom - top) / 100 * points[1])
         log.debug((x, y))
@@ -201,9 +196,9 @@ class calculated:
         参数:
             :param points: 图像截取范围
         """
-        borderless = self.data.get("borderless", False)
-        left_border = self.data.get("left_border", 11)
-        up_border = self.data.get("up_border", 56)
+        borderless = sra_config_obj.borderless
+        left_border = sra_config_obj.left_border
+        up_border = sra_config_obj.up_border
         #points = (points[0]*1.5/scaling,points[1]*1.5/scaling,points[2]*1.5/scaling,points[3]*1.5/scaling)
         if borderless:
             left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
@@ -414,7 +409,7 @@ class calculated:
         time.sleep(0.1)
         if self.has_red((4, 7, 10, 19)):
             while True:
-                result = self.get_pix_rgb(pos=(1336, 58))
+                result = self.get_pix_rgb(pos=(1422, 59))
                 log.debug(f"进入战斗取色: {result}")
                 if self.compare_lists([0, 0, 222], result) and self.compare_lists(result, [0, 0, 255]):
                     self.Click()
@@ -427,7 +422,7 @@ class calculated:
             self.wait_fight_end()
             return True
         time.sleep(0.2)
-        result = self.get_pix_rgb(pos=(1336, 58))
+        result = self.get_pix_rgb(pos=(1422, 59))
         log.debug(f"进入战斗取色: {result}")
         if not (self.compare_lists([0, 0, 225], result) and self.compare_lists(result, [0, 0, 255])):
             self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
@@ -500,7 +495,7 @@ class calculated:
         """
         #进入战斗
         start_time = time.time()
-        if self.data["auto_battle_persistence"] != 1:  #这个设置建议放弃,看了看浪费性能加容易出问题
+        if sra_config_obj.auto_battle_persistence != 1:  #这个设置建议放弃,看了看浪费性能加容易出问题
             while True:
                 result = self.scan_screenshot(self.auto)
                 if result["max_val"] > 0.95:
@@ -531,7 +526,7 @@ class calculated:
                     log.info(_("完成自动战斗"))
                     break
             time.sleep(1.0) # 缓冲
-            fight_time = self.data.get("fight_time", 120)
+            fight_time = sra_config_obj.fight_time
             if time.time() - start_time > fight_time: # 避免卡死
                 log.info(_("战斗超时"))
                 break
@@ -543,7 +538,7 @@ class calculated:
             视角转动
         """
         # 该公式为不同缩放比之间的转化
-        scaling = self.data["scaling"]
+        scaling = sra_config_obj.scaling
         dx = int(x * scaling)
         i = int(dx/200)
         last = dx - i*200
@@ -565,14 +560,14 @@ class calculated:
             :param com: 键盘操作 wasdf
             :param time 操作时间,单位秒
         '''
-        move_excursion = self.data.get("move_excursion", 0)
-        move_division_excursion = self.data.get("move_division_excursion", 1)
+        move_excursion = sra_config_obj.move_excursion
+        move_division_excursion = sra_config_obj.move_division_excursion
         loc = self.get_loc(map_name=map_name)
         log.debug(loc)
         self.keyboard.press(com)
         result = self.get_pix_r(pos=(1712, 958))
         log.debug(result)
-        if self.data.get("sprint", False) and (self.compare_lists(result, [130, 160, 180]) or self.compare_lists([200, 200, 200], result)):
+        if sra_config_obj.sprint and (self.compare_lists(result, [130, 160, 180]) or self.compare_lists([200, 200, 200], result)):
             time.sleep(0.05)
             log.info("疾跑")
             self.mouse.press(mouse.Button.right)
@@ -841,8 +836,7 @@ class calculated:
         block_join1 = False
         block_join2 = False
         '''
-        join_time = self.data.get("join_time", {})
-        pc_join = join_time.get("pc", 8)
+        join_time = sra_config_obj.join_time
         while True:
             '''
             result = self.get_pix_r(pos=(960, 86))
@@ -862,12 +856,12 @@ class calculated:
                 return endtime
             '''
             endtime = time.time() - start_time
-            result = self.get_pix_rgb(pos=(1336, 58))
+            result = self.get_pix_rgb(pos=(1422, 59))
             log.debug(result)
             if self.compare_lists([0, 0, 222], result):
                 log.info(_("已进入地图"))
                 return endtime
-            if endtime > pc_join:
+            if endtime > join_time:
                 log.info(_("识别超时"))
                 return endtime
             time.sleep(0.1)
