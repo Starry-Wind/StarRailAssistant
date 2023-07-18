@@ -16,9 +16,9 @@ from pathlib import Path
 from typing import Dict, Optional, Any, Union, Tuple
 
 from .log import log
-from .config import read_json_file, CONFIG_FILE_NAME, _
+from .config import sra_config_obj, CONFIG_FILE_NAME, _
 
-proxies=read_json_file(CONFIG_FILE_NAME).get("proxies", "")
+proxies=sra_config_obj.proxies
 transport = AsyncProxyTransport.from_url(proxies) if proxies else None
 
 async def get(url: str,
@@ -97,7 +97,7 @@ async def download(url: str, save_path: Path, page: ft.Page=None, pb: ft.Progres
 
 def webhook_and_log(message):
     log.info(message)
-    url = read_json_file(CONFIG_FILE_NAME, False).get("webhook_url")
+    url = sra_config_obj.webhook_url
     if url == "" or url == None:
         return
     try:
