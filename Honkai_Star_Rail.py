@@ -290,7 +290,9 @@ class SRA:
             self.option_dict[option]()
 
 if __name__ == "__main__":
-    fight_log.info("151")
+    join_time = read_json_file(CONFIG_FILE_NAME).get("join_time", {})
+    if type(join_time) == dict:
+        modify_json_file(CONFIG_FILE_NAME, "join_time", 9)
     sra = SRA()
     try:
         sra.set_config()    # 无config直接更新时初始化config文件

@@ -201,7 +201,16 @@ def load_config_data(cls):
     for key, value in sradata.items():
         setattr(cls, key, value)
 
-class SRAData:
+class SRADataMeta(type):
+    def __setattr__(cls, __name, __value):
+        type_hints = get_type_hints(cls) # 获取所有类属性的类型信息
+        __name_type = type_hints.get(__name)
+        if type(__value) != __name_type and __name_type is not None:
+            raise TypeError(f"类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
+        modify_json_file(CONFIG_FILE_NAME, __name, __value)
+        super().__setattr__(__name, __value)
+
+class SRAData(metaclass=SRADataMeta):
     test: bool = False
     real_width: int = 0
     """实际宽度"""
@@ -243,7 +252,7 @@ class SRAData:
     """游戏语言"""
     move_excursion: int = 0
     """移动偏移"""
-    move_division_excursion: int = 1
+    move_division_excursion: float = 1.0
     """移动偏移除数"""
     sprint: bool = False
     """是否开启冲刺"""
@@ -268,9 +277,17 @@ class SRAData:
         if type(__value) != __name_type:
             raise TypeError(f"类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
         modify_json_file(CONFIG_FILE_NAME, __name, __value)
-        return super().__setattr__(__name, __value)
+        super().__setattr__(__name, __value)
 
     def __getattribute__(self, __name: str) -> Any:
+        if __name == "__dict__":
+            return super().__getattribute__(__name)
+        if __name in self.__dict__:
+            type_hints = get_type_hints(self) # 获取所有类属性的类型信息
+            __name_type = type_hints.get(__name)
+            __value = super().__getattribute__(__name)
+            if type(__value) != __name_type:
+                raise TypeError(f"类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
         load_config_data(SRAData)
         return super().__getattribute__(__name)
     
