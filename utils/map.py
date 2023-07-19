@@ -1,5 +1,5 @@
 import time
-
+from utils.cv_tracker import Tracker
 from .calculated import *
 from .config import get_file, sra_config_obj, read_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
 from .log import log, fight_log, set_log
@@ -15,6 +15,7 @@ class Map:
             self.calculated = calculated(title)
         else:
             self.calculated = calculated(title, det_model_name="en_PP-OCRv3_det", rec_model_name="en_number_mobile_v2.0")
+        self.tr = Tracker()
         self.mouse = self.calculated.mouse
         self.keyboard = self.calculated.keyboard
         self.open_map = sra_config_obj.open_map
@@ -57,6 +58,8 @@ class Map:
                 if self.DEBUG:
                     map_data["map"][map_index]["pos"] = pos
                     log.debug(map_data["map"])
+            elif key =='route':
+                 self.tr.run_route(value)  
             elif key == "f":
                 self.calculated.teleport(key, value)
             elif key == "mouse_move":
