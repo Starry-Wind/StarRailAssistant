@@ -47,7 +47,10 @@ def read_json_file(filename: str, path=False) -> dict:
             else:
                 return data
     else:
-        return {}
+        if path:
+            return {}, filename
+        else:
+            return {}
 
 
 def modify_json_file(filename: str, key, value):
