@@ -5,7 +5,7 @@
   },
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "9c708822aa3cba2ac1254ce57dd13f8a"
+    "hash": "205200bf7c570768f39bf30deb91cebe"
   },
   {
     "path": "README_EN.md",
@@ -65,11 +65,15 @@
   },
   {
     "path": "utils/cv_tracker.py",
-    "hash": "bc3ca6ab9bb7a135959303cfc2097fda"
+    "hash": "2826aef66cb9699d3585efa0407caa10"
   },
   {
     "path": "utils/cv_tools.py",
-    "hash": "9d0fa27540022bbf5e04059a66c49f73"
+    "hash": "30562220bf4127ed62abd9f3fa71ae5a"
+  },
+  {
+    "path": "utils/get_angle.py",
+    "hash": "2dc46330cef1b3720658f62c619b54ac"
   },
   {
     "path": "utils/log.py",
@@ -89,7 +93,7 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "b2c3c06ed2d5d83075d3d4d4a1b3ea56"
+    "hash": "9a1a041a7d41e21997a0ea99d46200cb"
   },
   {
     "path": "utils/adb.py",
@@ -97,11 +101,11 @@
   },
   {
     "path": "utils/map.py",
-    "hash": "6560e0dbd058429f51ba17814a7577aa"
+    "hash": "ef2eeadf10e8e57614bc7347573f9d93"
   },
   {
     "path": "utils/calculated.py",
-    "hash": "d7284bc87dedfc6166a844e337cd8348"
+    "hash": "2ab077de87ed166292305209579db084"
   },
   {
     "path": "utils/update_file.py",
@@ -110,6 +114,10 @@
   {
     "path": "utils/exceptions.py",
     "hash": "2fe9316ec5635fe87cfdf70d1c870a32"
+  },
+  {
+    "path": "utils/route_helper.py",
+    "hash": "cca50ef52d7075c186e12badeb0a35d0"
   },
   {
     "path": "whl/Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl",
