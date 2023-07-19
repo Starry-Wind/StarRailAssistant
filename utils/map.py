@@ -1,5 +1,4 @@
 import time
-
 from .calculated import *
 from .config import get_file, sra_config_obj, read_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
 from .log import log, fight_log, set_log

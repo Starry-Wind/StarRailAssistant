@@ -8,17 +8,152 @@ Description: 一些cv工具
 Copyright (c) 2023 by Xe-No, All Rights Reserved. 
 '''
 
-import os
-import time
-import win32api
+from utils.get_angle import get_angle
+import time 
 import cv2 as cv
 import numpy as np
-import pygetwindow as gw
+import win32gui, win32api, win32con
+import pyautogui
 
-from PIL import ImageGrab, Image
-from pynput.mouse import Controller as MouseController
 
-from .log import log
+def cart_to_polar(xy):
+    x,y = xy
+    angle = np.degrees(np.arctan2(y, x))
+    r = np.linalg.norm([x, y])
+    return angle, r
+
+def get_vec(pos1,pos2):
+    x1,y1 =pos1
+    x2,y2 =pos2
+    return  [x2-x1,y2-y1]
+
+def draw_lines(img, point_list, color=(0, 255, 0), thickness=2):
+    '''
+    在给定的图像上绘制多条线段。
+
+    Args:
+        img: 待绘制的原始图像，可以是 numpy.ndarray 类型。
+        point_list: 包含多个点坐标的列表，用来表示需要连接的线段的端点坐标。
+        color: 线段颜色，可以是元组类型，例如 (0, 255, 0) 表示绿色，默认为 (0, 255, 0)。
+        thickness: 线段宽度，用来控制线段的粗细程度，默认为 2。
+
+    Returns:
+        绘制完成后的图像。
+
+    Raises:
+        TypeError: 如果输入参数格式不正确，则会抛出类型错误异常。
+    '''
+    if not isinstance(img, np.ndarray):
+        raise TypeError('The input `img` parameter must be a numpy.ndarray type.')
+    # if not isinstance(color, tuple) or not all(isinstance(c, int) and 0 <= c <= 255 for c in color):
+    #     raise TypeError('The input `color` parameter must be a tuple of integers between 0 and 255.')
+    if not isinstance(thickness, int) or thickness < 1:
+        raise TypeError('The input `thickness` parameter must be a positive integer.')
+
+    for i in range(len(point_list)-1):
+        pt1 = point_list[i]
+        pt2 = point_list[i+1]
+        cv.line(img, pt1, pt2, color, thickness)
+
+    return img
+
+def get_sorted_waypoints(map_hsv, points):
+    hcolor = {}
+    hcolor['start'] = 180 / 2
+    hcolor['pioneer'] = 60 / 2
+    hcolor['hunt'] = 10 / 2
+    hcolor['garbage'] = 40 / 2
+
+    waypoints = []
+    for point in points:
+        waypoint = {}
+        waypoint['pos'] = point
+        h, s, v = map_hsv[point[1], point[0]]
+        waypoint['s'] = s
+        waypoint['type'] = [k for k, val in hcolor.items() if val == h][0]
+        waypoints.append(waypoint)
+
+    waypoints = sorted(waypoints, key=lambda x: x['s'])
+    si, sp = [[i, waypoint] for i, waypoint in enumerate(waypoints) if waypoint['type'] == 'start'][0]
+    sorted_waypoints = [sp]
+    sp['index'] = 0
+    waypoints.pop(si)
+    cp = sp
+    count = 1
+    while 1:
+
+        if len(waypoints) == 0:
+            break
+        # 根据s，找s==最大值的列表
+        max_s = max(waypoints, key=lambda x: x['s'])['s']
+        print(max_s)
+        max_list = [[i, waypoint] for i, waypoint in enumerate(waypoints) if waypoint['s'] == max_s]
+
+        print(max_list)
+        # 找到最近的点并排序
+        ci, cp = min(max_list, key=lambda x: np.linalg.norm(get_vec(x[1]['pos'], cp['pos'])))
+        # 最大值列表必然位于前面
+        # ci = [ i for i, p in enumerate(max_list) if p['pos'] == cp['pos']][0]
+        cp['index'] = count
+        waypoints.pop(ci)
+        sorted_waypoints.append(cp)
+        count += 1
+    return sorted_waypoints
+
+def find_cluster_points(mask):
+    retval, labels, stats, centroids = cv.connectedComponentsWithStats(mask, connectivity=8)
+    # 输出每个聚类的中心坐标
+    result = []
+    # cv.imwrite('debug/mask.png', mask)
+    for i in range(1, len(stats)):
+        x = int(stats[i][0] + stats[i][2] / 2)
+        y = int(stats[i][1] + stats[i][3] / 2)
+        result.append([x, y])
+    return result
+def find_color_points(img, bgr_color, max_sq = 64):
+    mask = np.sum((img-bgr_color)**2,axis=-1)<= max_sq
+    mask = np.uint8(mask)*255
+    cv.imwrite('debug/mask.png', mask)
+    return find_cluster_points(mask)
+
+def find_color_points_inrange(img, lowerb, upperb):
+    mask = cv.inRange(img, lowerb, upperb)
+    return find_cluster_points(mask)
+
+def find_nearest_point(points, target):
+    """
+    在一个点的列表中找到离目标点最近的点
+    :param points: 一个包含多个点的列表，每个点都是二元组 (x, y)
+    :param target: 目标点，二元组 (x, y)
+    :return: 离目标点最近的点，二元组 (x, y)
+    """
+    # 将点的列表转换为 NumPy 数组
+    points_array = np.array(points)
+    
+    # 将目标点转换为 NumPy 数组，并将其扩展为与 points_array 相同的形状
+    target_array = np.array(target)
+    target_array = np.expand_dims(target_array, axis=0)
+    target_array = np.repeat(target_array, points_array.shape[0], axis=0)
+    
+    # 计算每个点与目标点之间的距离
+    distances = np.linalg.norm(points_array - target_array, axis=1)
+        
+    # 找到距离最小的点的索引
+    nearest_index = np.argmin(distances)
+    
+    # 返回距离最小的点
+    return nearest_index, points[nearest_index]
+
+
+# def find_color_points(img, color):
+# 	ys, xs = np.where(np.all(img == color, axis=-1))[:]
+# 	points = np.array([xs,ys]).T
+# 	return points
+
+def dilate_img(img, iterations = 3):
+	kernel = np.ones((3, 3), np.uint8)
+	dilation = cv.dilate(img, kernel, iterations=iterations)
+	return dilation
 
 def get_binary(img, threshold=200):
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -38,52 +173,44 @@ def show_imgs(imgs, title='Image'):
     cv.waitKey(0)
     cv.destroyAllWindows()  
 
+
+
+def show_imgs(imgs, scale=1, title='Image'):
+    img = np.hstack(imgs)
+    show_img(img, scale, title)
+
 def get_loc(im, imt):
     result = cv.matchTemplate(im, imt, cv.TM_CCORR_NORMED)
     return cv.minMaxLoc(result)
 
-def take_screenshot(rect, platform="PC", order="127.0.0.1:62001", adb_path="temp\\adb\\adb"):
+def take_screenshot(rect):
     # 返回RGB图像
-    if platform == "PC":
-        window = gw.getWindowsWithTitle('崩坏：星穹铁道')[0]
-        left, top, right, bottom = window.left, window.top, window.right, window.bottom
-        #temp = pyautogui.screenshot(region=rect1)
-        #print((rect[0],rect[1],rect[3],rect[2]))
-        temp = ImageGrab.grab((rect[0]+left,rect[1]+top,rect[3]+left,rect[2]+top), all_screens=True)
-    elif platform == "模拟器":
-        os.system(f"{adb_path} -s {order} shell screencap -p /sdcard/Pictures/screencast.png")
-        os.system(f"{adb_path} -s {order} pull /sdcard/Pictures/screencast.png")
-        img_fp = Image.open("./screencast.png")
-        left, top = img_fp.size
-        temp = img_fp.crop((rect[0],rect[1],rect[3],rect[2]))
+    hwnd = win32gui.FindWindow("UnityWndClass", "崩坏：星穹铁道")
+    left, top, right, bottom = win32gui.GetWindowRect(hwnd)
+    rect[0] += left
+    rect[1] += top 
+    temp = pyautogui.screenshot(region=rect)
     screenshot = np.array(temp)
     screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
-    #show_img(screenshot)
     return screenshot
 
 def take_minimap(rect = [47,58,187,187]):
     return take_screenshot(rect)
 
-def take_fine_screenshot(rect = [47,58,187,187], platform="PC", order="127.0.0.1:62001", adb_path="temp\\adb\\adb"):
-    total = take_screenshot(rect, platform, order, adb_path)
+def take_fine_screenshot(rect = [47,58,187,187], n = 5, dt=0.01, dy=200):
+    total = take_screenshot(rect)
     n = 5
     for i in range(n):
-        if platform == "PC":
-            win32api.mouse_event(1, 0, -200)  # 进行视角移动
-        elif platform == "模拟器":
-            os.system(f"{adb_path} -s {order} shell input swipe 636 359 636 184 50")
-        mask = cv.compare(total, take_screenshot(rect, platform, order, adb_path), cv.CMP_EQ )
+        win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, -dy, 0, 0)
+        mask = cv.compare(total, take_screenshot(rect), cv.CMP_EQ )
         total = cv.bitwise_and(total, mask )
-        time.sleep(0.01)
+        time.sleep(dt)
     time.sleep(0.1)
     for i in range(n):
-        if platform == "PC":
-            win32api.mouse_event(1, 0, 200)  # 进行视角移动
-        elif platform == "模拟器":
-            os.system(f"{adb_path} -s {order} shell input swipe 636 362 636 495 50")
-        mask = cv.compare(total, take_screenshot(rect, platform, order, adb_path), cv.CMP_EQ )
+        win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, dy, 0, 0)
+        mask = cv.compare(total, take_screenshot(rect), cv.CMP_EQ )
         total = cv.bitwise_and(total, mask )
-        time.sleep(0.01)
+        time.sleep(dt)
     minimap = cv.bitwise_and(total, mask )
     return minimap
 
@@ -91,10 +218,26 @@ def get_mask(img, color_range):
     lower, upper = color_range
     return cv.inRange(img, lower, upper)
 
-def get_camera_fan(color = [130, 130, 60],angle=0, w=187, h=187, delta=90):
+def get_mask_mk2(img_r):
+	img_hsv = cv.cvtColor(img_r, cv.COLOR_BGR2HSV)
+	h, s, v = cv.split(img_hsv)
+	# 筛选白色 H S<10  V 60~90%
+	mask1 = (s <25)*(v>255*0.6)*(v<255*0.9)
+	# 筛选蓝色摄像头扫过的白色
+	mask2 = (95 <h)*(h<105)*(0<s)*(s<50)*(200<v)*(v<240)
+	mask = mask1 | mask2
+	img_mask = mask.astype(np.uint8)*255
+	return img_mask
+
+def get_mask_mk3(map_bgra):
+	b,g,r,a = cv.split(map_bgra)
+	mask = (a>250) & (b>80)
+	return mask.astype(np.uint8)*255
+
+def get_camera_fan(color = [130, 130, 60],angle=0, w=187, h=187, delta=90, dimen =3, radius= 90):
     center = (w//2, h//2)
-    radius = min(h, w)//2
-    fan = np.zeros((h, w, 3), np.uint8)
+    # radius = min(h, w)//2
+    fan = np.zeros((h, w, dimen), np.uint8)
     # 计算圆心位置
     cx, cy = w // 2, h // 2
     axes = (w // 2, h // 2) 
@@ -136,21 +279,35 @@ def filter_contours_surround_point(gray, point):
             
     return surrounded_contours
 
-def get_furthest_point(points):
-	# 计算中心点坐标
-	center = np.mean(points, axis=0)
-	# 初始化最大距离为 0，最远点为第一个点
-	max_distance = 0
-	furthest_point = points[0]
-	# 枚举每个点
-	for point in points:
-		# 计算该点到中心点的距离
-		distance = np.linalg.norm(point - center)
-		# 如果该点到中心点的距离大于当前最大距离，则更新最大距离和最远点
-		if distance > max_distance:
-			max_distance = distance
-			furthest_point = point
-	return furthest_point
+
+def sift_match(img1, img2):
+    # 创建SIFT对象
+    sift = cv.SIFT_create()
+
+    # 检测关键点和描述符
+    kp1, des1 = sift.detectAndCompute(img1, None)
+    kp2, des2 = sift.detectAndCompute(img2, None)
+
+
+    # 建立FLANN匹配对象
+    FLANN_INDEX_KDTREE = 0
+    index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
+    search_params = dict(checks=50)
+    flann = cv.FlannBasedMatcher(index_params, search_params)
+
+    # 根据描述符进行匹配
+    matches = flann.knnMatch(des1, des2, k=2)
+
+    # 筛选最优匹配
+    good_matches = []
+    for m, n in matches:
+        if m.distance < 0.9 * n.distance:
+            good_matches.append(m)
+
+    # 绘制匹配结果
+    img_match = cv.drawMatches(img1, kp1, img2, kp2, good_matches, None, flags=2)
+
+    return img_match
 
 def match_scaled(img, template, scale, mask=False):
     # 返回最大相似度，中心点x、y
@@ -206,52 +363,3 @@ def find_best_match(img, template, scale_range=(140, 170, 1)):
             max_corr = max_val
 
     return scale_percent, max_corr, max_loc, length, width
-
-def get_angle(debug=False, use_sample_image=False):
-	x,y = [117,128]
-	w,h = [47,47]
-
-	if use_sample_image:
-		# 任意一张截图即可，最重要的是保留左上部分
-		img = cv.imread('temp/sample.png')[y:y+h, x:x+w]
-	else:
-		img = np.array(ImageGrab.grab())[y:y+h, x:x+w] 
-		img = cv.cvtColor(img, cv.COLOR_RGB2BGR) # pyautogui截取的图为RGB
-	img0 = img.copy()
-	hsv = cv.cvtColor(img, cv.COLOR_BGR2HSV)
-	
-	# 定义青色掩膜
-	lower_cyan = np.array([78, 200, 200]) # 使用较高饱和度下界，过滤掉摄像头圆弧
-	upper_cyan = np.array([99, 255, 255])
-	cyan_mask = cv.inRange(hsv, lower_cyan, upper_cyan)
-
-	# 查找轮廓
-	contours, hierarchy = cv.findContours(cyan_mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-
-	# 暴力断定只有一个青色箭头，获取箭头顶点
-	if len(contours) != 1:
-		return False
-	contour = contours[0]
-	peri = cv.arcLength(contour, True)
-	approx = cv.approxPolyDP(contour, 0.03 * peri, True)
-	fp = get_furthest_point(approx[:,0,:])
-
-
-	# 获取角度
-	fx, fy = fp
-	dx = fx - w // 2
-	dy = fy - h // 2
-	angle = np.degrees(np.arctan2(dy, dx))
-	angle = np.around(angle, 2)	
-
-	print(angle)
-	if debug:
-		# 画出原图、二值掩膜图以及轮廓图
-		cv.polylines(img, [approx], True, (0, 0, 255), thickness=2)
-		cv.circle(img, fp, 0, (255,255,255),9)
-		cv.imshow("result", np.hstack((img0,hsv,img)))
-		cv.waitKey(0)
-		cv.destroyAllWindows()
-
-	return angle
-
