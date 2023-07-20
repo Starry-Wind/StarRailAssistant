@@ -39,6 +39,3 @@ jobs:
           automatic_release_tag: "latest"
           prerelease: true
           title: "预构建版本"
-          files: |
-            LICENSE.txt
-            gui.zip

@@ -7,10 +7,13 @@ changelog:
     authors:
       - octocat
   categories:
-    - title: 壮举
+    - title: Fixs
+      labels:
+        - fix
+    - title: Feats
       labels:
         - feat
-    - title: 日常更新
+    - title: Chores
       labels:
         - enhancement
         - chore

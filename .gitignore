@@ -110,10 +110,12 @@ venv.bak/
 # custom 
 logs/
 map/
+maps/
 map_data/
 temp/
 tmp/
 plugins/
+StarRailAssistant_backup/
 test.py
 map_list.json
 LICENSE
@@ -131,3 +133,7 @@ gettext.bat
 gui.build/
 gui.dist/
 scr.png
+build.bat
+*.pot
+*.po
+/*.mo

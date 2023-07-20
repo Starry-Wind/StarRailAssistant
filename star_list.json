@@ -1,118 +1,146 @@
 [
   {
-    "path": "get_width.py",
-    "hash": "ef485b53c7fd61365f80235f2d3f61fd"
+    "path": "requirements.txt",
+    "hash": "168bf19887a7da79ae637d9d7d7d3593"
+  },
+  {
+    "path": "Honkai_Star_Rail.py",
+    "hash": "7243fd192691e7f657f821ea40e4dfb2"
   },
   {
     "path": "README_EN.md",
-    "hash": "9a86da75193b8ea93857e1fbee6e32cd"
+    "hash": "62cd316b3b5cafca47b24d9647f957ff"
   },
   {
     "path": "map_res_list.py",
     "hash": "2027d7dba3a3e12565621b101a2dc1cb"
   },
   {
-    "path": "requirements.txt",
-    "hash": "68037e80a58eb1b5fc9dc374caa8e868"
-  },
-  {
     "path": "gui.py",
-    "hash": "411e902e5d4f69b0178a6b5357998eea"
+    "hash": "64aceead68d47ade3bf556e6048b8666"
   },
   {
-    "path": "README.md",
-    "hash": "5935d980c91038f20bba7c0d22cf8d17"
+    "path": "get_width.py",
+    "hash": "0f32aae400f9f50117bb2dee7eb0f4c7"
   },
   {
     "path": "README_CHT.md",
-    "hash": "ba978c2cf39e8640c46a90f287dbcba5"
+    "hash": "03fe99bddfc640bb2d83f4a29857147d"
   },
   {
-    "path": "Honkai_Star_Rail.py",
-    "hash": "3dba016f683b37439bc2a97fc9be444e"
+    "path": "README.md",
+    "hash": "76c71cca70febc6fadd0391415171d5c"
   },
   {
-    "path": "locale/zh_TW/LC_MESSAGES/sra.mo",
-    "hash": "ef66f8b317d24e3eb326e739cb9b00ee"
+    "path": "model/label_cn.txt",
+    "hash": "e3f7c9400f4379e05cadbbc8a43dda45"
   },
   {
-    "path": "locale/zh_CN/LC_MESSAGES/sra.mo",
-    "hash": "5819374a1e0853c814e081b6f5d33823"
+    "path": "model/cnocr/1.2/ppocr/ch_PP-OCRv3_det_infer.onnx",
+    "hash": "5732f8c84bd4cc0dab35094e7260f080"
   },
   {
-    "path": "locale/zh_MO/LC_MESSAGES/sra.mo",
-    "hash": "ef66f8b317d24e3eb326e739cb9b00ee"
+    "path": "model/cnocr/1.2/ppocr/en_PP-OCRv3_det_infer.onnx",
+    "hash": "72708a3ac241e25fefbc606832dc7529"
   },
   {
-    "path": "locale/zh_HK/LC_MESSAGES/sra.mo",
-    "hash": "ef66f8b317d24e3eb326e739cb9b00ee"
+    "path": "model/cnstd/2.2/ppocr/en_PP-OCRv3_rec_infer.onnx",
+    "hash": "003da6ca16cae88c5270882fc5e7417b"
   },
   {
-    "path": "whl/cnstd-1.2.2-py3-none-any.whl",
-    "hash": "2e700dd1d42f71c71b739bd6afa67a8a"
+    "path": "model/cnstd/2.2/ppocr/en_number_mobile_v2.0_rec_infer.onnx",
+    "hash": "442ea7b4dabdbaec95af17a6d17c3503"
   },
   {
-    "path": "whl/Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl",
-    "hash": "0c19795eb68713cde783a434ea636ba9"
+    "path": "model/cnstd/2.2/densenet_lite_134-fc/cnocr-v2.2-densenet_lite_134-fc-epoch=034-complete_match_epoch=0.8376-model.onnx",
+    "hash": "332265c72378b39e83ced6b4e42954c4"
   },
   {
-    "path": "whl/cnocr-2.2.2.3-py3-none-any.whl",
-    "hash": "fff249a0f8c75f5bc4f0f97c95880bd8"
-  },
-  {
-    "path": "whl/Polygon3-3.0.9-cp311-cp311-win_amd64.whl",
-    "hash": "43a2cab179598fdaaa21da76cdaaaafc"
-  },
-  {
-    "path": "utils/exceptions.py",
-    "hash": "772b4ac1f24220955f07568e3359068c"
-  },
-  {
-    "path": "utils/calculated.py",
-    "hash": "aae9273b0e27e1a01b3f691b650a8158"
-  },
-  {
-    "path": "utils/adb.py",
-    "hash": "513d63a20573fb0ac3ba3e71579db2b5"
-  },
-  {
-    "path": "utils/commission.py",
-    "hash": "60c7adb8066b50b7b1bbed236d7e0b6a"
-  },
-  {
-    "path": "utils/cv_tracker.py",
-    "hash": "b540bcf1f23e64c1443a23c0d382db99"
-  },
-  {
-    "path": "utils/map.py",
-    "hash": "701ad1b85a51a08b783d9132e8148a08"
+    "path": "model/cnstd/2.2/densenet_lite_114-fc/cnocr-v2.2-densenet_lite_114-fc-epoch=037-complete_match_epoch=0.7859-model.onnx",
+    "hash": "d661b811419ff7dde7eb8543690cdd2b"
   },
   {
     "path": "utils/requests.py",
     "hash": "2960805b0eee0488f5ee70217f8b2964"
   },
   {
-    "path": "utils/record_v7.2.py",
-    "hash": "7828b51751667aafed05f2419651582e"
-  },
-  {
-    "path": "utils/update_file.py",
-    "hash": "fbacc3f136a3063f65c39975df529a2a"
-  },
-  {
-    "path": "utils/simulated_universe.py",
-    "hash": "fd3af60ca5524d8a288c21a0aa206f37"
-  },
-  {
-    "path": "utils/log.py",
-    "hash": "bb3f918366142b8dac304288d5070dd7"
+    "path": "utils/cv_tracker.py",
+    "hash": "bc3ca6ab9bb7a135959303cfc2097fda"
   },
   {
     "path": "utils/cv_tools.py",
-    "hash": "47d888c1c606f5dea5b690b72e586d32"
+    "hash": "490029e70aca7363c8e26ae4ee1d1df6"
+  },
+  {
+    "path": "utils/log.py",
+    "hash": "86fba4f616fb3a8d03cf63a88fd60fff"
+  },
+  {
+    "path": "utils/simulated_universe.py",
+    "hash": "1f66356054e142c4aa11a65b3680b465"
+  },
+  {
+    "path": "utils/commission.py",
+    "hash": "741433251d5d1de1eab82a21cac4ab81"
+  },
+  {
+    "path": "utils/record_v7.2.py",
+    "hash": "2acb4a974b3cc2814be54e97ad784c23"
   },
   {
     "path": "utils/config.py",
-    "hash": "892bbfd575e7f70001cde28e03d5582d"
+    "hash": "a7ac7df25837d7c7af92438fe0ca3a54"
+  },
+  {
+    "path": "utils/adb.py",
+    "hash": "20961effe5eb9e7c6eb71252bf1749db"
+  },
+  {
+    "path": "utils/map.py",
+    "hash": "eacb997f3d03d6b8fe12d2240eb77a98"
+  },
+  {
+    "path": "utils/calculated.py",
+    "hash": "784b5904e60fc93fea5b8705aa2645f9"
+  },
+  {
+    "path": "utils/update_file.py",
+    "hash": "f9cd94b36f2e542a14c6e05968e3c96f"
+  },
+  {
+    "path": "utils/exceptions.py",
+    "hash": "2fe9316ec5635fe87cfdf70d1c870a32"
+  },
+  {
+    "path": "whl/Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl",
+    "hash": "0c19795eb68713cde783a434ea636ba9"
+  },
+  {
+    "path": "whl/httpx_socks-0.7.7-py3-none-any.whl",
+    "hash": "9c9fcdf730445180029471858d8e8c27"
+  },
+  {
+    "path": "whl/Polygon3-3.0.9-cp311-cp311-win_amd64.whl",
+    "hash": "43a2cab179598fdaaa21da76cdaaaafc"
+  },
+  {
+    "path": "whl/cnocr-2.2.2.3-py3-none-any.whl",
+    "hash": "fff249a0f8c75f5bc4f0f97c95880bd8"
+  },
+  {
+    "path": "whl/cnstd-1.2.2-py3-none-any.whl",
+    "hash": "2e700dd1d42f71c71b739bd6afa67a8a"
+  },
+  {
+    "path": "locale/EN/LC_MESSAGES/sra.mo",
+    "hash": "4c9ed87ca1d8f72de21590de507c9d32"
+  },
+  {
+    "path": "locale/zh_TC/LC_MESSAGES/sra.mo",
+    "hash": "ef66f8b317d24e3eb326e739cb9b00ee"
+  },
+  {
+    "path": "locale/zh_CN/LC_MESSAGES/sra.mo",
+    "hash": "0a0ccfe2f4f2da8626fda930bd84ef9c"
   }
 ]
