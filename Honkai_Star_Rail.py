@@ -163,7 +163,7 @@ class SRA:
 
     def set_config(self, start = True):
         global game_title
-        if not read_json_file(CONFIG_FILE_NAME, False).get('start') or not start:
+        if not sra_config_obj.start or not start:
             title = "请选择你游戏的运行语言:"
             options = {
                 "简体中文": "zh_CN",
@@ -171,7 +171,7 @@ class SRA:
                 "English": "EN"
             }
             option = questionary.select(title, options).ask()
-            modify_json_file(CONFIG_FILE_NAME, "language", options[option])
+            sra_config_obj.language = options[option]
             import utils.config
             importlib.reload(utils.config)
             _ = utils.config._
@@ -194,7 +194,7 @@ class SRA:
                 url_ms.append(options[index]+f" {ms}ms")
             url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
             option = options[url_ms.index(questionary.select(title, url_ms).ask())]
-            modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
+            sra_config_obj.github_proxy = option
             title = _("请选择下载代理地址：（不使用代理选空白选项）")
             options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', '']
             url_ms = []
@@ -214,17 +214,21 @@ class SRA:
                 url_ms.append(options[index]+f" {ms}ms")
             url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
             option = options[url_ms.index(questionary.select(title, url_ms).ask())]
-            modify_json_file(CONFIG_FILE_NAME, "rawgithub_proxy", option)
+            sra_config_obj.rawgithub_proxy = option
             while True:
-                if read_json_file(CONFIG_FILE_NAME, False).get('temp_version') == "0" or read_json_file(CONFIG_FILE_NAME, False).get('map_version') == "0":
+                if sra_config_obj.temp_version == "0" or sra_config_obj.map_version == "0":
                     sra.up_data()
                 else:
                     break
             title = _("你游戏里开启了连续自动战斗吗？：")
             options = [_('没打开'), _('打开了'), _('这是什么')]
             option = questionary.select(title, options).ask()
-            modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", options.index(option))
-            modify_json_file(CONFIG_FILE_NAME, "start", True)
+            sra_config_obj.auto_battle_persistence = options.index(option)
+            title = _("你游戏里开启了连续自动战斗吗？：")
+            options = ["Starry-Wind", "Night-stars-1"]
+            option = questionary.select(title, options).ask()
+            sra_config_obj.github_source = option
+            sra_config_obj.start = True
             raise Exception(_("请重新运行"))
 
     def up_data(self):
@@ -292,7 +296,7 @@ class SRA:
 if __name__ == "__main__":
     join_time = read_json_file(CONFIG_FILE_NAME).get("join_time", {})
     if type(join_time) == dict:
-        modify_json_file(CONFIG_FILE_NAME, "join_time", 9)
+        sra_config_obj.join_time = 9
     sra = SRA()
     try:
         sra.set_config()    # 无config直接更新时初始化config文件
