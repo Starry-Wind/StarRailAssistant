@@ -132,6 +132,7 @@ class update_file:
                         zip_path: str="",
                         name: str="",
                         delete_file: bool=False) -> bool:
+        global tmp_dir
         for index, __ in enumerate(range(3)):
             try:
                 up_url = "https://api.github.com/repos/Starry-Wind/StarRailAssistant/releases/latest"
@@ -252,6 +253,8 @@ class update_file:
             :param name: 更新的文件名称
             :param delete_file: 是否删除文件
         """
+        if name == _("脚本"):
+            await self.upsra(rm_all, skip_verify, type, version, url_zip, unzip_path, keep_folder, keep_file, zip_path, name, delete_file)
         global tmp_dir
         url_proxy = sra_config_obj.github_proxy
         raw_proxy = sra_config_obj.rawgithub_proxy
@@ -270,8 +273,6 @@ class update_file:
 
         is_latest, remote_version, local_version = await self.is_latest(type, version)
         if not is_latest:
-            if name == _("脚本"):
-                await self.upsra(rm_all, skip_verify, type, version, url_zip, unzip_path, keep_folder, keep_file, zip_path, name, delete_file)
                 #await self.copy_files(Path(), Path() / "StarRailAssistant_backup", ["utils", "temp", "map", "config.json", "get_width.py", "Honkai_Star_Rail.py", "gui.py"])
             log.info(_("[资源文件更新]本地版本与远程版本不符，开始更新资源文件->{url_zip}").format(url_zip=url_zip))
             for __ in range(3):
