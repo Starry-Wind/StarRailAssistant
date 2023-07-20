@@ -5,7 +5,7 @@
   },
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "7243fd192691e7f657f821ea40e4dfb2"
+    "hash": "7a6949218d3ad8e0c77544aa8d3c4e24"
   },
   {
     "path": "README_EN.md",
@@ -17,11 +17,11 @@
   },
   {
     "path": "gui.py",
-    "hash": "64aceead68d47ade3bf556e6048b8666"
+    "hash": "b3559d90dc3d5e25d7fb775222a6f3e9"
   },
   {
     "path": "get_width.py",
-    "hash": "0f32aae400f9f50117bb2dee7eb0f4c7"
+    "hash": "61565cea390d9c40255924732e732f15"
   },
   {
     "path": "README_CHT.md",
@@ -29,7 +29,7 @@
   },
   {
     "path": "README.md",
-    "hash": "76c71cca70febc6fadd0391415171d5c"
+    "hash": "128cc342a20ff51f35219d18e602c21a"
   },
   {
     "path": "model/label_cn.txt",
@@ -61,35 +61,31 @@
   },
   {
     "path": "utils/requests.py",
-    "hash": "2960805b0eee0488f5ee70217f8b2964"
-  },
-  {
-    "path": "utils/cv_tracker.py",
-    "hash": "bc3ca6ab9bb7a135959303cfc2097fda"
+    "hash": "27952d3e76aca6502a540c69dbf58a2a"
   },
   {
     "path": "utils/cv_tools.py",
-    "hash": "490029e70aca7363c8e26ae4ee1d1df6"
+    "hash": "85f7aef8f76693942761a31d67f23218"
   },
   {
     "path": "utils/log.py",
-    "hash": "86fba4f616fb3a8d03cf63a88fd60fff"
+    "hash": "76b71a9efcb79996420e23449e73df14"
   },
   {
     "path": "utils/simulated_universe.py",
-    "hash": "1f66356054e142c4aa11a65b3680b465"
+    "hash": "796877ec7857afdcfdfbc2a66014c75c"
   },
   {
     "path": "utils/commission.py",
-    "hash": "741433251d5d1de1eab82a21cac4ab81"
+    "hash": "f2911ffe8697a5cfc6301ba66e383116"
   },
   {
     "path": "utils/record_v7.2.py",
-    "hash": "2acb4a974b3cc2814be54e97ad784c23"
+    "hash": "ec556c58de5e29213b90a0e00e42b96f"
   },
   {
     "path": "utils/config.py",
-    "hash": "a7ac7df25837d7c7af92438fe0ca3a54"
+    "hash": "01e950abeaac78ba1b1c0a082e7ce09f"
   },
   {
     "path": "utils/adb.py",
@@ -97,15 +93,15 @@
   },
   {
     "path": "utils/map.py",
-    "hash": "eacb997f3d03d6b8fe12d2240eb77a98"
+    "hash": "6fc58383a1c32cf1970ddc7ed5326f5d"
   },
   {
     "path": "utils/calculated.py",
-    "hash": "784b5904e60fc93fea5b8705aa2645f9"
+    "hash": "d6dcb93858acaf01f540904cb9ca1178"
   },
   {
     "path": "utils/update_file.py",
-    "hash": "f9cd94b36f2e542a14c6e05968e3c96f"
+    "hash": "6fd1935c8dc3e7607ab58c46b4deba03"
   },
   {
     "path": "utils/exceptions.py",
