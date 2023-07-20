@@ -150,7 +150,7 @@ class update_file:
         else:
             log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
             raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
-        if version == sra_config_obj.star_version:
+        if version != sra_config_obj.star_version:
             dl_url = f"https://github.com/Starry-Wind/StarRailAssistant/archive/refs/tags/{version}.zip"
             tmp_zip = Path() / tmp_dir / f"{type}.zip"
             zip_path = f"StarRailAssistant-{version.replace('v','')}/"
@@ -254,7 +254,7 @@ class update_file:
             :param delete_file: 是否删除文件
         """
         if name == _("脚本"):
-            await self.upsra(rm_all, skip_verify, type, version, url_zip, unzip_path, keep_folder, keep_file, zip_path, name, delete_file)
+            return await self.upsra(rm_all, skip_verify, type, version, url_zip, unzip_path, keep_folder, keep_file, zip_path, name, delete_file)
         global tmp_dir
         url_proxy = sra_config_obj.github_proxy
         raw_proxy = sra_config_obj.rawgithub_proxy
