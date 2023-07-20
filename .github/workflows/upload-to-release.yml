@@ -11,14 +11,28 @@ on:
 jobs:
   pre-release:
     name: "Pre Release"
-    runs-on: "ubuntu-latest"
+    runs-on: windows-latest
 
     steps:
-      # ...
-      - name: "Build & test"
-        run: |
-          echo "done!"
+      - name: Checkout repo
+        uses: actions/checkout@master
 
+      - name: Setup python
+        uses: actions/setup-python@v3.1.4
+        with:
+          python-version: 3.11.3
+
+      - name: Update Requirements
+        run: |
+          pip install -r requirements.txt
+          pip install nuitka
+          python -m nuitka --mingw64 --standalone --windows-disable-console --show-progress --show-memory --follow-import-to=need --nofollow-imports --enable-plugin=tk-inter .\gui.py
+      
+      - name: package
+        shell: pwsh
+        run: |
+          Compress-Archive -Path ./gui.dist gui.zip'
+          
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.SRA_TOKEN }}"
