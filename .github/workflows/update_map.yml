@@ -6,6 +6,7 @@ on:
     paths:
       - 'map/**'
       - 'temp/**'
+      - 'maps/**'
 
   workflow_dispatch:
 
