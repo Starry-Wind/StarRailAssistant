@@ -37,6 +37,7 @@ class update_file:
         """
         self.page = page
         self.pb = pb
+        self.github_source = sra_config_obj.github_source
 
     async def verify_file_hash(self, json_path: Path, keep_file: Optional[List[str]] = []) -> bool:
         """
@@ -135,7 +136,7 @@ class update_file:
         global tmp_dir
         for index, __ in enumerate(range(3)):
             try:
-                up_url = "https://api.github.com/repos/Starry-Wind/StarRailAssistant/releases/latest"
+                up_url = f"https://api.github.com/repos/{self.github_source}/StarRailAssistant/releases/latest"
                 up_reponse = await get(up_url)
                 up_data = up_reponse.json()
                 version: str = up_data.get("tag_name")
@@ -151,7 +152,7 @@ class update_file:
             log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
             raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
         if version != sra_config_obj.star_version:
-            dl_url = f"https://github.com/Starry-Wind/StarRailAssistant/archive/refs/tags/{version}.zip"
+            dl_url = f"https://github.com/{self.github_source}/StarRailAssistant/archive/refs/tags/{version}.zip"
             tmp_zip = Path() / tmp_dir / f"{type}.zip"
             zip_path = f"StarRailAssistant-{version.replace('v','')}/"
             await self.copy_files(Path(), Path() / "StarRailAssistant_backup", ["utils", "temp", "map", "config.json", "get_width.py", "Honkai_Star_Rail.py", "gui.py"])
@@ -197,7 +198,7 @@ class update_file:
             :param version: 版本验证地址/仓库分支名称 map
         """
         raw_proxy = sra_config_obj.rawgithub_proxy
-        url_version = f"{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/version.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/version.json".replace("raw.githubusercontent.com", raw_proxy)
+        url_version = f"{raw_proxy}https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/version.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/version.json".replace("raw.githubusercontent.com", raw_proxy)
         log.info(_("[资源文件更新]正在检查远程版本是否有更新...")) if is_log else None
         local_version = sra_config_obj.get_config(f"{type}_version") # read_json_file(CONFIG_FILE_NAME).get(f"{type}_version", "0")
         for index, __ in enumerate(range(3)):
@@ -259,7 +260,7 @@ class update_file:
         url_proxy = sra_config_obj.github_proxy
         raw_proxy = sra_config_obj.rawgithub_proxy
         url_zip = url_proxy+url_zip if "http" in url_proxy or url_proxy == "" else url_zip.replace("github.com", url_proxy)
-        url_list = f"{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/{type}_list.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/{type}_list.json".replace("raw.githubusercontent.com", raw_proxy)
+        url_list = f"{raw_proxy}https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/{type}_list.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/{type}_list.json".replace("raw.githubusercontent.com", raw_proxy)
         
         #tmp_zip = os.path.join(tmp_dir, f"{type}.zip")
         tmp_zip = Path() / tmp_dir / f"{type}.zip"
