@@ -110,6 +110,7 @@ venv.bak/
 # custom 
 logs/
 map/
+maps/
 map_data/
 temp/
 tmp/

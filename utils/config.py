@@ -188,12 +188,15 @@ def get_class_methods(cls):
             methods.append(name)
     return methods
 
-def load_config_data(cls):
+def load_config_data(cls, __name):
     """
     加载配置文件
     """
-    methods= get_class_methods(cls)
+    #methods = get_class_methods(cls)
     sradata = read_json_file(CONFIG_FILE_NAME)
+    if __name in sradata:
+        setattr(cls, __name, sradata[__name])
+    '''
     lack_methods = set(methods) - set(sradata.keys()) # 获取缺少的配置
     # 如果缺少配置则添加
     if lack_methods:
@@ -203,13 +206,14 @@ def load_config_data(cls):
     # 读取配置
     for key, value in sradata.items():
         setattr(cls, key, value)
+    '''
 
 class SRADataMeta(type):
     def __setattr__(cls, __name, __value):
         type_hints = get_type_hints(cls) # 获取所有类属性的类型信息
         __name_type = type_hints.get(__name)
-        if type(__value) != __name_type and __name_type is not None:
-            raise TypeError(f"类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
+        if  __name_type is not None and not isinstance(__value, __name_type):
+            raise TypeError(f"{__name}类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
         modify_json_file(CONFIG_FILE_NAME, __name, __value)
         super().__setattr__(__name, __value)
 
@@ -269,6 +273,10 @@ class SRAData(metaclass=SRADataMeta):
     """战斗时间"""
     fight_data: dict = {}
     """战斗数据"""
+    team_number: int = 1
+    """切换队伍的队伍编号"""
+    stop: bool = False
+    """是否停止"""
 
 
     def __init__(self) -> None:
@@ -277,21 +285,21 @@ class SRAData(metaclass=SRADataMeta):
     def __setattr__(self, __name: str, __value: Any) -> None:
         type_hints = get_type_hints(self) # 获取所有类属性的类型信息
         __name_type = type_hints.get(__name)
-        if type(__value) != __name_type:
-            raise TypeError(f"类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
+        if not isinstance(__value, __name_type):
+            raise TypeError(f"{__name}类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
         modify_json_file(CONFIG_FILE_NAME, __name, __value)
         super().__setattr__(__name, __value)
 
     def __getattribute__(self, __name: str) -> Any:
-        if __name == "__dict__":
+        if "__" in __name:
             return super().__getattribute__(__name)
         if __name in self.__dict__:
             type_hints = get_type_hints(self) # 获取所有类属性的类型信息
             __name_type = type_hints.get(__name)
             __value = super().__getattribute__(__name)
-            if type(__value) != __name_type:
-                raise TypeError(f"类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
-        load_config_data(SRAData)
+            if not isinstance(__value, __name_type):
+                raise TypeError(f"{__name}类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
+        load_config_data(SRAData, __name)
         return super().__getattribute__(__name)
     
     def set_config(self, key, value):

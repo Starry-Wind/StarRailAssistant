@@ -2,7 +2,7 @@
 Author: AlisaCat
 Date: 2023-05-07 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-12 21:15:15
+LastEditTime: 2023-07-19 21:35:30
 Description: wasd移动，x是进战斗，鼠标左键是打障碍物等，不要用鼠标移动视角，用方向键左右来移动视角（脚本运行后方向键左右会映射成鼠标）
             F9停止录制并保存
 Copyright (c) 2023 by AlisaCat, All Rights Reserved. 
@@ -44,7 +44,7 @@ key_list = ['w', 's', 'a', 'd', 'f', 'x']  # 匹配锄大地
 # 输出列表
 event_list = []
 # 不同操作间延迟记录
-last_time = time.time()
+last_time = time.perf_counter()
 # 按键按下的时间字典
 # key_down_time = {}
 # 创建一个默认值为0的字典
@@ -59,7 +59,7 @@ mouse_val = 200  # 每次视角移动距离
 
 save_name = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 
-def Click(points):
+def click(points):
     x, y = points
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,x,y,0,0)#按下
     time.sleep(0.5)
@@ -195,22 +195,22 @@ def on_press(key):
             pass
         elif key.char in key_list:
             save_mouse_move_by_key()
-            key_down_time[key.char] = time.time()
+            key_down_time[key.char] = time.perf_counter()
             if debug_mode:
-                print("捕捉按键按下:", key.char, time.time())
+                print("捕捉按键按下:", key.char, time.perf_counter())
     except AttributeError:
         pass
 
 
 def on_release(key):
+    current_time = time.perf_counter()
     global last_time, key_down_time, mouse_move_pos_list, cen_mouse_pos, mouse_watch, save_name
-    current_time = time.time()
     try:
         if key.char in key_list and key.char in key_down_time:
             event_list.append(
                 {'key': key.char, 'time_sleep': key_down_time[key.char] - last_time,
-                 'duration': time.time() - key_down_time[key.char]})
-            last_time = time.time()
+                 'duration': current_time - key_down_time[key.char]})
+            last_time = time.perf_counter()
             del key_down_time[key.char]
             if debug_mode:
                 print("捕捉:", event_list[-1])
@@ -218,7 +218,7 @@ def on_release(key):
                 if debug_mode:
                     print("捕捉X进入战斗")
                 mouse_watch = False
-                Click(cen_mouse_pos)
+                click(cen_mouse_pos)
                 mouse_watch = True
         if key.char == "v":
             if debug_mode:
@@ -279,7 +279,7 @@ def on_click(x, y, button, pressed):
         global last_time
         if pressed:
             event_list.append(
-                {'key': 'click', 'time_sleep': time.time() - last_time})
+                {'key': 'click', 'time_sleep': time.perf_counter() - last_time})
             print("捕捉:", event_list[-1])
     else:
         pass
@@ -322,9 +322,9 @@ def save_json():
         elif 'mouse_move_dxy' in element_save:
             normal_save_dict["map"].append(
                 {"mouse_move": element_save['mouse_move_dxy'][0]})
-    if not os.path.exists("map"):
-        os.makedirs("map")
-    with open(f'map//{save_name}.json', 'wb') as f:
+    if not os.path.exists("maps"):
+        os.makedirs("maps")
+    with open(f'maps//{save_name}.json', 'wb') as f:
         f.write(orjson.dumps(normal_save_dict, option=orjson.OPT_INDENT_2))
 
 

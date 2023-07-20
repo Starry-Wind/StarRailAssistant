@@ -37,7 +37,7 @@ class Map:
                     points = result["max_loc"]
                     log.debug(points)
                     for i in range(6):
-                        self.calculated.Click(points)
+                        self.calculated.click(points)
                 break
             time.sleep(0.1)
 
@@ -59,7 +59,7 @@ class Map:
             elif key == "f":
                 self.calculated.teleport(key, value)
             elif key == "mouse_move":
-                self.calculated.Mouse_move(value)
+                self.calculated.mouse_move(value)
             elif key == "fighting":
                 if value == 1:  # 进战斗
                     ret = self.calculated.fighting()
@@ -82,7 +82,7 @@ class Map:
                                 fight_data["day_time"] = day_time
                             sra_config_obj.fight_data = fight_data
                 elif value == 2:  # 障碍物
-                    self.calculated.Click()
+                    self.calculated.click()
                     time.sleep(1)
                 else:
                     raise Exception(_("map数据错误, fighting参数异常:{map_filename}").format(map_filename=map_filename), map)
@@ -159,8 +159,8 @@ class Map:
                     count = self.calculated.wait_join()
                     log.info(_('地图加载完毕，加载时间为 {count} 秒').format(count=count))
                     time.sleep(2) # 加2s防止人物未加载
-                    map_name = name.split("-")[0]
-                    self.start_map(map, map_name)
+                    #map_name = name.split("-")[0]
+                    self.start_map(map, name)
             else:
                 log.info(_('地图编号 {start} 不存在，请尝试检查更新').format(start=start))
         start_map(self, start)
