@@ -3,8 +3,8 @@
     "author": "雪见璃,夜里无星",
     "start": [
         {"map": 1},
-        {"temp\\map_3-3_point_5.png": 1.5},
-        {"temp\\transfer.jpg": 1.5}
+        {"picture\\map_3-3_point_5.png": 1.5},
+        {"picture\\transfer.jpg": 1.5}
     ],
   "map": [
     {

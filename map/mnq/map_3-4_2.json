@@ -3,8 +3,8 @@
     "author": "雪见璃",
     "start": [
         {"map": 1},
-        {"temp\\map_3-4_point_1.png": 1.5},
-        {"temp\\transfer.jpg": 1.5}
+        {"picture\\map_3-4_point_1.png": 1.5},
+        {"picture\\transfer.jpg": 1.5}
     ],
     "map": [
       {

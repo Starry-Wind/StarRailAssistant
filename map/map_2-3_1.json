@@ -3,11 +3,11 @@
     "author": "Starry-Wind,小明",
     "start": [
         {"map": 1},
-        {"temp\\orientation_1.png": 1.5},
-        {"temp\\orientation_3.png": 1.5},
-        {"temp\\map_2-3.jpg": 2},
-        {"temp\\map_2-3_point_1.jpg": 1.5},
-        {"temp\\transfer.jpg": 1.5}
+        {"picture\\orientation_1.png": 1.5},
+        {"picture\\orientation_3.png": 1.5},
+        {"picture\\map_2-3.jpg": 2},
+        {"picture\\map_2-3_point_1.jpg": 1.5},
+        {"picture\\transfer.jpg": 1.5}
     ],
     "map": [
         {

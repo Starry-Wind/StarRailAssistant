@@ -3,8 +3,8 @@
   "author": "Starry-Wind,小明",
   "start": [
     {"map": 1},
-    {"temp\\map_1-3_point_3.jpg": 1.5},
-    {"temp\\transfer.jpg": 1.5}
+    {"picture\\map_1-3_point_3.jpg": 1.5},
+    {"picture\\transfer.jpg": 1.5}
   ],
   "map": [
     {

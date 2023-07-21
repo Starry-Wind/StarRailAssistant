@@ -3,11 +3,11 @@
     "author": "雪见璃",
     "start": [
         {"map": 1},
-        {"temp\\orientation_1.png": 1.5},
-        {"temp\\orientation_4.png": 1.5},
-        {"temp\\map_3-4.png": 2},
-        {"temp\\map_3-4_point_1.png": 1.5},
-        {"temp\\transfer.jpg": 1.5}
+        {"picture\\orientation_1.png": 1.5},
+        {"picture\\orientation_4.png": 1.5},
+        {"picture\\map_3-4.png": 2},
+        {"picture\\map_3-4_point_1.png": 1.5},
+        {"picture\\transfer.jpg": 1.5}
     ],
     "map": [
         {

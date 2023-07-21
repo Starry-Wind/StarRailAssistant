@@ -3,8 +3,8 @@
   "author": "夜里无星",
   "start": [
     {"map": 1},
-    {"temp\\map_3-5_point_4.png": 1.5},
-    {"temp\\transfer.jpg": 1.5}
+    {"\\map_3-5_point_4.png": 1.5},
+    {"\\transfer.jpg": 1.5}
   ],
   "map": [
     {
@@ -56,16 +56,19 @@
       "a": 0.5735754999914207
     },
     {
+      "w": 1.0
+    },
+    {
       "fighting": 1
     },
     {
       "d": 1.8009970000130124
     },
     {
-      "fighting": 1
+      "w": 1.0
     },
     {
-      "w": 1.0
+      "fighting": 1
     }
   ]
 }
