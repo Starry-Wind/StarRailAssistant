@@ -135,25 +135,7 @@ class update_file:
                         delete_file: bool=False) -> bool:
         global tmp_dir
         git_proxy = sra_config_obj.github_proxy
-        raw_proxy = sra_config_obj.rawgithub_proxy
-        for index, __ in enumerate(range(3)):
-            try:
-                up_url = f"https://api.github.com/repos/{self.github_source}/StarRailAssistant/releases/latest"
-                up_reponse = await get(up_url)
-                up_data = up_reponse.json()
-                version: str = up_data.get("tag_name")
-                break
-            except BaseException as e:
-                if index < 2:
-                    log.info(_("[资源文件更新]获取远程版本失败, 正在重试: {e}").format(e=e))
-                else:
-                    log.info(_("[资源文件更新]获取远程版本失败: {e}").format(e=e))
-                log.info(_("将在10秒后重试，你可能需要设置代理"))
-                await asyncio.sleep(10)
-        else:
-            log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
-            raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
-        if version != sra_config_obj.star_version:
+        if not await self.is_sra_latest(type, version):
             dl_url = f"{git_proxy}https://github.com/{self.github_source}/StarRailAssistant/archive/refs/tags/{version}.zip"
             tmp_zip = Path() / tmp_dir / f"{type}.zip"
             zip_path = f"StarRailAssistant-{version.replace('v','')}/"
@@ -190,6 +172,33 @@ class update_file:
         log.info(_("[资源文件更新]更新完成."))
         return True
 
+    async def is_sra_latest(self, type: str, version: str, is_log: bool = True):
+        local_version = sra_config_obj.star_version
+        for index, __ in enumerate(range(3)):
+            try:
+                up_url = f"https://api.github.com/repos/{self.github_source}/StarRailAssistant/releases/latest"
+                up_reponse = await get(up_url)
+                up_data = up_reponse.json()
+                version: str = up_data.get("tag_name")
+                break
+            except BaseException as e:
+                if index < 2:
+                    log.info(_("[资源文件更新]获取远程版本失败, 正在重试: {e}").format(e=e)) if is_log else None
+                else:
+                    log.info(_("[资源文件更新]获取远程版本失败: {e}").format(e=e)) if is_log else None
+                log.info(_("将在10秒后重试，你可能需要设置代理")) if is_log else None
+                await asyncio.sleep(10)
+        else:
+            if is_log:
+                log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
+                raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
+            else:
+                return True, 0, local_version
+        if version != local_version:
+            return False, version, local_version
+        else:
+            return True, version, local_version
+        
     async def is_latest(self, type: str, version: str, is_log: bool = True):
         """
         说明:
@@ -203,6 +212,8 @@ class update_file:
         url_version = f"{raw_proxy}https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/version.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/version.json".replace("raw.githubusercontent.com", raw_proxy)
         log.info(_("[资源文件更新]正在检查远程版本是否有更新...")) if is_log else None
         local_version = sra_config_obj.get_config(f"{type}_version") # read_json_file(CONFIG_FILE_NAME).get(f"{type}_version", "0")
+        if type == "star":
+            return await self.is_sra_latest(type, version, is_log)
         for index, __ in enumerate(range(3)):
             try:
                 remote_version = await get(url_version, timeout=2)
