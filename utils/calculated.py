@@ -574,7 +574,7 @@ class calculated:
             win32api.mouse_event(1, last, 0)  # 进行视角移动
         time.sleep(0.5)
 
-    def move(self, com = ["w","a","s","d","f"], time1=1, map_name=""):
+    def move(self, com = ["w","a","s","d","f"], sleep_time=1, map_name=""):
         '''
         说明:
             移动
@@ -586,6 +586,12 @@ class calculated:
         move_division_excursion = sra_config_obj.move_division_excursion
         loc = self.get_loc(map_name=map_name)
         log.debug(loc)
+        if type(sleep_time) == dict:
+            loc = self.get_loc(map_name=map_name)
+            sleep_time = sleep_time[0]
+            log.debug(loc)
+        else:
+            loc = (0, 0)
         self.keyboard.press(com)
         start_time = time.perf_counter()
         if sra_config_obj.sprint:
@@ -595,7 +601,7 @@ class calculated:
                 log.info("疾跑")
                 self.mouse.press(mouse.Button.right)
                 self.mouse.release(mouse.Button.right)
-        while time.perf_counter() - start_time < (time1/move_division_excursion+move_excursion):
+        while time.perf_counter() - start_time < (sleep_time/move_division_excursion+move_excursion):
             pass
         self.keyboard.release(com)
         return loc
@@ -961,7 +967,9 @@ class calculated:
         """
         if self.DEBUG:
             map_name2id = {
-                "鳞渊境-1": 1,
+                "收容舱段-1": 1,
+                "收容舱段-2": 6,
+                "鳞渊境-1": 5,
                 "丹鼎司-1": 2,
                 "丹鼎司-2": 3,
                 "丹鼎司-3": 3,

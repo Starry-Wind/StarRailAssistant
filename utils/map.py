@@ -1,4 +1,8 @@
 import time
+import threading
+
+from pynput import keyboard
+
 from .calculated import *
 from .config import get_file, sra_config_obj, read_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
 from .log import log, fight_log, set_log
@@ -20,10 +24,25 @@ class Map:
         self.DEBUG = sra_config_obj.debug
         self.map_list, self.map_list_map = read_maps()
         self.start = True
+        self.stop = False
 
         if not os.path.exists("logs/image/"):
             os.makedirs("logs/image/")
 
+    def set_stop(self):
+        def on_press(key):
+            if key == keyboard.Key.f8:
+                if not self.stop:
+                    log.info(_("将在下一次选择地图时暂停"))
+                    self.stop = False
+                else:
+                    self.stop = True
+            elif str(key) == r"'\x03'":
+                return False
+        with keyboard.Listener(on_press=on_press) as listener:  # 创建按键监听线程
+            listener.join()  # 等待按键监听线程结束
+
+            
     def map_init(self):
         # 进行地图初始化，把地图缩小,需要缩小5次
         target = cv.imread(f'./temp/pc/contraction.jpg')
@@ -111,6 +130,8 @@ class Map:
                     log.info("开始捡漏")
                     map_list = sra_config_obj.fight_data.get("data", [])
                 for map in map_list:
+                    while self.stop:
+                        ...
                     # 选择地图
                     map = map.split('.')[0]
                     planet_number=map.split("-")[0]
@@ -163,6 +184,7 @@ class Map:
                     self.start_map(map, name)
             else:
                 log.info(_('地图编号 {start} 不存在，请尝试检查更新').format(start=start))
+        threading.Thread(target=self.set_stop).start()
         start_map(self, start)
         # 检漏
         if sra_config_obj.deficiency:

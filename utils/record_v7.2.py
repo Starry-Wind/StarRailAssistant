@@ -2,7 +2,7 @@
 Author: AlisaCat
 Date: 2023-05-07 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-07-19 21:35:30
+LastEditTime: 2023-07-21 01:54:22
 Description: wasd移动，x是进战斗，鼠标左键是打障碍物等，不要用鼠标移动视角，用方向键左右来移动视角（脚本运行后方向键左右会映射成鼠标）
             F9停止录制并保存
 Copyright (c) 2023 by AlisaCat, All Rights Reserved. 

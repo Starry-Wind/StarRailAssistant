@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-07-18 20:20:13
+LastEditTime: 2023-07-21 01:19:21
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -23,7 +23,7 @@ try:
 
     from utils.log import log,level
     from utils.map import Map as map_word
-    from utils.config import read_json_file, sra_config_obj, read_maps, CONFIG_FILE_NAME, _
+    from utils.config import sra_config_obj, read_maps, _
     import utils.config
     from utils.update_file import update_file
     from utils.calculated import calculated
@@ -191,7 +191,7 @@ def page_main(page: ft.Page):
         """
         pb.width = 100
         ghproxy = sra_config_obj.github_proxy
-        rawghproxy = sra_config_obj.raw_github_proxy
+        rawghproxy = sra_config_obj.rawgithub_proxy
         # asyncio.run(check_file(ghproxy, "map"))
         # asyncio.run(check_file(ghproxy, "temp"))
         data = {
@@ -277,26 +277,24 @@ def page_main(page: ft.Page):
         说明:
             硬编码配置编辑，带优化
         """
-        config = read_json_file(CONFIG_FILE_NAME)
 
         language_dict = {
             "简体中文": "zh_CN",
             "繁體中文": "zh_TC",
             "English": "EN"
         }
-        language = config.get("language", "")
+        language = sra_config_obj.language
         language = list(filter(lambda key: language_dict[key] == language, language_dict))[0]
 
         fighting_list = [_('没打开'), _('打开了'), _('这是什么')]
-        fighting = fighting_list[config.get("auto_battle_persistence", 0)]
+        fighting = fighting_list[sra_config_obj.auto_battle_persistence]
 
         github_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', "不设置代理"]
-        github_proxy = config.get("github_proxy", 'https://ghproxy.com/') 
+        github_proxy = sra_config_obj.github_proxy
         rawgithub_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', "不设置代理"]
-        rawgithub_proxy = config.get("rawgithub_proxy", 'https://ghproxy.com/')
-
-        open_map = config.get("open_map", "m")
-        level = config.get("level", "INFO")
+        rawgithub_proxy = sra_config_obj.rawgithub_proxy
+        open_map = sra_config_obj.open_map
+        level = sra_config_obj.level
 
         github_proxy_dd = ft.Dropdown(
                 label=_("GITHUB代理"),
@@ -424,7 +422,7 @@ def page_main(page: ft.Page):
     )
     # 背景图片
     if not page.session.get("start"):
-        img_url2 = img_url[read_json_file(CONFIG_FILE_NAME).get("img",0)]
+        img_url2 = img_url[sra_config_obj.img]
     elif page.session.get("img_v"):
         img_url2 = img_url[page.session.get("img_v")]
     else:
@@ -513,14 +511,14 @@ def page_main(page: ft.Page):
         ft.ElevatedButton(_("更新资源"), on_click=updata),
         ft.ElevatedButton(_("编辑配置"), on_click=set_config),
     ]
-    if read_json_file(CONFIG_FILE_NAME, False).get('temp_version') == "0" or read_json_file(CONFIG_FILE_NAME, False).get('map_version') == "0":
+    if sra_config_obj.temp_version == "0" or sra_config_obj.map_version == "0":
         page_list = [
             ft.Text(_("星穹铁道小助手"), size=50),
             ft.Text(VER, size=20),
             ft.ElevatedButton(_("更新资源"), on_click=updata),
             ft.ElevatedButton(_("编辑配置"), on_click=set_config),
         ]
-        if not read_json_file(CONFIG_FILE_NAME, False).get('start'):
+        if not sra_config_obj.start:
             page_list.pop(2)
     add(
         page_list,
