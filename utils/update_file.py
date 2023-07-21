@@ -177,7 +177,7 @@ class update_file:
         for index, __ in enumerate(range(3)):
             try:
                 up_url = f"https://api.github.com/repos/{self.github_source}/StarRailAssistant/releases/latest"
-                up_reponse = await get(up_url)
+                up_reponse = await get(up_url, timeout=2)
                 up_data = up_reponse.json()
                 version: str = up_data.get("tag_name")
                 break
