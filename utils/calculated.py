@@ -583,8 +583,8 @@ class calculated:
             :param time 操作时间,单位秒
         '''
         if type(sleep_time) == list:
-            sleep_time = sleep_time[0]
             set_loc = sleep_time[1]
+            sleep_time = sleep_time[0]
             self.move_com(com, sleep_time)
             loc = self.get_loc(map_name=map_name)
             log.debug(loc)
