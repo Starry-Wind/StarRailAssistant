@@ -241,7 +241,7 @@ class SRAData(metaclass=SRADataMeta):
     """webhook地址"""
     start: bool = False
     """是否第一次运行"""
-    temp_version: str = "0"
+    picture_version: str = "0"
     """图片版本"""
     map_version: str = "0"
     """地图版本"""

@@ -157,7 +157,7 @@ class update_file:
             dl_url = f"{git_proxy}https://github.com/{self.github_source}/StarRailAssistant/archive/refs/tags/{version}.zip"
             tmp_zip = Path() / tmp_dir / f"{type}.zip"
             zip_path = f"StarRailAssistant-{version.replace('v','')}/"
-            await self.copy_files(Path(), Path() / "StarRailAssistant_backup", ["utils", "temp", "map", "config.json", "get_width.py", "Honkai_Star_Rail.py", "gui.py"])
+            await self.copy_files(Path(), Path() / "StarRailAssistant_backup", ["utils", "picture", "map", "config.json", "get_width.py", "Honkai_Star_Rail.py", "gui.py"])
             log.info(_("[资源文件更新]本地版本与远程版本不符，开始更新资源文件->{url_zip}").format(url_zip=dl_url))
             for __ in range(3):
                 try:
@@ -246,7 +246,7 @@ class update_file:
         参数：
             :param rm_all: 是否强制删除文件
             :param skip_verify: 是否跳过检验
-            :param type: 更新文件的类型 map\temp
+            :param type: 更新文件的类型 map\picture
             :param version: 版本验证地址/仓库分支名称 map
             :param url_zip: zip下载链接
             :param unzip_path: 解压地址（删除用）
@@ -276,7 +276,7 @@ class update_file:
 
         is_latest, remote_version, local_version = await self.is_latest(type, version)
         if not is_latest:
-                #await self.copy_files(Path(), Path() / "StarRailAssistant_backup", ["utils", "temp", "map", "config.json", "get_width.py", "Honkai_Star_Rail.py", "gui.py"])
+                #await self.copy_files(Path(), Path() / "StarRailAssistant_backup", ["utils", "picture", "map", "config.json", "get_width.py", "Honkai_Star_Rail.py", "gui.py"])
             log.info(_("[资源文件更新]本地版本与远程版本不符，开始更新资源文件->{url_zip}").format(url_zip=url_zip))
             for __ in range(3):
                 try:
@@ -376,7 +376,7 @@ class update_file:
             更新文件
         参数：
             :param skip_verify: 是否跳过检验
-            :param type: 更新文件的类型 map\temp
+            :param type: 更新文件的类型 map\picture
             :param version: 版本验证地址/仓库分支名称 map
             :param url_zip: zip下载链接
             :param unzip_path: 解压地址（删除用）

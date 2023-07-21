@@ -112,14 +112,14 @@ logs/
 map/
 maps/
 map_data/
-temp/
+picture/
 tmp/
 plugins/
 StarRailAssistant_backup/
 test.py
 map_list.json
 LICENSE
-temp_list.json
+picture_list.json
 version.json
 screencast.png
 screencast1.png

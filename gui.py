@@ -45,7 +45,7 @@ def page_main(page: ft.Page):
         page.session.remove("updata_log")
     '''
     __, map_dict = read_maps()
-    VER = sra_config_obj.star_version+"/"+sra_config_obj.temp_version+"/"+sra_config_obj.map_version
+    VER = sra_config_obj.star_version+"/"+sra_config_obj.picture_version+"/"+sra_config_obj.map_version
     img_url = [
         "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC",
         "https://upload-bbs.miyoushe.com/upload/2023/04/04/341589474/5d2239e0352a9b3a561efcf6137b6010_8753232008183647500.jpg",
@@ -193,7 +193,7 @@ def page_main(page: ft.Page):
         ghproxy = sra_config_obj.github_proxy
         rawghproxy = sra_config_obj.rawgithub_proxy
         # asyncio.run(check_file(ghproxy, "map"))
-        # asyncio.run(check_file(ghproxy, "temp"))
+        # asyncio.run(check_file(ghproxy, "picture"))
         data = {
             _("脚本"):{
                 'url_proxy': ghproxy,
@@ -203,7 +203,7 @@ def page_main(page: ft.Page):
                 'version': "main",
                 'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/main.zip",
                 'unzip_path': ".",
-                'keep_folder': ['.git', 'logs', 'temp', 'map', 'tmp', 'venv'],
+                'keep_folder': ['.git', 'logs', 'picture', 'map', 'tmp', 'venv'],
                 'keep_file': ['config.json', 'version.json', 'star_list.json', 'README_CHT.md', 'README.md'],
                 'zip_path': "StarRailAssistant-main/",
                 'name': _("脚本"),
@@ -227,10 +227,10 @@ def page_main(page: ft.Page):
                 'url_proxy': ghproxy,
                 'raw_proxy': rawghproxy,
                 'skip_verify': False,
-                'type': "temp",
+                'type': "picture",
                 'version': "map",
-                'url_zip': "https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/temp.zip",
-                'unzip_path': "temp",
+                'url_zip': "https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/picture.zip",
+                'unzip_path': "picture",
                 'keep_folder': [],
                 'keep_file': [],
                 'zip_path': "map/",
@@ -495,7 +495,7 @@ def page_main(page: ft.Page):
     page.session.set("start", True)
     page.on_window_event = on_window_event
     page.fonts = {
-        "Kanit": "temp/fonts/Kanit-Bold.ttf",
+        "Kanit": "picture/fonts/Kanit-Bold.ttf",
     }
 
     page.theme = ft.Theme(font_family="Kanit")
@@ -511,7 +511,7 @@ def page_main(page: ft.Page):
         ft.ElevatedButton(_("更新资源"), on_click=updata),
         ft.ElevatedButton(_("编辑配置"), on_click=set_config),
     ]
-    if sra_config_obj.temp_version == "0" or sra_config_obj.map_version == "0":
+    if sra_config_obj.picture_version == "0" or sra_config_obj.map_version == "0":
         page_list = [
             ft.Text(_("星穹铁道小助手"), size=50),
             ft.Text(VER, size=20),

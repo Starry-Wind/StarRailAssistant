@@ -45,11 +45,11 @@ class Map:
             
     def map_init(self):
         # 进行地图初始化，把地图缩小,需要缩小5次
-        target = cv.imread(f'./temp/pc/contraction.jpg')
+        target = cv.imread(f'./picture/pc/contraction.jpg')
         while True:
             result = self.calculated.scan_screenshot(target)
             if result['max_val'] > 0.98:
-                target = cv.imread(f'./temp/pc/map_shrink.png')
+                target = cv.imread(f'./picture/pc/map_shrink.png')
                 shrink_result = self.calculated.scan_screenshot(target,(20,89,40,93))
                 if shrink_result['max_val'] < 0.98:
                     #points = self.calculated.calculated(result, target.shape)
@@ -164,13 +164,13 @@ class Map:
                             else:
                                 time.sleep(value)
                             if check and "point" in key and map.split("_")[-1] != "1":
-                                self.calculated.click_target("temp\\orientation_1.jpg", 0.98, map=planet_number)
-                                self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98, map=planet_number)
+                                self.calculated.click_target("picture\\orientation_1.jpg", 0.98, map=planet_number)
+                                self.calculated.click_target("picture\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98, map=planet_number)
                                 self.calculated.click_target(key.split("_point")[0], 0.98)
                                 self.calculated.click_target(key, 0.98)
                             elif not check and wrong_map and "point" in key and map.split("_")[-1] != "1":
-                                self.calculated.click_target("temp\\orientation_1.jpg", 0.98, map=planet_number)
-                                self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98, map=planet_number)
+                                self.calculated.click_target("picture\\orientation_1.jpg", 0.98, map=planet_number)
+                                self.calculated.click_target("picture\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98, map=planet_number)
                                 self.calculated.click_target(key.split("_point")[0], 0.98)
                                 self.calculated.click_target(key, 0.98)
                                 wrong_map = False

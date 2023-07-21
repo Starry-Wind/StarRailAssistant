@@ -980,7 +980,7 @@ class calculated:
             if not map_id and map_name not in map_name2id:
                 return (0, 0)
             map_id = map_name2id[map_name] if not map_id else map_id
-            img = cv.imread(f"./maps/{map_id}.png")
+            img = cv.imread(f"./picture/maps/{map_id}.png")
             template = self.take_screenshot((4,8,10,20))[0]
             __, max_val, max_loc, __, __ = find_best_match(img, template,(100,120,5))
             #max_val, max_loc = match_scaled(img, template,2.09)

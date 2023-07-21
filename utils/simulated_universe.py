@@ -44,7 +44,7 @@ class Simulated_Universe:
         self.calculated = calculated(title)
         self.p = Pinyin()
         self.keyboard = KeyboardController()
-        #self.model = attempt_load_weights("./temp/model/best.pt")
+        #self.model = attempt_load_weights("./picture/model/best.pt")
 
     def read_role(self):
         """
@@ -53,7 +53,7 @@ class Simulated_Universe:
         返回:
             角色列表
         """
-        self.role_list = get_file('./temp/Simulated_Universe/role')
+        self.role_list = get_file('./picture/Simulated_Universe/role')
         self.role_list = [i.split('.jpg')[0] for i in self.role_list]
         log.debug(self.role_list)
         return self.role_list
@@ -101,7 +101,7 @@ class Simulated_Universe:
         while True:
             for role in roles:
                 role_py = self.p.get_pinyin(role,'')
-                target = cv.imread(f"./temp/Simulated_Universe/role/mnq/{role_py}.png")
+                target = cv.imread(f"./picture/Simulated_Universe/role/mnq/{role_py}.png")
                 result = self.calculated.scan_screenshot(target, img_fp)
                 print(role+":"+str(result['max_val']))
                 if result['max_val'] > 0.90:
