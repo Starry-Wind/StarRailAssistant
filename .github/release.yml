@@ -10,6 +10,7 @@ changelog:
     - title: Fixs
       labels:
         - fix
+        - bug
     - title: Feats
       labels:
         - feat
