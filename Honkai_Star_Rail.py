@@ -223,6 +223,10 @@ class SRA:
             url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
             option = options[url_ms.index(questionary.select(title, url_ms).ask())]
             sra_config_obj.rawgithub_proxy = option
+            title = _("请选择你的仓库来源：")
+            options = ["Starry-Wind", "Night-stars-1"]
+            option = questionary.select(title, options).ask()
+            sra_config_obj.github_source = option
             while True:
                 if sra_config_obj.picture_version == "0" or sra_config_obj.map_version == "0":
                     sra.up_data()
@@ -232,10 +236,6 @@ class SRA:
             options = [_('没打开'), _('打开了'), _('这是什么')]
             option = questionary.select(title, options).ask()
             sra_config_obj.auto_battle_persistence = options.index(option)
-            title = _("你游戏里开启了连续自动战斗吗？：")
-            options = ["Starry-Wind", "Night-stars-1"]
-            option = questionary.select(title, options).ask()
-            sra_config_obj.github_source = option
             sra_config_obj.start = True
             raise Exception(_("请重新运行"))
 

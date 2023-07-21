@@ -574,7 +574,7 @@ class calculated:
             win32api.mouse_event(1, last, 0)  # 进行视角移动
         time.sleep(0.5)
 
-    def move(self, com = ["w","a","s","d","f"], sleep_time=1, map_name=""):
+    def move(self, com: str = ["w","a","s","d","f"], sleep_time=1, map_name=""):
         '''
         说明:
             移动
@@ -582,16 +582,23 @@ class calculated:
             :param com: 键盘操作 wasdf
             :param time 操作时间,单位秒
         '''
+        if type(sleep_time) == list:
+            sleep_time = sleep_time[0]
+            self.move_com(com, sleep_time)
+            loc = self.get_loc(map_name=map_name)
+            log.debug(loc)
+            log.info(loc)
+            com_num = abs(loc[1] - sleep_time[1][1])
+            if com_num > 16:
+                self.move_com(com, com_num/16)
+        else:
+            self.move_com(com, sleep_time)
+            loc = (0, 0)
+        return loc
+
+    def move_com(self, com, sleep_time=1):
         move_excursion = sra_config_obj.move_excursion
         move_division_excursion = sra_config_obj.move_division_excursion
-        loc = self.get_loc(map_name=map_name)
-        log.debug(loc)
-        if type(sleep_time) == dict:
-            loc = self.get_loc(map_name=map_name)
-            sleep_time = sleep_time[0]
-            log.debug(loc)
-        else:
-            loc = (0, 0)
         self.keyboard.press(com)
         start_time = time.perf_counter()
         if sra_config_obj.sprint:
@@ -604,7 +611,6 @@ class calculated:
         while time.perf_counter() - start_time < (sleep_time/move_division_excursion+move_excursion):
             pass
         self.keyboard.release(com)
-        return loc
 
     def path_move(self, path: List):
         '''
@@ -984,8 +990,8 @@ class calculated:
             template = self.take_screenshot((4,8,10,20))[0]
             __, max_val, max_loc, __, __ = find_best_match(img, template,(100,120,5))
             #max_val, max_loc = match_scaled(img, template,2.09)
-            cv.rectangle(img, max_loc, (max_loc[0] + 100, max_loc[1] + 100), (0, 255, 0), 2)
-            show_img(img)
+            #cv.rectangle(img, max_loc, (max_loc[0] + 100, max_loc[1] + 100), (0, 255, 0), 2)
+            #show_img(img)
             return (max_loc[0] + 63, max_loc[1] + 67)
         else:
             return (0, 0)

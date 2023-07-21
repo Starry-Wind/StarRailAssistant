@@ -2,7 +2,7 @@
 Author: Night-stars-1
 Date: 2023-05-17 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-07-19 23:22:23
+LastEditTime: 2023-07-21 19:31:43
 Description: 一些cv工具
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -18,7 +18,7 @@ def show_img(img, scale=1, title='Image'):
     h, w = img.shape[:2]
     img = cv.resize( img ,(int(w*scale), int(h*scale))  )
     cv.imshow(title, img)
-    cv.waitKey(1000)  # 显示图像并等待1秒
+    cv.waitKey(5000)  # 显示图像并等待1秒
     cv.destroyAllWindows()  
 
 def show_imgs(imgs, title='Image'):
