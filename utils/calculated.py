@@ -584,11 +584,12 @@ class calculated:
         '''
         if type(sleep_time) == list:
             sleep_time = sleep_time[0]
+            set_loc = sleep_time[1]
             self.move_com(com, sleep_time)
             loc = self.get_loc(map_name=map_name)
             log.debug(loc)
             log.info(loc)
-            com_num = abs(loc[1] - sleep_time[1][1])
+            com_num = abs(loc[1] - set_loc[1])
             if com_num > 16:
                 self.move_com(com, com_num/16)
         else:
