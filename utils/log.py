@@ -94,7 +94,7 @@ def get_message(*arg):
 
 dir_log = "logs"
 data = read_json_file("config.json")
-VER = str(data.get("star_version",0))+"/"+str(data.get("temp_version",0))+"/"+str(data.get("map_version",0))
+VER = str(data.get("star_version",0))+"/"+str(data.get("picture_version",0))+"/"+str(data.get("map_version",0))
 path_log = os.path.join(dir_log, _('日志文件.log'))
 fight_path_log = os.path.join(dir_log, _('战斗日志.log'))
 level = data.get("level","INFO")

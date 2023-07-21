@@ -4,7 +4,7 @@
 
 [简体中文](README.md) | [繁体中文](README_CHT.md) | [English](README_EN.md) | [文档](https://sra.stysqy.top)
 
-<img alt="LOGO" src="../../blob/map/temp/love!.png" style="border-radius:50%">
+<img alt="LOGO" src="../../blob/map/picture/love!.png" style="border-radius:50%">
 
 <h1 align="center">
 
@@ -67,11 +67,11 @@ This software is open source, free of charge and for learning and exchange purpo
     "rawgithub_proxy": "", (github代理)
     "webhook_url": "",
     "start": true, (是否第一次运行脚本)
-    "temp_version": "20230515205738",
+    "picture_version": "20230515205738",
     "star_version": "20230515220742",
     "level": "INFO",
     "adb": "127.0.0.1:62001",（62001为adb端口）
-    "adb_path": "temp\\adb\\adb",（adb文件路径）
+    "adb_path": "picture\\adb\\adb",（adb文件路径）
     "proxies": "",
     "move_excursion": 0（移动偏移）
 }
@@ -80,7 +80,7 @@ This software is open source, free of charge and for learning and exchange purpo
 ## 脚本录制 感谢[@AlisaCat](https://github.com/AlisaCat-S)
 
 1. WASD移动，X是进战斗，鼠标左键是打障碍物，F键是交互，禁止用鼠标移动视角，只能使用方向键左右来移动视角（脚本运行后方向键左右会映射鼠标移动），录制期间能且只能按动键盘上的一个有效按键（也就是不能同时按下多键），脚本只会录制按键按下时间和移动的视角，不会录制停顿的时间（可以慢慢一个键一个键录制，保证录制准确性），录制完成后F9停止录制并保存。
-2. 完成后将会生成output(时间).json文件，请把他重命名替换成你要更改的地图json，并且将传送点截图重命名并保存到temp即可使用 （就可以申请到map分支提交，或者交给管理提交）
+2. 完成后将会生成output(时间).json文件，请把他重命名替换成你要更改的地图json，并且将传送点截图重命名并保存到picture即可使用 （就可以申请到map分支提交，或者交给管理提交）
 3. 地图json中的空白填写示例：
     ```json
     {
@@ -88,10 +88,10 @@ This software is open source, free of charge and for learning and exchange purpo
         "author": "Starry-Wind",   （作者名，第二作者不能覆盖第一作者名称）
         "start": [           （开局传送地图识别图片，并将鼠标移动至图片中间并按下按键）
             {"map": 1},         （按下m键打开地图）
-            {"temp\\orientation_1.jpg": 1.5},     （识别到orientation_1.jpg图片后，将鼠标移动至图片中间并按下按键）
-            {"temp\\map_1.jpg": 2},               （具体图片自己看，一般为该区域名"乌拉乌拉"的地图文字）
-            {"temp\\map_1_point_1.jpg": 1.5},       （第一个传送点的图片）
-            {"temp\\transfer.jpg": 1.5}              （"传送"字的图片）
+            {"picture\\orientation_1.jpg": 1.5},     （识别到orientation_1.jpg图片后，将鼠标移动至图片中间并按下按键）
+            {"picture\\map_1.jpg": 2},               （具体图片自己看，一般为该区域名"乌拉乌拉"的地图文字）
+            {"picture\\map_1_point_1.jpg": 1.5},       （第一个传送点的图片）
+            {"picture\\transfer.jpg": 1.5}              （"传送"字的图片）
         ]
     }
     ```

@@ -20,7 +20,7 @@ from questionary import Validator, ValidationError
 from typing import List
 from pynput.keyboard import Controller as KeyboardController
 from threading import Thread
-#from ultralytics.nn.tasks import  attempt_load_weights
+#from ultralytics.nn.tasks import  atpicturet_load_weights
 
 from .calculated import *
 from .config import get_file, read_json_file, modify_json_file, CONFIG_FILE_NAME, _
@@ -44,7 +44,7 @@ class Simulated_Universe:
         self.calculated = calculated(title)
         self.p = Pinyin()
         self.keyboard = KeyboardController()
-        #self.model = attempt_load_weights("./picture/model/best.pt")
+        #self.model = atpicturet_load_weights("./picture/model/best.pt")
 
     def read_role(self):
         """

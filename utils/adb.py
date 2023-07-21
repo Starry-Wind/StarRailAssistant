@@ -16,7 +16,7 @@ from typing import Dict, Optional, Any, Union
 from .log import log
 
 class ADB:
-    def __init__(self, order="127.0.0.1:62001", adb_path="temp\\adb\\adb"):
+    def __init__(self, order="127.0.0.1:62001", adb_path="picture\\adb\\adb"):
         """
         参数: 
             :param order: ADB端口

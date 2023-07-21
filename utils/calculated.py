@@ -57,12 +57,12 @@ class calculated:
         self.hwnd = self.window._hWnd
 
         # 初始化
-        self.attack = cv.imread("./temp/pc/attack.png")
-        self.doubt = cv.imread("./temp/pc/doubt.png")
-        self.warn = cv.imread("./temp/pc/warn.png")
-        # tagz = cv.imread("./temp/pc/tagz.jpg")
-        self.finish = cv.imread("./temp/pc/finish_fighting.jpg")
-        self.auto = cv.imread("./temp/pc/auto.jpg")
+        self.attack = cv.imread("./picture/pc/attack.png")
+        self.doubt = cv.imread("./picture/pc/doubt.png")
+        self.warn = cv.imread("./picture/pc/warn.png")
+        # tagz = cv.imread("./picture/pc/tagz.jpg")
+        self.finish = cv.imread("./picture/pc/finish_fighting.jpg")
+        self.auto = cv.imread("./picture/pc/auto.jpg")
 
         self.end_list = ["Tab", _("轮盘"), _("唤起鼠标"), _("手机"), _("退出")]
 
@@ -268,7 +268,7 @@ class calculated:
             :param threshold: 可信度阈值
             :param flag: 是否必须找到
         """
-        target_path = target_path.replace("temp\\","temp\\pc\\")
+        target_path = target_path.replace("picture\\","picture\\pc\\")
         temp_name = target_path.split("\\")[-1].split(".")[0]
         join = False # 强制进行传统模板匹配
         temp_ocr = {
@@ -727,7 +727,7 @@ class calculated:
         log.debug(data)
         return data
 
-    def read_img(self, path, prefix='./temp/pc/'):
+    def read_img(self, path, prefix='./picture/pc/'):
         """
         说明：
             读取图像

@@ -53,7 +53,7 @@ class SRA:
                 'version': "main",
                 'url_zip': f"https://github.com/{sra_config_obj.github_source}/StarRailAssistant/archive/refs/heads/main.zip",
                 'unzip_path': ".",
-                'keep_folder': ['.git', 'logs', 'temp', 'map', 'tmp', 'venv'],
+                'keep_folder': ['.git', 'logs', 'picture', 'map', 'tmp', 'venv'],
                 'keep_file': ['config.json', 'version.json', 'star_list.json', 'README_CHT.md', 'README.md'],
                 'zip_path': "StarRailAssistant-main/",
                 'name': _("脚本"),
@@ -73,10 +73,10 @@ class SRA:
             },
             _("图片"):{
                 'skip_verify': False,
-                'type': "temp",
+                'type': "picture",
                 'version': "map",
-                'url_zip': f"https://raw.githubusercontent.com/{sra_config_obj.github_source}/StarRailAssistant/map/temp.zip",
-                'unzip_path': "temp",
+                'url_zip': f"https://raw.githubusercontent.com/{sra_config_obj.github_source}/StarRailAssistant/map/picture.zip",
+                'unzip_path': "picture",
                 'keep_folder': [],
                 'keep_file': [],
                 'zip_path': "map/",
@@ -224,7 +224,7 @@ class SRA:
             option = options[url_ms.index(questionary.select(title, url_ms).ask())]
             sra_config_obj.rawgithub_proxy = option
             while True:
-                if sra_config_obj.temp_version == "0" or sra_config_obj.map_version == "0":
+                if sra_config_obj.picture_version == "0" or sra_config_obj.map_version == "0":
                     sra.up_data()
                 else:
                     break
@@ -244,7 +244,7 @@ class SRA:
         importlib.reload(utils.config)
         _ = utils.config._
         # asyncio.run(check_file(ghproxy, "map"))
-        # asyncio.run(check_file(ghproxy, "temp"))
+        # asyncio.run(check_file(ghproxy, "picture"))
 
         title = _("请选择更新项目")
         options = list(self.updata_dict.keys())+[_("全部更新")]
