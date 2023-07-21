@@ -5,7 +5,7 @@ on:
     branches: [ map ]
     paths:
       - 'map/**'
-      - 'temp/**'
+      - 'picture/**'
       - 'maps/**'
 
   workflow_dispatch:
@@ -36,7 +36,7 @@ jobs:
           message: ':wrench: 自动更新资源列表'
           add: |
             'map_list.json'
-            'temp_list.json'
+            'picture_list.json'
             'version.json'
             'map.zip'
-            'temp.zip'
+            'picture.zip'
