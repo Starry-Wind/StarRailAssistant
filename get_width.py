@@ -7,7 +7,7 @@ Description:
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
 '''
-import ctypes
+from ctypes import windll
 import pygetwindow as gw
 from PIL import ImageGrab
 
@@ -22,7 +22,7 @@ def get_width(title):
     # 获取活动窗口的大小
     window_rect = window.width, window.height
 
-    user32 = ctypes.windll.user32
+    user32 = windll.user32
     desktop_width = user32.GetSystemMetrics(0)
     desktop_height = user32.GetSystemMetrics(1)
     
@@ -59,4 +59,7 @@ def get_width(title):
     sra_config_obj.borderless = borderless
     sra_config_obj.left_border = left_border
     sra_config_obj.up_border = up_border
+
+    # 排除缩放干扰
+    windll.user32.SetProcessDPIAware()
     

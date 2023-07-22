@@ -22,7 +22,7 @@ from pluggy import PluginManager
 
 from get_width import get_width
 from utils.log import log, fight_log
-from utils.config import read_json_file, modify_json_file, add_key_value, read_maps, CONFIG_FILE_NAME, _
+from utils.config import read_json_file, load_all_config_data, modify_json_file, add_key_value, read_maps, CONFIG_FILE_NAME, _
 from utils.simulated_universe import Simulated_Universe
 from utils.update_file import update_file
 from utils.commission import Commission
@@ -51,9 +51,9 @@ class SRA:
                 'skip_verify': False,
                 'type': "star",
                 'version': "main",
-                'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/main.zip",
+                'url_zip': f"https://github.com/{sra_config_obj.github_source}/StarRailAssistant/archive/refs/heads/main.zip",
                 'unzip_path': ".",
-                'keep_folder': ['.git', 'logs', 'temp', 'map', 'tmp', 'venv'],
+                'keep_folder': ['.git', 'logs', 'picture', 'map', 'tmp', 'venv'],
                 'keep_file': ['config.json', 'version.json', 'star_list.json', 'README_CHT.md', 'README.md'],
                 'zip_path': "StarRailAssistant-main/",
                 'name': _("脚本"),
@@ -63,7 +63,7 @@ class SRA:
                 'skip_verify': False,
                 'type': "map",
                 'version': "map",
-                'url_zip': "https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/map.zip",
+                'url_zip': f"https://raw.githubusercontent.com/{sra_config_obj.github_source}/StarRailAssistant/map/map.zip",
                 'unzip_path': "map",
                 'keep_folder': [],
                 'keep_file': [],
@@ -73,10 +73,10 @@ class SRA:
             },
             _("图片"):{
                 'skip_verify': False,
-                'type': "temp",
+                'type': "picture",
                 'version': "map",
-                'url_zip': "https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/temp.zip",
-                'unzip_path': "temp",
+                'url_zip': f"https://raw.githubusercontent.com/{sra_config_obj.github_source}/StarRailAssistant/map/picture.zip",
+                'unzip_path': "picture",
                 'keep_folder': [],
                 'keep_file': [],
                 'zip_path': "map/",
@@ -125,19 +125,27 @@ class SRA:
 
     def choose_map(self, option:str=_('大世界')):
         if option == _("大世界"):
-            title_ = _("请选择起始星球：")
-            options_map = {_("空间站「黑塔」"): "1", _("雅利洛-VI"): "2", _("仙舟「罗浮」"): "3"}
-            option_ = questionary.select(title_, list(options_map.keys())).ask()
-            main_map = options_map.get(option_)
-            title_ = _("请选择起始地图：")
-            __, map_list_map = read_maps()
-            options_map = map_list_map.get(main_map)
-            if not options_map:
-                return None, _("你没下载地图，拿什么选？")
-            keys = list(options_map.keys())
-            values = list(options_map.values())
-            option_ = questionary.select(title_, values).ask()
-            side_map = keys[values.index(option_)]
+            def select_word():
+                title_ = _("请选择起始星球：")
+                options_map = {_("空间站「黑塔」"): "1", _("雅利洛-VI"): "2", _("仙舟「罗浮」"): "3"}
+                option_ = questionary.select(title_, list(options_map.keys())).ask()
+                main_map = options_map.get(option_)
+                return select_map(main_map)
+            def select_map(main_map):
+                title_ = _("请选择起始地图：")
+                __, map_list_map = read_maps()
+                options_map = map_list_map.get(main_map)
+                if not options_map:
+                    return None, _("你没下载地图，拿什么选？")
+                keys = list(options_map.keys())
+                values = list(options_map.values())+[_("返回上一级")]
+                option_ = questionary.select(title_, values).ask()
+                if option_ == _("返回上一级"):
+                    return select_word()
+                else:
+                    side_map = keys[values.index(option_)]
+                    return main_map, side_map
+            main_map, side_map = select_word()
             return f"{main_map}-{side_map}", None
         elif option == _("模拟宇宙"):
             title_ = _("请选择第几宇宙：")
@@ -163,7 +171,7 @@ class SRA:
 
     def set_config(self, start = True):
         global game_title
-        if not read_json_file(CONFIG_FILE_NAME, False).get('start') or not start:
+        if not sra_config_obj.start or not start:
             title = "请选择你游戏的运行语言:"
             options = {
                 "简体中文": "zh_CN",
@@ -171,7 +179,7 @@ class SRA:
                 "English": "EN"
             }
             option = questionary.select(title, options).ask()
-            modify_json_file(CONFIG_FILE_NAME, "language", options[option])
+            sra_config_obj.language = options[option]
             import utils.config
             importlib.reload(utils.config)
             _ = utils.config._
@@ -194,7 +202,7 @@ class SRA:
                 url_ms.append(options[index]+f" {ms}ms")
             url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
             option = options[url_ms.index(questionary.select(title, url_ms).ask())]
-            modify_json_file(CONFIG_FILE_NAME, "github_proxy", option)
+            sra_config_obj.github_proxy = option
             title = _("请选择下载代理地址：（不使用代理选空白选项）")
             options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', '']
             url_ms = []
@@ -214,17 +222,21 @@ class SRA:
                 url_ms.append(options[index]+f" {ms}ms")
             url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
             option = options[url_ms.index(questionary.select(title, url_ms).ask())]
-            modify_json_file(CONFIG_FILE_NAME, "rawgithub_proxy", option)
+            sra_config_obj.rawgithub_proxy = option
+            title = _("请选择你的仓库来源：")
+            options = ["Starry-Wind", "Night-stars-1"]
+            option = questionary.select(title, options).ask()
+            sra_config_obj.github_source = option
             while True:
-                if read_json_file(CONFIG_FILE_NAME, False).get('temp_version') == "0" or read_json_file(CONFIG_FILE_NAME, False).get('map_version') == "0":
+                if sra_config_obj.picture_version == "0" or sra_config_obj.map_version == "0":
                     sra.up_data()
                 else:
                     break
             title = _("你游戏里开启了连续自动战斗吗？：")
             options = [_('没打开'), _('打开了'), _('这是什么')]
             option = questionary.select(title, options).ask()
-            modify_json_file(CONFIG_FILE_NAME, "auto_battle_persistence", options.index(option))
-            modify_json_file(CONFIG_FILE_NAME, "start", True)
+            sra_config_obj.auto_battle_persistence = options.index(option)
+            sra_config_obj.start = True
             raise Exception(_("请重新运行"))
 
     def up_data(self):
@@ -232,7 +244,7 @@ class SRA:
         importlib.reload(utils.config)
         _ = utils.config._
         # asyncio.run(check_file(ghproxy, "map"))
-        # asyncio.run(check_file(ghproxy, "temp"))
+        # asyncio.run(check_file(ghproxy, "picture"))
 
         title = _("请选择更新项目")
         options = list(self.updata_dict.keys())+[_("全部更新")]
@@ -264,7 +276,6 @@ class SRA:
                 time.sleep(0.5)
                 get_width(game_title)
                 #map_instance.calculated.CONFIG = read_json_file(CONFIG_FILE_NAME)
-                import pyautogui # 缩放纠正
                 log.info(_("开始运行，请勿移动鼠标和键盘"))
                 log.info(_("若脚本运行无反应,请使用管理员权限运行"))
                 if option == _("大世界"):
@@ -284,7 +295,6 @@ class SRA:
             time.sleep(0.5)
             get_width(game_title)
             #map_instance.calculated.CONFIG = read_json_file(CONFIG_FILE_NAME)
-            import pyautogui # 缩放纠正
             log.info(_("开始运行，请勿移动鼠标和键盘"))
             log.info(_("若脚本运行无反应,请使用管理员权限运行"))
             self.option_dict[option]()
@@ -292,7 +302,7 @@ class SRA:
 if __name__ == "__main__":
     join_time = read_json_file(CONFIG_FILE_NAME).get("join_time", {})
     if type(join_time) == dict:
-        modify_json_file(CONFIG_FILE_NAME, "join_time", 9)
+        sra_config_obj.join_time = 9
     sra = SRA()
     try:
         sra.set_config()    # 无config直接更新时初始化config文件

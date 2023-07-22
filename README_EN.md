@@ -4,7 +4,7 @@
 
 [简体中文](README.md) | [繁体中文](README_CHT.md) | [English](README_EN.md) | [Documentation](https://sra.stysqy.top)
 
-<img alt="LOGO" src="../../blob/map/temp/love!.png" style="border-radius:50%">
+<img alt="LOGO" src="../../blob/map/picture/love!.png" style="border-radius:50%">
 
 <h1 align="center">
 
@@ -66,11 +66,11 @@ Please note that based on MiHoYo's [FairPlay statement for Honkai Impact 3 - Sta
     "rawgithub_proxy": "", (github proxy)
     "webhook_url": "",
     "start": true, (is it the first time running the script)
-    "temp_version": "20230515205738",
+    "picture_version": "20230515205738",
     "star_version": "20230515220742",
     "level": "INFO",
     "adb": "127.0.0.1:62001",（62001 is the adb port）
-    "adb_path": "temp\\adb\\adb",（adb file path）
+    "adb_path": "picture\\adb\\adb",（adb file path）
     "proxies": ""
 }
 ```
@@ -78,7 +78,7 @@ Please note that based on MiHoYo's [FairPlay statement for Honkai Impact 3 - Sta
 ## Script Recording Thank you[@AlisaCat](https://github.com/AlisaCat-S)
 
 1. Move with WASD. X is to enter combat. The left mouse button is to hit obstacles. F key is interact. Moving perspective with the mouse is forbidden. Only the direction keys left and right can be used to move perspective during recording. (During script execution, the left and right direction keys will be mapped = mouse movement.) During recording, you can only press one effective key on the keyboard (that is, multiple keys cannot be pressed at the same time). The script will only record the time when the key is pressed and the movement of the perspective, and will not record the pause time. (You can slowly record one key at a time to ensure accuracy). F9 stops recording and saves.
-2. After completion, an output (time).json file will be generated. Please rename it and replace the map json you want to modify, and save the screenshot of the teleportation point in temp. (Then it can be submitted to the map branch or submitted to the management.)
+2. After completion, an output (time).json file will be generated. Please rename it and replace the map json you want to modify, and save the screenshot of the teleportation point in picture. (Then it can be submitted to the map branch or submitted to the management.)
 3. Blank space filling in the map json example:
 
     ```json
@@ -87,10 +87,10 @@ Please note that based on MiHoYo's [FairPlay statement for Honkai Impact 3 - Sta
         "author": "Starry-Wind",   （Author name. The second author cannot overwrite the name of the first author.）
         "start": [           （Identify the image of the map where the teleportation starts, move the mouse to the middle of the image, and press the button）
             {"map": 1},         （Press the m key to open the map）
-            {"temp\\orientation_1.jpg": 1.5},     （After recognizing the picture of orientation_1.jpg, move the mouse to the middle of the picture and press the button）
-            {"temp\\map_1.jpg": 2},               （See the specific image, usually the map text named "Uraura"）
-            {"temp\\map_1_point_1.jpg": 1.5},       （The picture of the first teleportation point）
-            {"temp\\transfer.jpg": 1.5}              （The picture of the word "Teleportation"）
+            {"picture\\orientation_1.jpg": 1.5},     （After recognizing the picture of orientation_1.jpg, move the mouse to the middle of the picture and press the button）
+            {"picture\\map_1.jpg": 2},               （See the specific image, usually the map text named "Uraura"）
+            {"picture\\map_1_point_1.jpg": 1.5},       （The picture of the first teleportation point）
+            {"picture\\transfer.jpg": 1.5}              （The picture of the word "Teleportation"）
         ]
     }
     ```

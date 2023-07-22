@@ -52,11 +52,11 @@ class Commission():
             points2 = get_percentile([350,280,350+480,280+600],[1920,1080])
 
             self.calculated.take_screenshot()
-            result = self.calculated.click_hsv([0,201,212], points=points1, offset=[-20,20], flag=True, tolerance=3)
+            result = self.calculated.hsv_click([0,201,212], points=points1, offset=[-20,20], flag=True, tolerance=3)
             if not result:
                 log.info("可能没有任务")
                 return False
-            result = self.calculated.click_hsv([0,201,212], points=points2, offset=[-20,20], flag=True, tolerance=3)
+            result = self.calculated.hsv_click([0,201,212], points=points2, offset=[-20,20], flag=True, tolerance=3)
             if not result:
                 log.info("可能没有任务")
                 return False

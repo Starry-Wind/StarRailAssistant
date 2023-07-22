@@ -4,7 +4,7 @@
 
 [簡體中文](README.md) | [繁體中文](README_CHT.md) | [English](README_EN.md) | [文档](https://sra.stysqy.top)
  
-<img alt="LOGO" src="../../blob/map/temp/love!.png" style="border-radius:50%">
+<img alt="LOGO" src="../../blob/map/picture/love!.png" style="border-radius:50%">
 
 <h1 align="center">
 
@@ -18,11 +18,6 @@
 [![GitHub Contributors](https://img.shields.io/github/contributors/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/StarRailAssistant/graphs/contributors)
 [![GitHub License](https://img.shields.io/github/license/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/StarRailAssistant/blob/main/LICENSE)
 </div>
-
-*****該腳本仍然處于測試階段，可能會出現奇奇怪怪的BUG*****
-
-***尋路撞牆？走的路徑不對？嫌棄路線太慢？現在beta-2.7新增加地圖錄制功能***<br>
-***妳現在可以使用tool目錄下的record_v7.2.py自行錄制地圖路徑，包妳走到滿意 XD***
 
 找到BUG了？代碼問題想吐槽？歡迎加入 技術 & 吹水群：[QQ 群](https://qm.qq.com/cgi-bin/qm/qr?k=xdCO46fHlVcY7D2L7elXzqcxL3nyTGnW&jump_from=webapi&authKey=uWZooQ2szv+nG/re7luCKn8LW1KibSb0vvi0FycA45Mglm5AGM1GP2iJ+SiWmDwg)|[QQ频道](https://pd.qq.com/s/e910fud13)|[Telegram Group](https://t.me/+yeQEhnuT9O41NDM1)<br>
 
@@ -69,7 +64,7 @@ This software is open source, free of charge and for learning and exchange purpo
     "rawgithub_proxy": "", (github代理)
     "webhook_url": "",
     "start": true, (是否第壹次運行腳本)
-    "temp_version": "20230515205738",
+    "picture_version": "20230515205738",
     "star_version": "20230515220742",
     "open_map": "m", (打開地圖按鈕)
     "map_version": "20230515205738",
@@ -80,7 +75,7 @@ This software is open source, free of charge and for learning and exchange purpo
 ## 腳本錄制 感謝[@AlisaCat](https://github.com/AlisaCat-S)
 
 1. WASD移動，X是進戰鬥，鼠標左鍵是打障礙物，F鍵是交互，禁止用鼠標移動視角，只能使用方向鍵左右來移動視角（腳本運行後方向鍵左右會映射鼠標移動），錄制期間能且只能按動鍵盤上的壹個有效按鍵（也就是不能同時按下多鍵），腳本只會錄制按鍵按下時間和移動的視角，不會錄制停頓的時間（可以慢慢壹個鍵壹個鍵錄制，保證錄制准確性），錄制完成後F9停止錄制並保存。
-2. 完成後將會生成output(時間).json文件，請把他重命名替換成妳要更改的地圖json，並且將傳送點截圖重命名並保存到temp即可使用 （就可以申請到map分支提交，或者交給管理提交）
+2. 完成後將會生成output(時間).json文件，請把他重命名替換成妳要更改的地圖json，並且將傳送點截圖重命名並保存到picture即可使用 （就可以申請到map分支提交，或者交給管理提交）
 3. 地圖json中的空白填寫示例：
     ```json
     {
@@ -88,10 +83,10 @@ This software is open source, free of charge and for learning and exchange purpo
         "author": "Starry-Wind",   （作者名，第二作者不能覆蓋第壹作者名稱）
         "start": [           （開局傳送地圖識別圖片，並將鼠標移動至圖片中間並按下按鍵）
             {"map": 1},         （按下m鍵打開地圖）
-            {"temp\\orientation_1.jpg": 1.5},     （識別到orientation_1.jpg圖片後，將鼠標移動至圖片中間並按下按鍵）
-            {"temp\\map_1.jpg": 2},               （具體圖片自己看，壹般爲該區域名"烏拉烏拉"的地圖文字）
-            {"temp\\map_1_point_1.jpg": 1.5},       （第壹個傳送點的圖片）
-            {"temp\\transfer.jpg": 1.5}              （"傳送"字的圖片）
+            {"picture\\orientation_1.jpg": 1.5},     （識別到orientation_1.jpg圖片後，將鼠標移動至圖片中間並按下按鍵）
+            {"picture\\map_1.jpg": 2},               （具體圖片自己看，壹般爲該區域名"烏拉烏拉"的地圖文字）
+            {"picture\\map_1_point_1.jpg": 1.5},       （第壹個傳送點的圖片）
+            {"picture\\transfer.jpg": 1.5}              （"傳送"字的圖片）
         ]
     }
     ```
