@@ -1,5 +1,8 @@
 import time
-from utils.cv_tracker import Tracker
+import threading
+
+from pynput import keyboard
+
 from .calculated import *
 from .config import get_file, sra_config_obj, read_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
 from .log import log, fight_log, set_log
@@ -15,31 +18,45 @@ class Map:
             self.calculated = calculated(title)
         else:
             self.calculated = calculated(title, det_model_name="en_PP-OCRv3_det", rec_model_name="en_number_mobile_v2.0")
-        self.tr = Tracker()
         self.mouse = self.calculated.mouse
         self.keyboard = self.calculated.keyboard
         self.open_map = sra_config_obj.open_map
         self.DEBUG = sra_config_obj.debug
         self.map_list, self.map_list_map = read_maps()
         self.start = True
+        self.stop = False
 
         if not os.path.exists("logs/image/"):
             os.makedirs("logs/image/")
 
+    def set_stop(self):
+        def on_press(key):
+            if key == keyboard.Key.f8:
+                if not self.stop:
+                    log.info(_("将在下一次选择地图时暂停"))
+                    self.stop = False
+                else:
+                    self.stop = True
+            elif str(key) == r"'\x03'":
+                return False
+        with keyboard.Listener(on_press=on_press) as listener:  # 创建按键监听线程
+            listener.join()  # 等待按键监听线程结束
+
+            
     def map_init(self):
         # 进行地图初始化，把地图缩小,需要缩小5次
-        target = cv.imread(f'./temp/pc/contraction.jpg')
+        target = cv.imread(f'./picture/pc/contraction.jpg')
         while True:
             result = self.calculated.scan_screenshot(target)
             if result['max_val'] > 0.98:
-                target = cv.imread(f'./temp/pc/map_shrink.png')
+                target = cv.imread(f'./picture/pc/map_shrink.png')
                 shrink_result = self.calculated.scan_screenshot(target,(20,89,40,93))
                 if shrink_result['max_val'] < 0.98:
                     #points = self.calculated.calculated(result, target.shape)
                     points = result["max_loc"]
                     log.debug(points)
                     for i in range(6):
-                        self.calculated.Click(points)
+                        self.calculated.click(points)
                 break
             time.sleep(0.1)
 
@@ -58,12 +75,10 @@ class Map:
                 if self.DEBUG:
                     map_data["map"][map_index]["pos"] = pos
                     log.debug(map_data["map"])
-            elif key =='route':
-                 self.tr.run_route(value)  
             elif key == "f":
                 self.calculated.teleport(key, value)
             elif key == "mouse_move":
-                self.calculated.Mouse_move(value)
+                self.calculated.mouse_move(value)
             elif key == "fighting":
                 if value == 1:  # 进战斗
                     ret = self.calculated.fighting()
@@ -86,7 +101,7 @@ class Map:
                                 fight_data["day_time"] = day_time
                             sra_config_obj.fight_data = fight_data
                 elif value == 2:  # 障碍物
-                    self.calculated.Click()
+                    self.calculated.click()
                     time.sleep(1)
                 else:
                     raise Exception(_("map数据错误, fighting参数异常:{map_filename}").format(map_filename=map_filename), map)
@@ -115,6 +130,8 @@ class Map:
                     log.info("开始捡漏")
                     map_list = sra_config_obj.fight_data.get("data", [])
                 for map in map_list:
+                    while self.stop:
+                        ...
                     # 选择地图
                     map = map.split('.')[0]
                     planet_number=map.split("-")[0]
@@ -147,13 +164,13 @@ class Map:
                             else:
                                 time.sleep(value)
                             if check and "point" in key and map.split("_")[-1] != "1":
-                                self.calculated.click_target("temp\\orientation_1.jpg", 0.98, map=planet_number)
-                                self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98, map=planet_number)
+                                self.calculated.click_target("picture\\orientation_1.jpg", 0.98, map=planet_number)
+                                self.calculated.click_target("picture\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98, map=planet_number)
                                 self.calculated.click_target(key.split("_point")[0], 0.98)
                                 self.calculated.click_target(key, 0.98)
                             elif not check and wrong_map and "point" in key and map.split("_")[-1] != "1":
-                                self.calculated.click_target("temp\\orientation_1.jpg", 0.98, map=planet_number)
-                                self.calculated.click_target("temp\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98, map=planet_number)
+                                self.calculated.click_target("picture\\orientation_1.jpg", 0.98, map=planet_number)
+                                self.calculated.click_target("picture\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98, map=planet_number)
                                 self.calculated.click_target(key.split("_point")[0], 0.98)
                                 self.calculated.click_target(key, 0.98)
                                 wrong_map = False
@@ -163,10 +180,11 @@ class Map:
                     count = self.calculated.wait_join()
                     log.info(_('地图加载完毕，加载时间为 {count} 秒').format(count=count))
                     time.sleep(2) # 加2s防止人物未加载
-                    map_name = name.split("-")[0]
-                    self.start_map(map, map_name)
+                    #map_name = name.split("-")[0]
+                    self.start_map(map, name)
             else:
                 log.info(_('地图编号 {start} 不存在，请尝试检查更新').format(start=start))
+        threading.Thread(target=self.set_stop).start()
         start_map(self, start)
         # 检漏
         if sra_config_obj.deficiency:

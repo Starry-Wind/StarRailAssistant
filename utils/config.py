@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import Any, get_type_hints
+from typing import Any, get_type_hints, Union
 import orjson
 import gettext
 import inspect
@@ -9,6 +9,7 @@ from pathlib import Path
 from orjson import JSONDecodeError
 
 from .log import log
+from .exceptions import TypeError
 
 CONFIG_FILE_NAME = "config.json"
 
@@ -188,11 +189,8 @@ def get_class_methods(cls):
             methods.append(name)
     return methods
 
-def load_config_data(cls):
-    """
-    加载配置文件
-    """
-    methods= get_class_methods(cls)
+def load_all_config_data(cls):
+    methods = get_class_methods(cls)
     sradata = read_json_file(CONFIG_FILE_NAME)
     lack_methods = set(methods) - set(sradata.keys()) # 获取缺少的配置
     # 如果缺少配置则添加
@@ -204,12 +202,22 @@ def load_config_data(cls):
     for key, value in sradata.items():
         setattr(cls, key, value)
 
+def load_config_data(cls, __name):
+    """
+    加载配置文件
+    """
+    sradata = read_json_file(CONFIG_FILE_NAME)
+    if __name in sradata:
+        setattr(cls, __name, sradata[__name])
+
 class SRADataMeta(type):
     def __setattr__(cls, __name, __value):
         type_hints = get_type_hints(cls) # 获取所有类属性的类型信息
         __name_type = type_hints.get(__name)
-        if type(__value) != __name_type and __name_type is not None:
-            raise TypeError(f"类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
+        if __name_type == int:
+            __value = int(__value)
+        if  __name_type is not None and not isinstance(__value, __name_type):
+            raise TypeError(f"{__name}类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
         modify_json_file(CONFIG_FILE_NAME, __name, __value)
         super().__setattr__(__name, __value)
 
@@ -237,7 +245,7 @@ class SRAData(metaclass=SRADataMeta):
     """webhook地址"""
     start: bool = False
     """是否第一次运行"""
-    temp_version: str = "0"
+    picture_version: str = "0"
     """图片版本"""
     map_version: str = "0"
     """地图版本"""
@@ -269,7 +277,12 @@ class SRAData(metaclass=SRADataMeta):
     """战斗时间"""
     fight_data: dict = {}
     """战斗数据"""
-
+    team_number: int = 1
+    """切换队伍的队伍编号"""
+    stop: bool = False
+    """是否停止"""
+    github_source: str = "Starry-Wind"
+    """github仓库源"""
 
     def __init__(self) -> None:
         ...
@@ -277,21 +290,23 @@ class SRAData(metaclass=SRADataMeta):
     def __setattr__(self, __name: str, __value: Any) -> None:
         type_hints = get_type_hints(self) # 获取所有类属性的类型信息
         __name_type = type_hints.get(__name)
-        if type(__value) != __name_type:
-            raise TypeError(f"类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
+        if __name_type == int:
+            __value = int(__value)
+        if not isinstance(__value, __name_type):
+            raise TypeError(f"{__name}类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
         modify_json_file(CONFIG_FILE_NAME, __name, __value)
         super().__setattr__(__name, __value)
 
     def __getattribute__(self, __name: str) -> Any:
-        if __name == "__dict__":
+        if "__" in __name:
             return super().__getattribute__(__name)
         if __name in self.__dict__:
             type_hints = get_type_hints(self) # 获取所有类属性的类型信息
             __name_type = type_hints.get(__name)
             __value = super().__getattribute__(__name)
-            if type(__value) != __name_type:
-                raise TypeError(f"类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
-        load_config_data(SRAData)
+            if not isinstance(__value, __name_type):
+                raise TypeError(f"{__name}类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
+        load_config_data(SRAData, __name)
         return super().__getattribute__(__name)
     
     def set_config(self, key, value):
@@ -309,3 +324,4 @@ class SRAData(metaclass=SRADataMeta):
         return getattr(self, key)
 
 sra_config_obj = SRAData()
+load_all_config_data(SRAData)

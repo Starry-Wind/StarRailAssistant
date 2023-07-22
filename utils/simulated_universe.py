@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-19 16:04:28
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-06-02 00:43:24
+LastEditTime: 2023-07-20 14:18:04
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -20,7 +20,7 @@ from questionary import Validator, ValidationError
 from typing import List
 from pynput.keyboard import Controller as KeyboardController
 from threading import Thread
-#from ultralytics.nn.tasks import  attempt_load_weights
+#from ultralytics.nn.tasks import  atpicturet_load_weights
 
 from .calculated import *
 from .config import get_file, read_json_file, modify_json_file, CONFIG_FILE_NAME, _
@@ -44,7 +44,7 @@ class Simulated_Universe:
         self.calculated = calculated(title)
         self.p = Pinyin()
         self.keyboard = KeyboardController()
-        #self.model = attempt_load_weights("./temp/model/best.pt")
+        #self.model = atpicturet_load_weights("./picture/model/best.pt")
 
     def read_role(self):
         """
@@ -53,7 +53,7 @@ class Simulated_Universe:
         返回:
             角色列表
         """
-        self.role_list = get_file('./temp/Simulated_Universe/role')
+        self.role_list = get_file('./picture/Simulated_Universe/role')
         self.role_list = [i.split('.jpg')[0] for i in self.role_list]
         log.debug(self.role_list)
         return self.role_list
@@ -74,14 +74,14 @@ class Simulated_Universe:
             for i in range(abs(level - start)):
                 self.calculated.scroll(-1)
         time.sleep(0.5)
-        self.calculated.Relative_click((60, 50))
+        self.calculated.relative_click((60, 50))
         start_time = time.time()
         while True:
             left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
             img_fp = ImageGrab.grab((left, top, right, bottom), all_screens=True)
             text, pos = self.calculated.ocr_pos(img_fp, _("下载初始角色"))
             if pos:
-                self.calculated.Click((left+pos[0], top+pos[1]))
+                self.calculated.click((left+pos[0], top+pos[1]))
                 break
             if time.time() - start_time > 10:
                 log.info(_("识别超时"))
@@ -101,13 +101,13 @@ class Simulated_Universe:
         while True:
             for role in roles:
                 role_py = self.p.get_pinyin(role,'')
-                target = cv.imread(f"./temp/Simulated_Universe/role/mnq/{role_py}.png")
+                target = cv.imread(f"./picture/Simulated_Universe/role/mnq/{role_py}.png")
                 result = self.calculated.scan_screenshot(target, img_fp)
                 print(role+":"+str(result['max_val']))
                 if result['max_val'] > 0.90:
                     roles.remove(role)
                     #points = self.calculated.calculated(result, img.shape)
-                    self.calculated.Click((result['max_loc'][0]+10, result['max_loc'][1]+10))
+                    self.calculated.click((result['max_loc'][0]+10, result['max_loc'][1]+10))
                     time.sleep(0.1)
             if len(roles) == 0:
                 break
@@ -193,7 +193,7 @@ class Simulated_Universe:
         self.choose_level(level, start, pos, platform)
         self.choose_role(roles, platform)
         if platform == _("PC"):
-            self.calculated.Relative_click((85, 90))
+            self.calculated.relative_click((85, 90))
         elif platform == _("模拟器"):
             os.system(f"adb -s {self.order} shell input tap 1020 654")
         self.calculated.ocr_click("O确认", 2)

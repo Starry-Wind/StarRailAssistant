@@ -50,7 +50,7 @@ with open('config.json','r') as f:
     config = json.load(f)
     config['start'] = False
     config['map_version'] = "0"
-    config['temp_version'] = "0"
+    config['picture_version'] = "0"
     config['star_version'] = "0"
 
 with open('config.json', 'w', encoding='utf-8') as f:

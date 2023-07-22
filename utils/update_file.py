@@ -37,6 +37,7 @@ class update_file:
         """
         self.page = page
         self.pb = pb
+        self.github_source = sra_config_obj.github_source
 
     async def verify_file_hash(self, json_path: Path, keep_file: Optional[List[str]] = []) -> bool:
         """
@@ -120,27 +121,84 @@ class update_file:
             elif os.path.isdir(item_path):
                 shutil.copytree(item_path, destination2_path, dirs_exist_ok=True)
 
-    async def upsra(self):
+    async def upsra(self,
+                        rm_all: bool=False, 
+                        skip_verify: bool=True,
+                        type: str="",
+                        version: str="",
+                        url_zip: str="",
+                        unzip_path: str="",
+                        keep_folder: Optional[List[str]] = [],
+                        keep_file: Optional[List[str]] = [],
+                        zip_path: str="",
+                        name: str="",
+                        delete_file: bool=False) -> bool:
+        global tmp_dir
+        git_proxy = sra_config_obj.github_proxy
+        if not await self.is_sra_latest(type, version):
+            dl_url = f"{git_proxy}https://github.com/{self.github_source}/StarRailAssistant/archive/refs/tags/{version}.zip"
+            tmp_zip = Path() / tmp_dir / f"{type}.zip"
+            zip_path = f"StarRailAssistant-{version.replace('v','')}/"
+            await self.copy_files(Path(), Path() / "StarRailAssistant_backup", ["utils", "picture", "map", "config.json", "get_width.py", "Honkai_Star_Rail.py", "gui.py"])
+            log.info(_("[资源文件更新]本地版本与远程版本不符，开始更新资源文件->{url_zip}").format(url_zip=dl_url))
+            for __ in range(3):
+                try:
+                    await download(dl_url, tmp_zip)
+                    log.info(_("[资源文件更新]下载更新包成功, 正在覆盖本地文件: {local_version} -> {remote_version}").format(local_version=sra_config_obj.star_version, remote_version=version))
+                    await self.unzip(tmp_zip, zip_path)
+                    break
+                except BadZipFile:
+                    log.info(_("[资源文件更新]下载压缩包失败, 重试中: BadZipFile"))
+                except BaseException as e:
+                    log.info(_("[资源文件更新]下载压缩包失败: {e}").format(e=e))
+                log.info(_("将在10秒后重试，你可能需要设置代理"))
+                await asyncio.sleep(10)
+            else:
+                log.info(_("[资源文件更新]重试次数已达上限，更换代理可能可以解决该问题"))
+                raise Exception(_("[资源文件更新]重试次数已达上限，更换代理可能可以解决该问题"))
+
+            #shutil.rmtree("..\StarRailAssistant-beta-2.7")
+            if delete_file:
+                await self.remove_file(unzip_path, keep_folder, keep_file)
+            await self.move_file(os.path.join(tmp_dir, zip_path), unzip_path, [], keep_file)
+
+            log.info(_("[资源文件更新]校验完成, 更新本地{name}文件版本号 {local_version} -> {remote_version}").format(name="脚本", local_version=sra_config_obj.star_version, remote_version=version))
+
+            # 更新版本号
+            sra_config_obj.set_config(key=f"{type}_version", value=version)
+
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+            log.info(_("[资源文件更新]删除临时文件{tmp_dir}").format(tmp_dir=tmp_dir))
+        log.info(_("[资源文件更新]更新完成."))
+        return True
+
+    async def is_sra_latest(self, type: str, version: str, is_log: bool = True):
+        local_version = sra_config_obj.star_version
         for index, __ in enumerate(range(3)):
             try:
-                up_url = "https://api.github.com/repos/Starry-Wind/StarRailAssistant/releases/latest"
-                up_reponse = get(up_url)
-                up_reponse = up_reponse.json()
-                version = up_reponse.get("tag_name")
+                up_url = f"https://api.github.com/repos/{self.github_source}/StarRailAssistant/releases/latest"
+                up_reponse = await get(up_url, timeout=2)
+                up_data = up_reponse.json()
+                version: str = up_data.get("tag_name")
                 break
             except BaseException as e:
                 if index < 2:
-                    log.info(_("[资源文件更新]获取远程版本失败, 正在重试: {e}").format(e=e))
+                    log.info(_("[资源文件更新]获取远程版本失败, 正在重试: {e}").format(e=e)) if is_log else None
                 else:
-                    log.info(_("[资源文件更新]获取远程版本失败: {e}").format(e=e))
-                log.info(_("将在10秒后重试，你可能需要设置代理"))
+                    log.info(_("[资源文件更新]获取远程版本失败: {e}").format(e=e)) if is_log else None
+                log.info(_("将在10秒后重试，你可能需要设置代理")) if is_log else None
                 await asyncio.sleep(10)
         else:
-            log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
-            raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
-        if version == self.data:
-            ...
-
+            if is_log:
+                log.info(_("[资源文件更新]重试次数已达上限，退出程序"))
+                raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
+            else:
+                return True, 0, local_version
+        if version != local_version:
+            return False, version, local_version
+        else:
+            return True, version, local_version
+        
     async def is_latest(self, type: str, version: str, is_log: bool = True):
         """
         说明:
@@ -151,9 +209,11 @@ class update_file:
             :param version: 版本验证地址/仓库分支名称 map
         """
         raw_proxy = sra_config_obj.rawgithub_proxy
-        url_version = f"{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/version.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/version.json".replace("raw.githubusercontent.com", raw_proxy)
+        url_version = f"{raw_proxy}https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/version.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/version.json".replace("raw.githubusercontent.com", raw_proxy)
         log.info(_("[资源文件更新]正在检查远程版本是否有更新...")) if is_log else None
         local_version = sra_config_obj.get_config(f"{type}_version") # read_json_file(CONFIG_FILE_NAME).get(f"{type}_version", "0")
+        if type == "star":
+            return await self.is_sra_latest(type, version, is_log)
         for index, __ in enumerate(range(3)):
             try:
                 remote_version = await get(url_version, timeout=2)
@@ -197,7 +257,7 @@ class update_file:
         参数：
             :param rm_all: 是否强制删除文件
             :param skip_verify: 是否跳过检验
-            :param type: 更新文件的类型 map\temp
+            :param type: 更新文件的类型 map\picture
             :param version: 版本验证地址/仓库分支名称 map
             :param url_zip: zip下载链接
             :param unzip_path: 解压地址（删除用）
@@ -207,11 +267,13 @@ class update_file:
             :param name: 更新的文件名称
             :param delete_file: 是否删除文件
         """
+        if name == _("脚本"):
+            return await self.upsra(rm_all, skip_verify, type, version, url_zip, unzip_path, keep_folder, keep_file, zip_path, name, delete_file)
         global tmp_dir
         url_proxy = sra_config_obj.github_proxy
         raw_proxy = sra_config_obj.rawgithub_proxy
         url_zip = url_proxy+url_zip if "http" in url_proxy or url_proxy == "" else url_zip.replace("github.com", url_proxy)
-        url_list = f"{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/{type}_list.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/{type}_list.json".replace("raw.githubusercontent.com", raw_proxy)
+        url_list = f"{raw_proxy}https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/{type}_list.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/{type}_list.json".replace("raw.githubusercontent.com", raw_proxy)
         
         #tmp_zip = os.path.join(tmp_dir, f"{type}.zip")
         tmp_zip = Path() / tmp_dir / f"{type}.zip"
@@ -225,8 +287,7 @@ class update_file:
 
         is_latest, remote_version, local_version = await self.is_latest(type, version)
         if not is_latest:
-            if name == _("脚本"):
-                await self.copy_files(Path(), Path() / "StarRailAssistant_backup", ["utils", "temp", "map", "config.json", "get_width.py", "Honkai_Star_Rail.py", "gui.py"])
+                #await self.copy_files(Path(), Path() / "StarRailAssistant_backup", ["utils", "picture", "map", "config.json", "get_width.py", "Honkai_Star_Rail.py", "gui.py"])
             log.info(_("[资源文件更新]本地版本与远程版本不符，开始更新资源文件->{url_zip}").format(url_zip=url_zip))
             for __ in range(3):
                 try:
@@ -326,7 +387,7 @@ class update_file:
             更新文件
         参数：
             :param skip_verify: 是否跳过检验
-            :param type: 更新文件的类型 map\temp
+            :param type: 更新文件的类型 map\picture
             :param version: 版本验证地址/仓库分支名称 map
             :param url_zip: zip下载链接
             :param unzip_path: 解压地址（删除用）
