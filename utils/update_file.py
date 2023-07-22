@@ -135,7 +135,8 @@ class update_file:
                         delete_file: bool=False) -> bool:
         global tmp_dir
         git_proxy = sra_config_obj.github_proxy
-        if not await self.is_sra_latest(type, version):
+        version = await self.is_sra_latest(type, version)
+        if not version:
             dl_url = f"{git_proxy}https://github.com/{self.github_source}/StarRailAssistant/archive/refs/tags/{version}.zip"
             tmp_zip = Path() / tmp_dir / f"{type}.zip"
             zip_path = f"StarRailAssistant-{version.replace('v','')}/"
@@ -194,6 +195,7 @@ class update_file:
                 raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
             else:
                 return True, 0, local_version
+        print(version, local_version)
         if version != local_version:
             return False, version, local_version
         else:
