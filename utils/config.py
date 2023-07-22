@@ -216,6 +216,8 @@ class SRADataMeta(type):
         __name_type = type_hints.get(__name)
         if __name_type == int:
             __value = int(__value)
+        elif __name_type == float:
+            __value = float(__value)
         if  __name_type is not None and not isinstance(__value, __name_type):
             raise TypeError(f"{__name}类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
         modify_json_file(CONFIG_FILE_NAME, __name, __value)
@@ -292,6 +294,8 @@ class SRAData(metaclass=SRADataMeta):
         __name_type = type_hints.get(__name)
         if __name_type == int:
             __value = int(__value)
+        elif __name_type == float:
+            __value = float(__value)
         if not isinstance(__value, __name_type):
             raise TypeError(f"{__name}类型错误, 期望类型为{__name_type.__name__}, 实际类型为{type(__value).__name__}")
         modify_json_file(CONFIG_FILE_NAME, __name, __value)
