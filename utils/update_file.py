@@ -195,7 +195,6 @@ class update_file:
                 raise Exception(_("[资源文件更新]重试次数已达上限，退出程序"))
             else:
                 return True, 0, local_version
-        print(version, local_version)
         if version != local_version:
             return False, version, local_version
         else:
