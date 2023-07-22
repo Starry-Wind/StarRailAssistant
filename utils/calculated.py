@@ -10,6 +10,7 @@ import itertools
 import cv2 as cv
 import numpy as np
 import pygetwindow as gw
+import pydirectinput as pyautogui
 
 from cnocr import CnOcr
 from datetime import datetime
@@ -268,8 +269,9 @@ class calculated:
             :param threshold: 可信度阈值
             :param flag: 是否必须找到
         """
-        target_path = target_path.replace("picture\\","picture\\pc\\")
-        temp_name = target_path.split("\\")[-1].split(".")[0]
+        target_path = target_path.replace("picture\\","").replace("temp\\","").replace("picture\\pc\\","")
+        picture_path = "picture\\pc\\"+target_path
+        temp_name = target_path.split(".")[0]
         join = False # 强制进行传统模板匹配
         temp_ocr = {
             "orientation_1": {
@@ -339,7 +341,6 @@ class calculated:
             elif "change_team" in temp_name:
                 self.change_team()
             elif "point" in temp_name and "map" in temp_name:
-                target = cv.imread(target_path)
                 start_time = time.time()
                 while True:
                     if type(temp_ocr[temp_name]) == dict:
@@ -378,7 +379,7 @@ class calculated:
                     self.img_click(temp_ocr[temp_name])
         if temp_name not in temp_ocr or join:
             log.info(temp_name)
-            target = cv.imread(target_path)
+            target = cv.imread(picture_path)
             start_time = time.time()
             first_timeout = True
             distance_iter = itertools.cycle([300, -300, -300])
@@ -394,7 +395,6 @@ class calculated:
                 if time.time() - start_time > 5 and "point" in temp_name:
                     start_x = (self.window.left+self.window.right) // 2
                     start_y = (self.window.top+self.window.bottom) // 2
-                    import pyautogui # 写这里是为了防止缩放比获取错误
                     log.info(move_num%3)
                     if move_num%3 == 0 and move_num != 0:
                         self.relative_click(next(level_iter))
@@ -974,19 +974,33 @@ class calculated:
         """
         if self.DEBUG:
             map_name2id = {
-                "收容舱段-1": 1,
-                "收容舱段-2": 6,
-                "鳞渊境-1": 5,
-                "丹鼎司-1": 2,
-                "丹鼎司-2": 3,
-                "丹鼎司-3": 3,
-                "丹鼎司-4": 3,
-                "丹鼎司-5": 4,
-                "丹鼎司-6": 4,
+                "收容舱段": {
+                    "收容舱段-1": 1,
+                    "收容舱段-2": 6,
+                },
+                "城郊雪原": {
+                    "城郊雪原-1": 7,
+                    "城郊雪原-2": 7
+                },
+                "边缘道路": {
+                    "边缘道路-1": 8,
+                    "边缘道路-2": 8
+                },
+                "丹鼎司": {
+                    "丹鼎司-1": 2,
+                    "丹鼎司-2": 3,
+                    "丹鼎司-3": 3,
+                    "丹鼎司-4": 3,
+                    "丹鼎司-5": 4,
+                    "丹鼎司-6": 4,
+                },
+                "鳞渊境":{
+                    "鳞渊境-1": 5,
+                }
             }
-            if not map_id and map_name not in map_name2id:
+            map_id = map_name2id.get(map_name.split("-")[0], {}).get(map_name, None)
+            if not map_id:
                 return (0, 0)
-            map_id = map_name2id[map_name] if not map_id else map_id
             img = cv.imread(f"./picture/maps/{map_id}.png")
             template = self.take_screenshot((4,8,10,20))[0]
             __, max_val, max_loc, __, __ = find_best_match(img, template,(100,120,5))

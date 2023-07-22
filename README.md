@@ -19,14 +19,7 @@
 [![GitHub License](https://img.shields.io/github/license/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/StarRailAssistant/blob/main/LICENSE)
 </div>
 
-*****该脚本仍然处于测试阶段，可能会出现奇奇怪怪的BUG*****
-
-***寻路撞墙？走的路径不对？嫌弃路线太慢？现在beta-2.7新增加地图录制功能***<br>
-***你现在可以使用tool目录下的record_v7.2.py自行录制地图路径，包你走到满意 XD***
-
 找到BUG了？代码问题想吐槽？欢迎加入 技术 & 吹水群：[QQ 群1(可能满了)](https://qm.qq.com/cgi-bin/qm/qr?k=xdCO46fHlVcY7D2L7elXzqcxL3nyTGnW&jump_from=webapi&authKey=uWZooQ2szv+nG/re7luCKn8LW1KibSb0vvi0FycA45Mglm5AGM1GP2iJ+SiWmDwg)|[QQ 群2](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=ShfX_OHrFCHG6fuvXhq7W-oJ4omo0p-_&authKey=7VuSrSVbfqP6bj3%2BBJdI4NwLRrYtUEYOJp2JiT8%2BJnRDhv9sWpJ%2FHjSh5iiY8T4c&noverify=0&group_code=618070253)|[QQ频道](https://pd.qq.com/s/e910fud13)|[Telegram Group](https://t.me/+yeQEhnuT9O41NDM1)<br>
-
-~~该脚本当前版本仅支持 缩放150%，屏幕分辨率2560x1440，现在在大改动中，尽快解决屏幕旋转适配问题~~
 
 ## 免责声明
 
@@ -43,39 +36,11 @@ This software is open source, free of charge and for learning and exchange purpo
 
 ## 使用说明
 
-1. 安装[Python 3.11](https://www.python.org/downloads/release/python-3113/) (其他版本安装依赖项时会有很多问题)
-   1. 输入`pip install -r requirements.txt`安装依赖
-2. 如果您是第一次运行脚本，还请选择：检测更新-全部更新~
-3. 下载最新版[星穹铁道小助手](https://github.com/Starry-Wind/StarRailAssistant/releases/latest)
-4. 解压文件，并进入文件夹
-5. 复制文件夹路径
-6. 右键开始菜单，选择`终端管理员`，输入`cd 刚刚复制的路径`
-7. 输入`pip config set global.index-url https://mirrors.aliyun.com/pypi/simple`设置国内pip源
-8. 输入`pip install -r requirements.txt`安装依赖
-9. 输入`Python Honkai_Star_Rail.py`运行星穹铁道小助手
-10. 使用模拟器请使用1280\*720p分辨率，默认为夜神模拟器，其他模拟器使用请先连接上adb(模拟器卡顿可能会吞操作)
-11. 跑图过程中出问题了不想跑了想返回主菜单了可以用Ctrl+C并默念<font color= #E2027F>爱门</font>
+- [使用说明](https://sra.stysqy.top/guide/)
 
 ## 配置文件说明
 
-```json
-{
-    "real_width": 0, (实际宽度)
-    "auto_battle_persistence": 0, (游戏内是否开启自动自动，填1则为开启)
-    "real_height": 0, (实际长度)
-    "github_proxy": "", (github代理)
-    "rawgithub_proxy": "", (github代理)
-    "webhook_url": "",
-    "start": true, (是否第一次运行脚本)
-    "picture_version": "20230515205738",
-    "star_version": "20230515220742",
-    "level": "INFO",
-    "adb": "127.0.0.1:62001",（62001为adb端口）
-    "adb_path": "picture\\adb\\adb",（adb文件路径）
-    "proxies": "",
-    "move_excursion": 0（移动偏移）
-}
-```
+- [配置文件说明](https://sra.stysqy.top/config/)
 
 ## 脚本录制 感谢[@AlisaCat](https://github.com/AlisaCat-S)
 

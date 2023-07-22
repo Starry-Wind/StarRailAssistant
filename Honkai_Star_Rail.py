@@ -22,7 +22,7 @@ from pluggy import PluginManager
 
 from get_width import get_width
 from utils.log import log, fight_log
-from utils.config import read_json_file, modify_json_file, add_key_value, read_maps, CONFIG_FILE_NAME, _
+from utils.config import read_json_file, load_all_config_data, modify_json_file, add_key_value, read_maps, CONFIG_FILE_NAME, _
 from utils.simulated_universe import Simulated_Universe
 from utils.update_file import update_file
 from utils.commission import Commission
@@ -276,7 +276,6 @@ class SRA:
                 time.sleep(0.5)
                 get_width(game_title)
                 #map_instance.calculated.CONFIG = read_json_file(CONFIG_FILE_NAME)
-                import pyautogui # 缩放纠正
                 log.info(_("开始运行，请勿移动鼠标和键盘"))
                 log.info(_("若脚本运行无反应,请使用管理员权限运行"))
                 if option == _("大世界"):
@@ -296,7 +295,6 @@ class SRA:
             time.sleep(0.5)
             get_width(game_title)
             #map_instance.calculated.CONFIG = read_json_file(CONFIG_FILE_NAME)
-            import pyautogui # 缩放纠正
             log.info(_("开始运行，请勿移动鼠标和键盘"))
             log.info(_("若脚本运行无反应,请使用管理员权限运行"))
             self.option_dict[option]()
