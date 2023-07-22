@@ -10,7 +10,6 @@ import itertools
 import cv2 as cv
 import numpy as np
 import pygetwindow as gw
-import pydirectinput as pyautogui
 
 from cnocr import CnOcr
 from datetime import datetime
@@ -399,6 +398,7 @@ class calculated:
                     if move_num%3 == 0 and move_num != 0:
                         self.relative_click(next(level_iter))
                         time.sleep(0.2)
+                    import pyautogui
                     pyautogui.moveTo(start_x, start_y)
                     pyautogui.mouseDown()
                     pyautogui.moveTo(start_x, start_y+next(distance_iter), duration=1)

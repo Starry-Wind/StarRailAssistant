@@ -28,4 +28,3 @@ flet
 cryptography
 pluggy
 httpcore==0.17.3
-pydirectinput
