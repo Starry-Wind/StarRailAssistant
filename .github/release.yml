@@ -7,14 +7,14 @@ changelog:
     authors:
       - octocat
   categories:
-    - title: Fixs
+    - title: 修复 Fixs
       labels:
         - fix
         - bug
-    - title: Feats
+    - title: 重大更新 Feats
       labels:
         - feat
-    - title: Chores
+    - title: 日常更新 Chores
       labels:
         - enhancement
         - chore
