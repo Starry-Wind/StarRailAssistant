@@ -1,7 +1,7 @@
 [
   {
     "path": "requirements.txt",
-    "hash": "c0634c7e1ad31883a39d552b0e4e5e85"
+    "hash": "168bf19887a7da79ae637d9d7d7d3593"
   },
   {
     "path": "Honkai_Star_Rail.py",
@@ -89,7 +89,7 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "c8bbf58f0fa356e95e4ab7786eda185a"
+    "hash": "14220162aafc54ef96bab11f3210c3ee"
   },
   {
     "path": "utils/adb.py",
@@ -101,7 +101,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "ca48023cd4e48c09a5c4286234d72615"
+    "hash": "dbff14bee88a6b5e6c04d7967cf0acc8"
   },
   {
     "path": "utils/update_file.py",
