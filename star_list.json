@@ -1,51 +1,119 @@
 [
   {
-    "path": "get_width.py",
-    "hash": "61565cea390d9c40255924732e732f15"
-  },
-  {
-    "path": "README_EN.md",
-    "hash": "62cd316b3b5cafca47b24d9647f957ff"
-  },
-  {
-    "path": "map_res_list.py",
-    "hash": "2027d7dba3a3e12565621b101a2dc1cb"
-  },
-  {
     "path": "requirements.txt",
-    "hash": "168bf19887a7da79ae637d9d7d7d3593"
-  },
-  {
-    "path": "gui.py",
-    "hash": "b3559d90dc3d5e25d7fb775222a6f3e9"
-  },
-  {
-    "path": "README.md",
-    "hash": "128cc342a20ff51f35219d18e602c21a"
-  },
-  {
-    "path": "README_CHT.md",
-    "hash": "03fe99bddfc640bb2d83f4a29857147d"
+    "hash": "c0634c7e1ad31883a39d552b0e4e5e85"
   },
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "205200bf7c570768f39bf30deb91cebe"
+    "hash": "fcb90503847871c32f3458d0097a995a"
   },
   {
-    "path": "locale/EN/LC_MESSAGES/sra.mo",
-    "hash": "4c9ed87ca1d8f72de21590de507c9d32"
+    "path": "README_EN.md",
+    "hash": "86793ffe1c415f308624e02b9924a4f8"
   },
   {
-    "path": "locale/zh_CN/LC_MESSAGES/sra.mo",
-    "hash": "0a0ccfe2f4f2da8626fda930bd84ef9c"
+    "path": "map_res_list.py",
+    "hash": "61ddda8760a56ea082d5d7276747312a"
   },
   {
-    "path": "locale/zh_TC/LC_MESSAGES/sra.mo",
-    "hash": "ef66f8b317d24e3eb326e739cb9b00ee"
+    "path": "gui.py",
+    "hash": "40ff0b633f5f7f902d38290ce750ee3c"
   },
   {
-    "path": "whl/cnstd-1.2.2-py3-none-any.whl",
-    "hash": "2e700dd1d42f71c71b739bd6afa67a8a"
+    "path": "get_width.py",
+    "hash": "883cd3ffb3c1f7a0e8fff08ba61269b3"
+  },
+  {
+    "path": "README_CHT.md",
+    "hash": "f26e29d09b17110ad6f79d5c40224d57"
+  },
+  {
+    "path": "README.md",
+    "hash": "868a185cfef9da32b507636ffa5b2898"
+  },
+  {
+    "path": "model/label_cn.txt",
+    "hash": "e3f7c9400f4379e05cadbbc8a43dda45"
+  },
+  {
+    "path": "model/cnocr/1.2/ppocr/ch_PP-OCRv3_det_infer.onnx",
+    "hash": "5732f8c84bd4cc0dab35094e7260f080"
+  },
+  {
+    "path": "model/cnocr/1.2/ppocr/en_PP-OCRv3_det_infer.onnx",
+    "hash": "72708a3ac241e25fefbc606832dc7529"
+  },
+  {
+    "path": "model/cnstd/2.2/ppocr/en_PP-OCRv3_rec_infer.onnx",
+    "hash": "003da6ca16cae88c5270882fc5e7417b"
+  },
+  {
+    "path": "model/cnstd/2.2/ppocr/en_number_mobile_v2.0_rec_infer.onnx",
+    "hash": "442ea7b4dabdbaec95af17a6d17c3503"
+  },
+  {
+    "path": "model/cnstd/2.2/densenet_lite_134-fc/cnocr-v2.2-densenet_lite_134-fc-epoch=034-complete_match_epoch=0.8376-model.onnx",
+    "hash": "332265c72378b39e83ced6b4e42954c4"
+  },
+  {
+    "path": "model/cnstd/2.2/densenet_lite_114-fc/cnocr-v2.2-densenet_lite_114-fc-epoch=037-complete_match_epoch=0.7859-model.onnx",
+    "hash": "d661b811419ff7dde7eb8543690cdd2b"
+  },
+  {
+    "path": "utils/requests.py",
+    "hash": "27952d3e76aca6502a540c69dbf58a2a"
+  },
+  {
+    "path": "utils/cv_tools.py",
+    "hash": "1a21f925133502d281e24adfb1310cc7"
+  },
+  {
+    "path": "utils/get_angle.py",
+    "hash": "2dc46330cef1b3720658f62c619b54ac"
+  },
+  {
+    "path": "utils/log.py",
+    "hash": "172d7d4d63c1b3136c5600055e666967"
+  },
+  {
+    "path": "utils/simulated_universe.py",
+    "hash": "ee14b83bd91b720095188ccc475c014d"
+  },
+  {
+    "path": "utils/commission.py",
+    "hash": "f2911ffe8697a5cfc6301ba66e383116"
+  },
+  {
+    "path": "utils/record_v7.2.py",
+    "hash": "fbf62da314595e8f70487b8cf8944bee"
+  },
+  {
+    "path": "utils/config.py",
+    "hash": "c8bbf58f0fa356e95e4ab7786eda185a"
+  },
+  {
+    "path": "utils/adb.py",
+    "hash": "4a19acb6a8f259b2818172d4c3b5a1ba"
+  },
+  {
+    "path": "utils/map.py",
+    "hash": "73835fd33d9a2b1c9bb4c9eebcdd0565"
+  },
+  {
+    "path": "utils/calculated.py",
+    "hash": "ca48023cd4e48c09a5c4286234d72615"
+  },
+  {
+    "path": "utils/update_file.py",
+    "hash": "87a73918b809dfc4dfb136625a87786d"
+  },
+  {
+    "path": "utils/exceptions.py",
+    "hash": "77cc57669183fd844fbc2345fef88a3f"
+  },
+  {
+    "path": "utils/route_helper.py",
+    "hash": "cca50ef52d7075c186e12badeb0a35d0"
   },
   {
     "path": "whl/Polygon3-3.0.9.1-cp310-cp310-win_amd64.whl",
@@ -56,99 +124,27 @@
     "hash": "9c9fcdf730445180029471858d8e8c27"
   },
   {
-    "path": "whl/cnocr-2.2.2.3-py3-none-any.whl",
-    "hash": "fff249a0f8c75f5bc4f0f97c95880bd8"
-  },
-  {
     "path": "whl/Polygon3-3.0.9-cp311-cp311-win_amd64.whl",
     "hash": "43a2cab179598fdaaa21da76cdaaaafc"
   },
   {
-    "path": "utils/exceptions.py",
-    "hash": "2fe9316ec5635fe87cfdf70d1c870a32"
+    "path": "whl/cnocr-2.2.2.3-py3-none-any.whl",
+    "hash": "fff249a0f8c75f5bc4f0f97c95880bd8"
   },
   {
-    "path": "utils/calculated.py",
-    "hash": "2ab077de87ed166292305209579db084"
+    "path": "whl/cnstd-1.2.2-py3-none-any.whl",
+    "hash": "2e700dd1d42f71c71b739bd6afa67a8a"
   },
   {
-    "path": "utils/adb.py",
-    "hash": "20961effe5eb9e7c6eb71252bf1749db"
+    "path": "locale/EN/LC_MESSAGES/sra.mo",
+    "hash": "4c9ed87ca1d8f72de21590de507c9d32"
   },
   {
-    "path": "utils/commission.py",
-    "hash": "741433251d5d1de1eab82a21cac4ab81"
+    "path": "locale/zh_TC/LC_MESSAGES/sra.mo",
+    "hash": "ef66f8b317d24e3eb326e739cb9b00ee"
   },
   {
-    "path": "utils/route_helper.py",
-    "hash": "cca50ef52d7075c186e12badeb0a35d0"
-  },
-  {
-    "path": "utils/cv_tracker.py",
-    "hash": "2826aef66cb9699d3585efa0407caa10"
-  },
-  {
-    "path": "utils/map.py",
-    "hash": "ef2eeadf10e8e57614bc7347573f9d93"
-  },
-  {
-    "path": "utils/requests.py",
-    "hash": "27952d3e76aca6502a540c69dbf58a2a"
-  },
-  {
-    "path": "utils/record_v7.2.py",
-    "hash": "2acb4a974b3cc2814be54e97ad784c23"
-  },
-  {
-    "path": "utils/update_file.py",
-    "hash": "1bcf2389fd810095defc49d9662895cd"
-  },
-  {
-    "path": "utils/simulated_universe.py",
-    "hash": "1f66356054e142c4aa11a65b3680b465"
-  },
-  {
-    "path": "utils/log.py",
-    "hash": "76b71a9efcb79996420e23449e73df14"
-  },
-  {
-    "path": "utils/cv_tools.py",
-    "hash": "30562220bf4127ed62abd9f3fa71ae5a"
-  },
-  {
-    "path": "utils/get_angle.py",
-    "hash": "2dc46330cef1b3720658f62c619b54ac"
-  },
-  {
-    "path": "utils/config.py",
-    "hash": "c7f683abd71bcacdff34a6446cd374f3"
-  },
-  {
-    "path": "model/label_cn.txt",
-    "hash": "e3f7c9400f4379e05cadbbc8a43dda45"
-  },
-  {
-    "path": "model/cnocr/1.2/ppocr/en_PP-OCRv3_det_infer.onnx",
-    "hash": "72708a3ac241e25fefbc606832dc7529"
-  },
-  {
-    "path": "model/cnocr/1.2/ppocr/ch_PP-OCRv3_det_infer.onnx",
-    "hash": "5732f8c84bd4cc0dab35094e7260f080"
-  },
-  {
-    "path": "model/cnstd/2.2/densenet_lite_114-fc/cnocr-v2.2-densenet_lite_114-fc-epoch=037-complete_match_epoch=0.7859-model.onnx",
-    "hash": "d661b811419ff7dde7eb8543690cdd2b"
-  },
-  {
-    "path": "model/cnstd/2.2/densenet_lite_134-fc/cnocr-v2.2-densenet_lite_134-fc-epoch=034-complete_match_epoch=0.8376-model.onnx",
-    "hash": "332265c72378b39e83ced6b4e42954c4"
-  },
-  {
-    "path": "model/cnstd/2.2/ppocr/en_number_mobile_v2.0_rec_infer.onnx",
-    "hash": "442ea7b4dabdbaec95af17a6d17c3503"
-  },
-  {
-    "path": "model/cnstd/2.2/ppocr/en_PP-OCRv3_rec_infer.onnx",
-    "hash": "003da6ca16cae88c5270882fc5e7417b"
+    "path": "locale/zh_CN/LC_MESSAGES/sra.mo",
+    "hash": "0a0ccfe2f4f2da8626fda930bd84ef9c"
   }
 ]
