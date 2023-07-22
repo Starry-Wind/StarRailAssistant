@@ -10,6 +10,7 @@ import itertools
 import cv2 as cv
 import numpy as np
 import pygetwindow as gw
+import pydirectinput as pyautogui
 
 from cnocr import CnOcr
 from datetime import datetime
@@ -57,16 +58,16 @@ class calculated:
         self.hwnd = self.window._hWnd
 
         # 初始化
-        self.attack = cv.imread("./temp/pc/attack.png")
-        self.doubt = cv.imread("./temp/pc/doubt.png")
-        self.warn = cv.imread("./temp/pc/warn.png")
-        # tagz = cv.imread("./temp/pc/tagz.jpg")
-        self.finish = cv.imread("./temp/pc/finish_fighting.jpg")
-        self.auto = cv.imread("./temp/pc/auto.jpg")
+        self.attack = cv.imread("./picture/pc/attack.png")
+        self.doubt = cv.imread("./picture/pc/doubt.png")
+        self.warn = cv.imread("./picture/pc/warn.png")
+        # tagz = cv.imread("./picture/pc/tagz.jpg")
+        self.finish = cv.imread("./picture/pc/finish_fighting.jpg")
+        self.auto = cv.imread("./picture/pc/auto.jpg")
 
         self.end_list = ["Tab", _("轮盘"), _("唤起鼠标"), _("手机"), _("退出")]
 
-    def Click(self, points = None):
+    def click(self, points = None):
         """
         说明：
             点击坐标
@@ -106,7 +107,7 @@ class calculated:
                 log.info(_(_("识别超时")))
                 break
 
-    def Relative_click(self, points, click_time=0.5):
+    def relative_click(self, points, click_time=0.5):
         """
         说明：
             点击相对坐标
@@ -130,8 +131,8 @@ class calculated:
             :param points: 坐标
         """
         left, top, __, __ = self.window.left, self.window.top, self.window.right, self.window.bottom
-        x, y = int(left + points[0]), int(top + points[1])
-        log.debug((x, y))
+        x, y = int(left + points[0] + sra_config_obj.left_border), int(top + points[1] + sra_config_obj.up_border)
+        log.info((x, y))
         self.mouse.position = (x, y)
         self.mouse.press(mouse.Button.left)
         time.sleep(0.5)
@@ -153,14 +154,14 @@ class calculated:
                 __, pos = self.ocr_pos(characters, points)
                 log.debug(characters)
                 if pos:
-                    self.Click(pos)
+                    self.click(pos)
                     time.sleep(0.3)
                     return pos
                 if time.time() - start_time > overtime:
                     log.info(_("识别超时")) if overtime != 0 else None
                     return False
 
-    def click_hsv(self, hsv_color, points=(0,0,0,0), offset=(0,0), flag=True, tolerance = 5):
+    def hsv_click(self, hsv_color, points=(0,0,0,0), offset=(0,0), flag=True, tolerance = 5):
         """
         说明：
             点击指定hsv颜色，允许偏移
@@ -186,7 +187,7 @@ class calculated:
                     break
             ret = [x + pos[0] + offset[0] , y + pos[1] + offset[1] ]
             log.info(_('点击坐标{ret}').format(ret=ret))
-            self.Click(ret)
+            self.click(ret)
             return True
 
     def take_screenshot(self,points=(0,0,0,0)):
@@ -204,7 +205,9 @@ class calculated:
             left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
         else:
             left, top, right, bottom = self.window.left+left_border, self.window.top+up_border, self.window.right-left_border, self.window.bottom-left_border
-        game_img = ImageGrab.grab((left, top, right, bottom))
+        # log.info(f"{left}, {top}, {right}, {bottom}")
+        game_img = ImageGrab.grab((left, top, right, bottom), all_screens=True)
+        # game_img.save(f"logs/image/image_grab_{int(time.time())}.png", "PNG")
         game_width, game_length = game_img.size
         if points != (0,0,0,0):
             #points = (points[0], points[1]+5, points[2], points[3]+5)
@@ -266,8 +269,9 @@ class calculated:
             :param threshold: 可信度阈值
             :param flag: 是否必须找到
         """
-        target_path = target_path.replace("temp\\","temp\\pc\\")
-        temp_name = target_path.split("\\")[-1].split(".")[0]
+        target_path = target_path.replace("picture\\","").replace("temp\\","").replace("picture\\pc\\","")
+        picture_path = "picture\\pc\\"+target_path
+        temp_name = target_path.split(".")[0]
         join = False # 强制进行传统模板匹配
         temp_ocr = {
             "orientation_1": {
@@ -296,6 +300,9 @@ class calculated:
             "map_3-2": _("迥星港"),
             "map_3-3": _("太卜司"),
             "map_3-4": _("工造司"),
+            "map_3-5": _("丹鼎司"),
+            "map_3-6": _("鳞渊境"),
+            "change_team": _("更换队伍"),
         }
         '''
         map: 
@@ -316,11 +323,11 @@ class calculated:
                 log.info(_("选择传送锚点"))
             elif "map" in temp_name:
                 log.info(_("选择地图"))
-            if "map" not in temp_name:
+            if "orientation" in temp_name or "transfer" in temp_name:
                 if type(temp_ocr[temp_name]) == dict:
                     result = self.ocr_click(temp_ocr[temp_name]["name"], points=temp_ocr[temp_name]["points"])
                 elif type(temp_ocr[temp_name]) == tuple:
-                    self.Relative_click(temp_ocr[temp_name])
+                    self.relative_click(temp_ocr[temp_name])
                     result = True
                 else:
                     result = self.ocr_click(temp_ocr[temp_name])
@@ -331,8 +338,9 @@ class calculated:
                         break
                     if not self.is_blackscreen():
                         break
-            elif "point" in temp_name:
-                target = cv.imread(target_path)
+            elif "change_team" in temp_name:
+                self.change_team()
+            elif "point" in temp_name and "map" in temp_name:
                 start_time = time.time()
                 while True:
                     if type(temp_ocr[temp_name]) == dict:
@@ -356,7 +364,7 @@ class calculated:
                             # 右边列表太长了 尝试向下滚动5秒 再向上滚动5秒
                             # scroll内部sleep 0.5s 大概能10次 目前最长在雅利洛需要向下滚动7次
                             if first_timeout:  # 点击右边的地图列表
-                                self.Relative_click((80, 50))
+                                self.relative_click((80, 50))
                                 first_timeout = False
                             if time.time() - start_time < 10:
                                 self.scroll(-10)
@@ -371,29 +379,33 @@ class calculated:
                     self.img_click(temp_ocr[temp_name])
         if temp_name not in temp_ocr or join:
             log.info(temp_name)
-            target = cv.imread(target_path)
+            target = cv.imread(picture_path)
             start_time = time.time()
             first_timeout = True
-            distance_iter = itertools.cycle([500, -500, -500])
+            distance_iter = itertools.cycle([300, -300, -300])
             level_iter = itertools.cycle([(3, 81), (3, 89), (3, 75)])
+            move_num = 0
             while True:
                 result = self.scan_screenshot(target)
                 log.info(result["max_val"])
                 if result["max_val"] > threshold:
                     #points = self.calculated(result, target.shape)
-                    self.Click(result["max_loc"])
+                    self.click(result["max_loc"])
                     break
                 if time.time() - start_time > 5 and "point" in temp_name:
                     start_x = (self.window.left+self.window.right) // 2
                     start_y = (self.window.top+self.window.bottom) // 2
-                    import pyautogui # 写这里是为了防止缩放比获取错误
+                    log.info(move_num%3)
+                    if move_num%3 == 0 and move_num != 0:
+                        self.relative_click(next(level_iter))
+                        time.sleep(0.2)
                     pyautogui.moveTo(start_x, start_y)
                     pyautogui.mouseDown()
                     pyautogui.moveTo(start_x, start_y+next(distance_iter), duration=1)
                     pyautogui.mouseUp()
-                    self.Relative_click(next(level_iter))
-                if ((time.time() - start_time > 10  and "point" not in temp_name) \
-                    or (time.time() - start_time > 15  and "point" in temp_name)): #防止卡死.重启线程
+                    move_num+=1
+                if ((time.time() - start_time > 15  and "point" not in temp_name) \
+                    or (time.time() - start_time > 30  and "point" in temp_name)): #防止卡死.重启线程
                     log.info(_("传送识别超时"))
                     self.keyboard.press(Key.esc)
                     time.sleep(0.1)
@@ -405,14 +417,14 @@ class calculated:
 
     def fighting(self):
         start_time = time.time()
-        self.Click()
+        self.click()
         time.sleep(0.1)
         if self.has_red((4, 7, 10, 19)):
             while True:
-                result = self.get_pix_rgb(pos=(1422, 59))
+                result = self.get_pix_rgb(pos=(1337, 62))
                 log.debug(f"进入战斗取色: {result}")
                 if self.compare_lists([0, 0, 222], result) and self.compare_lists(result, [0, 0, 255]):
-                    self.Click()
+                    self.click()
                 else:
                     break
                 time.sleep(0.1)
@@ -422,13 +434,13 @@ class calculated:
             self.wait_fight_end()
             return True
         time.sleep(0.2)
-        result = self.get_pix_rgb(pos=(1422, 59))
+        result = self.get_pix_rgb(pos=(1337, 62))
         log.debug(f"进入战斗取色: {result}")
         if not (self.compare_lists([0, 0, 225], result) and self.compare_lists(result, [0, 0, 255])):
             self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
         return True
     
-    def Check_fighting(self):
+    def check_fighting(self):
          while True:
                 end_str = str(self.part_ocr((20,95,100,100)))
                 if any(substring in end_str for substring in self.end_list):
@@ -453,14 +465,14 @@ class calculated:
                 log.info(_("识别超时,此处可能漏怪!"))
                 return False
             if self.scan_screenshot(self.attack,points=(3.75,5.5,11.6,23))["max_val"] > 0.97: #修改检测机制,精度更高
-                self.Click()
+                self.click()
                 time.sleep(0.3)
                 doubt_time = time.time()
                 log.info(_("监控疑问或警告"))
                 while time.time() - doubt_time < 8:
                     if self.scan_screenshot(self.doubt,points=(3.75,5.5,11.6,23))["max_val"] > 0.95 or self.scan_screenshot(self.warn,points=(3.75,5.5,11.6,23))["max_val"] > 0.95:
                         log.info(_("识别到疑问或警告,等待怪物开战或反击"))
-                        self.Click()
+                        self.click()
                         time.sleep(1.5)
                         log.info(_("识别反击"))
                     result = self.scan_screenshot(self.finish,points=(0,95,100,100))
@@ -472,14 +484,14 @@ class calculated:
                 if result["max_val"] < 0.95:
                     break
             else:
-                self.Click()
+                self.click()
                 time.sleep(0.3)
                 doubt_time = time.time() + 7
                 log.info(_("监控疑问或警告!"))
                 while time.time() < doubt_time:
                     if self.scan_screenshot(self.doubt,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95 or self.scan_screenshot(self.warn,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95:
                         log.info(_("识别到疑问或警告,等待怪物开战或反击"))
-                        self.Click()
+                        self.click()
                         time.sleep(1.5)
                         log.info(_("识别反击"))
                         break
@@ -542,7 +554,7 @@ class calculated:
                 break
             time.sleep(1) # 避免长时间ocr
 
-    def Mouse_move(self, x):
+    def mouse_move(self, x):
         """
         说明:
             视角转动
@@ -562,7 +574,7 @@ class calculated:
             win32api.mouse_event(1, last, 0)  # 进行视角移动
         time.sleep(0.5)
 
-    def move(self, com = ["w","a","s","d","f"], time1=1, map_name=""):
+    def move(self, com: str = ["w","a","s","d","f"], sleep_time=1, map_name=""):
         '''
         说明:
             移动
@@ -570,23 +582,36 @@ class calculated:
             :param com: 键盘操作 wasdf
             :param time 操作时间,单位秒
         '''
+        if type(sleep_time) == list:
+            set_loc = sleep_time[1]
+            sleep_time = sleep_time[0]
+            self.move_com(com, sleep_time)
+            loc = self.get_loc(map_name=map_name)
+            log.debug(loc)
+            log.info(loc)
+            com_num = abs(loc[1] - set_loc[1])
+            if com_num > 16:
+                self.move_com(com, com_num/16)
+        else:
+            self.move_com(com, sleep_time)
+            loc = (0, 0)
+        return loc
+
+    def move_com(self, com, sleep_time=1):
         move_excursion = sra_config_obj.move_excursion
         move_division_excursion = sra_config_obj.move_division_excursion
-        loc = self.get_loc(map_name=map_name)
-        log.debug(loc)
         self.keyboard.press(com)
-        result = self.get_pix_r(pos=(1712, 958))
-        log.debug(result)
-        if sra_config_obj.sprint and (self.compare_lists(result, [130, 160, 180]) or self.compare_lists([200, 200, 200], result)):
-            time.sleep(0.05)
-            log.info("疾跑")
-            self.mouse.press(mouse.Button.right)
-            self.mouse.release(mouse.Button.right)
         start_time = time.perf_counter()
-        while time.perf_counter() - start_time < (time1/move_division_excursion+move_excursion):
+        if sra_config_obj.sprint:
+            result = self.get_pix_r(pos=(1712, 958))
+            if (self.compare_lists(result, [130, 160, 180]) or self.compare_lists([200, 200, 200], result)):
+                time.sleep(0.05)
+                log.info("疾跑")
+                self.mouse.press(mouse.Button.right)
+                self.mouse.release(mouse.Button.right)
+        while time.perf_counter() - start_time < (sleep_time/move_division_excursion+move_excursion):
             pass
         self.keyboard.release(com)
-        return loc
 
     def path_move(self, path: List):
         '''
@@ -709,7 +734,7 @@ class calculated:
         log.debug(data)
         return data
 
-    def read_img(self, path, prefix='./temp/pc/'):
+    def read_img(self, path, prefix='./picture/pc/'):
         """
         说明：
             读取图像
@@ -866,7 +891,7 @@ class calculated:
                 return endtime
             '''
             endtime = time.time() - start_time
-            result = self.get_pix_rgb(pos=(1422, 59))
+            result = self.get_pix_rgb(pos=(1337, 62))
             log.debug(result)
             if self.compare_lists([0, 0, 222], result):
                 log.info(_("已进入地图"))
@@ -935,7 +960,7 @@ class calculated:
             log.info(_("点击月卡"))
             pos = self.ocr_click(_("今日补给"))
             time.sleep(0.5)
-            self.Click(pos)
+            self.click(pos)
 
     def get_loc(self, map_name: str="", map_id: int=None):
         """
@@ -949,18 +974,51 @@ class calculated:
         """
         if self.DEBUG:
             map_name2id = {
-                "基座舱段": 1,
-                "收容舱段": 2,
-                "支援舱段": 3
+                "收容舱段": {
+                    "收容舱段-1": 1,
+                    "收容舱段-2": 6,
+                },
+                "城郊雪原": {
+                    "城郊雪原-1": 7,
+                    "城郊雪原-2": 7
+                },
+                "边缘道路": {
+                    "边缘道路-1": 8,
+                    "边缘道路-2": 8
+                },
+                "丹鼎司": {
+                    "丹鼎司-1": 2,
+                    "丹鼎司-2": 3,
+                    "丹鼎司-3": 3,
+                    "丹鼎司-4": 3,
+                    "丹鼎司-5": 4,
+                    "丹鼎司-6": 4,
+                },
+                "鳞渊境":{
+                    "鳞渊境-1": 5,
+                }
             }
-            map_id = map_name2id.get(map_name, 1) if not map_id else map_id
-            img = cv.imread(f"./maps/{map_id}.png")
+            map_id = map_name2id.get(map_name.split("-")[0], {}).get(map_name, None)
+            if not map_id:
+                return (0, 0)
+            img = cv.imread(f"./picture/maps/{map_id}.png")
             template = self.take_screenshot((4,8,10,20))[0]
-            #__, max_vl, max_loc, length, width = find_best_match(img, template,(100,120,5))
-            max_val, max_loc = match_scaled(img, template,2.09)
-            print(max_val)
-            cv.rectangle(img, max_loc, (max_loc[0] + 100, max_loc[1] + 100), (0, 255, 0), 2)
+            __, max_val, max_loc, __, __ = find_best_match(img, template,(100,120,5))
+            #max_val, max_loc = match_scaled(img, template,2.09)
+            #cv.rectangle(img, max_loc, (max_loc[0] + 100, max_loc[1] + 100), (0, 255, 0), 2)
             #show_img(img)
-            return (max_loc[0] + 100/2, max_loc[1] + 100/2)
+            return (max_loc[0] + 63, max_loc[1] + 67)
         else:
             return (0, 0)
+
+    def change_team(self):
+        """
+        说明:
+            切换队伍
+        """
+        if self.ocr_click("队伍", points = (4, 1, 9, 6), overtime=1):
+            team_list = [(732, 79),(854, 83),(975, 77),(1091, 79),(1214, 81),(1333, 79)] # 队伍坐标
+            self.img_click(team_list[sra_config_obj.team_number-1])
+            return True
+        else:
+            return False
