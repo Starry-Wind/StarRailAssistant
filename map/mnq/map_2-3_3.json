@@ -3,9 +3,9 @@
   "author": "Starry-Wind,五月,雪见璃,小明",
   "start": [
     {"map": 1},
-    {"temp\\map_2-3_point_2.jpg": 1.5},
-    {"temp\\map_2-3_point_3.jpg": 1.5},
-    {"temp\\transfer.jpg": 1.5}
+    {"map_2-3_point_2.jpg": 1.5},
+    {"map_2-3_point_3.jpg": 1.5},
+    {"transfer.jpg": 1.5}
   ],
   "map": [
     {
