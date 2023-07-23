@@ -1,0 +1,44 @@
+{
+  "name": "大矿区-2",
+  "author": "Starry-Wind",
+  "start": [
+    {
+      "map": 1
+    },
+    {
+     "picture\\map_2-5_point_2.png": 1.5
+    },
+    {
+     "picture\\map_2-5_point_3.png": 1.5
+    },
+    {
+     "picture\\transfer.jpg": 1.5
+    }
+  ],
+  "map": [
+    {
+      "s": 2.4
+    },
+    {
+      "d": 4.7
+    },
+    {
+      "fighting": 1
+    },
+    {
+      "d": 5.0
+    },
+    {
+      "fighting": 1
+    },
+    {
+      "d": 3.0
+    },
+    {
+      "w": 3.0
+    },
+    {
+      "fighting": 1
+    }
+  ]
+}
