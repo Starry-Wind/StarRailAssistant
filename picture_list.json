@@ -1,0 +1,690 @@
+[
+  {
+    "path": "picture/love!.png",
+    "hash": "db4e2c9a360f84329c25b07e402d514b"
+  },
+  {
+    "path": "picture/fonts/Kanit-Bold.ttf",
+    "hash": "5e47d7fa1b13f5d623a0cedabcc62433"
+  },
+  {
+    "path": "picture/maps/3.png",
+    "hash": "8917b3db78938eaabe5407445fba0e83"
+  },
+  {
+    "path": "picture/maps/2.png",
+    "hash": "ae01b3331d1c852e302d7d77e92c7453"
+  },
+  {
+    "path": "picture/maps/4.png",
+    "hash": "b8f4be4bc3f3581e701bebf0014a211c"
+  },
+  {
+    "path": "picture/maps/1.png",
+    "hash": "16a609d25c8c878cc13e8c567ce52284"
+  },
+  {
+    "path": "picture/maps/5.png",
+    "hash": "c87ea2afc24d9c950e87ef7555cca59a"
+  },
+  {
+    "path": "picture/maps/6.png",
+    "hash": "e289624b4e3b14ed27e1aa6b738b0a0a"
+  },
+  {
+    "path": "picture/adb/AdbWinApi.dll",
+    "hash": "ed5a809dc0024d83cbab4fb9933d598d"
+  },
+  {
+    "path": "picture/adb/AdbWinUsbApi.dll",
+    "hash": "0e24119daf1909e398fa1850b6112077"
+  },
+  {
+    "path": "picture/adb/adb.exe",
+    "hash": "e885fa349d4b116f4a64c657451e6a53"
+  },
+  {
+    "path": "picture/pc/orientation_3.png",
+    "hash": "7b431230b9578c85feef8eb4761d14b2"
+  },
+  {
+    "path": "picture/pc/map_2-2.jpg",
+    "hash": "a97e7d9d1376059db696c9968a3130c5"
+  },
+  {
+    "path": "picture/pc/orientation_3.jpg",
+    "hash": "e274917fe1950f7d8105c0a435ac44f2"
+  },
+  {
+    "path": "picture/pc/finish_fighting.jpg",
+    "hash": "ceb1682fa1714553148f2e7fb67a47c4"
+  },
+  {
+    "path": "picture/pc/map_2-6_point_2.png",
+    "hash": "534ed05fd3e1917b1e1f819902c245ae"
+  },
+  {
+    "path": "picture/pc/map_2-1.jpg",
+    "hash": "0d1e9852ba597d75a73bb745c3f9709c"
+  },
+  {
+    "path": "picture/pc/map_1_point_1.png",
+    "hash": "71cbc57d617b6ef1e4296d529440f953"
+  },
+  {
+    "path": "picture/pc/orientation_1.png",
+    "hash": "729e37970c7bb70e44cf49087a1d1b64"
+  },
+  {
+    "path": "picture/pc/map_2-5_point_2.png",
+    "hash": "ed5df5214e80f5a300f6d8c715ffbd42"
+  },
+  {
+    "path": "picture/pc/map_3-4.png",
+    "hash": "edeb0ef58598c151359aa53c91c23cee"
+  },
+  {
+    "path": "picture/pc/map_2-6.png",
+    "hash": "a2e0eab37d49e9189c6a47455764d6dd"
+  },
+  {
+    "path": "picture/pc/map_2-3_point_1.jpg",
+    "hash": "ab0ccfb85687fd9450c008e22a66e9d6"
+  },
+  {
+    "path": "picture/pc/map_2-3_point_4.jpg",
+    "hash": "7ed2389f22eca2157438c8a345893ca4"
+  },
+  {
+    "path": "picture/pc/map_2-4_point_1.png",
+    "hash": "cbba9584198fb6bdb0439631468c37b2"
+  },
+  {
+    "path": "picture/pc/map_3-5_point_4.png",
+    "hash": "2e9ffb9fe1f1a0d72e43fc63c24b96e5"
+  },
+  {
+    "path": "picture/pc/map_1_point.jpg",
+    "hash": "5408cd93c8a2fd8d18bcdf99f016c8ce"
+  },
+  {
+    "path": "picture/pc/map_3-5_point_3.png",
+    "hash": "7cd0b13a09900590b7cfcd750fada4b3"
+  },
+  {
+    "path": "picture/pc/auto.jpg",
+    "hash": "e78db3b25d6b818903fef3c8dcfb91cc"
+  },
+  {
+    "path": "picture/pc/map_3-3_point_6.png",
+    "hash": "cbe5052afaa43ab8d2f2739034552ec1"
+  },
+  {
+    "path": "picture/pc/map_3-2_point_1.png",
+    "hash": "c87c33de576bd242ee07587138904688"
+  },
+  {
+    "path": "picture/pc/map_3-2_point_5.png",
+    "hash": "b51c0ea5640eb62357945dbd4a0954d5"
+  },
+  {
+    "path": "picture/pc/map_2-7_point_1.png",
+    "hash": "456bda02eca01eb94e7e711b12b20197"
+  },
+  {
+    "path": "picture/pc/map_3-5_point_5.png",
+    "hash": "0ec8adc21f54c6c8ae848d9f01f60d5f"
+  },
+  {
+    "path": "picture/pc/map_3-2.png",
+    "hash": "58033261fcc16f236aef2d43c8dab91a"
+  },
+  {
+    "path": "picture/pc/orientation_4.jpg",
+    "hash": "f1cb012d14b6dfe92619a2bdb70058c7"
+  },
+  {
+    "path": "picture/pc/map_3-6_point_3.png",
+    "hash": "e997958dda453425c8a219b9cdf4be5f"
+  },
+  {
+    "path": "picture/pc/map_3-1_point_2.png",
+    "hash": "5cf9d99b079c23b86566ce26df551a38"
+  },
+  {
+    "path": "picture/pc/map_3-1_point_1.png",
+    "hash": "2ce2e0e67ec429c80c6bdc28306f9999"
+  },
+  {
+    "path": "picture/pc/map_1-3_point_2.jpg",
+    "hash": "7f16a1933a441388874ea1dd8e978ad5"
+  },
+  {
+    "path": "picture/pc/map_1-3_point_4.jpg",
+    "hash": "59a1b2a8d49fa60ef90e6534ee533fa9"
+  },
+  {
+    "path": "picture/pc/map_2-5_point_3.png",
+    "hash": "746e58c3350d2c33ff3c564075684836"
+  },
+  {
+    "path": "picture/pc/map_2-4.png",
+    "hash": "99e22279a1c3af6014a858bdc0ca8239"
+  },
+  {
+    "path": "picture/pc/map_2-4_point_2.png",
+    "hash": "c8a17347ce55c8a104b2746c090b6acd"
+  },
+  {
+    "path": "picture/pc/map_2-3_point_2.jpg",
+    "hash": "448b128612c2dc4ea47ee1dd7db0f35f"
+  },
+  {
+    "path": "picture/pc/map_2-3_point_3.jpg",
+    "hash": "f9e95b361ba8b63383fc0a8a0cfae498"
+  },
+  {
+    "path": "picture/pc/map_3-2_point_3.png",
+    "hash": "749423d174e07e416327068f5691ded8"
+  },
+  {
+    "path": "picture/pc/map_3-1.png",
+    "hash": "531904e624c549ff8f87fbfe5bf8dfd9"
+  },
+  {
+    "path": "picture/pc/attack.png",
+    "hash": "a15d64252d5d7a779d77223947099bf6"
+  },
+  {
+    "path": "picture/pc/map_2-7.png",
+    "hash": "cfd27918b4024bf3e4410666d4b75349"
+  },
+  {
+    "path": "picture/pc/orientation_2.png",
+    "hash": "83d48c3e976d458ee56ed50c30fffd1b"
+  },
+  {
+    "path": "picture/pc/map_2-6_point_1.png",
+    "hash": "b447499bf24b46482c410c2993732009"
+  },
+  {
+    "path": "picture/pc/map_3-5_point_1.png",
+    "hash": "c894b2109951cf939d574d4a69fbff69"
+  },
+  {
+    "path": "picture/pc/map_3-2_point_2.png",
+    "hash": "1ae9a7d606877036da9ed45914c2bd08"
+  },
+  {
+    "path": "picture/pc/attack.jpg",
+    "hash": "d89765481109879ecdc8e0a46ed73588"
+  },
+  {
+    "path": "picture/pc/doubt.png",
+    "hash": "8ed0630755c15fc6ad442f8e969f381f"
+  },
+  {
+    "path": "picture/pc/orientation_2.jpg",
+    "hash": "84e854e479c02b306ff388c75a1cf046"
+  },
+  {
+    "path": "picture/pc/map_3-3_point_2.png",
+    "hash": "6b3ff15f5a4368f8d2dbc014befe3199"
+  },
+  {
+    "path": "picture/pc/map_1-3_point_3.jpg",
+    "hash": "28a0ef1d9179ad91248e7af0251928d7"
+  },
+  {
+    "path": "picture/pc/map_shrink.png",
+    "hash": "3d8cfebc497e55ce3db5e035ac3209f8"
+  },
+  {
+    "path": "picture/pc/map_2-2_point_1.jpg",
+    "hash": "6242134a36bfea62d98b40b6bf0a4af7"
+  },
+  {
+    "path": "picture/pc/map_2-5_point_5.png",
+    "hash": "b0e1d4911fd480b8805e9345d0982076"
+  },
+  {
+    "path": "picture/pc/warn.png",
+    "hash": "c5e153973e34e082fef94312b7e05df2"
+  },
+  {
+    "path": "picture/pc/map_2-1_point_2.jpg",
+    "hash": "f0a72aa054c31ebb83c0825467dbadd6"
+  },
+  {
+    "path": "picture/pc/contraction.jpg",
+    "hash": "2bab24d0108cac0cd1bc6534f8e58a50"
+  },
+  {
+    "path": "picture/pc/map_3-6_point_1.png",
+    "hash": "498faaf31e37ef61b691d53c45dc3f09"
+  },
+  {
+    "path": "picture/pc/map_3-3_point_1.png",
+    "hash": "b621bf868a72611786c9508277d3abd5"
+  },
+  {
+    "path": "picture/pc/orientation_1.jpg",
+    "hash": "729e37970c7bb70e44cf49087a1d1b64"
+  },
+  {
+    "path": "picture/pc/map_3-3_point_5.png",
+    "hash": "bca17962a68f059a7ad97ed60114da85"
+  },
+  {
+    "path": "picture/pc/map_3-1_point_3.png",
+    "hash": "2c2222fd5e17a62a4bba28e2c2a957fc"
+  },
+  {
+    "path": "picture/pc/map_3-4_point_1.png",
+    "hash": "f95e6aab69c8471c4163ea894131f746"
+  },
+  {
+    "path": "picture/pc/map_2-3.jpg",
+    "hash": "9878a901d2ed9bca71f138f0fffefede"
+  },
+  {
+    "path": "picture/pc/map_2-5.png",
+    "hash": "0445c4114182a1bb2fbaeb61c91a4b9c"
+  },
+  {
+    "path": "picture/pc/map_1-2.jpg",
+    "hash": "809c99bd872970d6fe2f9d8a6d20d9da"
+  },
+  {
+    "path": "picture/pc/map_3-3_point_4.png",
+    "hash": "b27782f1409b182d6d882577fa74d5c4"
+  },
+  {
+    "path": "picture/pc/map_2-5_point_1.png",
+    "hash": "64c600617317b2e51de51f019beead13"
+  },
+  {
+    "path": "picture/pc/map_1.jpg",
+    "hash": "5fa463de29cf5e6eea99ec0ecd97c9a2"
+  },
+  {
+    "path": "picture/pc/map_3-5_point_2.png",
+    "hash": "05c90d46459d62738c075de129ce5fa6"
+  },
+  {
+    "path": "picture/pc/doubt.jpg",
+    "hash": "f3ce82e29c57e499096f717c9cad0c4b"
+  },
+  {
+    "path": "picture/pc/orientation_4.png",
+    "hash": "7d912d36850a3ccbfcf0a261864fc4cc"
+  },
+  {
+    "path": "picture/pc/tagz.jpg",
+    "hash": "5a0092037da01013ee836796dc6a26c5"
+  },
+  {
+    "path": "picture/pc/map_2-5_point_4.png",
+    "hash": "372d8ee91bac3f6041bbe3545dd1efcd"
+  },
+  {
+    "path": "picture/pc/map_3-4_point_2.png",
+    "hash": "77b4687ec0c9593f357e84a2d3f7314a"
+  },
+  {
+    "path": "picture/pc/map_2-7_point_2.png",
+    "hash": "6172bcd5a2bd2ea91294cbb60beea1cc"
+  },
+  {
+    "path": "picture/pc/map_3-2_point_4.png",
+    "hash": "28815ace103ba00577f3ab64b13e595f"
+  },
+  {
+    "path": "picture/pc/map_1-2_point_1.jpg",
+    "hash": "493809b6728057a9249fbfa471ef2f26"
+  },
+  {
+    "path": "picture/pc/map_2-1_point_1.jpg",
+    "hash": "a26ee259d0f5f81d7da49edc5db4dc3b"
+  },
+  {
+    "path": "picture/pc/map_2-3_point_5.jpg",
+    "hash": "e7212d1da3ea3304a6a40224273db67a"
+  },
+  {
+    "path": "picture/pc/transfer.jpg",
+    "hash": "efafd745632ad481ddc13b1b31bf4f7f"
+  },
+  {
+    "path": "picture/pc/map_1-3_point_1.jpg",
+    "hash": "2caa6a5287f1beaa3a92b3b8b2cd184d"
+  },
+  {
+    "path": "picture/pc/map_3-1_point_4.png",
+    "hash": "ab1b1efb61b806c93d0fbbda3c04cc13"
+  },
+  {
+    "path": "picture/pc/map_3-4_point_3.png",
+    "hash": "e72b421994d59b5f6f7af0a121c7d66f"
+  },
+  {
+    "path": "picture/pc/warn.jpg",
+    "hash": "e9dc10288ce8b7ea854ff85e628129cc"
+  },
+  {
+    "path": "picture/pc/map_3-6_point_2.png",
+    "hash": "eb704cfe35f170e0f571884dca1d12ce"
+  },
+  {
+    "path": "picture/pc/map_2-4_point_3.png",
+    "hash": "8b23c26c1736b46845566d0900ba4222"
+  },
+  {
+    "path": "picture/pc/map_1-3.jpg",
+    "hash": "1411b6802518ce5114471fa569e26454"
+  },
+  {
+    "path": "picture/pc/map_3-3_point_3.png",
+    "hash": "fcbf4bf79a86daec3b8af3252204b908"
+  },
+  {
+    "path": "picture/pc/map_3-3.png",
+    "hash": "1535dbda0e5a0142e8ba7fbb9ca3ca46"
+  },
+  {
+    "path": "picture/pc/map_1-2_point_2.png",
+    "hash": "acdd944555d8bee7ac68a07ea8fe8f8c"
+  },
+  {
+    "path": "picture/cnocr/1.2/ppocr/ch_PP-OCRv3_det_infer.onnx",
+    "hash": "5732f8c84bd4cc0dab35094e7260f080"
+  },
+  {
+    "path": "picture/mnq/orientation_3.png",
+    "hash": "63211292415802a8c65dfc4002f868c0"
+  },
+  {
+    "path": "picture/mnq/map_2-2.jpg",
+    "hash": "7a5ad3bf901d9718eafe880f1c8bbf2b"
+  },
+  {
+    "path": "picture/mnq/orientation_3.jpg",
+    "hash": "63211292415802a8c65dfc4002f868c0"
+  },
+  {
+    "path": "picture/mnq/finish_fighting.jpg",
+    "hash": "68f5f5eda938a5a46ca07b934c2be034"
+  },
+  {
+    "path": "picture/mnq/map_2-6_point_2.png",
+    "hash": "3ed07d7d989ba7374c490bb02b2fe74a"
+  },
+  {
+    "path": "picture/mnq/map_2-1.jpg",
+    "hash": "947c04c8e37ae7295910647a5c970007"
+  },
+  {
+    "path": "picture/mnq/map_2-5_point_2.png",
+    "hash": "36b9c6cef13111243142769d3ed76cb5"
+  },
+  {
+    "path": "picture/mnq/map_3-4.png",
+    "hash": "b085cf9ae1ccf2a9babead8c9b04c7c0"
+  },
+  {
+    "path": "picture/mnq/map_2-6.png",
+    "hash": "5ec3ed2f9610e89ce3d6aad0c749474b"
+  },
+  {
+    "path": "picture/mnq/map_2-3_point_1.jpg",
+    "hash": "d38de8f4e5b0fc21acabe1b2329a297c"
+  },
+  {
+    "path": "picture/mnq/map_2-3_point_4.jpg",
+    "hash": "96e768c3de3cfb1d83d115cf630e5ebf"
+  },
+  {
+    "path": "picture/mnq/map_2-4_point_1.png",
+    "hash": "8ed4e8d2be02e030add6859baf4b8c48"
+  },
+  {
+    "path": "picture/mnq/map_1_point.jpg",
+    "hash": "5db47c261119dcea0f305da7e1f31f35"
+  },
+  {
+    "path": "picture/mnq/auto.jpg",
+    "hash": "103f11c1a97653646bb5e1984f158eb6"
+  },
+  {
+    "path": "picture/mnq/map_3-2_point_1.png",
+    "hash": "e9b8e048c513a18b2b09c21242f5ccb7"
+  },
+  {
+    "path": "picture/mnq/map_3-2_point_5.png",
+    "hash": "512beee0eaf5738b43ff0987efdde963"
+  },
+  {
+    "path": "picture/mnq/map_2-7_point_1.png",
+    "hash": "db788ee3d7e037954d56d8406e68324c"
+  },
+  {
+    "path": "picture/mnq/map_3-2.png",
+    "hash": "f83ce2efaa1ac9c7fae3df1647ec29c8"
+  },
+  {
+    "path": "picture/mnq/orientation_4.jpg",
+    "hash": "63b33d939d1e6ce81530a53cb87c30c0"
+  },
+  {
+    "path": "picture/mnq/map_3-1_point_2.png",
+    "hash": "5d5d1f3540d4111a2e7e944c39fd5794"
+  },
+  {
+    "path": "picture/mnq/map_3-1_point_1.png",
+    "hash": "c3ec57bcc8a8d05c3eed74c5082981f3"
+  },
+  {
+    "path": "picture/mnq/map_1-3_point_2.jpg",
+    "hash": "2775a05a51045e7e3251c39a8b011e43"
+  },
+  {
+    "path": "picture/mnq/map_1-3_point_4.jpg",
+    "hash": "a92693c2b22f5ac06abf2150b1294c65"
+  },
+  {
+    "path": "picture/mnq/map_2-5_point_3.png",
+    "hash": "a840d8d9f8077b91899de9eeb14441b3"
+  },
+  {
+    "path": "picture/mnq/map_2-4.png",
+    "hash": "bdae6c7bce469432f874af4f8244b40f"
+  },
+  {
+    "path": "picture/mnq/map_2-4_point_2.png",
+    "hash": "db6e30ebd93913e53920b0a726745102"
+  },
+  {
+    "path": "picture/mnq/map_2-3_point_2.jpg",
+    "hash": "9e1402663d3dfa391187f10ecdca5b96"
+  },
+  {
+    "path": "picture/mnq/map_2-3_point_3.jpg",
+    "hash": "60d9bb7f0c5d845aabb09a0eb7414d6e"
+  },
+  {
+    "path": "picture/mnq/map_3-2_point_3.png",
+    "hash": "3efc6b56b6feb819e0aeea6ba3c4ac7d"
+  },
+  {
+    "path": "picture/mnq/map_3-1.png",
+    "hash": "b0587668e10f686913341adaee964bf3"
+  },
+  {
+    "path": "picture/mnq/map_2-7.png",
+    "hash": "80be218085fad145ef62b9d0a27f36da"
+  },
+  {
+    "path": "picture/mnq/orientation_2.png",
+    "hash": "bff41fd1ee49fd1e9857a1165d3c6d3c"
+  },
+  {
+    "path": "picture/mnq/map_2-2_point_2.jpg",
+    "hash": "b64bda92eb67d4646492ba3489ed912b"
+  },
+  {
+    "path": "picture/mnq/map_2-6_point_1.png",
+    "hash": "65a6ce406ec6f77ae8891f39b158b136"
+  },
+  {
+    "path": "picture/mnq/map_3-2_point_2.png",
+    "hash": "956a03adbd9f8798356b3d8c29c4fa06"
+  },
+  {
+    "path": "picture/mnq/attack.jpg",
+    "hash": "bfa2c7a02cb93f192724107661ff18e5"
+  },
+  {
+    "path": "picture/mnq/map_3-3_point_2.png",
+    "hash": "f0e45ef1a16e133c0b787e51351622ea"
+  },
+  {
+    "path": "picture/mnq/map_1-3_point_3.jpg",
+    "hash": "456d1767d2dcee7100298b98c9ab7934"
+  },
+  {
+    "path": "picture/mnq/map_2-2_point_1.jpg",
+    "hash": "6c5c7a3b897e0677ce3a98c5d7434082"
+  },
+  {
+    "path": "picture/mnq/map_2-5_point_5.png",
+    "hash": "e0ac61c2e2d07c07827cddf22d7116ff"
+  },
+  {
+    "path": "picture/mnq/map_2-1_point_2.jpg",
+    "hash": "e9183e54f1e07bebe46907b9d47564d4"
+  },
+  {
+    "path": "picture/mnq/map_3-3_point_1.png",
+    "hash": "9c0eb7bfdebd8bd398743bad92be5ac6"
+  },
+  {
+    "path": "picture/mnq/orientation_1.jpg",
+    "hash": "ef6c59ec5929ede8b74ff4b54fec9ed5"
+  },
+  {
+    "path": "picture/mnq/map_3-3_point_5.png",
+    "hash": "536ed58a3d32f06716f750bb7fe96dd7"
+  },
+  {
+    "path": "picture/mnq/map_3-1_point_3.png",
+    "hash": "511c231c2ba6861413a7d8d0135b1fa6"
+  },
+  {
+    "path": "picture/mnq/map_3-4_point_1.png",
+    "hash": "84eab44580faf388bc3fec31d9f84b35"
+  },
+  {
+    "path": "picture/mnq/map_2-3.jpg",
+    "hash": "a339141060d06ff4cfeb6e225b6cfb92"
+  },
+  {
+    "path": "picture/mnq/map_2-5.png",
+    "hash": "ba13f544c06ef765088c8f67f1c0d045"
+  },
+  {
+    "path": "picture/mnq/map_1-2.jpg",
+    "hash": "a6b6a0dbcc22a5d954be1bd6cbf74caf"
+  },
+  {
+    "path": "picture/mnq/map_3-3_point_4.png",
+    "hash": "77a6ddfd0552c2aa984ab27126856b1a"
+  },
+  {
+    "path": "picture/mnq/map_2-5_point_1.png",
+    "hash": "99c541d782b37abb44551163bb21fac1"
+  },
+  {
+    "path": "picture/mnq/map_1.jpg",
+    "hash": "03a7fdfec408ba25e815c0934fc56099"
+  },
+  {
+    "path": "picture/mnq/doubt.jpg",
+    "hash": "f3ce82e29c57e499096f717c9cad0c4b"
+  },
+  {
+    "path": "picture/mnq/orientation_4.png",
+    "hash": "63b33d939d1e6ce81530a53cb87c30c0"
+  },
+  {
+    "path": "picture/mnq/map_2-5_point_4.png",
+    "hash": "0a3d9dd1ad0bd028db4ffdef6526a73d"
+  },
+  {
+    "path": "picture/mnq/map_3-4_point_2.png",
+    "hash": "acbcf910a44dbad6a9a80a5e509686fd"
+  },
+  {
+    "path": "picture/mnq/map_2-7_point_2.png",
+    "hash": "42d730014010d794685d22229aaeaab0"
+  },
+  {
+    "path": "picture/mnq/map_3-2_point_4.png",
+    "hash": "88c3640c18656c62e62c5e3ebdc86f30"
+  },
+  {
+    "path": "picture/mnq/map_1-2_point_1.jpg",
+    "hash": "f255c66fc2cc567fc8a3f18b2b64adf5"
+  },
+  {
+    "path": "picture/mnq/map_2-1_point_1.jpg",
+    "hash": "3573b678a05d8a0fcec9b5c1d31175bf"
+  },
+  {
+    "path": "picture/mnq/map_2-3_point_5.jpg",
+    "hash": "8c2630a5cffc5e6e10ef7792ca94963a"
+  },
+  {
+    "path": "picture/mnq/transfer.jpg",
+    "hash": "e20bac8f229727a0cf3960d4c456fcc4"
+  },
+  {
+    "path": "picture/mnq/map_1-3_point_1.jpg",
+    "hash": "9d15b4c274e7accc93400880b0e4f497"
+  },
+  {
+    "path": "picture/mnq/map_3-1_point_4.png",
+    "hash": "f57bde5d21bd6b930415af229d12196c"
+  },
+  {
+    "path": "picture/mnq/map_3-4_point_3.png",
+    "hash": "1f052d862b01bf42e87e83da3def397e"
+  },
+  {
+    "path": "picture/mnq/warn.jpg",
+    "hash": "e9dc10288ce8b7ea854ff85e628129cc"
+  },
+  {
+    "path": "picture/mnq/map_2-4_point_3.png",
+    "hash": "df51aff5a3dd194def57e798edd46786"
+  },
+  {
+    "path": "picture/mnq/map_1-3.jpg",
+    "hash": "b8665e3ca7c1d88f6bec176b8a1a06e2"
+  },
+  {
+    "path": "picture/mnq/map_3-3_point_3.png",
+    "hash": "6f5cb728400787299102992e25b86381"
+  },
+  {
+    "path": "picture/mnq/map_3-3.png",
+    "hash": "fe39afc8bc72849cae5316e449ea9351"
+  },
+  {
+    "path": "picture/mnq/map_1-2_point_2.png",
+    "hash": "b041d4dd7dd372bb76d25dc9b87e2608"
+  },
+  {
+    "path": "picture/cnstd/2.2/densenet_lite_114-fc/cnocr-v2.2-densenet_lite_114-fc-epoch=037-complete_match_epoch=0.7859-model.onnx",
+    "hash": "d661b811419ff7dde7eb8543690cdd2b"
+  }
+]
