@@ -3,8 +3,8 @@
     "author": "雪见璃,小明",
     "start": [
         {"map": 1},
-        {"map_3-4_point_1.png": 1.5},
-        {"transfer.jpg": 1.5}
+        {"picture\\map_3-4_point_1.png": 1.5},
+        {"picture\\transfer.jpg": 1.5}
     ],
     "map": [
         {
@@ -45,6 +45,9 @@
           },
           {
             "a": 1.1179521083831787
+          },
+          {
+            "fighting": 1
           },
           {
             "fighting": 1

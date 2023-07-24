@@ -6,21 +6,36 @@
       "map": 1
     },
     {
-      "map_2-5_point_2.png": 1.5
+     "picture\\map_2-5_point_2.png": 1.5
     },
     {
-      "map_2-5_point_3.png": 1.5
+     "picture\\map_2-5_point_3.png": 1.5
     },
     {
-      "transfer.jpg": 1.5
+     "picture\\transfer.jpg": 1.5
     }
   ],
   "map": [
     {
-      "s": 2.349982738494873
+      "s": 2.4
     },
     {
-      "d": 7.891154766082764
+      "d": 4.7
+    },
+    {
+      "fighting": 1
+    },
+    {
+      "d": 5.0
+    },
+    {
+      "fighting": 1
+    },
+    {
+      "d": 3.0
+    },
+    {
+      "w": 3.0
     },
     {
       "fighting": 1
