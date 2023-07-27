@@ -243,6 +243,8 @@ class SRAData(metaclass=SRADataMeta):
     """github代理"""
     rawgithub_proxy: str = ""
     """rawgithub代理"""
+    apigithub_proxy: str = ""
+    """apigithub代理"""
     webhook_url: str = ""
     """webhook地址"""
     start: bool = False
