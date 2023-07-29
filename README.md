@@ -1,8 +1,6 @@
 <div align="center">
 
-**⚠️缺少维护者⚠️**
-
-**[Night-stars-1](https://github.com/Night-stars-1)没有精力继续维护该项目，请等待其他维护者接手或者等待仓库拥有者继续更新**
+**因`闲鱼`倒卖本项目停更**
 
 [简体中文](README.md) | [繁体中文](README_CHT.md) | [English](README_EN.md) | [文档](https://sra.stysqy.top)
 
