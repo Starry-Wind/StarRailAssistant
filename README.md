@@ -2,6 +2,8 @@
 
 **因`闲鱼`倒卖本项目停更**
 
+其他项目: [Auto_Star_Rail](https://github.com/Night-stars-1/Auto_Star_Rail)
+
 [简体中文](README.md) | [繁体中文](README_CHT.md) | [English](README_EN.md) | [文档](https://sra.stysqy.top)
 
 <img alt="LOGO" src="../../blob/map/picture/love!.png" style="border-radius:50%">
