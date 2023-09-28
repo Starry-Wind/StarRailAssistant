@@ -111,6 +111,17 @@ class Map:
             else:
                 raise Exception(_("map数据错误,未匹配对应操作:{map_filename}").format(map_filename=map_filename), map)
             '''
+    def format_time(self, seconds):
+        # 格式化时间
+        minutes, seconds = divmod(seconds, 60)
+        hours, minutes = divmod(minutes, 60)
+
+        if hours > 0:
+            return f"{hours:.0f}小时{minutes:.0f}分{seconds:.1f}秒"
+        elif minutes > 0:
+            return f"{minutes:.0f}分{seconds:.1f}秒"
+        else:
+            return f"{seconds:.1f}秒"
 
     def auto_map(self, start):
         __, __, __, __, __, width, length = self.calculated.take_screenshot()
@@ -122,6 +133,7 @@ class Map:
         if roles:
             set_log('-'.join(roles))
         def start_map(self:Map, start, check:bool=False):
+            total_processing_time = 0
             wrong_map = True
             if f'map_{start}.json' in self.map_list:
                 if not check:
@@ -180,8 +192,21 @@ class Map:
                     count = self.calculated.wait_join()
                     log.info(_('地图加载完毕，加载时间为 {count} 秒').format(count=count))
                     time.sleep(2) # 加2s防止人物未加载
+
+                    # 记录处理开始时间
+                    start_time = time.time()
+
                     #map_name = name.split("-")[0]
                     self.start_map(map, name)
+
+                    # 记录处理结束时间
+                    end_time = time.time()
+
+                    # 计算处理时间并输出
+                    processing_time = end_time - start_time
+                    formatted_time = self.format_time(processing_time)
+                    total_processing_time += processing_time
+                    log.info(f"{map}用时\033[1;92m『{formatted_time}』\033[0m,总计:\033[1;92m『{self.format_time(total_processing_time)}』\033[0m")
             else:
                 log.info(_('地图编号 {start} 不存在，请尝试检查更新').format(start=start))
         threading.Thread(target=self.set_stop).start()
