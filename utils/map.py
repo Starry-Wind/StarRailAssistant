@@ -196,6 +196,9 @@ class Map:
                     # 记录处理开始时间
                     start_time = time.time()
 
+                    #map_name = name.split("-")[0]
+                    self.start_map(map, name)
+
                     # 记录处理结束时间
                     end_time = time.time()
 
@@ -204,9 +207,6 @@ class Map:
                     formatted_time = self.format_time(processing_time)
                     total_processing_time += processing_time
                     log.info(f"{map}用时\033[1;92m『{formatted_time}』\033[0m,总计:\033[1;92m『{self.format_time(total_processing_time)}』\033[0m")
-
-                    #map_name = name.split("-")[0]
-                    self.start_map(map, name)
             else:
                 log.info(_('地图编号 {start} 不存在，请尝试检查更新').format(start=start))
         threading.Thread(target=self.set_stop).start()
