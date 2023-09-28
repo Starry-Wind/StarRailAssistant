@@ -62,7 +62,7 @@ class calculated:
         self.warn = cv.imread("./picture/pc/warn.png")
         # tagz = cv.imread("./picture/pc/tagz.jpg")
         self.finish = cv.imread("./picture/pc/finish_fighting.jpg")
-        self.auto = cv.imread("./picture/pc/auto.jpg")
+        self.auto = cv.imread("./picture/pc/c.jpg")
 
         self.end_list = ["Tab", _("轮盘"), _("唤起鼠标"), _("手机"), _("退出")]
 
@@ -519,7 +519,7 @@ class calculated:
         start_time = time.time()
         if sra_config_obj.auto_battle_persistence != 1:  #这个设置建议放弃,看了看浪费性能加容易出问题
             while True:
-                result = self.scan_screenshot(self.auto, points=(90, 0, 100, 10))
+                result = self.scan_screenshot(self.auto, points=(0, 80, 20, 100))
                 if result["max_val"] > 0.95:
                     time.sleep(0.3)
                     self.keyboard.press("v")
@@ -528,7 +528,7 @@ class calculated:
                     break
                 elif time.time() - start_time > 15:
                     break
-                time.sleep(0.1)
+                time.sleep(0.5)
         else:
             log.info(_("跳过开启自动战斗（沿用设置）"))
             time.sleep(5)
