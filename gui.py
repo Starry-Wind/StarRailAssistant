@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-07-21 01:19:21
+LastEditTime: 2023-07-25 15:25:10
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -293,6 +293,8 @@ def page_main(page: ft.Page):
         github_proxy = sra_config_obj.github_proxy
         rawgithub_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', "不设置代理"]
         rawgithub_proxy = sra_config_obj.rawgithub_proxy
+        apigithub_proxy_list = ['https://github.srap.link/', "不设置代理"]
+        apigithub_proxy = sra_config_obj.apigithub_proxy
         open_map = sra_config_obj.open_map
         level = sra_config_obj.level
 
@@ -308,6 +310,13 @@ def page_main(page: ft.Page):
                 hint_text=_("如果你无法下载资源，请设置此代理"),
                 options=[ft.dropdown.Option(i) for i in rawgithub_proxy_list],
                 value=rawgithub_proxy,
+                width=200,
+            )
+        apigithub_proxy_dd = ft.Dropdown(
+                label=_("RAWGITHUB代理"),
+                hint_text=_("如果你无法下载资源，请设置此代理"),
+                options=[ft.dropdown.Option(i) for i in apigithub_proxy_list],
+                value=apigithub_proxy,
                 width=200,
             )
         level_dd = ft.Dropdown(
@@ -340,6 +349,7 @@ def page_main(page: ft.Page):
         def save(e):
             sra_config_obj.github_proxy = "" if github_proxy_dd.value == "不设置代理" else github_proxy_dd.value
             sra_config_obj.rawgithub_proxy = "" if rawgithub_proxy_dd.value == "不设置代理" else rawgithub_proxy_dd.value
+            sra_config_obj.apigithub_proxy = "" if apigithub_proxy_dd.value == "不设置代理" else apigithub_proxy_dd.value
             sra_config_obj.open_map = open_map_tf.value
             sra_config_obj.level = level_dd.value
             sra_config_obj.language = language_dict[language_dd.value]
@@ -353,6 +363,7 @@ def page_main(page: ft.Page):
             ft.Text(VER, size=20),
             github_proxy_dd,
             rawgithub_proxy_dd,
+            apigithub_proxy_dd,
             level_dd,
             open_map_tf,
             language_dd,

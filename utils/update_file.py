@@ -177,7 +177,8 @@ class update_file:
         local_version = sra_config_obj.star_version
         for index, __ in enumerate(range(3)):
             try:
-                up_url = f"https://api.github.com/repos/{self.github_source}/StarRailAssistant/releases/latest"
+                api_proxy = sra_config_obj.apigithub_proxy
+                up_url = f"{api_proxy}https://api.github.com/repos/{self.github_source}/StarRailAssistant/releases/latest" if "http" in api_proxy else f"https://api.github.com/repos/{self.github_source}/StarRailAssistant/releases/latest"
                 up_reponse = await get(up_url, timeout=2)
                 up_data = up_reponse.json()
                 version: str = up_data.get("tag_name")

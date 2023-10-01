@@ -11,7 +11,7 @@ from .requests import webhook_and_log
 class Map:
     def __init__(self,title = _("崩坏：星穹铁道")):
         """
-        参数: 
+        参数:
             :param platform: 运行设备
         """
         if sra_config_obj.language != "EN":
@@ -42,7 +42,7 @@ class Map:
         with keyboard.Listener(on_press=on_press) as listener:  # 创建按键监听线程
             listener.join()  # 等待按键监听线程结束
 
-            
+
     def map_init(self):
         # 进行地图初始化，把地图缩小,需要缩小5次
         target = cv.imread(f'./picture/pc/contraction.jpg')
@@ -137,7 +137,7 @@ class Map:
             wrong_map = True
             if f'map_{start}.json' in self.map_list:
                 if not check:
-                    map_list = self.map_list[self.map_list.index(f'map_{start}.json'):len(self.map_list)] 
+                    map_list = self.map_list[self.map_list.index(f'map_{start}.json'):len(self.map_list)]
                 else:
                     log.info("开始捡漏")
                     map_list = sra_config_obj.fight_data.get("data", [])
@@ -149,6 +149,8 @@ class Map:
                     planet_number=map.split("-")[0]
                     map_data = read_json_file(f"map/{map}.json")
                     name:str = map_data['name']
+                    split_name = name.split('-')
+                    name = _(split_name[0]) + '-' + split_name[1]
                     author = map_data['author']
                     start_dict = map_data['start']
                     webhook_and_log(_("开始\033[0;34;40m{name}\033[0m锄地").format(name=name))
