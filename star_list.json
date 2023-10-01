@@ -5,19 +5,19 @@
   },
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "b52ce56c7618c1b5afd89f17c753d41d"
+    "hash": "04e3ed66716ecf6cc67f8f691cb394e7"
   },
   {
     "path": "requirements.txt",
-    "hash": "8ddf218f9469f91f0cb38ef37f281cd1"
+    "hash": "c639eae5881af89c0139e5b91b1c65f5"
   },
   {
     "path": "get_width.py",
-    "hash": "883cd3ffb3c1f7a0e8fff08ba61269b3"
+    "hash": "f638b665c2c0f9cdd841c8bd35ad0852"
   },
   {
     "path": "README.md",
-    "hash": "1660ab49252e3b10e9305dcf1d974401"
+    "hash": "3dff1b385224141876cc95fdae5e52eb"
   },
   {
     "path": "map_res_list.py",
@@ -29,7 +29,7 @@
   },
   {
     "path": "gui.py",
-    "hash": "12f482d0d0cc8b100fb7f465e65c9169"
+    "hash": "aae914d57203b3b571281e78f06b55aa"
   },
   {
     "path": "whl/Polygon3-3.0.9-cp311-cp311-win_amd64.whl",
@@ -54,23 +54,86 @@
   {
     "path": "model/cnocr/label_cn.txt",
     "hash": "e3f7c9400f4379e05cadbbc8a43dda45"
-  }
+  },
+  {
+    "path": "model/cnocr/2.2/densenet_lite_134-fc/cnocr-v2.2-densenet_lite_134-fc-epoch=034-complete_match_epoch=0.8376-model.onnx",
+    "hash": "332265c72378b39e83ced6b4e42954c4"
+  },
+  {
+    "path": "model/cnocr/2.2/ppocr/en_PP-OCRv3_rec_infer.onnx",
+    "hash": "003da6ca16cae88c5270882fc5e7417b"
+  },
+  {
+    "path": "model/cnocr/2.2/ppocr/en_number_mobile_v2.0_rec_infer.onnx",
+    "hash": "442ea7b4dabdbaec95af17a6d17c3503"
+  },
+  {
+    "path": "model/cnocr/2.2/densenet_lite_114-fc/cnocr-v2.2-densenet_lite_114-fc-epoch=037-val-complete_match-epoch=0.9667-model.onnx",
+    "hash": "079f9e53539b1e636df518dfc8343f38"
+  },
+  {
+    "path": "model/cnstd/1.2/ppocr/en_PP-OCRv3_det_infer.onnx",
+    "hash": "72708a3ac241e25fefbc606832dc7529"
+  },
+  {
+    "path": "model/cnstd/1.2/ppocr/ch_PP-OCRv3_det_infer.onnx",
+    "hash": "5732f8c84bd4cc0dab35094e7260f080"
+  },
+  {
+    "path": "utils/calculated.py",
+    "hash": "7e1376a54c6fc25b206baf3c4c478c70"
+  },
+  {
+    "path": "utils/update_file.py",
+    "hash": "9784ba11cd46f57da32827d538384403"
+  },
+  {
+    "path": "utils/exceptions.py",
+    "hash": "368045dd7ff5b9c346d75d9b3dd6057b"
+  },
+  {
+    "path": "utils/record_v7.2.py",
+    "hash": "03047d50df214d029132f5f9a7372aae"
+  },
+  {
+    "path": "utils/cv_tools.py",
+    "hash": "8cee1592daf7b4ff153b8ef9c97a39f8"
+  },
+  {
+    "path": "utils/map.py",
+    "hash": "dfeba1fee224dbde5e266ddcdb5b144c"
+  },
+  {
+    "path": "utils/old_cv_tools.py",
+    "hash": "d58c447d88f7924704ddbc593985bf0b"
+  },
+  {
+    "path": "utils/adb.py",
+    "hash": "82993dbc84090d081cff62d95d2d5d7a"
+  },
+  {
+    "path": "utils/log.py",
+    "hash": "172d7d4d63c1b3136c5600055e666967"
+  },
+  {
+    "path": "utils/requests.py",
+    "hash": "f004e90febde2faeb7577e928df8380d"
   },
   {
     "path": "utils/simulated_universe.py",
-    "hash": "ee14b83bd91b720095188ccc475c014d"
+    "hash": "a034ae2b2de94b16d3ac6ed1dfe3a807"
   },
   {
     "path": "utils/config.py",
-    "hash": "ad44ededa78b1830f6ad63dd8e28af27"
+    "hash": "b642a1f6881daee7a7d9463b7a29843f"
   },
   {
     "path": "utils/get_angle.py",
-    "hash": "d87199a94a0f12290e75b68936e68326"
+    "hash": "1f56df0ccc972ab1955078fdc372870f"
   },
   {
     "path": "utils/commission.py",
-    "hash": "f2911ffe8697a5cfc6301ba66e383116"
+    "hash": "173d380cdc984361308350517864d38f"
   },
   {
     "path": "utils/route_helper.py",
