@@ -432,64 +432,6 @@ class calculated(CV_Tools):
                 log.info(_("未知状态,可能遇袭处于战斗状态"))
             time.sleep(1) # 避免长时间ocr
 
-    def fighting_old(self):
-        """
-        说明：
-            攻击
-        参数：
-            :param type: 类型 大世界/模拟宇宙
-        """
-        start_time = time.time()
-        log.info(_("识别中"))
-        #识别敌人
-        while True:
-            if time.time() - start_time > 10:  # 如果已经识别了10秒还未找到目标图片，则退出循环
-                log.info(_("识别超时,此处可能漏怪!"))
-                return False
-            if self.scan_screenshot(self.attack,points=(3.75,5.5,11.6,23))["max_val"] > 0.97: #修改检测机制,精度更高
-                self.click()
-                time.sleep(0.3)
-                doubt_time = time.time()
-                log.info(_("监控疑问或警告"))
-                while time.time() - doubt_time < 8:
-                    if self.scan_screenshot(self.doubt,points=(3.75,5.5,11.6,23))["max_val"] > 0.95 or self.scan_screenshot(self.warn,points=(3.75,5.5,11.6,23))["max_val"] > 0.95:
-                        log.info(_("识别到疑问或警告,等待怪物开战或反击"))
-                        self.click()
-                        time.sleep(1.5)
-                        log.info(_("识别反击"))
-                    result = self.scan_screenshot(self.finish,points=(0,95,100,100))
-                    if result["max_val"] < 0.95:
-                        break
-                    time.sleep(0.1)
-                result = self.scan_screenshot(self.finish,points=(0,95,100,100))
-                time.sleep(0.3)
-                if result["max_val"] < 0.95:
-                    break
-            else:
-                self.click()
-                time.sleep(0.3)
-                doubt_time = time.time() + 7
-                log.info(_("监控疑问或警告!"))
-                while time.time() < doubt_time:
-                    if self.scan_screenshot(self.doubt,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95 or self.scan_screenshot(self.warn,pos=(3.75,5.5,11.6,23))["max_val"] > 0.95:
-                        log.info(_("识别到疑问或警告,等待怪物开战或反击"))
-                        self.click()
-                        time.sleep(1.5)
-                        log.info(_("识别反击"))
-                        break
-                    result = self.scan_screenshot(self.finish,points=(0,95,100,100))
-                    if result["max_val"] < 0.95:
-                        break
-                    time.sleep(0.1)
-                result = self.scan_screenshot(self.finish,points=(0,95,100,100))
-                time.sleep(0.3)
-                if result["max_val"] < 0.95:
-                    break
-                log.info(_("未发现敌人!"))
-                return True
-        time.sleep(2)
-        self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
-
     def wait_fight_end(self, type=0):
         """
         说明:
@@ -599,65 +541,6 @@ class calculated(CV_Tools):
         while time.perf_counter() - start_time < (sleep_time/move_division_excursion+move_excursion):
             pass
         self.keyboard.release(com)
-
-    def path_move(self, path: List):
-        '''
-        说明:
-            根据路径移动
-        参数:
-            :param path: 路径列表
-        '''
-        fast_com = path.pop(0)
-        com_data = []
-        for com in path:
-            if com[0]-fast_com[0] >= 0:
-                if com[0]-fast_com[0] > com[1]-fast_com[1]:
-                    # <
-                    if com_data:
-                        if list(com_data[-1].keys())[0] == "a":
-                            com_data[-1]["a"] += 1
-                        else:
-                            com_data.append({"a": 1})
-                    else:
-                        com_data.append({"a": 1})
-                    #self.move("a", 1, platform)
-                else:
-                    # /
-                    if com_data:
-                        if list(com_data[-1].keys())[0] == "w":
-                            com_data[-1]["w"] += 1
-                        else:
-                            com_data.append({"w": 1})
-                    else:
-                        com_data.append({"w": 1})
-                    #self.move("w", 1, platform)
-            else:
-                if com[0]-fast_com[0] > com[1]-fast_com[1]:
-                    # >
-                    if com_data:
-                        if list(com_data[-1].keys())[0] == "d":
-                            com_data[-1]["d"] += 1
-                        else:
-                            com_data.append({"d": 1})
-                    else:
-                        com_data.append({"d": 1})
-                    #self.move("d", 1, platform)
-                else:
-                    # \
-                    if com_data:
-                        if list(com_data[-1].keys())[0] == "s":
-                            com_data[-1]["s"] += 1
-                        else:
-                            com_data.append({"s": 1})
-                    else:
-                        com_data.append({"s": 1})
-                    #self.move("s", 1, platform)
-            fast_com = com
-            com = ''
-        log.info(com_data)
-        for com in com_data:
-            move_com = list(com.keys())[0]
-            self.move(move_com, com[move_com])
 
     def scroll(self, clicks: float):
         """
@@ -946,43 +829,41 @@ class calculated(CV_Tools):
         返回:
             (x, y)
         """
-        if self.DEBUG:
-            map_name2id = {
-                "铁卫禁区": {
-                    "铁卫禁区-1": 7,
-                },
-                "丹鼎司": {
-                    "丹鼎司-1": 2,
-                    "丹鼎司-2": 3,
-                    "丹鼎司-3": 3,
-                    "丹鼎司-4": 3,
-                    "丹鼎司-5": 4,
-                    "丹鼎司-6": 4,
-                }
+        map_name2id = {
+            "铁卫禁区": {
+                "铁卫禁区-1": 7,
+            },
+            "丹鼎司": {
+                "丹鼎司-1": 2,
+                "丹鼎司-2": 3,
+                "丹鼎司-3": 3,
+                "丹鼎司-4": 3,
+                "丹鼎司-5": 4,
+                "丹鼎司-6": 4,
             }
-            map_id = map_name2id.get(map_name.split("-")[0], {}).get(map_name, None)
-            if not map_id:
-                return (0, 0)
-            img = cv.imread(f"./picture/maps/{map_id}.png")
-            template = self.take_screenshot((2.194802494802495, 4.509276437847866, 12.445738045738045, 23.283858998144712))[0]
-            #img = img[self.pos[1]-100:img.shape[0]]
-            max_scale_percent, max_val, max_loc, length, width = self.find_best_match(img, template, [100, 105, 124, 125])
-            #max_val, max_loc = match_scaled(img, template,2.09)
-            #log.info(max_scale_percent)
-            #log.info(max_val)
-            '''
-            if max_scale_percent in [102, 103]:
-                max_loc = (max_loc[0] + int(width/2)+17, max_loc[1] + int(length/2))
-            else:
-                max_loc = (max_loc[0] + int(width/2)+10, max_loc[1] + int(length/2))
-            '''
-            max_loc = (max_loc[0] + width//2 + 6, max_loc[1] + length//2 + 1)
-            #cv.rectangle(img, max_loc, (max_loc[0] + 5, max_loc[1] + 5), (0, 255, 0), 2)
-            #show_img(img, not_close=1)
-            #max_loc = (max_loc[0], max_loc[1] + self.pos[1]-100)
-            self.pos = max_loc
-            return max_loc
-        return (0, 0)
+        }
+        map_id = map_name2id.get(map_name.split("-")[0], {}).get(map_name, None)
+        if not map_id:
+            return (0, 0)
+        img = cv.imread(f"./picture/maps/{map_id}.png")
+        template = self.take_screenshot((2.194802494802495, 4.509276437847866, 12.445738045738045, 23.283858998144712))[0]
+        #img = img[self.pos[1]-100:img.shape[0]]
+        max_scale_percent, max_val, max_loc, length, width = self.find_best_match(img, template, [100, 105, 124, 125])
+        #max_val, max_loc = match_scaled(img, template,2.09)
+        #log.info(max_scale_percent)
+        #log.info(max_val)
+        '''
+        if max_scale_percent in [102, 103]:
+            max_loc = (max_loc[0] + int(width/2)+17, max_loc[1] + int(length/2))
+        else:
+            max_loc = (max_loc[0] + int(width/2)+10, max_loc[1] + int(length/2))
+        '''
+        max_loc = (max_loc[0] + width//2 + 6, max_loc[1] + length//2 + 1)
+        cv.rectangle(img, max_loc, (max_loc[0] + 5, max_loc[1] + 5), (0, 255, 0), 2)
+        show_img(img, not_close=1)
+        #max_loc = (max_loc[0], max_loc[1] + self.pos[1]-100)
+        self.pos = max_loc
+        return max_loc
 
     def change_team(self):
         """

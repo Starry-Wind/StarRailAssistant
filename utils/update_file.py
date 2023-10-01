@@ -218,7 +218,7 @@ class update_file:
             return await self.is_sra_latest(type, version, is_log)
         for index, __ in enumerate(range(3)):
             try:
-                url_version = f"{raw_proxy}https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant_MAP/main/version.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/version.json".replace("raw.githubusercontent.com", raw_proxy)
+                url_version = f"{raw_proxy}https://raw.githubusercontent.com/Night-stars-1/Auto_Star_Rail_MAP/main/version.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/version.json".replace("raw.githubusercontent.com", raw_proxy)
                 remote_version = await get(url_version, timeout=2)
                 remote_version = remote_version.json()["version"]
                 break
@@ -279,7 +279,7 @@ class update_file:
         if type == "star":
             url_list = f"{raw_proxy}https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/main/{type}_list.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/main/{type}_list.json".replace("raw.githubusercontent.com", raw_proxy)
         else:
-            url_list = f"{raw_proxy}https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant_MAP/main/{type}_list.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant_MAP/main/{type}_list.json".replace("raw.githubusercontent.com", raw_proxy)
+            url_list = f"{raw_proxy}https://raw.githubusercontent.com/Night-stars-1/Auto_Star_Rail_MAP/main/{type}_list.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant_MAP/main/{type}_list.json".replace("raw.githubusercontent.com", raw_proxy)
         #tmp_zip = os.path.join(tmp_dir, f"{type}.zip")
         tmp_zip = Path() / tmp_dir / f"{type}.zip"
         if not os.path.exists(tmp_dir):
