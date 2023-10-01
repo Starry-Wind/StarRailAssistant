@@ -19,13 +19,14 @@ from pynput import mouse
 from pynput.mouse import Controller as MouseController
 from pynput.keyboard import Controller as KeyboardController, Key
 from typing import Dict, Optional, Any, Union, Tuple, List, Literal
+
 from .config import sra_config_obj, CONFIG_FILE_NAME, get_file, _
 from .exceptions import Exception
 from .log import log
-from .cv_tools import show_img, find_best_match, match_scaled
-from .exceptions import Exception
+from .cv_tools import CV_Tools, show_img
+from .get_angle import Point
 
-class calculated:
+class calculated(CV_Tools):
 
     def __init__(self, title=_("崩坏：星穹铁道"), det_model_name="ch_PP-OCRv3_det", rec_model_name= "densenet_lite_114-fc", number=False, start=True):
         """
@@ -35,12 +36,17 @@ class calculated:
             :param number: 是否只考虑数字
             :param start: 是否开始运行脚本 如果为False则不加载OCR等模型
         """
+        super().__init__(title)
         self.title = title
 
         self.scaling = sra_config_obj.scaling
         self.DEBUG = sra_config_obj.debug
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
+        self.point = Point(title)
+
+        self.pos = (100, 100)
+
         if start:
             if getattr(sys, 'frozen', None):
                 dir = sys._MEIPASS
@@ -50,11 +56,6 @@ class calculated:
             #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
         self.check_list = lambda x,y: re.match(x, str(y)) != None
         self.compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
-        self.window = gw.getWindowsWithTitle(self.title)
-        if not self.window:
-            raise Exception(_("你游戏没开，我真服了"))
-        self.window = self.window[0]
-        self.hwnd = self.window._hWnd
 
         # 初始化
         self.attack = cv.imread("./picture/pc/attack.png")
@@ -189,32 +190,6 @@ class calculated:
             self.click(ret)
             return True
 
-    def take_screenshot(self,points=(0,0,0,0)):
-        """
-        说明:
-            返回RGB图像
-        参数:
-            :param points: 图像截取范围
-        """
-        borderless = sra_config_obj.borderless
-        left_border = sra_config_obj.left_border
-        up_border = sra_config_obj.up_border
-        #points = (points[0]*1.5/scaling,points[1]*1.5/scaling,points[2]*1.5/scaling,points[3]*1.5/scaling)
-        if borderless:
-            left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
-        else:
-            left, top, right, bottom = self.window.left+left_border, self.window.top+up_border, self.window.right-left_border, self.window.bottom-left_border
-        # log.info(f"{left}, {top}, {right}, {bottom}")
-        game_img = ImageGrab.grab((left, top, right, bottom), all_screens=True)
-        # game_img.save(f"logs/image/image_grab_{int(time.time())}.png", "PNG")
-        game_width, game_length = game_img.size
-        if points != (0,0,0,0):
-            #points = (points[0], points[1]+5, points[2], points[3]+5)
-            game_img = game_img.crop((game_width/100*points[0], game_length/100*points[1], game_width/100*points[2], game_length/100*points[3]))
-        screenshot = np.array(game_img)
-        screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2RGB)
-        return (screenshot, left, top, right, bottom, game_width, game_length)
-
     def remove_non_white_pixels(self, image):
         """
         说明:
@@ -272,6 +247,17 @@ class calculated:
         picture_path = "picture\\pc\\"+target_path
         temp_name = target_path.split(".")[0]
         join = False # 强制进行传统模板匹配
+        '''
+        map: 
+            type为str时点击对应文字
+            tyrpe为tuple时点击对应坐标
+        map_*_point:
+            type为dict时在points中点击name
+        其他:
+            type为dict时在points中点击name
+            type为tuple时点击百分比坐标
+            type为str时点击文字
+        '''
         temp_ocr = {
             "orientation_1": {
                 "name": _("星轨航图"),
@@ -303,17 +289,7 @@ class calculated:
             "map_3-6": _("鳞渊境"),
             "change_team": _("更换队伍"),
         }
-        '''
-        map: 
-            type为str时点击对应文字
-            tyrpe为tuple时点击对应坐标
-        map_*_point:
-            type为dict时在points中点击name
-        其他:
-            type为dict时在points中点击name
-            type为tuple时点击百分比坐标
-            type为str时点击文字
-        '''
+        
         if temp_name in temp_ocr:
             log.info(temp_name)
             if "orientation" in temp_name:
@@ -439,7 +415,7 @@ class calculated:
         if not (self.compare_lists([0, 0, 225], result) and self.compare_lists(result, [0, 0, 255])):
             self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
         return True
-    
+
     def check_fighting(self):
          while True:
                 end_str = str(self.part_ocr((20,95,100,100)))
@@ -561,9 +537,9 @@ class calculated:
         """
         # 该公式为不同缩放比之间的转化
         scaling = sra_config_obj.scaling
-        dx = int(x * scaling)
+        dx = x * scaling
         i = int(dx/200)
-        last = dx - i*200
+        last = int(dx - i*200)
         for ii in range(abs(i)):
             if dx >0:
                 win32api.mouse_event(1, 200, 0)  # 进行视角移动
@@ -572,7 +548,7 @@ class calculated:
             time.sleep(0.1)
         if last != 0:
             win32api.mouse_event(1, last, 0)  # 进行视角移动
-        time.sleep(0.5)
+        #time.sleep(0.5)
 
     def move(self, com: str = ["w","a","s","d","f"], sleep_time=1, map_name=""):
         '''
@@ -582,6 +558,7 @@ class calculated:
             :param com: 键盘操作 wasdf
             :param time 操作时间,单位秒
         '''
+        loc = self.get_loc(map_name=map_name)
         if type(sleep_time) == list:
             set_loc = sleep_time[1]
             sleep_time = sleep_time[0]
@@ -983,8 +960,16 @@ class calculated:
                     "城郊雪原-2": 7
                 },
                 "边缘道路": {
-                    "边缘道路-1": 8,
+                    "边缘道路-1": 51,
                     "边缘道路-2": 8
+                },
+                "工造司": {
+                    "工造司-1": 9,
+                    "工造司-2": 9,
+                    "工造司-3": 9,
+                    "工造司-4": 9,
+                    "工造司-5": 9,
+                    "工造司-6": 9,
                 },
                 "丹鼎司": {
                     "丹鼎司-1": 2,
@@ -1003,13 +988,23 @@ class calculated:
                 return (0, 0)
             img = cv.imread(f"./picture/maps/{map_id}.png")
             template = self.take_screenshot((4,8,10,20))[0]
-            __, max_val, max_loc, __, __ = find_best_match(img, template,(100,120,5))
+            #img = img[self.pos[1]-100:img.shape[0]] [124, 103, 102]
+            max_scale_percent, max_val, max_loc, length, width = self.find_best_match(img, template, [100,150,5])
             #max_val, max_loc = match_scaled(img, template,2.09)
-            #cv.rectangle(img, max_loc, (max_loc[0] + 100, max_loc[1] + 100), (0, 255, 0), 2)
-            #show_img(img)
-            return (max_loc[0] + 63, max_loc[1] + 67)
-        else:
-            return (0, 0)
+            #log.info(max_scale_percent)
+            #log.info(max_val)
+            '''
+            if max_scale_percent in [102, 103]:
+                max_loc = (max_loc[0] + int(width/2)+17, max_loc[1] + int(length/2))
+            else:
+                max_loc = (max_loc[0] + int(width/2)+10, max_loc[1] + int(length/2))
+            '''
+            max_loc = (max_loc[0] + width//2 + 6, max_loc[1] + length//2 + 1)
+            cv.rectangle(img, max_loc, (max_loc[0] + 5, max_loc[1] + 5), (0, 255, 0), 2)
+            show_img(img, not_close=1)
+            #max_loc = (max_loc[0], max_loc[1] + self.pos[1]-100)
+            self.pos = max_loc
+            return max_loc
 
     def change_team(self):
         """

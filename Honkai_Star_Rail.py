@@ -224,6 +224,26 @@ class SRA:
             url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
             option = options[url_ms.index(questionary.select(title, url_ms).ask())]
             sra_config_obj.rawgithub_proxy = option
+            title = _("请选择API代理地址：（不使用代理选空白选项）")
+            options = ['https://github.srap.link/', '']
+            url_ms = []
+            pbar = tqdm.tqdm(total=len(options), desc=_('测速中'), unit_scale=True, unit_divisor=1024, colour="green")
+            for index,url in enumerate(options):
+                if url == "":
+                    url = "https://api.github.com"
+                elif "https://" not in url:
+                    url =  f"https://"+url
+                try:
+                    response = asyncio.run(get(url))
+                    ms = response.elapsed.total_seconds()
+                except:
+                    ms = 999
+                finally:
+                    pbar.update(1)
+                url_ms.append(options[index]+f" {ms}ms")
+            url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
+            option = options[url_ms.index(questionary.select(title, url_ms).ask())]
+            sra_config_obj.apigithub_proxy = option
             title = _("请选择你的仓库来源：")
             options = ["Starry-Wind", "Night-stars-1"]
             option = questionary.select(title, options).ask()
