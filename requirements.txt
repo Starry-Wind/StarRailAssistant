@@ -14,7 +14,7 @@ httpx_socks
 loguru
 opencv_python
 Pillow
-PyAutoGUI==0.9.53
+PyAutoGUI==0.9.54
 pywinctl
 pynput
 pyuac
