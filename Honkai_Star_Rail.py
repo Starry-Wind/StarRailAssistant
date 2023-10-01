@@ -138,7 +138,8 @@ class SRA:
                 if not options_map:
                     return None, _("你没下载地图，拿什么选？")
                 keys = list(options_map.keys())
-                values = list(options_map.values())+[_("返回上一级")]
+                values = [_(split_name[0]) + '-' + split_name[1] for split_name in (map_name.split('-') for map_name in options_map.values())]
+                values.append(_("返回上一级"))
                 option_ = questionary.select(title_, values).ask()
                 if option_ == _("返回上一级"):
                     return select_word()
@@ -172,7 +173,9 @@ class SRA:
     def set_config(self, start = True):
         global game_title
         if not sra_config_obj.start or not start:
-            title = "请选择你游戏的运行语言:"
+            import utils.config
+            _ = utils.config._
+            title = _("请选择你游戏的运行语言:")
             options = {
                 "简体中文": "zh_CN",
                 "繁體中文": "zh_TC",
@@ -180,9 +183,7 @@ class SRA:
             }
             option = questionary.select(title, options).ask()
             sra_config_obj.language = options[option]
-            import utils.config
             importlib.reload(utils.config)
-            _ = utils.config._
             title = _("请选择代理地址：（不使用代理选空白选项）")
             options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
             url_ms = []
@@ -281,7 +282,7 @@ class SRA:
             if not asyncio.run(update_file().is_latest(type=up_data['type'], version=up_data['version'], is_log=False))[0]:
                 need_updata.append(name)
         return need_updata
-    
+
     def main(self, option:str=_('大世界'),start: str=None,role_list: str=None):
         """
         参数:
