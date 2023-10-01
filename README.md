@@ -1,17 +1,25 @@
+<!--
+ * @Author: Night-stars-1 nujj1042633805@gmail.com
+ * @Date: 2023-06-15 19:31:43
+ * @LastEditors: Night-stars-1 nujj1042633805@gmail.com
+ * @LastEditTime: 2023-10-01 23:16:06
+ * @Description: 
+ * 
+ * Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
+-->
 <div align="center">
 
-**⚠️缺少维护者⚠️**
+[嗨！点点我！点点我！点点我！](#使用说明)
 
-**[Night-stars-1](https://github.com/Night-stars-1)没有精力继续维护该项目，请等待其他维护者接手或者等待仓库拥有者继续更新**
-
-[简体中文](README.md) | [繁体中文](README_CHT.md) | [English](README_EN.md) | [文档](https://sra.stysqy.top)
-
-<img alt="LOGO" src="../../blob/map/picture/love!.png" style="border-radius:50%">
+[简体中文](README.md) | [文档](https://sra.stysqy.top)
 
 <h1 align="center">
 
-崩坏：星穹铁道小助手|StarRailAssistant|StarRailAssistant
+StarRailAssistan
 
+⚠️本项目不会在`咸鱼`、`淘宝`、`拼多多`等平台售卖，发现售卖请帮忙举报。⚠️
+
+⚠️本项目不允许以任何方式在`咸鱼`、`淘宝`、`拼多多`等平台是售卖⚠️
 </h1>
 
 [![GitHub Stars](https://img.shields.io/github/stars/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/StarRailAssistant/stargazers)
@@ -21,7 +29,9 @@
 [![GitHub License](https://img.shields.io/github/license/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/StarRailAssistant/blob/main/LICENSE)
 </div>
 
-找到BUG了？代码问题想吐槽？欢迎加入 技术 & 吹水群：[QQ 群1(可能满了)](https://qm.qq.com/cgi-bin/qm/qr?k=xdCO46fHlVcY7D2L7elXzqcxL3nyTGnW&jump_from=webapi&authKey=uWZooQ2szv+nG/re7luCKn8LW1KibSb0vvi0FycA45Mglm5AGM1GP2iJ+SiWmDwg)|[QQ 群2](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=ShfX_OHrFCHG6fuvXhq7W-oJ4omo0p-_&authKey=7VuSrSVbfqP6bj3%2BBJdI4NwLRrYtUEYOJp2JiT8%2BJnRDhv9sWpJ%2FHjSh5iiY8T4c&noverify=0&group_code=618070253)|[QQ频道](https://pd.qq.com/s/e910fud13)|[Telegram Group](https://t.me/+yeQEhnuT9O41NDM1)<br>
+## 界面展示
+<img src="https://github.com/Night-stars-1/Auto_Star_Rail_MAP/blob/main/picture/home.png" />
+<img src="https://github.com/Starry-Wind/StarRailAssistant_MAP/blob/main/picture/home2.png" />
 
 ## 免责声明
 
@@ -52,7 +62,7 @@ This software is open source, free of charge and for learning and exchange purpo
     ```json
     {
         "name": "乌拉乌拉-1",       （地图json名为1-1_1.json）
-        "author": "Starry-Wind",   （作者名，第二作者不能覆盖第一作者名称）
+        "author": "Night-stars-1",   （作者名，第二作者不能覆盖第一作者名称）
         "start": [           （开局传送地图识别图片，并将鼠标移动至图片中间并按下按键）
             {"map": 1},         （按下m键打开地图）
             {"picture\\orientation_1.jpg": 1.5},     （识别到orientation_1.jpg图片后，将鼠标移动至图片中间并按下按键）
@@ -63,21 +73,16 @@ This software is open source, free of charge and for learning and exchange purpo
     }
     ```
 
-## 注意事项
-
-1. 识图为截取游戏画面，所以不能有任何覆盖
-2. 支持地图 **空间站「黑塔」、雅利洛VI、仙舟「罗浮」**
-3. 如果你发现地图有撞墙问题，可以协助更新[地图文件提交到这里](https://github.com/Starry-Wind/StarRailAssistant/tree/map)
-4. 请使用**三月七**来跑图以获得最佳体验
-5. 遇到问题,请先确定你使用的是最新版本记得看[文档](https://sra.stysqy.top)
-
 ⭐**如果喜欢，点个星星~**⭐
 
 ## 未来目标
 
+- [ ] 基于小地图锄大地(当前`铁卫禁区`开放地图识别，仅返回坐标无实际操作，需要将地图文件的debug设置为true)
 - [ ] 模拟宇宙正在开发
 - [x] GUI开发
 - [ ] 后续将会新增找宝箱、锄大地顺带捡垃圾等功能
+
+[项目进度请点击查看](https://github.com/users/Night-stars-1/projects/2)
 
 ## 贡献
 
@@ -102,3 +107,4 @@ This software is open source, free of charge and for learning and exchange purpo
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Starry-Wind/StarRailAssistant&type=Date)](https://star-history.com/#Starry-Wind/StarRailAssistant&Date)
+

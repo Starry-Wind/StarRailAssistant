@@ -1,15 +1,15 @@
-import os
-import sys
-from typing import Any, get_type_hints, Union
-import orjson
 import gettext
 import inspect
-
+import os
+import sys
 from pathlib import Path
+from typing import Any, Union, get_type_hints
+
+import orjson
 from orjson import JSONDecodeError
 
-from .log import log
 from .exceptions import TypeError
+from .log import log
 
 CONFIG_FILE_NAME = "config.json"
 
@@ -66,8 +66,13 @@ def modify_json_file(filename: str, key, value):
     # 先读，再写
     data, file_path = read_json_file(filename, path=True)
     data[key] = value
-    with open(file_path, "wb") as f:
-        f.write(orjson.dumps(data, option=orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2))
+    try:
+        with open(file_path, "wb") as f:
+            f.write(orjson.dumps(data, option=orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2))
+    except PermissionError as e:
+        import time
+        time.sleep(1)
+        modify_json_file(filename, key, value)
 
 
 def get_file(path, exclude=[], exclude_file=None, get_path=False, only_place=False) -> list[str]:
@@ -244,7 +249,7 @@ class SRAData(metaclass=SRADataMeta):
     rawgithub_proxy: str = ""
     """rawgithub代理"""
     apigithub_proxy: str = ""
-    """apigithub代理"""
+    """api代理"""
     webhook_url: str = ""
     """webhook地址"""
     start: bool = False
@@ -285,7 +290,7 @@ class SRAData(metaclass=SRADataMeta):
     """切换队伍的队伍编号"""
     stop: bool = False
     """是否停止"""
-    github_source: str = "Starry-Wind"
+    github_source: str = "Night-stars-1"
     """github仓库源"""
 
     def __init__(self) -> None:
