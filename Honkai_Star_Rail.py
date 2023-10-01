@@ -17,19 +17,18 @@ import importlib
 import tqdm
 
 from docopt import docopt
-from questionary import ValidationError
 from pluggy import PluginManager
 
 from get_width import get_width
 from utils.log import log, fight_log
-from utils.config import read_json_file, load_all_config_data, modify_json_file, add_key_value, read_maps, CONFIG_FILE_NAME, _
+from utils.config import read_json_file, load_all_config_data, modify_json_file, add_key_value, read_maps, CONFIG_FILE_NAME, sra_config_obj, _
 from utils.simulated_universe import Simulated_Universe
 from utils.update_file import update_file
 from utils.commission import Commission
 from utils.calculated import calculated
 from utils.exceptions import Exception
 from utils.map import Map as map_word
-from utils.requests import *
+from utils.requests import get
 
 game_title = _("崩坏：星穹铁道")
 plugins_path = "plugins"
@@ -51,19 +50,19 @@ class SRA:
                 'skip_verify': False,
                 'type': "star",
                 'version': "main",
-                'url_zip': f"https://github.com/{sra_config_obj.github_source}/StarRailAssistant/archive/refs/heads/main.zip",
+                'url_zip': f"https://github.com/{sra_config_obj.github_source}/Auto_Star_Rail/archive/refs/heads/main.zip",
                 'unzip_path': ".",
                 'keep_folder': ['.git', 'logs', 'picture', 'map', 'tmp', 'venv'],
                 'keep_file': ['config.json', 'version.json', 'star_list.json', 'README_CHT.md', 'README.md'],
                 'zip_path': "StarRailAssistant-main/",
                 'name': _("脚本"),
-                'delete_file': False
+                'delete_file': True
             },
             _("地图"):{
                 'skip_verify': False,
                 'type': "map",
                 'version': "map",
-                'url_zip': f"https://raw.githubusercontent.com/{sra_config_obj.github_source}/StarRailAssistant/map/map.zip",
+                'url_zip': f"https://raw.githubusercontent.com/{sra_config_obj.github_source}/Auto_Star_Rail_MAP/main/map.zip",
                 'unzip_path': "map",
                 'keep_folder': [],
                 'keep_file': [],
@@ -75,7 +74,7 @@ class SRA:
                 'skip_verify': False,
                 'type': "picture",
                 'version': "map",
-                'url_zip': f"https://raw.githubusercontent.com/{sra_config_obj.github_source}/StarRailAssistant/map/picture.zip",
+                'url_zip': f"https://raw.githubusercontent.com/{sra_config_obj.github_source}/Auto_Star_Rail_MAP/main/picture.zip",
                 'unzip_path': "picture",
                 'keep_folder': [],
                 'keep_file': [],
@@ -158,7 +157,7 @@ class SRA:
                 option_ = questionary.select(title_, list(options_map.keys())).ask()
                 side_map = options_map[option_]
                 presets_list = read_json_file(CONFIG_FILE_NAME).get("presets", [])
-                presets_list = ['、'.join(i) for i in presets_list]
+                presets_list = ['、'.join(i) for i in sra_config_obj.presets]
                 choose_role = questionary.select(_("要使用的预设队伍:"), choices=presets_list).ask()
                 role_list = choose_role.split("、")
                 fate = [_('存护'), _('记忆'), _('虚无'), _('丰饶'), _('巡猎'), _('毁灭'), _('欢愉')]
@@ -185,7 +184,7 @@ class SRA:
             sra_config_obj.language = options[option]
             importlib.reload(utils.config)
             title = _("请选择代理地址：（不使用代理选空白选项）")
-            options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
+            options = ['https://ghproxy.com/', 'https://ghproxy.net/', '']
             url_ms = []
             pbar = tqdm.tqdm(total=len(options), desc=_('测速中'), unit_scale=True, unit_divisor=1024, colour="green")
             for index,url in enumerate(options):
@@ -205,7 +204,7 @@ class SRA:
             option = options[url_ms.index(questionary.select(title, url_ms).ask())]
             sra_config_obj.github_proxy = option
             title = _("请选择下载代理地址：（不使用代理选空白选项）")
-            options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', '']
+            options = ['https://ghproxy.com/', 'https://ghproxy.net/', '']
             url_ms = []
             pbar = tqdm.tqdm(total=len(options), desc=_('测速中'), unit_scale=True, unit_divisor=1024, colour="green")
             for index,url in enumerate(options):
@@ -245,7 +244,7 @@ class SRA:
             option = options[url_ms.index(questionary.select(title, url_ms).ask())]
             sra_config_obj.apigithub_proxy = option
             title = _("请选择你的仓库来源：")
-            options = ["Starry-Wind", "Night-stars-1"]
+            options = ["Night-stars-1"]
             option = questionary.select(title, options).ask()
             sra_config_obj.github_source = option
             while True:
@@ -293,7 +292,7 @@ class SRA:
             (start, role_list) = self.choose_map(option) if not start else (start, role_list)
             if start:
                 log.info(_("脚本将自动切换至游戏窗口，请保持游戏窗口激活"))
-                calculated(game_title, start=False).switch_window()
+                #calculated(game_title, start=False).switch_window()
                 time.sleep(0.5)
                 get_width(game_title)
                 #map_instance.calculated.CONFIG = read_json_file(CONFIG_FILE_NAME)
@@ -312,7 +311,7 @@ class SRA:
                 raise Exception(role_list)
         else:
             log.info(_("脚本将自动切换至游戏窗口，请保持游戏窗口激活"))
-            calculated(game_title, start=False).switch_window()
+            #calculated(game_title, start=False).switch_window()
             time.sleep(0.5)
             get_width(game_title)
             #map_instance.calculated.CONFIG = read_json_file(CONFIG_FILE_NAME)
@@ -321,13 +320,10 @@ class SRA:
             self.option_dict[option]()
 
 if __name__ == "__main__":
-    join_time = read_json_file(CONFIG_FILE_NAME).get("join_time", {})
-    if type(join_time) == dict:
-        sra_config_obj.join_time = 9
     sra = SRA()
     try:
         sra.set_config()    # 无config直接更新时初始化config文件
-        print(_("\033[0;31;40m星穹铁道小助手为开源项目，完全免费\n如果你是购买的那么你被骗了\n开源仓库地址: https://github.com/Starry-Wind/StarRailAssistant\033[0m"))
+        print(_("\033[0;31;40m星穹铁道小助手为开源项目，完全免费\n如果你是购买的那么你被骗了\n开源仓库地址: https://github.com/Night-stars-1/Auto_Star_Rail\033[0m"))
         sra.load_plugin()
         sra.run_plugins()
         if not pyuac.isUserAdmin():
@@ -341,19 +337,14 @@ if __name__ == "__main__":
                     options[options.index(_('更新资源'))] = _("更新资源")+f"({','.join(need_updata)})"
                 option = questionary.select(title, options).ask()
                 option = list(sra.option_dict.keys())[options.index(option)]
-                if option == _("更新资源"):
-                    sra.up_data()
-                    raise Exception(_("请重新运行"))
-                elif option == _("编辑配置"):
-                    sra.set_config(False)
-                elif option == None:
-                    ...
-                else:
-                    if option:
-                        sra.main(option)
+                if option is not None:
+                    if option == _("更新资源"):
+                        sra.up_data()
+                        raise Exception(_("请重新运行"))
+                    elif option == _("编辑配置"):
+                        sra.set_config(False)
                     else:
-                        if questionary.select(_("请问要退出脚本吗？"), [_("退出"), _("返回主菜单")]).ask() == _("返回主菜单"):
-                            select()
+                        sra.main(option)
             serial_map = args.get("--map") if args.get("--map") != "default" else "1-1_1" # 地图编号
             select() if not serial_map else sra.main(start=serial_map)
             sra.end()

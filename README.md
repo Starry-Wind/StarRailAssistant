@@ -2,7 +2,7 @@
  * @Author: Night-stars-1 nujj1042633805@gmail.com
  * @Date: 2023-06-15 19:31:43
  * @LastEditors: Night-stars-1 nujj1042633805@gmail.com
- * @LastEditTime: 2023-10-01 22:41:43
+ * @LastEditTime: 2023-10-01 23:16:06
  * @Description: 
  * 
  * Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -30,7 +30,7 @@ StarRailAssistan
 </div>
 
 ## 界面展示
-<img src="https://github.com/Starry-Wind/StarRailAssistant_MAP/blob/main/picture/home.png" />
+<img src="https://github.com/Night-stars-1/Auto_Star_Rail_MAP/blob/main/picture/home.png" />
 <img src="https://github.com/Starry-Wind/StarRailAssistant_MAP/blob/main/picture/home2.png" />
 
 ## 免责声明
