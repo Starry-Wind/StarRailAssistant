@@ -443,7 +443,7 @@ class calculated(CV_Tools):
         start_time = time.time()
         if sra_config_obj.auto_battle_persistence != 1:  #这个设置建议放弃,看了看浪费性能加容易出问题
             while True:
-                result = self.scan_screenshot(self.auto)
+                result = self.scan_screenshot(self.auto, points=(90, 0, 100, 10))
                 if result["max_val"] > 0.95:
                     time.sleep(0.3)
                     self.keyboard.press("v")
