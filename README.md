@@ -22,16 +22,16 @@ Auto_Star_Rail
 ⚠️本项目不允许以任何方式在`咸鱼`、`淘宝`、`拼多多`等平台是售卖⚠️
 </h1>
 
-[![GitHub Stars](https://img.shields.io/github/stars/Night-stars-1/Auto_Star_Rail?style=flat-square)](https://github.com/Night-stars-1/Auto_Star_Rail/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/Night-stars-1/Auto_Star_Rail?style=flat-square)](https://github.com/Night-stars-1/Auto_Star_Rail/network)
-[![GitHub Issues](https://img.shields.io/github/issues/Night-stars-1/Auto_Star_Rail?style=flat-square)](https://github.com/Night-stars-1/Auto_Star_Rail/issues)
-[![GitHub Contributors](https://img.shields.io/github/contributors/Night-stars-1/Auto_Star_Rail?style=flat-square)](https://github.com/Night-stars-1/Auto_Star_Rail/graphs/contributors)
-[![GitHub License](https://img.shields.io/github/license/Night-stars-1/Auto_Star_Rail?style=flat-square)](https://github.com/Night-stars-1/Auto_Star_Rail/blob/main/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/StarRailAssistant/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/StarRailAssistant/network)
+[![GitHub Issues](https://img.shields.io/github/issues/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/StarRailAssistant/issues)
+[![GitHub Contributors](https://img.shields.io/github/contributors/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/StarRailAssistant/graphs/contributors)
+[![GitHub License](https://img.shields.io/github/license/Starry-Wind/StarRailAssistant?style=flat-square)](https://github.com/Starry-Wind/StarRailAssistant/blob/main/LICENSE)
 </div>
 
 ## 界面展示
-<img src="https://github.com/Night-stars-1/Auto_Star_Rail_MAP/blob/main/picture/home.png" />
-<img src="https://github.com/Night-stars-1/Auto_Star_Rail_MAP/blob/main/picture/home2.png" />
+<img src="https://github.com/Starry-Wind/StarRailAssistant_MAP/blob/main/picture/home.png" />
+<img src="https://github.com/Starry-Wind/StarRailAssistant_MAP/blob/main/picture/home2.png" />
 
 ## 免责声明
 
@@ -86,7 +86,7 @@ This software is open source, free of charge and for learning and exchange purpo
 
 ## 贡献
 
-[问题反馈](https://github.com/Night-stars-1/Auto_Star_Rail/issues/new/choose) | [PR 提交](https://github.com/Night-stars-1/Auto_Star_Rail/compare)
+[问题反馈](https://github.com/Starry-Wind/StarRailAssistant/issues/new/choose) | [PR 提交](https://github.com/Starry-Wind/StarRailAssistant/compare)
 
 欢迎各种形式的贡献，包括但不限于：错误修复、代码改进、功能添加、问题反馈。
 
@@ -96,9 +96,9 @@ This software is open source, free of charge and for learning and exchange purpo
 
 感谢以下贡献者对本项目做出的贡献
 
-<a href="https://github.com/Night-stars-1/Auto_Star_Rail/graphs/contributors">
+<a href="https://github.com/Starry-Wind/StarRailAssistant/graphs/contributors">
 
-  <img src="https://contrib.rocks/image?repo=Night-stars-1/Auto_Star_Rail" />
+  <img src="https://contrib.rocks/image?repo=Starry-Wind/StarRailAssistant" />
 
 </a>
 
@@ -106,5 +106,5 @@ This software is open source, free of charge and for learning and exchange purpo
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Night-stars-1/Auto_Star_Rail&type=Date)](https://star-history.com/#Night-stars-1/Auto_Star_Rail&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=Starry-Wind/StarRailAssistant&type=Date)](https://star-history.com/#Starry-Wind/StarRailAssistant&Date)
 
