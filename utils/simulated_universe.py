@@ -7,27 +7,30 @@ Description:
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
 '''
+import math
 import os
 import re
-import math
-import cn2an
-import questionary
-import pygetwindow as gw
-
 from copy import deepcopy
-from xpinyin import Pinyin
-from questionary import Validator, ValidationError
-from typing import List
-from pynput.keyboard import Controller as KeyboardController
 from threading import Thread
-#from ultralytics.nn.tasks import  atpicturet_load_weights
+from typing import List
 
-from .calculated import *
-from .config import get_file, read_json_file, modify_json_file, CONFIG_FILE_NAME, _
-from .log import log
-from .requests import webhook_and_log
+import cn2an
+import pywinctl as pwc  # 跨平台支持
+import questionary
+from pynput.keyboard import Controller as KeyboardController
+from questionary import ValidationError, Validator
+from xpinyin import Pinyin
+
 #from .yolo import predict
 from .adb import ADB
+from .calculated import *
+from .config import (CONFIG_FILE_NAME, _, get_file, modify_json_file,
+                     read_json_file)
+from .log import log
+from .requests import webhook_and_log
+
+#from ultralytics.nn.tasks import  atpicturet_load_weights
+
 
 class Simulated_Universe:
     def __init__(self, title = _("崩坏：星穹铁道")):
@@ -36,7 +39,7 @@ class Simulated_Universe:
             :param platform: 运行设备
         """
         self.open_map = read_json_file(CONFIG_FILE_NAME).get("open_map", "m")
-        self.window = gw.getWindowsWithTitle(_('崩坏：星穹铁道'))[0]
+        self.window = pwc.getWindowsWithTitle(_('崩坏：星穹铁道'))[0]
         self.hwnd = self.window._hWnd
         self.map_list = []
         self.map_list_map = {}

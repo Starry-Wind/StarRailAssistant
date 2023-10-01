@@ -7,10 +7,13 @@ Description:
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
 '''
-from utils.calculated import calculated
-from utils.log import log, _
-from pynput.keyboard import Key
 import time
+
+from pynput.keyboard import Key
+
+from utils.calculated import calculated
+from utils.log import _, log
+
 
 def get_percentile(rect, shape):
     #获取长方形的相对坐标

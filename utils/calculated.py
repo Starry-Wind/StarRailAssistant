@@ -1,30 +1,32 @@
 """
 系统控制项，以及玩家控制
 """
-import re
+import itertools
 import os
+import re
 import sys
 import time
-import win32api
-import itertools
-import cv2 as cv
-import numpy as np
-import pygetwindow as gw
-
-from cnocr import CnOcr
 from datetime import datetime
 from pathlib import Path
-from PIL import ImageGrab, Image
-from pynput import mouse
-from pynput.mouse import Controller as MouseController
-from pynput.keyboard import Controller as KeyboardController, Key
-from typing import Dict, Optional, Any, Union, Tuple, List, Literal
+from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
-from .config import sra_config_obj, CONFIG_FILE_NAME, get_file, _
+import cv2 as cv
+import numpy as np
+import pywinctl as pwc  # 跨平台支持
+import win32api
+from cnocr import CnOcr
+from PIL import Image, ImageGrab
+from pynput import mouse
+from pynput.keyboard import Controller as KeyboardController
+from pynput.keyboard import Key
+from pynput.mouse import Controller as MouseController
+
+from .config import CONFIG_FILE_NAME, _, get_file, sra_config_obj
+from .cv_tools import CV_Tools, show_img
 from .exceptions import Exception
 from .log import log
-from .cv_tools import CV_Tools, show_img
-from .get_angle import Point
+
+#from .get_angle import Point
 
 class calculated(CV_Tools):
 
@@ -43,7 +45,7 @@ class calculated(CV_Tools):
         self.DEBUG = sra_config_obj.debug
         self.mouse = MouseController()
         self.keyboard = KeyboardController()
-        self.point = Point(title)
+        #self.point = Point(title)
 
         self.pos = (100, 100)
 
@@ -52,7 +54,7 @@ class calculated(CV_Tools):
                 dir = sys._MEIPASS
             else:
                 dir = Path()
-            self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root=os.path.join(dir, "model/cnocr"), rec_root=os.path.join(dir, "model/cnstd")) if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnocr", rec_root="./model/cnstd", cand_alphabet='0123456789')
+            self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name, rec_vocab_fp="model/cnocr/label_cn.txt", det_root=os.path.join(dir, "model/cnstd"), rec_root=os.path.join(dir, "model/cnocr")) if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnstd", rec_root="./model/cnocr", cand_alphabet='0123456789')
             #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
         self.check_list = lambda x,y: re.match(x, str(y)) != None
         self.compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
@@ -282,14 +284,14 @@ class calculated(CV_Tools):
             "map_2-7": _("机械聚落"),
             #"orientation_4": (79, 80), # _("仙舟「罗浮")
             "map_3-1": _("流云渡"),
-            "map_3-2": _("迥星港"),
+            "map_3-2": _("迴星港"),
             "map_3-3": _("太卜司"),
             "map_3-4": _("工造司"),
             "map_3-5": _("丹鼎司"),
             "map_3-6": _("鳞渊境"),
             "change_team": _("更换队伍"),
         }
-        
+
         if temp_name in temp_ocr:
             log.info(temp_name)
             if "orientation" in temp_name:
@@ -383,9 +385,9 @@ class calculated(CV_Tools):
                 if ((time.time() - start_time > 15  and "point" not in temp_name) \
                     or (time.time() - start_time > 30  and "point" in temp_name)): #防止卡死.重启线程
                     log.info(_("传送识别超时"))
-                    self.keyboard.press(Key.esc)
-                    time.sleep(0.1)
-                    self.keyboard.release(Key.esc)
+                    #self.keyboard.press(Key.esc)
+                    #time.sleep(0.1)
+                    #self.keyboard.release(Key.esc)
                     break
                 if flag == False:
                     break
@@ -417,14 +419,18 @@ class calculated(CV_Tools):
         return True
 
     def check_fighting(self):
-         while True:
-                end_str = str(self.part_ocr((20,95,100,100)))
-                if any(substring in end_str for substring in self.end_list):
-                    log.info(_("未在战斗状态"))
-                    break
-                else:
-                    log.info(_("未知状态,可能遇袭处于战斗状态"))
-                time.sleep(1) # 避免长时间ocr
+        while True:
+            if (
+                self.compare_lists([0, 0, 222], self.get_pix_rgb(pos=(1435, 58))) and
+                self.compare_lists(self.get_pix_rgb(pos=(1435, 58)), [0, 0, 240]) and
+                self.compare_lists([20, 90, 80], self.get_pix_rgb(pos=(88, 979))) and
+                self.compare_lists(self.get_pix_rgb(pos=(88, 979)), [25, 100, 90])
+            ):
+                log.info(_("未在战斗状态"))
+                break
+            else:
+                log.info(_("未知状态,可能遇袭处于战斗状态"))
+            time.sleep(1) # 避免长时间ocr
 
     def fighting_old(self):
         """
@@ -479,7 +485,7 @@ class calculated(CV_Tools):
                 time.sleep(0.3)
                 if result["max_val"] < 0.95:
                     break
-                log.info(_("未发现敌人!"))    
+                log.info(_("未发现敌人!"))
                 return True
         time.sleep(2)
         self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
@@ -511,8 +517,12 @@ class calculated(CV_Tools):
         start_time = time.time()  # 开始计算战斗时间
         while True:
             if type == 0:
-                end_str = str(self.part_ocr((20,95,100,100)))
-                if any(substring in end_str for substring in self.end_list):
+                if (
+                    self.compare_lists([0, 0, 222], self.get_pix_rgb(pos=(1435, 58))) and
+                    self.compare_lists(self.get_pix_rgb(pos=(1435, 58)), [0, 0, 240]) and
+                    self.compare_lists([20, 90, 80], self.get_pix_rgb(pos=(88, 979))) and
+                    self.compare_lists(self.get_pix_rgb(pos=(88, 979)), [25, 100, 90])
+                ):
                     log.info(_("完成自动战斗"))
                     break
             elif type == 1:
@@ -558,13 +568,13 @@ class calculated(CV_Tools):
             :param com: 键盘操作 wasdf
             :param time 操作时间,单位秒
         '''
-        loc = self.get_loc(map_name=map_name)
+        loc = self.get_loc(map_name=map_name) if self.DEBUG else (0, 0)
+        log.info(loc)
         if type(sleep_time) == list:
             set_loc = sleep_time[1]
             sleep_time = sleep_time[0]
             self.move_com(com, sleep_time)
-            loc = self.get_loc(map_name=map_name)
-            log.debug(loc)
+            loc = self.get_loc(map_name=map_name) if self.DEBUG else (0, 0)
             log.info(loc)
             com_num = abs(loc[1] - set_loc[1])
             if com_num > 16:
@@ -704,10 +714,10 @@ class calculated(CV_Tools):
             img_fp = self.remove_non_white_pixels(img_fp)
         if debug:
             show_img(img_fp)
-            cv.imwrite("H://xqtd//xl//test.png",img_fp)
+            #cv.imwrite("H://xqtd//xl//test.png",img_fp)
         x, y = width/100*points[0], length/100*points[1]
         out = self.ocr.ocr(img_fp)
-        data = {i['text']: (int(left+x+(i['position'][2][0]+i['position'][0][0])/2),int(top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
+        data = {i['text'].replace(" ", ""): (int(left+x+(i['position'][2][0]+i['position'][0][0])/2),int(top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
         log.debug(data)
         return data
 
@@ -738,9 +748,9 @@ class calculated(CV_Tools):
         x, y = width/100*points[0], length/100*points[1]
         out = self.ocr.ocr(img_fp)
         if left:
-            data = {i['text']: (int(game_left+x+i['position'][0][0]), int(game_top+y+i['position'][0][1])) for i in out}
+            data = {i['text'].replace(" ", ""): (int(game_left+x+i['position'][0][0]), int(game_top+y+i['position'][0][1])) for i in out}
         else:
-            data = {i['text']: (int(game_left+x+(i['position'][2][0]+i['position'][0][0])/2),int(game_top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
+            data = {i['text'].replace(" ", ""): (int(game_left+x+(i['position'][2][0]+i['position'][0][0])/2),int(game_top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
         log.debug(data)
         return data
 
@@ -878,23 +888,6 @@ class calculated(CV_Tools):
                 return endtime
             time.sleep(0.1)
 
-    def switch_window(self, dt=0.1):
-        ws = gw.getWindowsWithTitle(self.title)
-        time.sleep(dt)
-        if len(ws) >= 1 :
-            for w in ws:
-                # 避免其他窗口也包含崩坏：星穹铁道，比如正好开着github脚本页面
-                # log.debug(w.title)
-                if w.title == self.title:
-                    #client.Dispatch("WScript.Shell").SendKeys('%')
-                    self.keyboard.press(Key.right)
-                    self.keyboard.release(Key.right)                     
-                    w.activate()
-                    break
-        else:
-            log.info(_('没找到窗口{title}').format(title=self.title))
-        time.sleep(dt)
-
     def open_map(self, open_key):
         while True:
             self.keyboard.press(open_key)
@@ -917,9 +910,13 @@ class calculated(CV_Tools):
         time.sleep(1) # 等待进入入画
         log.info(_("等待入画结束"))
         time.sleep(0.3) # 缓冲
-        while True:
-            end_str = str(self.part_ocr((0,95,100,100)))
-            if any(substring in end_str for substring in self.end_list):
+        while True:            
+            if (
+                self.compare_lists([0, 0, 222], self.get_pix_rgb(pos=(1435, 58))) and
+                self.compare_lists(self.get_pix_rgb(pos=(1435, 58)), [0, 0, 240]) and
+                self.compare_lists([20, 90, 80], self.get_pix_rgb(pos=(88, 979))) and
+                self.compare_lists(self.get_pix_rgb(pos=(88, 979)), [25, 100, 90])
+            ):
                 log.info(_("完成入画"))
                 break
             time.sleep(1.0) # 缓冲
@@ -951,25 +948,8 @@ class calculated(CV_Tools):
         """
         if self.DEBUG:
             map_name2id = {
-                "收容舱段": {
-                    "收容舱段-1": 1,
-                    "收容舱段-2": 6,
-                },
-                "城郊雪原": {
-                    "城郊雪原-1": 7,
-                    "城郊雪原-2": 7
-                },
-                "边缘道路": {
-                    "边缘道路-1": 51,
-                    "边缘道路-2": 8
-                },
-                "工造司": {
-                    "工造司-1": 9,
-                    "工造司-2": 9,
-                    "工造司-3": 9,
-                    "工造司-4": 9,
-                    "工造司-5": 9,
-                    "工造司-6": 9,
+                "铁卫禁区": {
+                    "铁卫禁区-1": 7,
                 },
                 "丹鼎司": {
                     "丹鼎司-1": 2,
@@ -978,18 +958,15 @@ class calculated(CV_Tools):
                     "丹鼎司-4": 3,
                     "丹鼎司-5": 4,
                     "丹鼎司-6": 4,
-                },
-                "鳞渊境":{
-                    "鳞渊境-1": 5,
                 }
             }
             map_id = map_name2id.get(map_name.split("-")[0], {}).get(map_name, None)
             if not map_id:
                 return (0, 0)
             img = cv.imread(f"./picture/maps/{map_id}.png")
-            template = self.take_screenshot((4,8,10,20))[0]
-            #img = img[self.pos[1]-100:img.shape[0]] [124, 103, 102]
-            max_scale_percent, max_val, max_loc, length, width = self.find_best_match(img, template, [100,150,5])
+            template = self.take_screenshot((2.194802494802495, 4.509276437847866, 12.445738045738045, 23.283858998144712))[0]
+            #img = img[self.pos[1]-100:img.shape[0]]
+            max_scale_percent, max_val, max_loc, length, width = self.find_best_match(img, template, [100, 105, 124, 125])
             #max_val, max_loc = match_scaled(img, template,2.09)
             #log.info(max_scale_percent)
             #log.info(max_val)
@@ -1000,11 +977,12 @@ class calculated(CV_Tools):
                 max_loc = (max_loc[0] + int(width/2)+10, max_loc[1] + int(length/2))
             '''
             max_loc = (max_loc[0] + width//2 + 6, max_loc[1] + length//2 + 1)
-            cv.rectangle(img, max_loc, (max_loc[0] + 5, max_loc[1] + 5), (0, 255, 0), 2)
-            show_img(img, not_close=1)
+            #cv.rectangle(img, max_loc, (max_loc[0] + 5, max_loc[1] + 5), (0, 255, 0), 2)
+            #show_img(img, not_close=1)
             #max_loc = (max_loc[0], max_loc[1] + self.pos[1]-100)
             self.pos = max_loc
             return max_loc
+        return (0, 0)
 
     def change_team(self):
         """

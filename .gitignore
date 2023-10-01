@@ -118,6 +118,8 @@ plugins/
 StarRailAssistant_backup/
 /*test*.py
 /*map*.py
+new_cv_tools.py
+old_cv_tools.py
 map_list.json
 LICENSE
 picture_list.json
