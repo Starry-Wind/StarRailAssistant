@@ -138,7 +138,7 @@ class update_file:
         git_proxy = sra_config_obj.github_proxy
         islatest, version, local_version = await self.is_sra_latest(type, version)
         if not islatest:
-            dl_url = f"{git_proxy}https://github.com/{self.github_source}/StarRailAssistant/archive/refs/tags/{version}.zip"
+            dl_url = f"{git_proxy}https://github.com/Starry-Wind/StarRailAssistant/archive/refs/tags/{version}.zip"
             tmp_zip = Path() / tmp_dir / f"{type}.zip"
             zip_path = f"StarRailAssistant-{version.replace('v','')}/"
             await self.copy_files(Path(), Path() / "StarRailAssistant_backup", ["utils", "picture", "map", "config.json", "get_width.py", "Honkai_Star_Rail.py", "gui.py"])
