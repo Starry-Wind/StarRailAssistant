@@ -771,6 +771,23 @@ class calculated(CV_Tools):
                 return endtime
             time.sleep(0.1)
 
+    def switch_window(self, dt=0.1):
+        ws = pwc.getWindowsWithTitle(self.title)
+        time.sleep(dt)
+        if len(ws) >= 1:
+            for w in ws:
+                # 避免其他窗口也包含崩坏：星穹铁道，比如正好开着github脚本页面
+                # log.debug(w.title)
+                if w.title == self.title:
+                    #client.Dispatch("WScript.Shell").SendKeys('%')
+                    self.keyboard.press(Key.right)
+                    self.keyboard.release(Key.right)                     
+                    w.activate()
+                    break
+        else:
+            log.info(_('没找到窗口{title}').format(title=self.title))
+        time.sleep(dt)
+
     def open_map(self, open_key):
         while True:
             self.keyboard.press(open_key)
