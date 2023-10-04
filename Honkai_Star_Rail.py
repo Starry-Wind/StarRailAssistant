@@ -63,7 +63,7 @@ class SRA:
                 'skip_verify': False,
                 'type': "map",
                 'version': "map",
-                'url_zip': f"https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/map.zip",
+                'url_zip': f"https://raw.githubusercontent.com/Night-stars-1/Auto_Star_Rail_MAP/main/map.zip",
                 'unzip_path': "map",
                 'keep_folder': [],
                 'keep_file': [],
@@ -75,7 +75,7 @@ class SRA:
                 'skip_verify': False,
                 'type': "picture",
                 'version': "map",
-                'url_zip': f"https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/picture.zip",
+                'url_zip': f"https://raw.githubusercontent.com/Night-stars-1/Auto_Star_Rail_MAP/main/picture.zip",
                 'unzip_path': "picture",
                 'keep_folder': [],
                 'keep_file': [],
@@ -244,10 +244,6 @@ class SRA:
             url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
             option = options[url_ms.index(questionary.select(title, url_ms).ask())]
             sra_config_obj.apigithub_proxy = option
-            title = _("请选择你的仓库来源：")
-            options = ["Starry-Wind", "Night-stars-1"]
-            option = questionary.select(title, options).ask()
-            sra_config_obj.github_source = option
             while True:
                 if sra_config_obj.picture_version == "0" or sra_config_obj.map_version == "0":
                     sra.up_data()
