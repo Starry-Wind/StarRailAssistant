@@ -38,7 +38,6 @@ class update_file:
         """
         self.page = page
         self.pb = pb
-        self.github_source = sra_config_obj.github_source
 
     async def verify_file_hash(self, json_path: Path, keep_file: Optional[List[str]] = []) -> bool:
         """
@@ -180,7 +179,6 @@ class update_file:
             try:
                 api_proxy = sra_config_obj.apigithub_proxy
                 up_url = f"{api_proxy}https://api.github.com/repos/Starry-Wind/StarRailAssistant/releases/latest" if "http" in api_proxy else f"https://api.github.com/repos/Starry-Wind/StarRailAssistant/releases/latest"
-                log.info(up_url)
                 up_reponse = await get(up_url, timeout=2)
                 up_data = up_reponse.json()
                 version: str = up_data.get("tag_name")

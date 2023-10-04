@@ -290,8 +290,6 @@ class SRAData(metaclass=SRADataMeta):
     """切换队伍的队伍编号"""
     stop: bool = False
     """是否停止"""
-    github_source: str = "Night-stars-1"
-    """github仓库源"""
 
     def __init__(self) -> None:
         ...
