@@ -399,7 +399,7 @@ class calculated(CV_Tools):
         time.sleep(0.1)
         if self.has_red((4, 7, 10, 19)):
             while True:
-                result = self.get_pix_rgb(pos=(1337, 62))
+                result = self.get_pix_rgb(pos=(40, 62))
                 log.debug(f"进入战斗取色: {result}")
                 if self.compare_lists([0, 0, 222], result) and self.compare_lists(result, [0, 0, 255]):
                     self.click()
@@ -412,7 +412,7 @@ class calculated(CV_Tools):
             self.wait_fight_end()
             return True
         time.sleep(0.2)
-        result = self.get_pix_rgb(pos=(1337, 62))
+        result = self.get_pix_rgb(pos=(40, 62))
         log.debug(f"进入战斗取色: {result}")
         if not (self.compare_lists([0, 0, 225], result) and self.compare_lists(result, [0, 0, 255])):
             self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
@@ -761,7 +761,7 @@ class calculated(CV_Tools):
                 return endtime
             '''
             endtime = time.time() - start_time
-            result = self.get_pix_rgb(pos=(1337, 62))
+            result = self.get_pix_rgb(pos=(40, 62))
             log.debug(result)
             if self.compare_lists([0, 0, 222], result):
                 log.info(_("已进入地图"))
