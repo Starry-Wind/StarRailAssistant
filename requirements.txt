@@ -28,3 +28,5 @@ flet
 cryptography
 pluggy
 httpcore
+pprint
+jsonschema
