@@ -6,14 +6,13 @@ from .calculated import *
 from .config import read_json_file, modify_json_file, RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, _
 from .exceptions import Exception, RelicOCRException
 from .log import log
-from .adb import ADB
-pp = pprint.PrettyPrinter(indent=0, width=40, sort_dicts=False)
+pp = pprint.PrettyPrinter(indent=1, width=40, sort_dicts=False)
 
 class Relic:
-    def __init__(self, title=_("崩坏：星穹铁道"), platform=_("PC"), order="127.0.0.1:62001", adb_path="temp\\adb\\adb"):
-        self.platform = platform
-        self.adb = ADB(order, adb_path)
-        self.calculated = Calculated(title, platform, order, adb_path)
+    def __init__(self, title=_("崩坏：星穹铁道")):
+        if sra_config_obj.language != "zh_CN":
+            raise Exception(_("暂不支持简体中文之外的语言"))
+        self.calculated = calculated(title)
 
         # 部位，已经按页面顺序排序
         self.equip_set_name = [_("头部"), _("手部"), _("躯干"), _("脚部"), _("位面球"), _("连结绳")
