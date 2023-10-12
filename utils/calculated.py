@@ -14,6 +14,8 @@ import cv2 as cv
 import numpy as np
 import pywinctl as pwc  # 跨平台支持
 import win32api
+import hashlib
+import pprint
 from cnocr import CnOcr
 from PIL import Image, ImageGrab
 from pynput import mouse
@@ -54,7 +56,9 @@ class calculated(CV_Tools):
                 dir = sys._MEIPASS
             else:
                 dir = Path()
-            self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name, rec_vocab_fp="model/cnocr/label_cn.txt", det_root=os.path.join(dir, "model/cnstd"), rec_root=os.path.join(dir, "model/cnocr")) if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnstd", rec_root="./model/cnocr", cand_alphabet='0123456789')
+            det_root, rec_root = os.path.join(dir, "model/cnstd"), os.path.join(dir, "model/cnocr")
+            self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name, rec_vocab_fp="model/cnocr/label_cn.txt", det_root=det_root, rec_root=rec_root) if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnstd", rec_root="./model/cnocr", cand_alphabet='0123456789')
+            self.number_ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name, det_root=det_root, rec_root=rec_root, cand_alphabet='0123456789.+%')
             #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
         self.check_list = lambda x,y: re.match(x, str(y)) != None
         self.compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
@@ -69,7 +73,28 @@ class calculated(CV_Tools):
 
         self.end_list = ["Tab", _("轮盘"), _("唤起鼠标"), _("手机"), _("退出")]
 
-    def click(self, points = None):
+    def rp2ap(self, points):
+        """
+        说明:
+            相对坐标转绝对坐标
+        参数：
+            :param points: 百分比坐标
+        """      
+        borderless = sra_config_obj.borderless
+        left_border = sra_config_obj.left_border
+        up_border = sra_config_obj.up_border
+        #points = (points[0]*1.5/scaling,points[1]*1.5/scaling,points[2]*1.5/scaling,points[3]*1.5/scaling)
+        if borderless:
+            left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
+        else:
+            left, top, right, bottom = self.window.left+left_border, self.window.top+up_border, self.window.right-left_border, self.window.bottom-left_border
+        # log.info(f"{left}, {top}, {right}, {bottom}")
+        x, y = int(left + (right - left) / 100 * points[0]), \
+                int(top + (bottom - top) / 100 * points[1])
+        log.debug((x, y))
+        return (x, y)
+
+    def click(self, points = None, click_time=0.5):
         """
         说明：
             点击坐标
@@ -81,7 +106,7 @@ class calculated(CV_Tools):
         x, y = int(points[0]), int(points[1])
         self.mouse.position = (x, y)
         self.mouse.press(mouse.Button.left)
-        time.sleep(0.5)
+        time.sleep(click_time)
         self.mouse.release(mouse.Button.left)
 
     def appoint_click(self, points, appoint_points, hsv = [18, 18, 18]):
@@ -116,14 +141,7 @@ class calculated(CV_Tools):
         参数：
             :param points: 百分比坐标
         """
-        left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
-        x, y = int(left + (right - left) / 100 * points[0]), \
-                int(top + (bottom - top) / 100 * points[1])
-        log.debug((x, y))
-        self.mouse.position = (x, y)
-        self.mouse.press(mouse.Button.left)
-        time.sleep(click_time)
-        self.mouse.release(mouse.Button.left)
+        return self.click(self.rp2ap(points), click_time)
 
     def img_click(self, points):
         """
@@ -191,6 +209,34 @@ class calculated(CV_Tools):
             log.info(_('点击坐标{ret}').format(ret=ret))
             self.click(ret)
             return True
+        
+    def swipe(self, pos1, pos2, time_=1):
+        """
+        说明:
+            滑动屏幕
+            相较scroll方法，提高精度与可控性
+            (注意此方法在部分场景中，页面会有滑动惯性造成的动态延迟)
+        参数:
+            :param pos1: 坐标1
+            :param pos2: 坐标2
+            :param time_: 操作时间
+        """
+        import pyautogui
+        pyautogui.moveTo(pos1[0], pos1[1])
+        pyautogui.mouseDown()
+        pyautogui.moveTo(pos2[0], pos2[1], duration=time_)
+        pyautogui.mouseUp()
+
+    def relative_swipe(self, pos1, pos2, time_=1):
+        """
+        说明:
+            相对坐标滑动屏幕
+        参数:
+            :param pos1: 相对坐标1
+            :param pos2: 相对坐标2
+            :param time_: 操作时间
+        """
+        self.swipe(self.rp2ap(pos1), self.rp2ap(pos2), time_)
 
     def remove_non_white_pixels(self, image):
         """
@@ -376,11 +422,7 @@ class calculated(CV_Tools):
                     if move_num%3 == 0 and move_num != 0:
                         self.relative_click(next(level_iter))
                         time.sleep(0.2)
-                    import pyautogui
-                    pyautogui.moveTo(start_x, start_y)
-                    pyautogui.mouseDown()
-                    pyautogui.moveTo(start_x, start_y+next(distance_iter), duration=1)
-                    pyautogui.mouseUp()
+                    self.swipe((start_x, start_y), (start_x, start_y+next(distance_iter)), 1)
                     move_num+=1
                 if ((time.time() - start_time > 15  and "point" not in temp_name) \
                     or (time.time() - start_time > 30  and "point" in temp_name)): #防止卡死.重启线程
@@ -573,7 +615,7 @@ class calculated(CV_Tools):
         #img_fp = self.take_screenshot(points)
         #out = self.ocr.ocr(img_fp)
         #data = {i['text']: i['position'] for i in out}
-        data = self.part_ocr_other(points)
+        data = self.part_ocr(points)
         log.debug(data)
         if not characters:
             characters = list(data.keys())[0]
@@ -583,26 +625,30 @@ class calculated(CV_Tools):
         pos = data[characters] if characters in data else None
         return characters, pos
 
-    def part_ocr(self,points = (0,0,0,0), debug=False, only_white=False):
+    def ocr_pos_for_singleLine(self, characters_list:list[str] = None, points = (0,0,0,0), number = False, debug = False, img_pk:tuple = None) -> Union[int, str]:
         """
         说明：
-            返回图片文字和坐标(相对于图片的坐标)
+            获取指定坐标的单行文字
         参数：
+            :param characters_list: 预选文字列表
             :param points: 图像截取范围
-        返回:
-            :return data: 文字: 坐标(相对于图片的坐标)
+            :param img_pk: 图像数据包，由take_screenshot函数返回
+            :param number: 设置OCR字符集为 '0123456789.+%'
+        返回：
+            :return index: 预选文字列表索引
+            :return data: 文字
         """
-        img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
-        if only_white:
-            img_fp = self.remove_non_white_pixels(img_fp)
-        if debug:
-            show_img(img_fp)
-            #cv.imwrite("H://xqtd//xl//test.png",img_fp)
-        x, y = width/100*points[0], length/100*points[1]
-        out = self.ocr.ocr(img_fp)
-        data = {i['text'].replace(" ", ""): (int(left+x+(i['position'][2][0]+i['position'][0][0])/2),int(top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
-        log.debug(data)
-        return data
+        data = self.part_ocr(points, debug, number=number, img_pk=img_pk, is_single_line=True)
+        if len(data) == 0:  # 字符串长度为零
+            return None
+        if not characters_list:
+            return data   # 常用于返回单行数字
+        # 在预选列表寻找第一个匹配项
+        for index, characters in enumerate(characters_list):
+            if re.match(f'.*{characters}.*', data):
+                return index
+        log.error(f"OCR失败，所识别的 '{data}' 不在指定预选项{characters_list}中")
+        return -1
 
     def read_img(self, path, prefix='./picture/pc/'):
         """
@@ -615,26 +661,47 @@ class calculated(CV_Tools):
         """
         return cv.imread(f'{prefix}{path}')
 
-    def part_ocr_other(self,points = (0,0,0,0), debug=False, left=False):
+    def part_ocr(self, points = (0,0,0,0), debug=False, left=False, number = False, img_pk:tuple = None, is_single_line = False, only_white=False
+                       ) -> Union[str, dict[str, tuple[int, int]]]:
         """
         说明：
             返回图片文字和坐标(相对于桌面的坐标)
         参数：
             :param points: 图像截取范围
             :param left: 是否返回左上角坐标
+            :param number: 设置OCR字符集为 '0123456789.+%'
+            :param img_pk: 图像数据包，由take_screenshot函数返回
+            :param is_single_line: 是否仅识别单行文字
         返回:
             :return data: 文字: 坐标(相对于桌面的坐标)
         """
-        img_fp, game_left, game_top, _, _, width, length = self.take_screenshot(points)
-        if debug:
-            show_img(img_fp)
-        x, y = width/100*points[0], length/100*points[1]
-        out = self.ocr.ocr(img_fp)
-        if left:
-            data = {i['text'].replace(" ", ""): (int(game_left+x+i['position'][0][0]), int(game_top+y+i['position'][0][1])) for i in out}
+        if img_pk:  # 支持对一次结果的多次OCR
+            img_fp, game_left, game_top, __, __, width, length = img_pk   # 此时由take_screenshot返回的图片已消除窗口位置、窗口边框的影响
+            if points != (0,0,0,0):
+                # 通过切片对图片裁剪，shape(img)=(length, width, channal)
+                img_fp = img_fp[int(length/100*points[1]):int(length/100*points[3]),
+                                int(width/100*points[0]):int(width/100*points[2]), :] 
         else:
-            data = {i['text'].replace(" ", ""): (int(game_left+x+(i['position'][2][0]+i['position'][0][0])/2),int(game_top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
-        log.debug(data)
+            img_fp, game_left, game_top, _, _, width, length = self.take_screenshot(points)
+        if only_white:
+            img_fp = self.remove_non_white_pixels(img_fp)
+        x, y = width/100*points[0], length/100*points[1]
+        if is_single_line:
+            out = self.number_ocr.ocr_for_single_line(img_fp) if number else self.ocr.ocr_for_single_line(img_fp)
+            data = out['text']
+        else:
+            out = self.ocr.ocr(img_fp) if number else self.ocr.ocr(img_fp)
+            if left:
+                data = {i['text'].replace(" ", ""): (int(game_left+x+i['position'][0][0]), int(game_top+y+i['position'][0][1])) for i in out}
+            else:
+                data = {i['text'].replace(" ", ""): (int(game_left+x+(i['position'][2][0]+i['position'][0][0])/2),int(game_top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
+        if debug:
+            log.info(data)
+            # show_img(img_fp)
+            timestamp_str = str(int(datetime.timestamp(datetime.now())))
+            cv.imwrite(f"log/image/relic_{str(points)}_{timestamp_str}.png", img_fp)
+        else:
+            log.debug(data)
         return data
 
     def get_pix_r(self, desktop_pos: Union[tuple, None]=None, pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
@@ -893,3 +960,13 @@ class calculated(CV_Tools):
             return True
         else:
             return False
+
+    def get_data_hash(self, data) -> str:
+        """
+        说明：
+            求任意类型数据 (包括list和dict) 的哈希值
+            首先将数据规范化输出为str，再计算md5转16进制
+        """
+        # pprint默认sort_dicts=True，对键值进行排序，以确保字典类型数据的唯一性
+        return hashlib.md5(pprint.pformat(data).encode('utf-8')).hexdigest()
+    
