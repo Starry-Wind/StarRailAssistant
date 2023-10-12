@@ -7,7 +7,6 @@ from .config import read_json_file, modify_json_file, RELIC_FILE_NAME, LOADOUT_F
 from .exceptions import Exception, RelicOCRException
 from .log import log
 pp = pprint.PrettyPrinter(indent=1, width=40, sort_dicts=False)
-IS_PC = True   # paltform flag (同时保存了模拟器与PC的识别位点)
 
 class Relic:
     def __init__(self, title=_("崩坏：星穹铁道")):
@@ -197,14 +196,14 @@ class Relic:
             return
         relic_hash = character_data[option]
         # 进行配装
-        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器，进入[人物]-[遗器]界面
+        self.calculated.relative_click((16,48))  # 点击遗器
         time.sleep(0.5)
-        self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[人物]-[遗器]-[遗器详情]界面
-        time.sleep(2)
-        self.calculated.relative_click((82,12) if IS_PC else (78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
+        self.calculated.relative_click((36,21))  # 点击头部遗器，进入[人物]-[遗器]界面
+        time.sleep(1)
+        self.calculated.relative_click((78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
         time.sleep(1)
         self.equip_loadout(relic_hash)
-        self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器]界面，返回[人物]界面
+        self.calculated.relative_click((96,5))   # 退出[遗器]界面，返回[人物]界面
         time.sleep(1)
 
     def equip_loadout(self, relics_hash:list[str]):
@@ -215,7 +214,7 @@ class Relic:
         参数：
             :param relics_hash: 遗器配装哈希值列表
         """
-        equip_pos = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
+        equip_pos = [(5,14), (11,14), (17,14), (23,14), (28,14), (34,14)]
         pre_relic_set_index = -1
         for equip_indx in range(6):   # 遗器部位循环
             # 选择部位
@@ -229,18 +228,18 @@ class Relic:
             relic_set_index = np.where(self.relic_set_name[:, -1] == tmp_data["relic_set"])[0][0]
             if pre_relic_set_index != relic_set_index:  # 判断与先前套装发生变化
                 log.info(_("筛选遗器套装"))
-                self.calculated.relative_click((3,92) if IS_PC else (4,92))  # 点击筛选图标
+                self.calculated.relative_click((4,92))  # 点击筛选图标
                 time.sleep(0.5)
                 ... # 筛选稀有度
-                self.calculated.relative_click((93,20) if IS_PC else (92,23))  # 点击套装选择
+                self.calculated.relative_click((92,23))  # 点击套装选择
                 time.sleep(0.5)
-                self.calculated.relative_click((40,70) if IS_PC else (37,76))  # 清除之前的筛选项
+                self.calculated.relative_click((37,76))  # 清除之前的筛选项
                 # 搜索遗器套装名，并点击
                 self.search_relic_set_for_filter(relic_set_index)
                 time.sleep(0.2)
-                self.calculated.relative_click((62,70) if IS_PC else (64,76))  # 点击确认
+                self.calculated.relative_click((64,76))  # 点击确认
                 time.sleep(0.5)
-                self.calculated.relative_click((3,92) if IS_PC else (4,92))  # 筛选框外任意点击退出筛选
+                self.calculated.relative_click((4,92))  # 筛选框外任意点击退出筛选
                 pre_relic_set_index = relic_set_index
             # 搜索遗器
             pos = self.search_relic(equip_indx, key_hash=tmp_hash) # , key_data=tmp_data)
@@ -249,15 +248,15 @@ class Relic:
                 continue
             # 点击装备
             self.calculated.relative_click(pos)
-            button = self.calculated.ocr_pos_for_singleLine([_("装备"), _("替换"), _("卸下")], points=(80,90,85,94) if IS_PC else (75,90,82,95))  # 需识别[装备,替换,卸下]
+            button = self.calculated.ocr_pos_for_singleLine([_("装备"), _("替换"), _("卸下")], (75,90,82,95))  # 需识别[装备,替换,卸下]
             if button in [0,1]:
                 log.info(_("点击装备"))
-                self.calculated.relative_click((82,92) if IS_PC else (78,92))
+                self.calculated.relative_click((78,92))
                 time.sleep(0.5)
-                __, pos_ = self.calculated.ocr_pos(_("提示"), (46,36,54,41) if IS_PC else (46,33,55,38))
+                __, pos_ = self.calculated.ocr_pos(_("提示"), (46,33,55,38))
                 if pos_:
                     log.info(_("确认替换"))
-                    self.calculated.relative_click((62,62) if IS_PC else (64,65))
+                    self.calculated.relative_click((64,65))
                     time.sleep(0.5)
             elif button == 2:
                 log.info(_("已装备"))
@@ -276,14 +275,14 @@ class Relic:
             保存当前[人物]界面本人物的遗器配装
         """
         character_name = self.ocr_character_name()  # 识别当前人物名称
-        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器
+        self.calculated.relative_click((16,48))  # 点击遗器
         time.sleep(1)
-        self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[人物]-[遗器]界面
+        self.calculated.relative_click((36,21))  # 点击头部遗器，进入[人物]-[遗器]界面
         time.sleep(2)
-        self.calculated.relative_click((82,12) if IS_PC else (78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
+        self.calculated.relative_click((78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
         time.sleep(1)
         self.save_loadout(character_name)
-        self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器]界面，返回[人物]界面
+        self.calculated.relative_click((96,5))   # 退出[遗器]界面，返回[人物]界面
         time.sleep(2)
 
     def save_loadout(self, character_name:str=None, max_retries=3):
@@ -293,7 +292,7 @@ class Relic:
         """
         character_name = character_name if character_name else self.ocr_character_name()
         character_data = self.loadout_data[character_name]
-        equip_pos = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14), (11,14), (17,14), (23,14), (28,14), (34,14)]
+        equip_pos = [(5,14), (11,14), (17,14), (23,14), (28,14), (34,14)]
         relics_hash = []
         for equip_indx in range(6):   # 遗器部位循环
             log.info(_(f"选择部位：{self.equip_set_name[equip_indx]}"))
@@ -331,11 +330,11 @@ class Relic:
         # 滑动翻页
         for i in range(page_num):
             time.sleep(0.2)
-            self.calculated.relative_swipe((30,60) if IS_PC else (30,62), (30,31) if IS_PC else (30,27)) # 整页翻动 (此界面的动态延迟较大)
+            self.calculated.relative_swipe((30,62), (30,27)) # 整页翻动 (次界面的动态延迟较大)
             if i != last_page:  # 非末页，将翻页的动态延迟暂停 (末页会有个短暂反弹动画后自动停止)
-                self.calculated.relative_click((35,35) if IS_PC else (35,32), 0.5)   # 长按选中
-                self.calculated.relative_click((35,35) if IS_PC else (35,32))        # 取消选中
-        points = ((28,33,42,63) if is_left else (53,33,67,63)) if IS_PC else ((22,29,41,65) if is_left else (53,29,72,65))
+                self.calculated.relative_swipe((35,32),(35,32), 0.5)   # 长按选中
+                self.calculated.relative_click((35,32))   # 取消选中
+        points = (22,29,41,65) if is_left else (53,29,72,65)
         self.calculated.ocr_click(self.relic_set_name[relic_set_index, 1], points=points)
 
     def search_relic(self, equip_indx:int, key_hash:str=None, key_data:dict=None, overtime=180, max_retries=3) -> tuple[int, int]:
@@ -353,8 +352,8 @@ class Relic:
         返回:
             :return pos: 坐标
         """
-        pos_start = (5,24) if IS_PC else (7, 28)
-        d_x, d_y, k_x, k_y = (7, 14, 4, 5) if IS_PC else (8, 17, 4, 4)
+        pos_start = (7, 28)
+        d_x, d_y, k_x, k_y = (8, 17, 4, 4)
         pre_pos = [""]
         start_time = time.time()
         while True:
@@ -438,7 +437,7 @@ class Relic:
         返回：
             :return character_name: 人物名称
         """
-        str = self.calculated.ocr_pos_for_singleLine(points=(10,6,18,9) if IS_PC else (13,4,22,9))   # 识别人物名称 (主角名称为玩家自定义，无法适用预选列表)
+        str = self.calculated.ocr_pos_for_singleLine(points=(13,4,22,9))   # 识别人物名称 (主角名称为玩家自定义，无法适用预选列表)
         character_name = re.sub(r"[.’,，。、·'\"/\\]", '', str)   # 删除由于背景光点造成的误判
         log.info(_(f"识别人物: {character_name}"))
         if character_name not in self.loadout_data:
@@ -482,13 +481,13 @@ class Relic:
         img_pc = self.calculated.take_screenshot()  # 仅截取一次图片
         # [1]部位识别
         if equip_set_index is None:
-            equip_set_index = self.calculated.ocr_pos_for_singleLine(self.equip_set_name, points=(77,19,83,23) if IS_PC else (71,22,78,26), img_pk=img_pc)
+            equip_set_index = self.calculated.ocr_pos_for_singleLine(self.equip_set_name, points=(71,22,78,26), img_pk=img_pc)
             if equip_set_index < 0:
                 raise RelicOCRException(_("遗器套装OCR错误"))
         equip_set_name = self.equip_set_name[equip_set_index]
         # [2]套装识别
         name_list = self.relic_set_name[:, 0].tolist()
-        relic_set_index = self.calculated.ocr_pos_for_singleLine(name_list, points=(77,15,92,19) if IS_PC else (71,17,88,21), img_pk=img_pc)
+        relic_set_index = self.calculated.ocr_pos_for_singleLine(name_list, points=(71,17,88,21), img_pk=img_pc)
         if relic_set_index < 0: 
             raise RelicOCRException(_("遗器部位OCR错误"))
         relic_set_name = self.relic_set_name[relic_set_index, -1]
@@ -497,14 +496,14 @@ class Relic:
         rarity = 5   # 目前只支持5星遗器，默认5星
         ...
         # [4]等级识别
-        level = self.calculated.ocr_pos_for_singleLine(points=(95,19,98,23) if IS_PC else (94,22,98,26), number=True, img_pk=img_pc)
+        level = self.calculated.ocr_pos_for_singleLine(points=(94,22,98,26), number=True, img_pk=img_pc)
         level = int(level.split('+')[-1])  # 消除开头可能的'+'号
         if level > 15:
             raise RelicOCRException(_("遗器等级OCR错误"))
         # [5]主属性识别
         name_list = self.base_stats_name4equip[equip_set_index][:, 0].tolist()
-        base_stats_index = self.calculated.ocr_pos_for_singleLine(name_list, points=(79,25,92,29) if IS_PC else (74,29,89,34), img_pk=img_pc)
-        base_stats_value = self.calculated.ocr_pos_for_singleLine(points=(93,25,98,29) if IS_PC else (91,29,98,34), number=True, img_pk=img_pc)
+        base_stats_index = self.calculated.ocr_pos_for_singleLine(name_list, points=(74,29,89,34), img_pk=img_pc)
+        base_stats_value = self.calculated.ocr_pos_for_singleLine(points=(91,29,98,34), number=True, img_pk=img_pc)
         if base_stats_index < 0: 
             raise RelicOCRException(_("遗器主词条OCR错误"))
         if base_stats_value is None:
@@ -517,8 +516,8 @@ class Relic:
             base_stats_value = float(base_stats_value)
         base_stats_name = str(self.base_stats_name4equip[equip_set_index][base_stats_index, -1])
         # [6]副属性识别 (词条数量 2-4)
-        subs_stats_name_points =  [(79,29,85,33),(79,33,85,36.5),(79,36.5,85,40),(79,40,85,44)] if IS_PC else [(74,35,81,38),(74,39,81,43),(74,44,81,47),(74,48,81,52)]
-        subs_stats_value_points = [(93,29,98,33),(93,33,98,36.5),(93,36.5,98,40),(93,40,98,44)] if IS_PC else [(92,35,98,38),(92,39,98,43),(92,44,98,47),(92,48,98,52)]
+        subs_stats_name_points = [(74,35,81,38),(74,39,81,43),(74,44,81,47),(74,48,81,52)]
+        subs_stats_value_points = [(92,35,98,38),(92,39,98,43),(92,44,98,47),(92,48,98,52)]
         name_list = self.subs_stats_name[:, 0].tolist()
         subs_stats_dict = {}
         total_level = 0
