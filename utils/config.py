@@ -320,6 +320,13 @@ class SRAData(metaclass=SRADataMeta):
     """切换队伍的队伍编号"""
     stop: bool = False
     """是否停止"""
+    fuzzy_match_for_relic: bool = True
+    """是否在遗器搜索时开启模糊匹配"""
+    check_for_relic: bool = True
+    """是否在遗器OCR时开启对副词条的数据验证"""
+    detail_for_relic: bool = True
+    """是否在打印遗器信息时显示拓展信息"""
+
 
     def __init__(self) -> None:
         ...

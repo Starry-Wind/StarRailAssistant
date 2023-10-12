@@ -3,7 +3,7 @@ import pprint
 import questionary
 import numpy as np
 from .calculated import *
-from .config import read_json_file, modify_json_file, RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, _
+from .config import read_json_file, modify_json_file, RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, _, sra_config_obj
 from .exceptions import Exception, RelicOCRException
 from .log import log
 pp = pprint.PrettyPrinter(indent=1, width=40, sort_dicts=False)
@@ -132,10 +132,9 @@ class Relic:
         self.team_data = read_json_file(TEAM_FILE_NAME, schema=self.team_schema)
         log.info(_("遗器数据载入完成"))
 
-        self.is_fuzzy_match = True   # 在搜索时开启遗器数据模糊匹配
-        self.is_check = True   # 是否对副词条数据进行校验 (关闭后，可临时使程序能够识别五星以下遗器，同时会将数据增强强制关闭)
-        self.is_detail = True  # 在打印遗器信息时进行数据增强，显示拓展信息
-        self.is_detail = self.is_detail if self.is_check else False
+        self.is_fuzzy_match = sra_config_obj.fuzzy_match_for_relic   # 是否在遗器搜索时开启模糊匹配
+        self.is_check = sra_config_obj.check_for_relic               # 是否在遗器OCR时开启对副词条的数据验证 (关闭后，可临时使程序能够识别五星以下遗器，同时会将is_detail强制关闭)
+        self.is_detail = sra_config_obj.detail_for_relic and self.is_check     # 是否在打印遗器信息时显示拓展信息 (如各副词条的强化次数、挡位积分，以及提高原数据的小数精度)
 
     def relic_entrance(self):
         """
