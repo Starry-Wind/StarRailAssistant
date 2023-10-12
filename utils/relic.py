@@ -625,8 +625,8 @@ class Relic:
         check = result - value
         log.debug(f"[{a}, {d}], l={level}, s={score}, r={result}")
         if check < 0 or \
-            name in self.not_pre_stats and check > 1 or \
-            name not in self.not_pre_stats and check > 0.1 or \
+            name in self.not_pre_stats and check >= 1 or \
+            name not in self.not_pre_stats and check >= 0.1 or \
             level > 6 or level < 1 or \
             score > level*2 or score < 0:
             log.error(_(f"校验失败，原数据或计算方法有误: {data}"))
