@@ -15,7 +15,7 @@
 
 <h1 align="center">
 
-StarRailAssistan
+StarRailAssistant
 
 ⚠️本项目不会在`咸鱼`、`淘宝`、`拼多多`等平台售卖，发现售卖请帮忙举报。⚠️
 

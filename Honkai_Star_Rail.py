@@ -29,6 +29,7 @@ from utils.commission import Commission
 from utils.calculated import calculated
 from utils.exceptions import Exception
 from utils.map import Map as map_word
+from utils.relic import Relic
 from utils.requests import *
 
 game_title = _("崩坏：星穹铁道")
@@ -43,8 +44,10 @@ class SRA:
         self.option_dict = {
             _('大世界'): "",
             _('派遣委托'): "",
+            _('遗器模块'): "",
             _('更新资源'): "",
-            _('编辑配置'): ""
+            _('编辑配置'): "",
+            _('退出脚本'): ""
         }
         self.updata_dict = {
             _("脚本"):{
@@ -279,11 +282,13 @@ class SRA:
                 need_updata.append(name)
         return need_updata
 
-    def main(self, option:str=_('大世界'),start: str=None,role_list: str=None):
+    def main(self, option:str=_('大世界'),start: str=None,role_list: str=None) -> bool:
         """
         参数:
             :param start: 起始地图编号
             :param role_list: 提示
+        返回：
+            :return ret: 是否回到主菜单
         """
         if option in self.option_list:
             (start, role_list) = self.choose_map(option) if not start else (start, role_list)
@@ -305,6 +310,10 @@ class SRA:
                 elif option == _("派遣委托"):
                     commission = Commission(4, game_title)
                     commission.start()  # 读取配置
+                elif option == _("遗器模块"):
+                    relic = Relic(game_title)
+                    relic.relic_entrance()
+                    return True
             else:
                 raise Exception(role_list)
         else:
@@ -317,6 +326,7 @@ class SRA:
             log.info(_("开始运行，请勿移动鼠标和键盘"))
             log.info(_("若脚本运行无反应,请使用管理员权限运行"))
             self.option_dict[option]()
+        return False
 
 if __name__ == "__main__":
     join_time = read_json_file(CONFIG_FILE_NAME).get("join_time", {})
@@ -348,7 +358,9 @@ if __name__ == "__main__":
                     ...
                 else:
                     if option:
-                        sra.main(option)
+                        is_loop = sra.main(option)
+                        if is_loop:
+                            select()
                     else:
                         if questionary.select(_("请问要退出脚本吗？"), [_("退出"), _("返回主菜单")]).ask() == _("返回主菜单"):
                             select()
