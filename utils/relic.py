@@ -131,35 +131,6 @@ class Relic:
         log.info(_("遗器数据载入完成"))
 
         self.is_detail = True  # 在打印遗器信息时，显示拓展信息
-
-    def relic_entrance(self):
-        """
-        说明：
-            遗器模块入口
-            已完成功能：
-                1.识别遗器数据 (可打印增强信息)
-                2.保存人物配装
-                3.读取人物配装并装备 (遗器将强制替换)
-            待开发功能：
-                1.保存队伍配装
-                2.读取队伍配装并装备
-                3.遗器管理与配装管理
-                ...
-        """
-        option = _("保存人物配装")  # 保存上一次的选择
-        while True:
-            title = _("遗器：")
-            options = [_("保存人物配装"), _("装备人物配装"), _("识别当前遗器"), _("返回上一级")]
-            option = questionary.select(title, options, default=option).ask()
-            if option == _("保存人物配装"):
-                self.save_loadout_for_char()
-            elif option == _("装备人物配装"):
-                self.equip_loadout_for_char()
-            elif option == _("识别当前遗器"):
-                data = self.try_ocr_relic()
-                self.print_relic(data)
-            elif option == _("返回上一级"):
-                break
     
     def equip_loadout_for_team(self):
         """
@@ -189,7 +160,7 @@ class Relic:
         time.sleep(0.5)
         self.calculated.relative_click((36,21))  # 点击头部遗器，进入[人物]-[遗器]界面
         time.sleep(1)
-        self.calculated.relative_click((78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
+        self.calculated.relative_click((78,12))       # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
         time.sleep(1)
         self.equip_loadout(relic_hash)
         self.calculated.relative_click((96,5))   # 退出[遗器]界面，返回[人物]界面
@@ -267,7 +238,7 @@ class Relic:
         time.sleep(1)
         self.calculated.relative_click((36,21))  # 点击头部遗器，进入[人物]-[遗器]界面
         time.sleep(2)
-        self.calculated.relative_click((78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
+        self.calculated.relative_click((78,12))       # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
         time.sleep(1)
         self.save_loadout(character_name)
         self.calculated.relative_click((96,5))   # 退出[遗器]界面，返回[人物]界面
@@ -286,7 +257,16 @@ class Relic:
             log.info(_(f"选择部位：{self.equip_set_name[equip_indx]}"))
             self.calculated.relative_click(equip_pos[equip_indx])
             time.sleep(1)
-            tmp_data = self.try_ocr_relic(equip_indx, max_retries)
+            retry = 0
+            while True:  # 视作偶发错误进行重试
+                try:  
+                    tmp_data = self.ocr_relic(equip_indx)
+                    break
+                except: 
+                    if retry >= max_retries:
+                        raise Exception(_("重试次数达到上限"))
+                    retry += 1
+                    log.info(_(f"第 {retry} 次尝试重新OCR"))
             tmp_hash = self.calculated.get_data_hash(tmp_data)
             log.debug("\n"+pp.pformat(tmp_data))
             self.print_relic(tmp_data)
@@ -352,7 +332,16 @@ class Relic:
                     self.calculated.relative_click((x, y))   # 点击遗器，同时将翻页的动态延迟暂停
                     time.sleep(0.2)
                     log.info(f"({i+1},{j+1},{len(pre_pos)})")  # 显示当前所识别遗器的方位与序列号
-                    tmp_data = self.try_ocr_relic(equip_indx, max_retries)
+                    retry = 0
+                    while True:  # 视作偶发错误进行重试
+                        try:  
+                            tmp_data = self.ocr_relic(equip_indx)
+                            break
+                        except: 
+                            if retry >= max_retries:
+                                raise Exception(_("重试次数达到上限"))
+                            retry += 1
+                            log.info(_(f"第 {retry} 次尝试重新OCR"))
                     # log.info("\n"+pp.pformat(tmp_data))
                     tmp_hash = self.calculated.get_data_hash(tmp_data)
                     if key_hash and key_hash == tmp_hash:  # 精确搜索
@@ -425,26 +414,6 @@ class Relic:
             self.loadout_data = modify_json_file(LOADOUT_FILE_NAME, character_name, {})
             log.info(_("创建新人物"))
         return character_name
-    
-    def try_ocr_relic(self, equip_set_index:int = None, max_retries = 3) -> dict:
-        """
-        说明：
-            在规定次数内尝试OCR遗器数据
-        参数：
-            :param equip_set_index: 遗器部位索引
-            :param max_retries: 重试次数
-        返回：
-            :return result_data: 遗器数据包
-        """
-        while True:  # 视作偶发错误进行重试
-            try:  
-                data = self.ocr_relic(equip_set_index)
-                return data
-            except: 
-                if retry >= max_retries:
-                    raise Exception(_("重试次数达到上限"))
-                retry += 1
-                log.info(_(f"第 {retry} 次尝试重新OCR"))
         
     def ocr_relic(self, equip_set_index:int = None) -> dict:
         """
