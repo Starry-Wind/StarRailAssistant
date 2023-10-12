@@ -156,17 +156,17 @@ class Relic:
         """
         option = _("保存人物配装")  # 保存上一次的选择
         while True:
-            title = _("遗器：")
-            options = [_("保存人物配装"), _("装备人物配装"), _("识别当前遗器"), _("返回上一级")]
+            title = _("遗器模块：")
+            options = [_("保存当前人物的配装"), _("读取当前人物的配装"), _("识别当前遗器的数据"), _("返回主菜单")]
             option = questionary.select(title, options, default=option).ask()
-            if option == _("保存人物配装"):
+            if option == _("保存当前人物的配装"):
                 self.save_loadout_for_char()
-            elif option == _("装备人物配装"):
+            elif option == _("读取当前人物的配装"):
                 self.equip_loadout_for_char()
-            elif option == _("识别当前遗器"):
+            elif option == _("识别当前遗器的数据"):
                 data = self.try_ocr_relic()
                 self.print_relic(data)
-            elif option == _("返回上一级"):
+            elif option == _("返回主菜单"):
                 break
     
     def equip_loadout_for_team(self):
@@ -188,9 +188,12 @@ class Relic:
         if not character_data:  # 字典为空
             log.info(_("当前人物配装记录为空"))
             return
-        title = _("请选配装：")
+        title = _("请选择将要进行装备的配装：")
         options = list(character_data.keys())
+        options.append(_("返回上一级"))
         option = questionary.select(title, options).ask()
+        if option == _("返回上一级"):
+            return
         relic_hash = character_data[option]
         # 进行配装
         self.calculated.relative_click((16,48))  # 点击遗器
