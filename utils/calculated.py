@@ -607,7 +607,7 @@ class calculated(CV_Tools):
         #img_fp = self.take_screenshot(points)
         #out = self.ocr.ocr(img_fp)
         #data = {i['text']: i['position'] for i in out}
-        data = self.part_ocr(points)
+        data = self.part_ocr_other(points)
         log.debug(data)
         if not characters:
             characters = list(data.keys())[0]
@@ -617,10 +617,12 @@ class calculated(CV_Tools):
         pos = data[characters] if characters in data else None
         return characters, pos
 
-    def ocr_pos_for_singleLine(self, characters_list:list[str] = None, points = (0,0,0,0), number = False, debug = False, img_pk:tuple = None) -> Union[int, str]:
+    def ocr_pos_sp(self, characters_list:list[str] = None, points = (0,0,0,0), number = False, debug = False, img_pk:tuple = None) -> Union[int, str]:
         """
         说明：
-            获取指定坐标的单行文字
+            或取指定坐标的文字
+            当characters_list为空，直接返回最长的键；
+            否则从characters_list中寻找第一个匹配的文字，返回序列索引
         参数：
             :param characters_list: 预选文字列表
             :param points: 图像截取范围
@@ -630,7 +632,7 @@ class calculated(CV_Tools):
             :return index: 预选文字列表索引
             :return data: 文字
         """
-        data = self.part_ocr(points, debug, number=number, img_pk=img_pk, is_single_line=True)
+        data = self.part_ocr_other(points, debug, number=number, img_pk=img_pk, is_single_line=True)
         if len(data) == 0:  # 字符串长度为零
             return None
         if not characters_list:
@@ -641,6 +643,27 @@ class calculated(CV_Tools):
                 return index
         log.error(f"OCR失败，所识别的 '{data}' 不在指定预选项{characters_list}中")
         return -1
+
+    def part_ocr(self,points = (0,0,0,0), debug=False, only_white=False):
+        """
+        说明：
+            返回图片文字和坐标(相对于图片的坐标)
+        参数：
+            :param points: 图像截取范围
+        返回:
+            :return data: 文字: 坐标(相对于图片的坐标)
+        """
+        img_fp, left, top, right, bottom, width, length = self.take_screenshot(points)
+        if only_white:
+            img_fp = self.remove_non_white_pixels(img_fp)
+        if debug:
+            show_img(img_fp)
+            #cv.imwrite("H://xqtd//xl//test.png",img_fp)
+        x, y = width/100*points[0], length/100*points[1]
+        out = self.ocr.ocr(img_fp)
+        data = {i['text'].replace(" ", ""): (int(left+x+(i['position'][2][0]+i['position'][0][0])/2),int(top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
+        log.debug(data)
+        return data
 
     def read_img(self, path, prefix='./picture/pc/'):
         """
@@ -653,7 +676,7 @@ class calculated(CV_Tools):
         """
         return cv.imread(f'{prefix}{path}')
 
-    def part_ocr(self,points = (0,0,0,0), debug=False, left=False, number = False, img_pk:tuple = None, is_single_line = False, only_white=False
+    def part_ocr_other(self,points = (0,0,0,0), debug=False, left=False, number = False, img_pk:tuple = None, is_single_line = False
                        ) -> Union[str, dict[str, tuple[int, int]]]:
         """
         说明：
@@ -675,8 +698,10 @@ class calculated(CV_Tools):
                                 int(width/100*points[0]):int(width/100*points[2]), :] 
         else:
             img_fp, game_left, game_top, _, _, width, length = self.take_screenshot(points)
-        if only_white:
-            img_fp = self.remove_non_white_pixels(img_fp)
+        if debug:
+            # show_img(img_fp)
+            timestamp_str = str(int(datetime.timestamp(datetime.now())))
+            cv.imwrite(f"temp/relic_{str(points)}_{timestamp_str}.png", img_fp)
         x, y = width/100*points[0], length/100*points[1]
         if is_single_line:
             out = self.number_ocr.ocr_for_single_line(img_fp) if number else self.ocr.ocr_for_single_line(img_fp)
@@ -689,9 +714,6 @@ class calculated(CV_Tools):
                 data = {i['text'].replace(" ", ""): (int(game_left+x+(i['position'][2][0]+i['position'][0][0])/2),int(game_top+y+(i['position'][2][1]+i['position'][0][1])/2)) for i in out}
         if debug:
             log.info(data)
-            # show_img(img_fp)
-            timestamp_str = str(int(datetime.timestamp(datetime.now())))
-            cv.imwrite(f"temp/relic_{str(points)}_{timestamp_str}.png", img_fp)
         else:
             log.debug(data)
         return data
