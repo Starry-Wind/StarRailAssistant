@@ -131,7 +131,6 @@ class Relic:
         self.team_data = read_json_file(TEAM_FILE_NAME, schema=self.team_schema)
         log.info(_("遗器数据载入完成"))
 
-        self.is_fuzzy_match = True   # 在搜索时开启遗器数据模糊匹配
         self.is_check = True   # 是否对副词条数据进行校验 (关闭后，可临时使程序能够识别五星以下遗器，同时会将数据增强强制关闭)
         self.is_detail = True  # 在打印遗器信息时进行数据增强，显示拓展信息
         self.is_detail = self.is_detail if self.is_check else False
@@ -143,7 +142,7 @@ class Relic:
             已完成功能：
                 1.识别遗器数据 (可打印增强信息，目前仅支持五星遗器)
                 2.保存人物配装
-                3.读取人物配装并装备 (遗器将强制替换，支持模糊匹配)
+                3.读取人物配装并装备 (遗器将强制替换)
             待开发功能：
                 1.保存队伍配装
                 2.读取队伍配装并装备
@@ -151,7 +150,6 @@ class Relic:
                 4.兼容四星遗器：
                     a. 兼容校验函数 (增加四星遗器副词条挡位数据)
                     b. 对遗器稀有度的识别 (识别指定点位色相[黄,紫])
-                5.模糊匹配成功后更新相关数据库
                 ...
         """
         option = _("保存人物配装")  # 保存上一次的选择
@@ -338,8 +336,8 @@ class Relic:
         """
         说明：
             在当前滑动[人物]-[遗器]-[遗器详情]界面内，搜索匹配的遗器。
-                key_hash非空: 激活精确匹配 (假设数据保存期间遗器未再次升级); 
-                key_data非空: 激活模糊匹配 (假设数据保存期间遗器再次升级);
+                key_hash非空: 激活精确搜索 (假设数据保存期间遗器未再次升级); 
+                key_data非空: 激活模糊搜索 (假设数据保存期间遗器再次升级);
                 key_hash & key_data均空: 遍历当前页面内的遗器
         参数：
             :param equip_indx: 遗器部位索引
@@ -364,15 +362,9 @@ class Relic:
                     tmp_data = self.try_ocr_relic(equip_indx, max_retries)
                     # log.info("\n"+pp.pformat(tmp_data))
                     tmp_hash = self.calculated.get_data_hash(tmp_data)
-                    if key_hash and key_hash == tmp_hash:  # 精确匹配
+                    if key_hash and key_hash == tmp_hash:  # 精确搜索
                         return (x, y)
-                    if key_data and self.is_fuzzy_match and self.compare_relics(key_data, tmp_data):  # 模糊匹配
-                        log.info(_("模糊匹配成功！"))
-                        print(_("旧遗器："))
-                        self.print_relic(key_data)
-                        print(_("新遗器："))
-                        self.print_relic(tmp_data)
-                        ...  # 更新数据库 (将旧有遗器数据替换，并更新遗器配装数据的哈希值)
+                    if key_data and self.compare_relics(key_data, tmp_data):  # 模糊搜索
                         return (x, y)
                     # 判断是否遍历完毕
                     if pre_pos[-1] == tmp_hash:
@@ -398,12 +390,11 @@ class Relic:
     def compare_relics(self, old_data:dict, new_data:dict) -> bool:
         """
         说明：
-            比对两者遗器数据，判断新遗器是否为旧遗器升级后
+            比对两者遗器数据，判断新遗器是否为旧遗器升级后【待验证】
         """
         # 大条件判断
         if old_data["equip_set"] != new_data["equip_set"] or old_data["relic_set"] != new_data["relic_set"] or \
-            old_data["rarity"] != new_data["rarity"] or old_data["base_stats"].keys() != new_data["base_stats"].keys() or \
-            old_data["level"] >= new_data["level"]:
+            old_data["level"] >= new_data["level"] or old_data["base_stats"].keys() != new_data["base_stats"].keys():
             return False
         # 副词条判断，判断data_old的副词条key是否全包含在data_new中，且value均小于等于它
         for key in old_data["subs_stats"].keys():
