@@ -252,7 +252,7 @@ class Relic:
                 continue
             # 点击装备
             self.calculated.relative_click(pos)
-            button = self.calculated.ocr_pos_for_singleLine([_("装备"), _("替换"), _("卸下")], points=(80,90,85,94) if IS_PC else (75,90,82,95))  # 需识别[装备,替换,卸下]
+            button = self.calculated.ocr_pos_for_single_line([_("装备"), _("替换"), _("卸下")], points=(80,90,85,94) if IS_PC else (75,90,82,95))  # 需识别[装备,替换,卸下]
             if button in [0,1]:
                 log.info(_("点击装备"))
                 self.calculated.relative_click((82,92) if IS_PC else (78,92))
@@ -441,7 +441,7 @@ class Relic:
         返回：
             :return character_name: 人物名称
         """
-        str = self.calculated.ocr_pos_for_singleLine(points=(10,6,18,9) if IS_PC else (13,4,22,9))   # 识别人物名称 (主角名称为玩家自定义，无法适用预选列表)
+        str = self.calculated.ocr_pos_for_single_line(points=(10,6,18,9) if IS_PC else (13,4,22,9))   # 识别人物名称 (主角名称为玩家自定义，无法适用预选列表)
         character_name = re.sub(r"[.’,，。、·'\"/\\]", '', str)   # 删除由于背景光点造成的误判
         log.info(_(f"识别人物: {character_name}"))
         if character_name not in self.loadout_data:
@@ -485,13 +485,13 @@ class Relic:
         img_pc = self.calculated.take_screenshot()  # 仅截取一次图片
         # [1]部位识别
         if equip_set_index is None:
-            equip_set_index = self.calculated.ocr_pos_for_singleLine(self.equip_set_name, points=(77,19,83,23) if IS_PC else (71,22,78,26), img_pk=img_pc)
+            equip_set_index = self.calculated.ocr_pos_for_single_line(self.equip_set_name, points=(77,19,83,23) if IS_PC else (71,22,78,26), img_pk=img_pc)
             if equip_set_index < 0:
                 raise RelicOCRException(_("遗器套装OCR错误"))
         equip_set_name = self.equip_set_name[equip_set_index]
         # [2]套装识别
         name_list = self.relic_set_name[:, 0].tolist()
-        relic_set_index = self.calculated.ocr_pos_for_singleLine(name_list, points=(77,15,92,19) if IS_PC else (71,17,88,21), img_pk=img_pc)
+        relic_set_index = self.calculated.ocr_pos_for_single_line(name_list, points=(77,15,92,19) if IS_PC else (71,17,88,21), img_pk=img_pc)
         if relic_set_index < 0: 
             raise RelicOCRException(_("遗器部位OCR错误"))
         relic_set_name = self.relic_set_name[relic_set_index, -1]
@@ -500,14 +500,14 @@ class Relic:
         rarity = 5   # 目前只支持5星遗器，默认5星
         ...
         # [4]等级识别
-        level = self.calculated.ocr_pos_for_singleLine(points=(95,19,98,23) if IS_PC else (94,22,98,26), number=True, img_pk=img_pc)
+        level = self.calculated.ocr_pos_for_single_line(points=(95,19,98,23) if IS_PC else (94,22,98,26), number=True, img_pk=img_pc)
         level = int(level.split('+')[-1])  # 消除开头可能的'+'号
         if level > 15:
             raise RelicOCRException(_("遗器等级OCR错误"))
         # [5]主属性识别
         name_list = self.base_stats_name4equip[equip_set_index][:, 0].tolist()
-        base_stats_index = self.calculated.ocr_pos_for_singleLine(name_list, points=(79,25,92,29) if IS_PC else (74,29,89,34), img_pk=img_pc)
-        base_stats_value = self.calculated.ocr_pos_for_singleLine(points=(93,25,98,29) if IS_PC else (91,29,98,34), number=True, img_pk=img_pc)
+        base_stats_index = self.calculated.ocr_pos_for_single_line(name_list, points=(79,25,92,29) if IS_PC else (74,29,89,34), img_pk=img_pc)
+        base_stats_value = self.calculated.ocr_pos_for_single_line(points=(93,25,98,29) if IS_PC else (91,29,98,34), number=True, img_pk=img_pc)
         if base_stats_index < 0: 
             raise RelicOCRException(_("遗器主词条OCR错误"))
         if base_stats_value is None:
@@ -526,11 +526,11 @@ class Relic:
         subs_stats_dict = {}
         total_level = 0
         for name_point, value_point in zip(subs_stats_name_points, subs_stats_value_points):
-            tmp_index = self.calculated.ocr_pos_for_singleLine(name_list, points=name_point, img_pk=img_pc)
+            tmp_index = self.calculated.ocr_pos_for_single_line(name_list, points=name_point, img_pk=img_pc)
             if tmp_index is None: break   # 所识别data为空，即词条为空，正常退出循环
             if tmp_index < 0:
                 raise RelicOCRException(_("遗器副词条OCR错误"))
-            tmp_value = self.calculated.ocr_pos_for_singleLine(points=value_point, number=True, img_pk=img_pc)  
+            tmp_value = self.calculated.ocr_pos_for_single_line(points=value_point, number=True, img_pk=img_pc)  
             if tmp_value is None:
                 raise RelicOCRException(_("遗器副词条数值OCR错误"))
             else:

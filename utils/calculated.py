@@ -625,7 +625,7 @@ class calculated(CV_Tools):
         pos = data[characters] if characters in data else None
         return characters, pos
 
-    def ocr_pos_for_singleLine(self, characters_list:list[str] = None, points = (0,0,0,0), number = False, debug = False, img_pk:tuple = None) -> Union[int, str]:
+    def ocr_pos_for_single_line(self, characters_list:list[str] = None, points = (0,0,0,0), number = False, debug = False, img_pk:tuple = None) -> Union[int, str]:
         """
         说明：
             获取指定坐标的单行文字
