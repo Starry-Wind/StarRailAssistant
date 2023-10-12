@@ -134,7 +134,7 @@ class Relic:
 
         self.is_fuzzy_match = sra_config_obj.fuzzy_match_for_relic   # 是否在遗器搜索时开启模糊匹配
         self.is_check = sra_config_obj.check_for_relic               # 是否在遗器OCR时开启对副词条的数据验证 (关闭后，可临时使程序能够识别五星以下遗器，同时会将is_detail强制关闭)
-        self.is_detail = sra_config_obj.detail_for_relic and self.is_check     # 是否在打印遗器信息时显示拓展信息 (如各副词条的强化次数、挡位积分，以及提高原数据的小数精度)
+        self.is_detail = sra_config_obj.detail_for_relic and self.is_check     # 是否在打印遗器信息时显示详细信息 (如各副词条的强化次数、挡位积分，以及提高原数据的小数精度)
 
     def relic_entrance(self):
         """
@@ -541,13 +541,13 @@ class Relic:
                         tmp_index += 3            # 小词条转为大词条
                 tmp_value = float(tmp_value)
             tmp_name = str(self.subs_stats_name[tmp_index, -1])
-            check = self.get_subs_stats_detail((tmp_name, tmp_value), tmp_index)
+            check = self.get_subs_stats_detail((tmp_name, tmp_value), rarity, tmp_index)
             if check is None:   
                 raise RelicOCRException(_("遗器副词条数值OCR错误"))
             else:
                 total_level += check[0]
             subs_stats_dict[tmp_name] = tmp_value
-        if self.is_check and total_level > level // 3 + 4:
+        if self.is_check and rarity == 5 and total_level > level // 3 + 4:
             log.error(f"total_level: {total_level}")
             raise RelicOCRException(_("遗器副词条某一数值OCR错误"))
         # [7]生成结果数据包
@@ -583,29 +583,34 @@ class Relic:
         print(_("副词条:"))
         for name, value in data["subs_stats"].items():
             pre = " " if name in self.not_pre_stats else "%"
-            if self.is_detail:
+            if self.is_detail and data["rarity"] == 5:
                 ret = self.get_subs_stats_detail((name, value))  # 增强信息并校验数据
                 if ret:
                     level, score, result = ret
                     tag = '>'*(level-1)   # 强化次数的标识
                     print(_("   {name:<4}\t{tag:<7}{value:>6.3f}{pre}   [{score}]").format(name=name, tag=tag, value=result, score=score, pre=pre))
                 else:  # 数据校验失败
-                    print(_("   {name:<4}\t{value:>5}{pre}   [ERROR ]").format(name=name, value=value, pre=pre))
+                    print(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))
             else:
                 print(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
 
-    def get_subs_stats_detail(self, data:tuple[str, float], index:int=None) -> tuple[int, int, float]:
+    def get_subs_stats_detail(self, data:tuple[str, float], rarity:int=5, index:int=None) -> tuple[int, int, float]:
         """
         说明：
-            计算副词条的详细信息 (强化次数、挡位总积分与修正后的数值)
+            计算副词条的详细信息 (如强化次数、挡位积分，以及提高原数据的小数精度)
             对于速度属性只能做保守估计，其他属性可做准确计算。
             可以作为副词条校验函数 (可以检测出大部分的OCR错误)
+            目前仅支持五星遗器
+        参数：
+            :param data: 遗器副词条键值对
+            :param index: 遗器副词条索引
+            :param rarity: 遗器稀有度
         返回：
             :return level: 强化次数: 0次强化记为1，最高5次强化为6
             :return score: 挡位总积分: 1挡记0分, 2挡记1分, 3挡记2分
             :return result: 修正后数值 (提高了原数值精度)
         """
-        if not self.is_check:
+        if not self.is_check or rarity != 5:   # 目前仅支持五星遗器
             return (0,0,0)
         name, value = data
         index = np.where(self.subs_stats_name[:, -1] == name)[0][0] if index is None else index
