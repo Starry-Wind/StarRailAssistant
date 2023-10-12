@@ -28,5 +28,6 @@ flet
 cryptography
 pluggy
 httpcore
+pydantic
 pprint
 jsonschema

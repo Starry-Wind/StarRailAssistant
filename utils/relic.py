@@ -218,12 +218,12 @@ class Relic:
         参数：
             :param relics_hash: 遗器配装哈希值列表
         """
-        equip_pos = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
+        equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
         pre_relic_set_index = -1
-        for equip_indx in range(6):   # 遗器部位循环
+        for equip_indx, equip_pos in enumerate(equip_pos_list):   # 遗器部位循环
             # 选择部位
             log.info(_(f"选择部位：{self.equip_set_name[equip_indx]}"))
-            self.calculated.relative_click(equip_pos[equip_indx])
+            self.calculated.relative_click(equip_pos)
             time.sleep(0.5)
             # 筛选遗器 (加快遗器搜索)
             tmp_hash = relics_hash[equip_indx]
