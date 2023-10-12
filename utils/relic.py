@@ -131,9 +131,7 @@ class Relic:
         self.team_data = read_json_file(TEAM_FILE_NAME, schema=self.team_schema)
         log.info(_("遗器数据载入完成"))
 
-        self.is_check = True   # 是否对副词条数据进行校验 (关闭后，可临时使程序能够识别五星以下遗器，同时会将数据增强强制关闭)
-        self.is_detail = True  # 在打印遗器信息时进行数据增强，显示拓展信息
-        self.is_detail = self.is_detail if self.is_check else False
+        self.is_detail = True  # 在打印遗器信息时，显示拓展信息
 
     def relic_entrance(self):
         """
@@ -532,7 +530,7 @@ class Relic:
             else:
                 total_level += check[0]
             subs_stats_dict[tmp_name] = tmp_value
-        if self.is_check and total_level > level // 3 + 4:
+        if total_level > level // 3 + 4:
             log.error(f"total_level: {total_level}")
             raise RelicOCRException(_("遗器副词条某一数值OCR错误"))
         # [7]生成结果数据包
@@ -590,8 +588,6 @@ class Relic:
             :return score: 挡位总积分: 1挡记0分, 2挡记1分, 3挡记2分
             :return result: 修正后数值 (提高了原数值精度)
         """
-        if not self.is_check:
-            return (0,0,0)
         name, value = data
         index = np.where(self.subs_stats_name[:, -1] == name)[0][0] if index is None else index
         a, d = self.subs_stats_tier[index]
