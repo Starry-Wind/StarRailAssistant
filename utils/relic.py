@@ -436,6 +436,7 @@ class Relic:
         返回：
             :return result_data: 遗器数据包
         """
+        retry = 0
         while True:  # 视作偶发错误进行重试
             try:  
                 data = self.ocr_relic(equip_set_index)
