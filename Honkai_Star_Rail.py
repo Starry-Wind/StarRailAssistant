@@ -44,7 +44,7 @@ class SRA:
         self.option_dict = {
             _('大世界'): "",
             _('派遣委托'): "",
-            _('遗器配装'): "",
+            _('遗器模块'): "",
             _('更新资源'): "",
             _('编辑配置'): "",
             _('退出脚本'): ""
@@ -310,7 +310,7 @@ class SRA:
                 elif option == _("派遣委托"):
                     commission = Commission(4, game_title)
                     commission.start()  # 读取配置
-                elif option == _("遗器配装"):
+                elif option == _("遗器模块"):
                     relic = Relic(game_title)
                     relic.relic_entrance()
                     return True
