@@ -5,7 +5,7 @@
   },
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "6907b69178181aaaa06333bbe0838763"
+    "hash": "310a39ab95bd93b0a7e07b12536ea990"
   },
   {
     "path": "requirements.txt",
@@ -85,7 +85,7 @@
   },
   {
     "path": "utils/update_file.py",
-    "hash": "ff7847dd80ecbc2f4d6a57b633683c26"
+    "hash": "cffdfc7e70b833a4fd6e12584b8cbbe2"
   },
   {
     "path": "utils/exceptions.py",
