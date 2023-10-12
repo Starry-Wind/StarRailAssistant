@@ -80,15 +80,7 @@ class calculated(CV_Tools):
         参数：
             :param points: 百分比坐标
         """      
-        borderless = sra_config_obj.borderless
-        left_border = sra_config_obj.left_border
-        up_border = sra_config_obj.up_border
-        #points = (points[0]*1.5/scaling,points[1]*1.5/scaling,points[2]*1.5/scaling,points[3]*1.5/scaling)
-        if borderless:
-            left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
-        else:
-            left, top, right, bottom = self.window.left+left_border, self.window.top+up_border, self.window.right-left_border, self.window.bottom-left_border
-        # log.info(f"{left}, {top}, {right}, {bottom}")
+        left, top, right, bottom = self.window.left, self.window.top, self.window.right, self.window.bottom
         x, y = int(left + (right - left) / 100 * points[0]), \
                 int(top + (bottom - top) / 100 * points[1])
         log.debug((x, y))
@@ -661,7 +653,7 @@ class calculated(CV_Tools):
         """
         return cv.imread(f'{prefix}{path}')
 
-    def part_ocr(self, points = (0,0,0,0), debug=False, left=False, number = False, img_pk:tuple = None, is_single_line = False, only_white=False
+    def part_ocr(self,points = (0,0,0,0), debug=False, left=False, number = False, img_pk:tuple = None, is_single_line = False, only_white=False
                        ) -> Union[str, dict[str, tuple[int, int]]]:
         """
         说明：
@@ -676,7 +668,7 @@ class calculated(CV_Tools):
             :return data: 文字: 坐标(相对于桌面的坐标)
         """
         if img_pk:  # 支持对一次结果的多次OCR
-            img_fp, game_left, game_top, __, __, width, length = img_pk   # 此时由take_screenshot返回的图片已消除窗口位置、窗口边框的影响
+            img_fp, game_left, game_top, __, __, width, length = img_pk
             if points != (0,0,0,0):
                 # 通过切片对图片裁剪，shape(img)=(length, width, channal)
                 img_fp = img_fp[int(length/100*points[1]):int(length/100*points[3]),
