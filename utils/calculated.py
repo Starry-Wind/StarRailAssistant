@@ -699,7 +699,7 @@ class calculated(CV_Tools):
             log.info(data)
             # show_img(img_fp)
             timestamp_str = str(int(datetime.timestamp(datetime.now())))
-            cv.imwrite(f"log/image/relic_{str(points)}_{timestamp_str}.png", img_fp)
+            cv.imwrite(f"temp/relic_{str(points)}_{timestamp_str}.png", img_fp)
         else:
             log.debug(data)
         return data
