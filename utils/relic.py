@@ -83,7 +83,6 @@ class Relic:
                         "type": "string",
                         "enum": self.relic_set_name[:, -1].tolist()
                     },
-                    "rarity": {"type": "integer"},
                     "level": {"type": "integer"},
                     "base_stats": {
                         "type": "object",
@@ -223,7 +222,6 @@ class Relic:
                 log.info(_("筛选遗器套装"))
                 self.calculated.relative_click((4,92))  # 点击筛选图标
                 time.sleep(0.5)
-                ... # 筛选稀有度
                 self.calculated.relative_click((92,23))  # 点击套装选择
                 time.sleep(0.5)
                 self.calculated.relative_click((37,76))  # 清除之前的筛选项
@@ -477,16 +475,12 @@ class Relic:
         if relic_set_index < 0: 
             raise RelicOCRException(_("遗器部位OCR错误"))
         relic_set_name = self.relic_set_name[relic_set_index, -1]
-        # [3] 稀有度识别
-        ...
-        rarity = 5   # 目前只支持5星遗器，默认5星
-        ...
-        # [4]等级识别
+        # [3]等级识别
         level = self.calculated.ocr_pos_for_singleLine(points=(94,22,98,26), number=True, img_pk=img_pc)
         level = int(level.split('+')[-1])  # 消除开头可能的'+'号
         if level > 15:
             raise RelicOCRException(_("遗器等级OCR错误"))
-        # [5]主属性识别
+        # [4]主属性识别
         name_list = self.base_stats_name4equip[equip_set_index][:, 0].tolist()
         base_stats_index = self.calculated.ocr_pos_for_singleLine(name_list, points=(74,29,89,34), img_pk=img_pc)
         base_stats_value = self.calculated.ocr_pos_for_singleLine(points=(91,29,98,34), number=True, img_pk=img_pc)
@@ -501,7 +495,7 @@ class Relic:
                 base_stats_value = s[:-1] + '.' + s[-1:]   # 添加未识别的小数点
             base_stats_value = float(base_stats_value)
         base_stats_name = str(self.base_stats_name4equip[equip_set_index][base_stats_index, -1])
-        # [6]副属性识别 (词条数量 2-4)
+        # [5]副属性识别 (词条数量 2-4)
         subs_stats_name_points = [(74,35,81,38),(74,39,81,43),(74,44,81,47),(74,48,81,52)]
         subs_stats_value_points = [(92,35,98,38),(92,39,98,43),(92,44,98,47),(92,48,98,52)]
         name_list = self.subs_stats_name[:, 0].tolist()
@@ -533,11 +527,10 @@ class Relic:
         if total_level > level // 3 + 4:
             log.error(f"total_level: {total_level}")
             raise RelicOCRException(_("遗器副词条某一数值OCR错误"))
-        # [7]生成结果数据包
+        # [6]生成结果数据包
         result_data = {
             "equip_set": equip_set_name,
             "relic_set": relic_set_name,
-            "rarity": rarity,
             "level": level,
             "base_stats": {
                 base_stats_name: base_stats_value
@@ -557,7 +550,6 @@ class Relic:
         """
         print(_("部位: {equip_set}").format(equip_set=data["equip_set"]))
         print(_("套装: {relic_set}").format(relic_set=data["relic_set"]))
-        print(_("星级: {rarity}").format(rarity=data["rarity"]))
         print(_("等级: {level}").format(level=data["level"]))
         print(_("主词条:"))
         name, value = list(data["base_stats"].items())[0]
