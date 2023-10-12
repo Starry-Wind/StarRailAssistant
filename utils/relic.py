@@ -246,7 +246,7 @@ class Relic:
                 self.calculated.relative_click((3,92) if IS_PC else (4,92))  # 筛选框外任意点击退出筛选
                 pre_relic_set_index = relic_set_index
             # 搜索遗器
-            pos = self.search_relic(equip_indx, key_hash=tmp_hash) # , key_data=tmp_data)
+            pos = self.search_relic(equip_indx, key_hash=tmp_hash, key_data=tmp_data)
             if pos is None:
                 log.error(_(f"遗器搜索失败: {tmp_hash}"))
                 continue
