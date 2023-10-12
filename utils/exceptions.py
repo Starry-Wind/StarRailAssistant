@@ -25,3 +25,9 @@ class TypeError(Exception):
     def __init__(self, message):
         super().__init__(message)
         log.error(message)
+
+class RelicOCRException(Exception):
+    
+    def __init__(self, message):
+        super().__init__(message)
+        log.error(message)
