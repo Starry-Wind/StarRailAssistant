@@ -67,9 +67,12 @@ class Relic:
                                       np.vstack((self.base_stats_name[2:5],self.base_stats_name[-2:]))]
         # 副属性，已按副词条顺序排序
         self.subs_stats_name = np.vstack((self.stats_name[:10],self.stats_name[-3:-1]))
-        # 副属性词条挡位: 0-基础值，1-每提升一档的数值
-        self.subs_stats_tier = [(33.870, 4.234), (16.935, 2.117), (16.935, 2.117), (3.456, 0.432), (3.456, 0.432), (4.320, 0.540), 
-                                (2.0, 0.3), (2.592, 0.324), (5.184, 0.648), (3.456, 0.432), (3.456, 0.432), (5.184, 0.648)]
+        # 副属性词条档位: 0-基础值，1-每提升一档的数值 <<数据来源：米游社@666bj>>
+        self.subs_stats_tier = [
+            [(27.096, 3.3870  ), (13.548 , 1.6935  ), (13.548 , 1.6935  ), (2.7648, 0.3456), (2.7648, 0.3456), (2.7648, 0.3456),  # 四星遗器数值
+                (1.60, 0.20), (2.0736, 0.2592), (4.1472, 0.5184), (2.7648, 0.3456), (2.7648, 0.3456), (4.1472, 0.5184)],
+            [(33.870, 4.233755), (16.935 , 2.116877), (16.935 , 2.116877), (3.4560, 0.4320), (3.4560, 0.4320), (3.4560, 0.4320),  # 五星遗器数值
+                (2.00, 0.30), (2.5920, 0.3240), (5.1840, 0.6480), (3.4560, 0.4320), (3.4560, 0.4320), (5.1840, 0.6480)]]
         # json数据格式规范
         self.relics_schema = {           # 遗器数据集
             "type": "object",
@@ -148,8 +151,8 @@ class Relic:
                 self.check_relic_data_hash(updata=True)
 
         self.is_fuzzy_match = sra_config_obj.fuzzy_match_for_relic   # 是否在遗器搜索时开启模糊匹配
-        self.is_check_stats = sra_config_obj.check_stats_for_relic   # 是否在遗器OCR时开启对副词条的数据验证 (关闭后，可临时使程序能够识别五星以下遗器，同时会将is_detail强制关闭)
-        self.is_detail = sra_config_obj.detail_for_relic and self.is_check_stats     # 是否在打印遗器信息时显示详细信息 (如各副词条的强化次数、挡位积分，以及提高原数据的小数精度)
+        self.is_check_stats = sra_config_obj.check_stats_for_relic   # 是否在遗器OCR时开启对副词条的数据验证 (关闭后，会将is_detail强制关闭)
+        self.is_detail = sra_config_obj.detail_for_relic and self.is_check_stats     # 是否在打印遗器信息时显示详细信息 (如各副词条的强化次数、档位积分，以及提高原数据的小数精度)
 
     def relic_entrance(self):
         """
@@ -159,6 +162,8 @@ class Relic:
                 1.识别遗器数据 (可打印增强信息，目前仅支持五星遗器)
                 2.保存人物配装
                 3.读取人物配装并装备 (遗器将强制替换，支持模糊匹配)
+                4.兼容四星遗器：
+                    a. 兼容校验函数 (增加四星遗器副词条档位数据)
             待解决问题：
                 1.OCR准确率过低 (对模型进行重训练)
                     (碎碎念：测试结果看PC端比模拟器的OCR准确率还低，但明明PC端的截图分辨率更高...不知道是否为本人的测试环境问题)
@@ -167,8 +172,7 @@ class Relic:
                 2.读取队伍配装并装备
                 3.遗器管理与配装管理
                 4.兼容四星遗器：
-                    a. 兼容校验函数 (增加四星遗器副词条挡位数据)
-                    b. 对遗器稀有度的识别 (识别指定点位色相[黄,紫])
+                    a. 对遗器稀有度的识别 (识别指定点位色相[黄,紫])
                 5.模糊匹配成功后更新相关数据库
                 ...
         """
@@ -564,7 +568,7 @@ class Relic:
         relic_set_name = self.relic_set_name[relic_set_index, -1]
         # [3] 稀有度识别
         ...
-        rarity = 5   # 目前只支持5星遗器，默认5星
+        rarity = 5   # 默认5星
         ...
         # [4]等级识别
         level = self.calculated.ocr_pos_for_single_line(points=(95,19,98,23) if IS_PC else (94,22,98,26), number=True, img_pk=img_pc)
@@ -615,7 +619,7 @@ class Relic:
             else:
                 total_level += check[0]
             subs_stats_dict[tmp_name] = tmp_value
-        if self.is_check_stats and rarity == 5 and total_level > level // 3 + 4:
+        if self.is_check_stats and rarity in [4,5] and total_level > level // 3 + 4:
             log.error(f"total_level: {total_level}")
             raise RelicOCRException(_("遗器副词条某一数值OCR错误"))
         # [7]生成结果数据包
@@ -651,7 +655,7 @@ class Relic:
         print(_("副词条:"))
         for name, value in data["subs_stats"].items():
             pre = " " if name in self.not_pre_stats else "%"
-            if self.is_detail and data["rarity"] == 5:
+            if self.is_detail and data["rarity"] in [4,5]:
                 ret = self.get_subs_stats_detail((name, value))  # 增强信息并校验数据
                 if ret:
                     level, score, result = ret
@@ -662,27 +666,28 @@ class Relic:
             else:
                 print(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
 
-    def get_subs_stats_detail(self, data:tuple[str, float], rarity:int=5, index:int=None) -> tuple[int, int, float]:
+    def get_subs_stats_detail(self, data:tuple[str, float], rarity:int=5, stats_index:int=None) -> tuple[int, int, float]:
         """
         说明：
-            计算副词条的详细信息 (如强化次数、挡位积分，以及提高原数据的小数精度)
+            计算副词条的详细信息 (如强化次数、档位积分，以及提高原数据的小数精度)
             对于速度属性只能做保守估计，其他属性可做准确计算。
             可以作为副词条校验函数 (可以检测出大部分的OCR错误)
-            目前仅支持五星遗器
+            支持五星遗器与四星遗器
         参数：
             :param data: 遗器副词条键值对
-            :param index: 遗器副词条索引
+            :param stats_index: 遗器副词条索引
             :param rarity: 遗器稀有度
         返回：
             :return level: 强化次数: 0次强化记为1，最高5次强化为6
-            :return score: 挡位总积分: 1挡记0分, 2挡记1分, 3挡记2分
+            :return score: 档位总积分: 1档记0分, 2档记1分, 3档记2分
             :return result: 修正后数值 (提高了原数值精度)
         """
-        if not self.is_check_stats or rarity != 5:   # 目前仅支持五星遗器
+        if not self.is_check_stats or rarity not in [4,5]:   # 仅支持五星遗器与四星遗器
             return (0,0,0)
         name, value = data
-        index = np.where(self.subs_stats_name[:, -1] == name)[0][0] if index is None else index
-        a, d = self.subs_stats_tier[index]
+        stats_index = np.where(self.subs_stats_name[:, -1] == name)[0][0] if stats_index is None else stats_index
+        rarity_index = rarity - 4  # 0-四星，1-五星
+        a, d = self.subs_stats_tier[rarity_index][stats_index]
         if name in self.not_pre_stats:
             a_ = int(a)           # 从个分位截断小数
         else:
