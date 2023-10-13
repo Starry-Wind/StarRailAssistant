@@ -14,6 +14,9 @@ class Relic:
         if sra_config_obj.language != "zh_CN":
             raise Exception(_("暂不支持简体中文之外的语言"))
         self.calculated = calculated(title)
+        self.is_fuzzy_match = sra_config_obj.fuzzy_match_for_relic   # 是否在遗器搜索时开启模糊匹配
+        self.is_check_stats = sra_config_obj.check_stats_for_relic   # 是否在遗器OCR时开启对副词条的数据验证 (关闭后，会将is_detail强制关闭)
+        self.is_detail = sra_config_obj.detail_for_relic and self.is_check_stats     # 是否在打印遗器信息时显示详细信息 (如各副词条的强化次数、档位积分，以及提高原数据的小数精度)
 
         # 部位，已经按页面顺序排序
         self.equip_set_name = [_("头部"), _("手部"), _("躯干"), _("脚部"), _("位面球"), _("连结绳")
@@ -149,10 +152,6 @@ class Relic:
             option = questionary.select(_("是否依据当前遗器数据更新哈希值："), [_("是"), _("否")]).ask()
             if option == _("是"):
                 self.check_relic_data_hash(updata=True)
-
-        self.is_fuzzy_match = sra_config_obj.fuzzy_match_for_relic   # 是否在遗器搜索时开启模糊匹配
-        self.is_check_stats = sra_config_obj.check_stats_for_relic   # 是否在遗器OCR时开启对副词条的数据验证 (关闭后，会将is_detail强制关闭)
-        self.is_detail = sra_config_obj.detail_for_relic and self.is_check_stats     # 是否在打印遗器信息时显示详细信息 (如各副词条的强化次数、档位积分，以及提高原数据的小数精度)
 
     def relic_entrance(self):
         """
