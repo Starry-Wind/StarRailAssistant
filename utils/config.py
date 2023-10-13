@@ -17,6 +17,7 @@ RELIC_FILE_NAME = "relics_set.json"
 LOADOUT_FILE_NAME = "relics_loadout.json"
 TEAM_FILE_NAME = "relics_team.json"
 
+
 def normalize_file_path(filename):
     # 尝试在当前目录下读取文件
     current_dir = os.getcwd()
@@ -74,34 +75,46 @@ def init_json_file(filename: str):
     参数：
         :param filename: 文件名称
     """
-    with open(filename, "wb+") as f:
-            log.info(_(f"{filename} 文件初始化"))
-            f.write(
-                orjson.dumps(
-                    {},option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2
-                )
-            )
+    with open(filename, "wb") as f:
+        log.info(_(f"{filename} 文件初始化"))
+        f.write(orjson.dumps({}, option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2))
 
 
-def modify_json_file(filename: str, key: str, value) -> dict:
+def modify_json_file(filename:str, key:str, value:Any) -> dict:
     """
     说明：
-        写入文件，并返回文件字典
+        将键值对写入json文件，并返回写入后的字典
     参数：
         :param filename: 文件名称
         :param key: key
         :param value: value
+    返回：
+        data: 修改后的json字典
     """
     # 先读，再写
     data, file_path = read_json_file(filename, path=True)
     data[key] = value
+    return rewrite_json_file(file_path, data)
+
+
+def rewrite_json_file(filename:str, data:dict) -> dict:
+    """
+    说明：
+        重写整个json文件
+    参数：
+        :param filename: 文件名称
+        :param data: json的完整字典
+    返回：
+        data: 修改后的json字典
+    """
+    file_path = normalize_file_path(filename)
     try:
         with open(file_path, "wb") as f:
             f.write(orjson.dumps(data, option=orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2))
     except PermissionError as e:
         import time
         time.sleep(1)
-        return modify_json_file(filename, key, value)
+        return rewrite_json_file(filename, data)
     return data
 
 
