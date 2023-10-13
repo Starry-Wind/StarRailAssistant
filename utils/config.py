@@ -335,7 +335,7 @@ class SRAData(metaclass=SRADataMeta):
     """是否停止"""
     fuzzy_match_for_relic: bool = True
     """是否在遗器搜索时开启模糊匹配"""
-    check_for_relic: bool = True
+    check_stats_for_relic: bool = True
     """是否在遗器OCR时开启对副词条的数据验证"""
     detail_for_relic: bool = True
     """是否在打印遗器信息时显示拓展信息"""

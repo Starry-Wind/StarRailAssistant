@@ -140,7 +140,7 @@ class Relic:
         self.team_data = read_json_file(TEAM_FILE_NAME, schema=self.team_schema)
         log.info(_("遗器数据载入完成"))
         log.info(_(f"共载入 {len(list(self.relics_data.keys()))} 件遗器数据"))
-        
+
         # 校验遗器哈希值
         if not self.check_relic_data_hash():
             option = questionary.select(_("是否依据当前遗器数据更新哈希值："), [_("是"), _("否")]).ask()
@@ -148,8 +148,8 @@ class Relic:
                 self.check_relic_data_hash(updata=True)
 
         self.is_fuzzy_match = sra_config_obj.fuzzy_match_for_relic   # 是否在遗器搜索时开启模糊匹配
-        self.is_check = sra_config_obj.check_for_relic               # 是否在遗器OCR时开启对副词条的数据验证 (关闭后，可临时使程序能够识别五星以下遗器，同时会将is_detail强制关闭)
-        self.is_detail = sra_config_obj.detail_for_relic and self.is_check     # 是否在打印遗器信息时显示详细信息 (如各副词条的强化次数、挡位积分，以及提高原数据的小数精度)
+        self.is_check_stats = sra_config_obj.check_stats_for_relic   # 是否在遗器OCR时开启对副词条的数据验证 (关闭后，可临时使程序能够识别五星以下遗器，同时会将is_detail强制关闭)
+        self.is_detail = sra_config_obj.detail_for_relic and self.is_check_stats     # 是否在打印遗器信息时显示详细信息 (如各副词条的强化次数、挡位积分，以及提高原数据的小数精度)
 
     def relic_entrance(self):
         """
@@ -615,7 +615,7 @@ class Relic:
             else:
                 total_level += check[0]
             subs_stats_dict[tmp_name] = tmp_value
-        if self.is_check and rarity == 5 and total_level > level // 3 + 4:
+        if self.is_check_stats and rarity == 5 and total_level > level // 3 + 4:
             log.error(f"total_level: {total_level}")
             raise RelicOCRException(_("遗器副词条某一数值OCR错误"))
         # [7]生成结果数据包
@@ -678,7 +678,7 @@ class Relic:
             :return score: 挡位总积分: 1挡记0分, 2挡记1分, 3挡记2分
             :return result: 修正后数值 (提高了原数值精度)
         """
-        if not self.is_check or rarity != 5:   # 目前仅支持五星遗器
+        if not self.is_check_stats or rarity != 5:   # 目前仅支持五星遗器
             return (0,0,0)
         name, value = data
         index = np.where(self.subs_stats_name[:, -1] == name)[0][0] if index is None else index
