@@ -71,22 +71,30 @@ class Relic:
         self.subs_stats_tier = [(33.870, 4.234), (16.935, 2.117), (16.935, 2.117), (3.456, 0.432), (3.456, 0.432), (4.320, 0.540), 
                                 (2.0, 0.3), (2.592, 0.324), (5.184, 0.648), (3.456, 0.432), (3.456, 0.432), (5.184, 0.648)]
         # json数据格式规范
-        self.relics_schema = {
+        self.relics_schema = {           # 遗器数据集
             "type": "object",
-            "additionalProperties": {
+            "additionalProperties": {    # [主键]遗器哈希值 (由其键值遗器数据自动生成)
                 "type": "object",
                 "properties": {
-                    "equip_set": {
+                    "equip_set": {       # 遗器部位
                         "type": "string",
                         "enum": self.equip_set_name
                     },
-                    "relic_set": {
+                    "relic_set": {       # 遗器套装
                         "type": "string",
                         "enum": self.relic_set_name[:, -1].tolist()
                     },
-                    "rarity": {"type": "integer"},
-                    "level": {"type": "integer"},
-                    "base_stats": {
+                    "rarity": {          # 遗器稀有度 (2-5星)
+                        "type": "integer",
+                        "minimum": 2,
+                        "maximum": 5
+                    },
+                    "level": {           # 遗器等级 (0-15级)
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 15
+                    },
+                    "base_stats": {      # 遗器主属性 (词条数为 1)
                         "type": "object",
                         "minProperties": 1,
                         "maxProperties": 1,
@@ -94,7 +102,7 @@ class Relic:
                             key: {"type": "number"} for key in self.base_stats_name[:, -1]},
                         "additionalProperties": False
                     },
-                    "subs_stats": {
+                    "subs_stats": {      # 遗器副属性 (词条数为 2-4)
                         "type": "object",
                         "minProperties": 2,
                         "maxProperties": 4,
@@ -103,25 +111,25 @@ class Relic:
                         "additionalProperties": False
                     }
                 },
-                "required": ["relic_set", "equip_set", "level", "base_stats", "subs_stats"],
+                "required": ["relic_set", "equip_set", "rarity", "level", "base_stats", "subs_stats"],  # 需包含全部属性
                 "additionalProperties": False
         }}
-        self.loadout_schema = {
+        self.loadout_schema = {          # 人物遗器配装数据集
             "type": "object",
-            "additionalProperties": {
+            "additionalProperties": {    # [主键]人物名称 (以OCR结果为准)
                 "type": "object",
-                "additionalProperties": {
-                    "type": "array",
+                "additionalProperties": {   # [次主键]配装名称 (自定义)
+                    "type": "array",        # 配装组成 (6件遗器，按部位排序)
                     "minItems": 6,
                     "maxItems": 6,
-                    "items": {"type": "string"}
+                    "items": {"type": "string"}  # [外键]遗器哈希值
         }}}
-        self.team_schema = {
+        self.team_schema = {             # 队伍遗器配装数据集
             "type": "object",
-            "additionalProperties": {
+            "additionalProperties": {    # [主键]队伍名称 (自定义)
                 "type": "object",
-                "additionalProperties": {
-                    "type": "string"
+                "additionalProperties": {   # [外键]队伍成员名称 (以OCR结果为准)
+                    "type": "string"        # [外键]各队伍成员的配装名称
                 },
                 "minProperties": 1,
                 "maxProperties": 4
@@ -131,6 +139,7 @@ class Relic:
         self.loadout_data = read_json_file(LOADOUT_FILE_NAME, schema=self.loadout_schema)
         self.team_data = read_json_file(TEAM_FILE_NAME, schema=self.team_schema)
         log.info(_("遗器数据载入完成"))
+        log.info(_(f"共载入 {len(list(self.relics_data.keys()))} 件遗器数据"))
 
         self.is_fuzzy_match = sra_config_obj.fuzzy_match_for_relic   # 是否在遗器搜索时开启模糊匹配
         self.is_check = sra_config_obj.check_for_relic               # 是否在遗器OCR时开启对副词条的数据验证 (关闭后，可临时使程序能够识别五星以下遗器，同时会将is_detail强制关闭)
