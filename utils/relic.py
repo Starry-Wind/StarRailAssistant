@@ -163,6 +163,7 @@ class Relic:
                 3.读取人物配装并装备 (遗器将强制替换，支持模糊匹配)
                 4.兼容四星遗器：
                     a. 兼容校验函数 (增加四星遗器副词条档位数据)
+                    b. 对遗器稀有度的识别 (识别指定点位色相[黄,紫])
             待解决问题：
                 1.OCR准确率过低 (对模型进行重训练)
                     (碎碎念：测试结果看PC端比模拟器的OCR准确率还低，但明明PC端的截图分辨率更高...不知道是否为本人的测试环境问题)
@@ -170,9 +171,7 @@ class Relic:
                 1.保存队伍配装
                 2.读取队伍配装并装备
                 3.遗器管理与配装管理
-                4.兼容四星遗器：
-                    a. 对遗器稀有度的识别 (识别指定点位色相[黄,紫])
-                5.模糊匹配成功后更新相关数据库
+                4.模糊匹配成功后更新相关数据库
                 ...
         """
         title = _("遗器模块：")
@@ -566,9 +565,15 @@ class Relic:
             raise RelicOCRException(_("遗器部位OCR错误"))
         relic_set_name = self.relic_set_name[relic_set_index, -1]
         # [3] 稀有度识别
-        ...
-        rarity = 5   # 默认5星
-        ...
+        hue, __, __ = self.calculated.get_relative_pix_hsv((43,55) if IS_PC else (41,55))   # 识别指定位点色相
+        log.info(f"hue = {hue}")
+        if hue > 0 and hue < 40:      # 模拟器测试结果的均值为 25
+            rarity = 5
+        elif hue > 120 and hue < 160: # 模拟器测试结果的均值为 145
+            rarity = 4
+        else:
+            log.error(_("目前仅可识别四星与五星遗器"))
+            raise RelicOCRException(_("遗器稀有度识别错误"))
         # [4]等级识别
         level = self.calculated.ocr_pos_for_single_line(points=(95,19,98,23) if IS_PC else (94,22,98,26), number=True, img_pk=img_pc)
         level = int(level.split('+')[-1])  # 消除开头可能的'+'号
@@ -655,7 +660,7 @@ class Relic:
         for name, value in data["subs_stats"].items():
             pre = " " if name in self.not_pre_stats else "%"
             if self.is_detail and data["rarity"] in [4,5]:
-                ret = self.get_subs_stats_detail((name, value))  # 增强信息并校验数据
+                ret = self.get_subs_stats_detail((name, value), data["rarity"])  # 增强信息并校验数据
                 if ret:
                     level, score, result = ret
                     tag = '>'*(level-1)   # 强化次数的标识
