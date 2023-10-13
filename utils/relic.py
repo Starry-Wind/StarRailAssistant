@@ -140,6 +140,12 @@ class Relic:
         self.team_data = read_json_file(TEAM_FILE_NAME, schema=self.team_schema)
         log.info(_("遗器数据载入完成"))
         log.info(_(f"共载入 {len(list(self.relics_data.keys()))} 件遗器数据"))
+        
+        # 校验遗器哈希值
+        if not self.check_relic_data_hash():
+            option = questionary.select(_("是否依据当前遗器数据更新哈希值："), [_("是"), _("否")]).ask()
+            if option == _("是"):
+                self.check_relic_data_hash(updata=True)
 
         self.is_fuzzy_match = sra_config_obj.fuzzy_match_for_relic   # 是否在遗器搜索时开启模糊匹配
         self.is_check = sra_config_obj.check_for_relic               # 是否在遗器OCR时开启对副词条的数据验证 (关闭后，可临时使程序能够识别五星以下遗器，同时会将is_detail强制关闭)
