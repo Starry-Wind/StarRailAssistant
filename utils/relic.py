@@ -3,7 +3,7 @@ import pprint
 import questionary
 import numpy as np
 from .calculated import *
-from .config import read_json_file, modify_json_file, RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, _, sra_config_obj
+from .config import read_json_file, modify_json_file, rewrite_json_file, RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, _, sra_config_obj
 from .exceptions import Exception, RelicOCRException
 from .log import log
 pp = pprint.PrettyPrinter(indent=1, width=40, sort_dicts=False)
@@ -427,6 +427,59 @@ class Relic:
             if old_data["subs_stats"][key] > new_data["subs_stats"][key]:
                 return False
         return True
+    
+    def check_relic_data_hash(self, updata=False):
+        """
+        说明：
+            检查遗器数据是否发生手动修改 (应对json数据格式变动或手动矫正仪器数值)，
+            若发生修改，可选择更新仪器哈希值，并替换配装数据中相应的数值
+        """
+        equip_set_dict = {key: value for value, key in enumerate(self.equip_set_name)}
+        relics_data_copy = self.relics_data.copy()  # 字典迭代过程中不允许修改key
+        cnt = 0
+        for old_hash, data in relics_data_copy.items():
+            new_hash = self.calculated.get_data_hash(data)
+            if old_hash != new_hash:
+                equip_indx = equip_set_dict[data["equip_set"]]
+                log.debug(f"(old={old_hash}, new={new_hash})")
+                if updata: 
+                    self.updata_relic_data(old_hash, new_hash, equip_indx)
+                cnt += 1
+        if not cnt:
+            log.info(_(f"遗器哈希值校验成功"))
+            return True
+        if updata:
+            log.info(_(f"已更新 {cnt} 件遗器的哈希值"))
+            return True
+        else:
+            log.error(_(f"发现 {cnt} 件遗器的哈希值校验失败"))
+            return False
+
+    def updata_relic_data(self, old_hash:str, new_hash:str, equip_indx:int, new_data:dict=None):
+        """
+        说明：
+            更改仪器数据，先后修改遗器与配装文件
+        参数：
+            :param old_hash: 遗器旧哈希值
+            :param new_hash: 遗器新哈希值
+            :parma equip_indx: 遗器部位索引 (减轻一点遍历压力)
+            :parma new_data: 新的遗器数据
+        """
+        # 修改遗器文件
+        if new_data is None:
+            self.relics_data[new_hash] = self.relics_data.pop(old_hash)
+        else:
+            self.relics_data.pop(old_hash)
+            self.relics_data[new_hash] = new_data
+        rewrite_json_file(RELIC_FILE_NAME, self.relics_data)
+        # 修改配装文件
+        for char_name, loadouts in self.loadout_data.items():
+            for loadout_name, hash_list in loadouts.items():
+                if hash_list[equip_indx] == old_hash:
+                    self.loadout_data[char_name][loadout_name][equip_indx] = new_hash
+        rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
+        # 队伍配装文件无需修改
+
         
     def add_relic_data(self, data:dict, data_hash:str=None) -> bool:
         """
