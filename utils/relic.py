@@ -381,7 +381,7 @@ class Relic:
         说明：
             在当前滑动[人物]-[遗器]-[遗器详情]界面内，搜索匹配的遗器。
                 key_hash非空: 激活精确匹配 (假设数据保存期间遗器未再次升级); 
-                key_data非空: 激活模糊匹配 (假设数据保存期间遗器再次升级);
+                key_data非空: 激活模糊匹配 (假设数据保存期间遗器再次升级，匹配成功后自动更新遗器数据);
                 key_hash & key_data均空: 遍历当前页面内的遗器
         参数：
             :param equip_indx: 遗器部位索引
@@ -409,12 +409,13 @@ class Relic:
                     if key_hash and key_hash == tmp_hash:  # 精确匹配
                         return (x, y)
                     if key_data and self.is_fuzzy_match and self.compare_relics(key_data, tmp_data):  # 模糊匹配
-                        log.info(_("模糊匹配成功！"))
                         print(_("旧遗器："))
                         self.print_relic(key_data)
                         print(_("新遗器："))
                         self.print_relic(tmp_data)
-                        ...  # 更新数据库 (将旧有遗器数据替换，并更新遗器配装数据的哈希值)
+                        log.info(_("模糊匹配成功！自动更新遗器数据"))
+                        # 更新数据库 (录入新遗器数据，并将配装数据中的旧有哈希值替换)
+                        self.updata_relic_data(key_hash, tmp_hash, equip_indx, tmp_data)
                         return (x, y)
                     # 判断是否遍历完毕
                     if pre_pos[-1] == tmp_hash:
