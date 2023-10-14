@@ -235,7 +235,9 @@ class Relic:
             :param relics_hash: 遗器配装哈希值列表
         """
         equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
+        rarity_pos_list = [(77,38),(89,38),(77,42),(89,42)] if IS_PC else [(71,45),(86,45),(71,52),(86,52)]   # 2,3,4,5星
         pre_relic_set_index = -1
+        pre_rarity = -1
         for equip_indx, equip_pos in enumerate(equip_pos_list):   # 遗器部位循环
             # 选择部位
             log.info(_(f"选择部位：{self.equip_set_name[equip_indx]}"))
@@ -246,21 +248,31 @@ class Relic:
             tmp_data = self.relics_data[tmp_hash]
             log.debug(tmp_hash)
             relic_set_index = np.where(self.relic_set_name[:, -1] == tmp_data["relic_set"])[0][0]
-            if pre_relic_set_index != relic_set_index:  # 判断与先前套装发生变化
-                log.info(_("筛选遗器套装"))
+            rarity = tmp_data["rarity"]
+            if pre_relic_set_index != relic_set_index or pre_rarity != rarity:  # 判断筛选条件是否发生改变
+                log.info(_("筛选遗器"))
                 self.calculated.relative_click((3,92) if IS_PC else (4,92))  # 点击筛选图标
                 time.sleep(0.5)
-                ... # 筛选稀有度
-                self.calculated.relative_click((93,20) if IS_PC else (92,23))  # 点击套装选择
-                time.sleep(0.5)
-                self.calculated.relative_click((40,70) if IS_PC else (37,76))  # 清除之前的筛选项
-                # 搜索遗器套装名，并点击
-                self.search_relic_set_for_filter(relic_set_index)
-                time.sleep(0.2)
-                self.calculated.relative_click((62,70) if IS_PC else (64,76))  # 点击确认
-                time.sleep(0.5)
+                # 筛选遗器套装
+                if pre_relic_set_index != relic_set_index:
+                    self.calculated.relative_click((93,20) if IS_PC else (92,23))  # 点击套装选择
+                    time.sleep(0.5)
+                    self.calculated.relative_click((40,70) if IS_PC else (37,76))  # 清除之前的筛选项
+                    time.sleep(0.2)
+                    self.search_relic_set_for_filter(relic_set_index)  # 搜索遗器套装名，并点击
+                    time.sleep(0.2)
+                    self.calculated.relative_click((62,70) if IS_PC else (64,76))  # 点击确认
+                    time.sleep(0.5)
+                    pre_relic_set_index = relic_set_index
+                # 筛选遗器稀有度 (注意稀有度筛选要在遗器筛选之后，不然识别位点会改变)
+                if pre_rarity != rarity:
+                    if pre_rarity != -1:   # 非初始清除之前的筛选项
+                        self.calculated.relative_click(rarity_pos_list[pre_rarity-2])
+                        time.sleep(0.5)
+                    self.calculated.relative_click(rarity_pos_list[rarity-2])  # 点击目标稀有度
+                    time.sleep(0.5)
+                    pre_rarity = rarity
                 self.calculated.relative_click((3,92) if IS_PC else (4,92))  # 筛选框外任意点击退出筛选
-                pre_relic_set_index = relic_set_index
             # 搜索遗器
             pos = self.search_relic(equip_indx, key_hash=tmp_hash, key_data=tmp_data)
             if pos is None:
