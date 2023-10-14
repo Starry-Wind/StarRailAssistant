@@ -108,9 +108,9 @@ class Relic:
                             key: {"type": "number"} for key in self.base_stats_name[:, -1]},
                         "additionalProperties": False
                     },
-                    "subs_stats": {      # 遗器副属性 (词条数为 2-4)
+                    "subs_stats": {      # 遗器副属性 (词条数为 1-4)
                         "type": "object",
-                        "minProperties": 2,
+                        "minProperties": 1,
                         "maxProperties": 4,
                         "properties": {
                             key: {"type": "number"} for key in self.subs_stats_name[:, -1]},
@@ -566,13 +566,16 @@ class Relic:
         relic_set_name = self.relic_set_name[relic_set_index, -1]
         # [3] 稀有度识别
         hue, __, __ = self.calculated.get_relative_pix_hsv((43,55) if IS_PC else (41,55))   # 识别指定位点色相
-        log.info(f"hue = {hue}")
-        if hue > 0 and hue < 40:      # 模拟器测试结果的均值为 25
+        log.debug(f"hue = {hue}")
+        if hue < 40:     # [黄]模拟器测试结果的均值为 25
             rarity = 5
-        elif hue > 120 and hue < 160: # 模拟器测试结果的均值为 145
+        elif hue < 80:   # [绿]未有测试样本
+            rarity = 2
+        elif hue < 120:  # [蓝]模拟器测试结果的均值为 105
+            rarity = 3
+        elif hue < 160:  # [紫]模拟器测试结果的均值为 140
             rarity = 4
         else:
-            log.error(_("目前仅可识别四星与五星遗器"))
             raise RelicOCRException(_("遗器稀有度识别错误"))
         # [4]等级识别
         level = self.calculated.ocr_pos_for_single_line(points=(95,19,98,23) if IS_PC else (94,22,98,26), number=True, img_pk=img_pc)
