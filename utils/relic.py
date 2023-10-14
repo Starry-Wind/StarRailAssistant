@@ -108,9 +108,9 @@ class Relic:
                             key: {"type": "number"} for key in self.base_stats_name[:, -1]},
                         "additionalProperties": False
                     },
-                    "subs_stats": {      # 遗器副属性 (词条数为 2-4)
+                    "subs_stats": {      # 遗器副属性 (词条数为 1-4)
                         "type": "object",
-                        "minProperties": 2,
+                        "minProperties": 1,
                         "maxProperties": 4,
                         "properties": {
                             key: {"type": "number"} for key in self.subs_stats_name[:, -1]},
@@ -158,21 +158,25 @@ class Relic:
         说明：
             遗器模块入口
             已完成功能：
-                1.识别遗器数据 (可打印增强信息，目前仅支持五星遗器)
+                1.识别遗器数据
+                    a.[新增]支持所有稀有度遗器 (识别指定点位色相[黄,紫,蓝,绿])
                 2.保存人物配装
-                3.读取人物配装并装备 (遗器将强制替换，支持模糊匹配)
-                4.兼容四星遗器：
-                    a. 兼容校验函数 (增加四星遗器副词条档位数据)
-                    b. 对遗器稀有度的识别 (识别指定点位色相[黄,紫])
+                3.读取人物配装并装备 (遗器将强制替换，支持精确匹配与模糊匹配)
+                4.[新增]兼容四星遗器：
+                    a.兼容校验函数 (增加四星遗器副词条档位数据)
             待解决问题：
-                1.OCR准确率过低 (对模型进行重训练)
-                    (碎碎念：测试结果看PC端比模拟器的OCR准确率还低，但明明PC端的截图分辨率更高...不知道是否为本人的测试环境问题)
+                1.OCR准确率低 (对模型进行重训练?)
+                    a.测试结果看PC端比模拟器的OCR准确率还低，但明明PC端的截图分辨率更高
+                    b.[新增]初步怀疑是由于测试环境的模型不同导致 (模拟器测试使用的是项目早期的OCR模型)，待验证
             待开发功能：
                 1.保存队伍配装
                 2.读取队伍配装并装备
                 3.遗器管理与配装管理
-                4.模糊匹配成功后更新相关数据库
+                4.[准备]模糊匹配成功后更新相关数据库
                 ...
+            相关说明：
+                1.[新增]本模块的所有识别位点均采用百分比相对坐标，以兼容不同平台支持不同分辨率
+                2.[新增]本模块首先会基于安卓模拟器进行测试，再基于PC端测试
         """
         title = _("遗器模块：")
         options = [_("保存当前人物的配装"), _("读取当前人物的配装"), _("识别当前遗器的数据"), _("返回主菜单")]
@@ -235,7 +239,9 @@ class Relic:
             :param relics_hash: 遗器配装哈希值列表
         """
         equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
+        rarity_pos_list = [(77,38),(89,38),(77,42),(89,42)] if IS_PC else [(71,45),(86,45),(71,52),(86,52)]   # 2,3,4,5星
         pre_relic_set_index = -1
+        pre_rarity = -1
         for equip_indx, equip_pos in enumerate(equip_pos_list):   # 遗器部位循环
             # 选择部位
             log.info(_(f"选择部位：{self.equip_set_name[equip_indx]}"))
@@ -246,21 +252,31 @@ class Relic:
             tmp_data = self.relics_data[tmp_hash]
             log.debug(tmp_hash)
             relic_set_index = np.where(self.relic_set_name[:, -1] == tmp_data["relic_set"])[0][0]
-            if pre_relic_set_index != relic_set_index:  # 判断与先前套装发生变化
-                log.info(_("筛选遗器套装"))
+            rarity = tmp_data["rarity"]
+            if pre_relic_set_index != relic_set_index or pre_rarity != rarity:  # 判断筛选条件是否发生改变
+                log.info(_("筛选遗器"))
                 self.calculated.relative_click((3,92) if IS_PC else (4,92))  # 点击筛选图标
                 time.sleep(0.5)
-                ... # 筛选稀有度
-                self.calculated.relative_click((93,20) if IS_PC else (92,23))  # 点击套装选择
-                time.sleep(0.5)
-                self.calculated.relative_click((40,70) if IS_PC else (37,76))  # 清除之前的筛选项
-                # 搜索遗器套装名，并点击
-                self.search_relic_set_for_filter(relic_set_index)
-                time.sleep(0.2)
-                self.calculated.relative_click((62,70) if IS_PC else (64,76))  # 点击确认
-                time.sleep(0.5)
+                # 筛选遗器套装
+                if pre_relic_set_index != relic_set_index:
+                    self.calculated.relative_click((93,20) if IS_PC else (92,23))  # 点击套装选择
+                    time.sleep(0.5)
+                    self.calculated.relative_click((40,70) if IS_PC else (37,76))  # 清除之前的筛选项
+                    time.sleep(0.2)
+                    self.search_relic_set_for_filter(relic_set_index)  # 搜索遗器套装名，并点击
+                    time.sleep(0.2)
+                    self.calculated.relative_click((62,70) if IS_PC else (64,76))  # 点击确认
+                    time.sleep(0.5)
+                    pre_relic_set_index = relic_set_index
+                # 筛选遗器稀有度 (注意稀有度筛选要在遗器筛选之后，不然识别位点会改变)
+                if pre_rarity != rarity:
+                    if pre_rarity != -1:   # 非初始清除之前的筛选项
+                        self.calculated.relative_click(rarity_pos_list[pre_rarity-2])
+                        time.sleep(0.5)
+                    self.calculated.relative_click(rarity_pos_list[rarity-2])  # 点击目标稀有度
+                    time.sleep(0.5)
+                    pre_rarity = rarity
                 self.calculated.relative_click((3,92) if IS_PC else (4,92))  # 筛选框外任意点击退出筛选
-                pre_relic_set_index = relic_set_index
             # 搜索遗器
             pos = self.search_relic(equip_indx, key_hash=tmp_hash, key_data=tmp_data)
             if pos is None:
@@ -566,13 +582,16 @@ class Relic:
         relic_set_name = self.relic_set_name[relic_set_index, -1]
         # [3] 稀有度识别
         hue, __, __ = self.calculated.get_relative_pix_hsv((43,55) if IS_PC else (41,55))   # 识别指定位点色相
-        log.info(f"hue = {hue}")
-        if hue > 0 and hue < 40:      # 模拟器测试结果的均值为 25
+        log.debug(f"hue = {hue}")
+        if hue < 40:     # [黄]模拟器测试结果的均值为 25
             rarity = 5
-        elif hue > 120 and hue < 160: # 模拟器测试结果的均值为 145
+        elif hue < 80:   # [绿]未有测试样本
+            rarity = 2
+        elif hue < 120:  # [蓝]模拟器测试结果的均值为 105
+            rarity = 3
+        elif hue < 160:  # [紫]模拟器测试结果的均值为 140
             rarity = 4
         else:
-            log.error(_("目前仅可识别四星与五星遗器"))
             raise RelicOCRException(_("遗器稀有度识别错误"))
         # [4]等级识别
         level = self.calculated.ocr_pos_for_single_line(points=(95,19,98,23) if IS_PC else (94,22,98,26), number=True, img_pk=img_pc)
@@ -646,12 +665,12 @@ class Relic:
         """
         说明：
             打印遗器信息，
-            可通过is_detail设置打印普通信息与增强信息
+            可通过is_detail设置打印普通信息与拓展信息
         """
         print(_("部位: {equip_set}").format(equip_set=data["equip_set"]))
         print(_("套装: {relic_set}").format(relic_set=data["relic_set"]))
-        print(_("星级: {rarity}").format(rarity=data["rarity"]))
-        print(_("等级: {level}").format(level=data["level"]))
+        print(_("星级: {star}").format(star='★'*data["rarity"]))
+        print(_("等级: +{level}").format(level=data["level"]))
         print(_("主词条:"))
         name, value = list(data["base_stats"].items())[0]
         pre = " " if name in self.not_pre_stats else "%"
@@ -669,6 +688,7 @@ class Relic:
                     print(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))
             else:
                 print(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
+        print('-'*50)
 
     def get_subs_stats_detail(self, data:tuple[str, float], rarity:int=5, stats_index:int=None) -> tuple[int, int, float]:
         """
