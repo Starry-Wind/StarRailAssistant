@@ -115,9 +115,10 @@ class Relic:
                         "properties": {
                             key: {"type": "number"} for key in self.subs_stats_name[:, -1]},
                         "additionalProperties": False
-                    }
+                    },
+                    "pre_ver_hash": {"type": "string"}     # [外键]本次升级前的版本
                 },
-                "required": ["relic_set", "equip_set", "rarity", "level", "base_stats", "subs_stats"],  # 需包含全部属性
+                "required": ["relic_set", "equip_set", "rarity", "level", "base_stats", "subs_stats"],  # 需包含遗器的全部固有属性
                 "additionalProperties": False
         }}
         self.loadout_schema = {          # 人物遗器配装数据集
@@ -140,6 +141,8 @@ class Relic:
                 "minProperties": 1,
                 "maxProperties": 4
         }}
+        # 遗器数据过滤器
+        self.relic_data_filter = ["pre_ver_hash", "post_ver_hash"]
         # 读取json文件，仅初始化时检查格式规范
         self.relics_data = read_json_file(RELIC_FILE_NAME, schema=self.relics_schema)
         self.loadout_data = read_json_file(LOADOUT_FILE_NAME, schema=self.loadout_schema)
@@ -335,7 +338,7 @@ class Relic:
             self.calculated.relative_click(equip_pos)
             time.sleep(1)
             tmp_data = self.try_ocr_relic(equip_indx, max_retries)
-            tmp_hash = self.calculated.get_data_hash(tmp_data)
+            tmp_hash = self.calculated.get_data_hash(tmp_data, self.relic_data_filter)
             log.debug("\n"+pp.pformat(tmp_data))
             self.print_relic(tmp_data)
             if tmp_hash in self.relics_data:
@@ -402,7 +405,7 @@ class Relic:
                     log.info(f"({i+1},{j+1},{len(pre_pos)})")  # 显示当前所识别遗器的方位与序列号
                     tmp_data = self.try_ocr_relic(equip_indx, max_retries)
                     # log.info("\n"+pp.pformat(tmp_data))
-                    tmp_hash = self.calculated.get_data_hash(tmp_data)
+                    tmp_hash = self.calculated.get_data_hash(tmp_data, self.relic_data_filter)
                     if key_hash and key_hash == tmp_hash:  # 精确匹配
                         return (x, y)
                     if key_data and self.is_fuzzy_match and self.compare_relics(key_data, tmp_data):  # 模糊匹配
@@ -462,7 +465,7 @@ class Relic:
         relics_data_copy = self.relics_data.copy()  # 字典迭代过程中不允许修改key
         cnt = 0
         for old_hash, data in relics_data_copy.items():
-            new_hash = self.calculated.get_data_hash(data)
+            new_hash = self.calculated.get_data_hash(data, self.relic_data_filter)
             if old_hash != new_hash:
                 equip_indx = equip_set_dict[data["equip_set"]]
                 log.debug(f"(old={old_hash}, new={new_hash})")
@@ -511,7 +514,7 @@ class Relic:
             录入仪器数据
         """
         if not data_hash:
-            data_hash = self.calculated.get_data_hash(data)
+            data_hash = self.calculated.get_data_hash(data, self.relic_data_filter)
         if data_hash not in self.relics_data:
             self.relics_data = modify_json_file(RELIC_FILE_NAME, data_hash, data) # 返回更新后的字典
             return True
