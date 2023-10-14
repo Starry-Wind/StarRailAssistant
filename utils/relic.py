@@ -646,12 +646,12 @@ class Relic:
         """
         说明：
             打印遗器信息，
-            可通过is_detail设置打印普通信息与增强信息
+            可通过is_detail设置打印普通信息与拓展信息
         """
         print(_("部位: {equip_set}").format(equip_set=data["equip_set"]))
         print(_("套装: {relic_set}").format(relic_set=data["relic_set"]))
-        print(_("星级: {rarity}").format(rarity=data["rarity"]))
-        print(_("等级: {level}").format(level=data["level"]))
+        print(_("星级: {star}").format(star='★'*data["rarity"]))
+        print(_("等级: +{level}").format(level=data["level"]))
         print(_("主词条:"))
         name, value = list(data["base_stats"].items())[0]
         pre = " " if name in self.not_pre_stats else "%"
@@ -669,6 +669,7 @@ class Relic:
                     print(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))
             else:
                 print(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
+        print('-'*50)
 
     def get_subs_stats_detail(self, data:tuple[str, float], rarity:int=5, stats_index:int=None) -> tuple[int, int, float]:
         """
