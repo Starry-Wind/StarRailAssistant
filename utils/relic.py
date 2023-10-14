@@ -482,7 +482,7 @@ class Relic:
             log.error(_(f"发现 {cnt} 件遗器的哈希值校验失败"))
             return False
 
-    def updata_relic_data(self, old_hash:str, new_hash:str, equip_indx:int, new_data:dict=None):
+    def updata_relic_data(self, old_hash:str, new_hash:str, equip_indx:int, new_data:dict=None, delete_old_data=False):
         """
         说明：
             更改仪器数据，先后修改遗器与配装文件
@@ -491,12 +491,14 @@ class Relic:
             :param new_hash: 遗器新哈希值
             :parma equip_indx: 遗器部位索引 (减轻一点遍历压力)
             :parma new_data: 新的遗器数据
+            :parma delete_old_data: 是否删除旧的数据
         """
         # 修改遗器文件
         if new_data is None:
             self.relics_data[new_hash] = self.relics_data.pop(old_hash)
         else:
-            self.relics_data.pop(old_hash)
+            if delete_old_data:
+                self.relics_data.pop(old_hash)
             self.relics_data[new_hash] = new_data
         rewrite_json_file(RELIC_FILE_NAME, self.relics_data)
         # 修改配装文件
@@ -506,7 +508,6 @@ class Relic:
                     self.loadout_data[char_name][loadout_name][equip_indx] = new_hash
         rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
         # 队伍配装文件无需修改
-
         
     def add_relic_data(self, data:dict, data_hash:str=None) -> bool:
         """
