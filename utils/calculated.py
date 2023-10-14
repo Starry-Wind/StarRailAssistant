@@ -983,12 +983,23 @@ class calculated(CV_Tools):
         else:
             return False
 
-    def get_data_hash(self, data) -> str:
+    def get_data_hash(self, data:Any, key_filter:list[str] = None) -> str:
         """
         说明：
-            求任意类型数据 (包括list和dict) 的哈希值
+            求任意类型数据的哈希值
             首先将数据规范化输出为str，再计算md5转16进制
+        参数:
+            :param data: 任意类型数据
+            :param key_filter: 键值过滤器
         """
-        # pprint默认sort_dicts=True，对键值进行排序，以确保字典类型数据的唯一性
-        return hashlib.md5(pprint.pformat(data).encode('utf-8')).hexdigest()
+        if not key_filter:
+            tmp_data = data
+        elif type(data) is dict:
+            tmp_data = dict(data).copy()    # 注意dict'='为引用传递，此处需拷贝副本
+            [tmp_data.pop(key) if key in tmp_data else None for key in key_filter]
+        else:
+            log.eror(_("不支持dict以外类型的类型使用键值过滤器"))
+            return None
+        # pprint默认sort_dicts=True，对键值进行排序，以确保字典类型的唯一性
+        return hashlib.md5(pprint.pformat(tmp_data).encode('utf-8')).hexdigest()
     
