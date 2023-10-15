@@ -109,14 +109,14 @@ class calculated(CV_Tools):
         time.sleep(click_time)
         self.mouse.release(mouse.Button.left)
 
-    def appoint_click(self, points, appoint_points, hsv = [18, 18, 18]):
+    def appoint_click(self, points, appoint_points, rgb = [18, 18, 18]):
         """
         说明：
             点击坐标直到指定指定点位变成指定颜色
         参数：
             :param points: 坐标
             :param appoint_points: 指定坐标
-            :param hsv: 三色值
+            :param rgb: 三色值
         """
         start_time = time.time()
         while True:
@@ -126,9 +126,9 @@ class calculated(CV_Tools):
             self.mouse.press(mouse.Button.left)
             time.sleep(0.5)
             self.mouse.release(mouse.Button.left)
-            result = self.get_pix_r(appoint_points)
+            result = self.get_pix_rgb(appoint_points)
             log.debug(result)
-            if result == hsv:
+            if result == rgb:
                 break
             if time.time() - start_time > 5:
                 log.info(_(_("识别超时")))
@@ -441,7 +441,7 @@ class calculated(CV_Tools):
         time.sleep(0.1)
         if self.has_red((4, 7, 10, 19)):
             while True:
-                result = self.get_pix_rgb(pos=(40, 62))
+                result = self.get_pix_hsv(pos=(40, 62))
                 log.debug(f"进入战斗取色: {result}")
                 if self.compare_lists([0, 0, 222], result) and self.compare_lists(result, [0, 0, 255]):
                     self.click()
@@ -454,7 +454,7 @@ class calculated(CV_Tools):
             self.wait_fight_end()
             return True
         time.sleep(0.2)
-        result = self.get_pix_rgb(pos=(40, 62))
+        result = self.get_pix_hsv(pos=(40, 62))
         log.debug(f"进入战斗取色: {result}")
         if not (self.compare_lists([0, 0, 225], result) and self.compare_lists(result, [0, 0, 255])):
             self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
@@ -463,10 +463,10 @@ class calculated(CV_Tools):
     def check_fighting(self):
         while True:
             if (
-                self.compare_lists([0, 0, 222], self.get_pix_rgb(pos=(1435, 58))) and
-                self.compare_lists(self.get_pix_rgb(pos=(1435, 58)), [0, 0, 240]) and
-                self.compare_lists([20, 90, 80], self.get_pix_rgb(pos=(88, 979))) and
-                self.compare_lists(self.get_pix_rgb(pos=(88, 979)), [25, 100, 90])
+                self.compare_lists([0, 0, 222], self.get_pix_hsv(pos=(1435, 58))) and
+                self.compare_lists(self.get_pix_hsv(pos=(1435, 58)), [0, 0, 240]) and
+                self.compare_lists([20, 90, 80], self.get_pix_hsv(pos=(88, 979))) and
+                self.compare_lists(self.get_pix_hsv(pos=(88, 979)), [25, 100, 90])
             ):
                 log.info(_("未在战斗状态"))
                 break
@@ -502,10 +502,10 @@ class calculated(CV_Tools):
         while True:
             if type == 0:
                 if (
-                    self.compare_lists([0, 0, 222], self.get_pix_rgb(pos=(1435, 58))) and
-                    self.compare_lists(self.get_pix_rgb(pos=(1435, 58)), [0, 0, 240]) and
-                    self.compare_lists([20, 90, 80], self.get_pix_rgb(pos=(88, 979))) and
-                    self.compare_lists(self.get_pix_rgb(pos=(88, 979)), [25, 100, 90])
+                    self.compare_lists([0, 0, 222], self.get_pix_hsv(pos=(1435, 58))) and
+                    self.compare_lists(self.get_pix_hsv(pos=(1435, 58)), [0, 0, 240]) and
+                    self.compare_lists([20, 90, 80], self.get_pix_hsv(pos=(88, 979))) and
+                    self.compare_lists(self.get_pix_hsv(pos=(88, 979)), [25, 100, 90])
                 ):
                     log.info(_("完成自动战斗"))
                     break
@@ -574,7 +574,7 @@ class calculated(CV_Tools):
         self.keyboard.press(com)
         start_time = time.perf_counter()
         if sra_config_obj.sprint:
-            result = self.get_pix_r(pos=(1712, 958))
+            result = self.get_pix_rgb(pos=(1712, 958))
             if (self.compare_lists(result, [130, 160, 180]) or self.compare_lists([200, 200, 200], result)):
                 time.sleep(0.05)
                 log.info("疾跑")
@@ -625,7 +625,7 @@ class calculated(CV_Tools):
         pos = data[characters] if characters in data else None
         return characters, pos
 
-    def ocr_pos_for_singleLine(self, characters_list:list[str] = None, points = (0,0,0,0), number = False, debug = False, img_pk:tuple = None) -> Union[int, str]:
+    def ocr_pos_for_single_line(self, characters_list:list[str] = None, points = (0,0,0,0), number = False, debug = False, img_pk:tuple = None) -> Union[int, str]:
         """
         说明：
             获取指定坐标的单行文字
@@ -704,10 +704,10 @@ class calculated(CV_Tools):
             log.debug(data)
         return data
 
-    def get_pix_r(self, desktop_pos: Union[tuple, None]=None, pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
+    def get_pix_rgb(self, desktop_pos: Union[tuple, None]=None, pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
         """
         说明：
-            获取指定坐标的颜色
+            获取指定坐标的BGR颜色
         参数：
             :param desktop_pos: 包含桌面的坐标
             :param pos: 图片的坐标
@@ -728,15 +728,15 @@ class calculated(CV_Tools):
         red = img[y, x, 2]
         return [blue,green,red]
 
-    def get_pix_rgb(self, desktop_pos: Union[tuple, None]=None, pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
+    def get_pix_hsv(self, desktop_pos: Union[tuple, None]=None, pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
         """
         说明：
-            获取指定坐标的颜色
+            获取指定坐标的HSV颜色
         参数：
             :param desktop_pos: 包含桌面的坐标
             :param pos: 图片的坐标
         返回:
-            :return rgb: 颜色
+            :return hsv: 颜色
         """
         img, left, top, __, __, __, __ = self.take_screenshot(points)
         HSV=cv.cvtColor(img,cv.COLOR_BGR2HSV)
@@ -746,11 +746,11 @@ class calculated(CV_Tools):
         elif pos:
             x = int(pos[0])
             y = int(pos[1])
-        rgb = HSV[y, x]
-        blue = HSV[y, x, 0]
-        green = HSV[y, x, 1]
-        red = HSV[y, x, 2]
-        return [blue,green,red]
+        hsv = HSV[y, x]
+        hue = HSV[y, x, 0]     # 色相
+        satu = HSV[y, x, 1]    # 饱和度
+        value = HSV[y, x, 2]   # 明度
+        return [hue,satu,value]
 
     def hsv2pos(self, img, color, tolerance = 0):
         """
@@ -828,7 +828,7 @@ class calculated(CV_Tools):
                 return endtime
             '''
             endtime = time.time() - start_time
-            result = self.get_pix_rgb(pos=(40, 62))
+            result = self.get_pix_hsv(pos=(40, 62))
             log.debug(result)
             if self.compare_lists([0, 0, 222], result):
                 log.info(_("已进入地图"))
@@ -879,10 +879,10 @@ class calculated(CV_Tools):
         time.sleep(0.3) # 缓冲
         while True:            
             if (
-                self.compare_lists([0, 0, 222], self.get_pix_rgb(pos=(1435, 58))) and
-                self.compare_lists(self.get_pix_rgb(pos=(1435, 58)), [0, 0, 240]) and
-                self.compare_lists([20, 90, 80], self.get_pix_rgb(pos=(88, 979))) and
-                self.compare_lists(self.get_pix_rgb(pos=(88, 979)), [25, 100, 90])
+                self.compare_lists([0, 0, 222], self.get_pix_hsv(pos=(1435, 58))) and
+                self.compare_lists(self.get_pix_hsv(pos=(1435, 58)), [0, 0, 240]) and
+                self.compare_lists([20, 90, 80], self.get_pix_hsv(pos=(88, 979))) and
+                self.compare_lists(self.get_pix_hsv(pos=(88, 979)), [25, 100, 90])
             ):
                 log.info(_("完成入画"))
                 break

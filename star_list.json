@@ -5,11 +5,11 @@
   },
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "8a01b10f082a4c87d5bec6963e6bfe95"
+    "hash": "8cf02bb09a1a6ad9f733cf4b8205d33e"
   },
   {
     "path": "requirements.txt",
-    "hash": "c639eae5881af89c0139e5b91b1c65f5"
+    "hash": "52b01c9107c262c1ea5ab6191c310997"
   },
   {
     "path": "get_width.py",
@@ -81,7 +81,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "f169a54b20b40a18cb8ca806a6ea3fa7"
+    "hash": "d0b467dbb51ecc5ec2ca581e95b1935e"
   },
   {
     "path": "utils/update_file.py",
@@ -89,7 +89,7 @@
   },
   {
     "path": "utils/exceptions.py",
-    "hash": "368045dd7ff5b9c346d75d9b3dd6057b"
+    "hash": "6a0a601665ad74fc01010aaa1229e5c3"
   },
   {
     "path": "utils/record_v7.2.py",
@@ -125,7 +125,7 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "cc84336e148d5d7558ef2bde0edee672"
+    "hash": "43a1ba7172c4e434b7ea28b93ceca248"
   },
   {
     "path": "utils/get_angle.py",
@@ -134,6 +134,10 @@
   {
     "path": "utils/commission.py",
     "hash": "173d380cdc984361308350517864d38f"
+  },
+  {
+    "path": "utils/relic.py",
+    "hash": "4603ab2600b091f963425d31b435280b"
   },
   {
     "path": "utils/route_helper.py",
