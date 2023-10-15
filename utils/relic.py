@@ -125,9 +125,10 @@ class Relic:
                     "maxProperties": 4,
                     "properties": {
                         key: {"type": "number"} for key in subs_stats_name[:, -1]},
-                    "additionalProperties": False }
+                    "additionalProperties": False },
+                "pre_ver_hash": {"type": "string"}     # [外键]本次升级前的版本
             },
-            "required": ["relic_set", "equip_set", "rarity", "level", "base_stats", "subs_stats"],  # 需包含全部属性
+            "required": ["relic_set", "equip_set", "rarity", "level", "base_stats", "subs_stats"],  # 需包含遗器的全部固有属性
             "additionalProperties": False
     }}
     loadout_schema = {            # 人物遗器配装数据集
@@ -150,6 +151,8 @@ class Relic:
             "minProperties": 1,
             "maxProperties": 4
     }}
+    relic_data_filter = ["pre_ver_hash"]
+    """遗器数据过滤器"""
 
     def __init__(self, title=_("崩坏：星穹铁道")):
         """
@@ -318,7 +321,7 @@ class Relic:
             self.calculated.relative_click(equip_pos)
             time.sleep(1)
             tmp_data = self.try_ocr_relic(equip_indx, max_retries)
-            tmp_hash = self.calculated.get_data_hash(tmp_data)
+            tmp_hash = self.calculated.get_data_hash(tmp_data, self.relic_data_filter)
             log.debug("\n"+pp.pformat(tmp_data))
             self.print_relic(tmp_data)
             if tmp_hash in self.relics_data:
@@ -416,7 +419,7 @@ class Relic:
         说明：
             在当前滑动[人物]-[遗器]-[遗器详情]界面内，搜索匹配的遗器。
                 key_hash非空: 激活精确匹配 (假设数据保存期间遗器未再次升级); 
-                key_data非空: 激活模糊匹配 (假设数据保存期间遗器再次升级);
+                key_data非空: 激活模糊匹配 (假设数据保存期间遗器再次升级，匹配成功后自动更新遗器数据);
                 key_hash & key_data均空: 遍历当前页面内的遗器
         参数：
             :param equip_indx: 遗器部位索引
@@ -446,12 +449,13 @@ class Relic:
                 if key_hash and key_hash == tmp_hash:  # 精确匹配
                     return (x, y)
                 if key_data and self.is_fuzzy_match and self.compare_relics(key_data, tmp_data):  # 模糊匹配
-                    log.info(_("模糊匹配成功！"))
                     print(_("旧遗器："))
                     self.print_relic(key_data)
                     print(_("新遗器："))
                     self.print_relic(tmp_data)
-                    ...  # 更新数据库 (将旧有遗器数据替换，并更新遗器配装数据的哈希值)
+                    log.info(_("模糊匹配成功！自动更新遗器数据"))
+                    # 更新数据库 (录入新遗器数据，并将配装数据中的旧有哈希值替换)
+                    self.updata_relic_data(key_hash, tmp_hash, equip_indx, tmp_data)
                     return (x, y)
                 # 判断是否遍历完毕
                 if pre_pos[-1] == tmp_hash:
@@ -499,7 +503,7 @@ class Relic:
         relics_data_copy = self.relics_data.copy()  # 字典迭代过程中不允许修改key
         cnt = 0
         for old_hash, data in relics_data_copy.items():
-            new_hash = self.calculated.get_data_hash(data)
+            new_hash = self.calculated.get_data_hash(data, self.relic_data_filter)
             if old_hash != new_hash:
                 equip_indx = equip_set_dict[data["equip_set"]]
                 log.debug(f"(old={old_hash}, new={new_hash})")
@@ -516,7 +520,7 @@ class Relic:
             log.error(_(f"发现 {cnt} 件遗器的哈希值校验失败"))
             return False
 
-    def updata_relic_data(self, old_hash:str, new_hash:str, equip_indx:int, new_data:dict=None):
+    def updata_relic_data(self, old_hash:str, new_hash:str, equip_indx:int, new_data:dict=None, delete_old_data=False):
         """
         说明：
             更改仪器数据，先后修改遗器与配装文件
@@ -525,12 +529,14 @@ class Relic:
             :param new_hash: 遗器新哈希值
             :parma equip_indx: 遗器部位索引 (减轻一点遍历压力)
             :parma new_data: 新的遗器数据
+            :parma delete_old_data: 是否删除旧的数据
         """
         # 修改遗器文件
         if new_data is None:
             self.relics_data[new_hash] = self.relics_data.pop(old_hash)
         else:
-            self.relics_data.pop(old_hash)
+            if delete_old_data:
+                self.relics_data.pop(old_hash)
             self.relics_data[new_hash] = new_data
         rewrite_json_file(RELIC_FILE_NAME, self.relics_data)
         # 修改配装文件
@@ -547,7 +553,7 @@ class Relic:
             录入仪器数据
         """
         if not data_hash:
-            data_hash = self.calculated.get_data_hash(data)
+            data_hash = self.calculated.get_data_hash(data, self.relic_data_filter)
         if data_hash not in self.relics_data:
             self.relics_data = modify_json_file(RELIC_FILE_NAME, data_hash, data) # 返回更新后的字典
             return True
