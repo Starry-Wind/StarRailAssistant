@@ -426,44 +426,43 @@ class Relic:
         返回:
             :return pos: 坐标
         """
-        pos_start = (5,24) if IS_PC else (7, 28)
+        pos_start = (5,24) if IS_PC else (7,28)
         d_x, d_y, k_x, k_y = (7, 14, 4, 5) if IS_PC else (8, 17, 4, 4)
+        r_x = range(pos_start[0], pos_start[0]+d_x*k_x, d_x)
+        r_y = range(pos_start[1], pos_start[1]+d_y*k_y, d_y)
         pre_pos = [""]
         start_time = time.time()
         while True:
-            x, y = pos_start  # 翻页复位
-            for i in range(0, k_y):   # 行
-                x = pos_start[0]    # 首列复位
-                for j in range(0, k_x):  # 列
-                    self.calculated.relative_click((x, y))   # 点击遗器，同时将翻页的动态延迟暂停
-                    time.sleep(0.2)
-                    log.info(f"({i+1},{j+1},{len(pre_pos)})")  # 显示当前所识别遗器的方位与序列号
-                    tmp_data = self.try_ocr_relic(equip_indx, max_retries)
-                    # log.info("\n"+pp.pformat(tmp_data))
-                    tmp_hash = self.calculated.get_data_hash(tmp_data)
-                    if key_hash and key_hash == tmp_hash:  # 精确匹配
-                        return (x, y)
-                    if key_data and self.is_fuzzy_match and self.compare_relics(key_data, tmp_data):  # 模糊匹配
-                        log.info(_("模糊匹配成功！"))
-                        print(_("旧遗器："))
-                        self.print_relic(key_data)
-                        print(_("新遗器："))
-                        self.print_relic(tmp_data)
-                        ...  # 更新数据库 (将旧有遗器数据替换，并更新遗器配装数据的哈希值)
-                        return (x, y)
-                    # 判断是否遍历完毕
-                    if pre_pos[-1] == tmp_hash:
-                        log.info(_("遗器数据未发生变化，怀疑点击到空白区域搜索至最后"))
-                        return None   # 判断点击到空白，遗器数据未发生变化，结束搜索
-                    if j == 0:  # 首列遗器
-                        if tmp_hash in pre_pos:
-                            if i == k_y-1:
-                                log.info(_("已搜索至最后"))
-                                return None   # 判断已滑动至末页，结束搜索
-                            break     # 本行已搜索过，跳出本行
-                    pre_pos.append(tmp_hash)  # 记录
-                    x += d_x
-                y += d_y
+            for index in range(0, k_y*k_x):
+                i = index // k_x   # 行
+                j = index % k_x    # 列
+                x, y = r_x[j], r_y[i]   # 坐标查表
+                self.calculated.relative_click((x, y))   # 点击遗器，同时将翻页的动态延迟暂停
+                time.sleep(0.2)
+                log.info(f"({i+1},{j+1},{len(pre_pos)})")  # 显示当前所识别遗器的方位与序列号
+                tmp_data = self.try_ocr_relic(equip_indx, max_retries)
+                # log.info("\n"+pp.pformat(tmp_data))
+                tmp_hash = self.calculated.get_data_hash(tmp_data)
+                if key_hash and key_hash == tmp_hash:  # 精确匹配
+                    return (x, y)
+                if key_data and self.is_fuzzy_match and self.compare_relics(key_data, tmp_data):  # 模糊匹配
+                    log.info(_("模糊匹配成功！"))
+                    print(_("旧遗器："))
+                    self.print_relic(key_data)
+                    print(_("新遗器："))
+                    self.print_relic(tmp_data)
+                    ...  # 更新数据库 (将旧有遗器数据替换，并更新遗器配装数据的哈希值)
+                    return (x, y)
+                # 判断是否遍历完毕
+                if pre_pos[-1] == tmp_hash:
+                    log.info(_("遗器数据未发生变化，怀疑点击到空白区域搜索至最后"))
+                    return None   # 判断点击到空白，遗器数据未发生变化，结束搜索
+                if j == 0 and tmp_hash in pre_pos: # 判断当前行的首列遗器是否已被搜索
+                    if i == k_y-1:
+                        log.info(_("已搜索至最后"))
+                        return None   # 判断已滑动至末页，结束搜索
+                    break     # 本行已搜索过，跳出本行
+                pre_pos.append(tmp_hash)  # 记录
             # 滑动翻页 (从末尾位置滑动至顶部，即刚好滑动一整页)
             log.info(_("滑动翻页"))
             self.calculated.relative_swipe((pos_start[0], pos_start[1]+(k_y-1)*d_y), (pos_start[0], pos_start[1]-d_y))
@@ -541,7 +540,6 @@ class Relic:
                     self.loadout_data[char_name][loadout_name][equip_indx] = new_hash
         rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
         # 队伍配装文件无需修改
-
         
     def add_relic_data(self, data:dict, data_hash:str=None) -> bool:
         """
@@ -644,12 +642,11 @@ class Relic:
             raise RelicOCRException(_("遗器主词条OCR错误"))
         if base_stats_value is None:
             raise RelicOCRException(_("遗器主词条数值OCR错误"))
-        else:
-            base_stats_value = str(base_stats_value).replace('.', '')   # 删除所有真假小数点
-            if '%' in base_stats_value:
-                s = base_stats_value.split('%')[0]   # 修正'48%1'如此的错误识别
-                base_stats_value = s[:-1] + '.' + s[-1:]   # 添加未识别的小数点
-            base_stats_value = float(base_stats_value)
+        base_stats_value = str(base_stats_value).replace('.', '')   # 删除所有真假小数点
+        if '%' in base_stats_value:
+            s = base_stats_value.split('%')[0]   # 修正'48%1'如此的错误识别
+            base_stats_value = s[:-1] + '.' + s[-1:]   # 添加未识别的小数点
+        base_stats_value = float(base_stats_value)
         base_stats_name = str(self.base_stats_name4equip[equip_set_index][base_stats_index, -1])
         # [6]副属性识别 (词条数量 2-4)
         subs_stats_name_points =  [(79,29,85,33),(79,33,85,36.5),(79,36.5,85,40),(79,40,85,44)] if IS_PC else [(74,35,81,38),(74,39,81,43),(74,44,81,47),(74,48,81,52)]
@@ -665,20 +662,18 @@ class Relic:
             tmp_value = self.calculated.ocr_pos_for_single_line(points=value_point, number=True, img_pk=img_pc)  
             if tmp_value is None:
                 raise RelicOCRException(_("遗器副词条数值OCR错误"))
-            else:
-                tmp_value = str(tmp_value).replace('.', '')   # 删除所有真假小数点
-                if '%' in tmp_value:
-                    s = tmp_value.split('%')[0]   # 修正'48%1'如此的错误识别
-                    tmp_value = s[:-1] + '.' + s[-1:]   # 添加未识别的小数点
-                    if tmp_index >= 0 and tmp_index < 3:
-                        tmp_index += 3            # 小词条转为大词条
-                tmp_value = float(tmp_value)
+            tmp_value = str(tmp_value).replace('.', '')   # 删除所有真假小数点
+            if '%' in tmp_value:
+                s = tmp_value.split('%')[0]   # 修正'48%1'如此的错误识别
+                tmp_value = s[:-1] + '.' + s[-1:]   # 添加未识别的小数点
+                if tmp_index >= 0 and tmp_index < 3:
+                    tmp_index += 3            # 小词条转为大词条
+            tmp_value = float(tmp_value)
             tmp_name = str(self.subs_stats_name[tmp_index, -1])
             check = self.get_subs_stats_detail((tmp_name, tmp_value), rarity, tmp_index)
             if check is None:   
                 raise RelicOCRException(_("遗器副词条数值OCR错误"))
-            else:
-                total_level += check[0]
+            total_level += check[0]
             subs_stats_dict[tmp_name] = tmp_value
         if self.is_check_stats and rarity in [4,5] and total_level > level // 3 + 4:
             log.error(f"total_level: {total_level}")
@@ -716,16 +711,17 @@ class Relic:
         print(_("副词条:"))
         for name, value in data["subs_stats"].items():
             pre = " " if name in self.not_pre_stats else "%"
-            if self.is_detail and data["rarity"] in [4,5]:
-                ret = self.get_subs_stats_detail((name, value), data["rarity"])  # 增强信息并校验数据
-                if ret:
-                    level, score, result = ret
-                    tag = '>'*(level-1)   # 强化次数的标识
-                    print(_("   {name:<4}\t{tag:<7}{value:>6.3f}{pre}   [{score}]").format(name=name, tag=tag, value=result, score=score, pre=pre))
-                else:  # 数据校验失败
-                    print(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))
-            else:
+            if not self.is_detail or data["rarity"] not in [4,5]:    # 不满足校验条件
                 print(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
+                continue
+            # 增强信息并校验数据
+            ret = self.get_subs_stats_detail((name, value), data["rarity"])
+            if ret:  # 数据校验成功
+                level, score, result = ret
+                tag = '>'*(level-1)   # 强化次数的标识
+                print(_("   {name:<4}\t{tag:<7}{value:>6.3f}{pre}   [{score}]").format(name=name, tag=tag, value=result, score=score, pre=pre))
+            else:    # 数据校验失败
+                print(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))           
         print('-'*50)
 
     def get_subs_stats_detail(self, data:tuple[str, float], rarity:int=5, stats_index:int=None) -> tuple[int, int, float]:
