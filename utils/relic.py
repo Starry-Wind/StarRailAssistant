@@ -449,12 +449,13 @@ class Relic:
                 if key_hash and key_hash == tmp_hash:  # 精确匹配
                     return (x, y)
                 if key_data and self.is_fuzzy_match and self.compare_relics(key_data, tmp_data):  # 模糊匹配
-                    print(_("旧遗器："))
+                    print(_("<<<<旧遗器>>>>"))
                     self.print_relic(key_data)
-                    print(_("新遗器："))
+                    print(_("<<<<新遗器>>>>"))
                     self.print_relic(tmp_data)
                     log.info(_("模糊匹配成功！自动更新遗器数据"))
                     # 更新数据库 (录入新遗器数据，并将配装数据中的旧有哈希值替换)
+                    tmp_data["pre_ver_hash"] = key_hash   # 建立后继关系
                     self.updata_relic_data(key_hash, tmp_hash, equip_indx, tmp_data)
                     return (x, y)
                 # 判断是否遍历完毕
