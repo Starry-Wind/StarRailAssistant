@@ -10,136 +10,163 @@ pp = pprint.PrettyPrinter(indent=1, width=40, sort_dicts=False)
 IS_PC = True   # paltform flag (同时保存了模拟器与PC的识别位点)
 
 class Relic:
+    """
+    [遗器模块]
+    已完成功能：
+        1.识别遗器数据
+            a.[新增]支持所有稀有度遗器 (识别指定点位色相[黄,紫,蓝,绿])
+        2.保存人物配装
+        3.读取人物配装并装备 (遗器将强制替换，支持精确匹配与模糊匹配)
+        4.[新增]兼容四星遗器：
+            a.兼容校验函数 (增加四星遗器副词条档位数据)
+    待解决问题：
+        1.OCR准确率低 (对模型进行重训练?)
+            a.测试结果看PC端比模拟器的OCR准确率还低，但明明PC端的截图分辨率更高
+            b.[新增]初步怀疑是由于测试环境的模型不同导致 (模拟器测试使用的是项目早期的OCR模型)，待验证
+    待开发功能：
+        1.保存队伍配装
+        2.读取队伍配装并装备
+        3.遗器管理与配装管理
+        4.[准备]模糊匹配成功后更新相关数据库
+        ...
+    相关说明：
+        1.[新增]本模块的所有识别位点均采用百分比相对坐标，以兼容不同平台支持不同分辨率
+        2.[新增]本模块首先会基于安卓模拟器进行测试，再基于PC端测试
+    """
+    # 静态参数
+    equip_set_name = [_("头部"), _("手部"), _("躯干"), _("脚部"), _("位面球"), _("连结绳")]
+    """遗器部位名称，已经按游戏界面顺序排序"""
+    relic_set_name = np.array([                   # 注：因为数据有时要行取有时要列取，故采用数组存储
+        [_("过客"), _("过客"), _("云无留迹的过客")],
+        [_("枪手"), _("枪手"), _("野穗伴行的快枪手")], 
+        [_("圣骑"), _("圣骑"), _("净庭教宗的圣骑士")], 
+        [_("雪猎"), _("猎人"), _("密林卧雪的猎人")], 
+        [_("拳王"), _("拳王"), _("街头出身的拳王")], 
+        [_("铁卫"), _("铁卫"), _("戍卫风雪的铁卫")], 
+        [_("火匠"), _("火匠"), _("熔岩锻铸的火匠")], 
+        [_("天才"), _("天才"), _("繁星璀璨的天才")], 
+        [_("乐队"), _("雷电"), _("激奏雷电的乐队")], 
+        [_("翔"), _("翔"), _("晨昏交界的翔鹰")], 
+        [_("怪盗"), _("怪盗"), _("流星追迹的怪盗")], 
+        [_("废"), _("废"), _("盗匪荒漠的废土客")],
+        [_("者"), _("长存"), _("宝命长存的莳者")], 
+        [_("信使"), _("信使"), _("骇域漫游的信使")], 
+        [_("黑塔"), _("太空"), _("太空封印站")], 
+        [_("仙"), _("仙"), _("不老者的仙舟")], 
+        [_("公司"), _("公司"), _("泛银河商业公司")], 
+        [_("贝洛"), _("贝洛"), _("筑城者的贝洛伯格")], 
+        [_("螺丝"), _("差分"), _("星体差分机")], 
+        [_("萨尔"), _("停转"), _("停转的萨尔索图")], 
+        [_("利亚"), _("盗贼"), _("盗贼公国塔利亚")], 
+        [_("瓦克"), _("瓦克"), _("生命的翁瓦克")], 
+        [_("泰科"), _("繁星"), _("繁星竞技场")], 
+        [_("伊须"), _("龙骨"), _("折断的龙骨")]
+        ], dtype=np.str_)
+    """遗器套装名称：0-套装散件的共有词(ocr-必须)，1-套装简称(ocr-可选，为了增强鲁棒性)，2-套装全称(json)，已按[1.4游戏]遗器筛选界面排序"""
+    stats_name = np.array([
+        [_("命值"), _("生命值")], [_("击力"), _("攻击力")], [_("防御"), _("防御力")], 
+        [_("命值"), _("生命值%")], [_("击力"), _("攻击力%")], [_("防御"), _("防御力%")],
+        [_("度"), _("速度")], [_("击率"), _("暴击率")], [_("击伤"), _("暴击伤害")], [_("命中"), _("效果命中")], [_("治疗"), _("治疗量加成")],
+        [_("理"), _("物理属性伤害")], [_("火"), _("火属性伤害")], [_("水"), _("冰属性伤害")], [_("雷"), _("雷属性伤害")], [_("风"), _("风属性伤害")], 
+        [_("量"), _("量子属性伤害")], [_("数"), _("虚数属性伤害")], 
+        [_("抵抗"), _("效果抵抗")], [_("破"), _("击破特攻")], [_("恢复"), _("能量恢复效率")]
+        ], dtype=np.str_)
+    """遗器属性名称：0-属性简称(ocr-不区分大小词条)，1-属性全称(json-区分大小词条)"""
+    not_pre_stats = [_("生命值"), _("攻击力"), _("防御力"), _("速度")]
+    """遗器的整数属性名称"""
+    base_stats_name = np.concatenate((stats_name[:2],stats_name[3:-3],stats_name[-2:]), axis=0)
+    """遗器主属性名称"""
+    base_stats_name4equip = [base_stats_name[0:1],
+                             base_stats_name[1:2],
+                             np.vstack((base_stats_name[2:5],base_stats_name[6:10])),
+                             base_stats_name[2:6],
+                             np.vstack((base_stats_name[2:5],base_stats_name[10:17])),
+                             np.vstack((base_stats_name[2:5],base_stats_name[-2:]))]
+    """遗器各部位主属性名称"""
+    subs_stats_name = np.vstack((stats_name[:10],stats_name[-3:-1]))
+    """遗器副属性名称，已按副词条顺序排序"""
+    subs_stats_tier = [
+        [(27.096, 3.3870  ), (13.548 , 1.6935  ), (13.548 , 1.6935  ), (2.7648, 0.3456), (2.7648, 0.3456), (3.456, 0.4320),  # 四星遗器数值
+            (1.60, 0.20), (2.0736, 0.2592), (4.1472, 0.5184), (2.7648, 0.3456), (2.7648, 0.3456), (4.1472, 0.5184)],
+        [(33.870, 4.233755), (16.935 , 2.116877), (16.935 , 2.116877), (3.4560, 0.4320), (3.4560, 0.4320), (4.320, 0.5400),  # 五星遗器数值
+            (2.00, 0.30), (2.5920, 0.3240), (5.1840, 0.6480), (3.4560, 0.4320), (3.4560, 0.4320), (5.1840, 0.6480)]]
+    """副属性词条档位：t0-基础值，t1-每提升一档的数值；l1-四星遗器数值，l2-五星遗器数值 <<数据来源：米游社@666bj>>"""
+
+    # json数据格式规范
+    relics_schema = {           # 遗器数据集
+        "type": "object",
+        "additionalProperties": {    # [主键]遗器哈希值 (由其键值遗器数据自动生成)
+            "type": "object",
+            "properties": {
+                "equip_set": {       # 遗器部位
+                    "type": "string",
+                    "enum": equip_set_name },
+                "relic_set": {       # 遗器套装
+                    "type": "string",
+                    "enum": relic_set_name[:, -1].tolist() },
+                "rarity": {          # 遗器稀有度 (2-5星)
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 5 },
+                "level": {           # 遗器等级 (0-15级)
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 15 },
+                "base_stats": {      # 遗器主属性 (词条数为 1)
+                    "type": "object",
+                    "minProperties": 1,
+                    "maxProperties": 1,
+                    "properties": {
+                        key: {"type": "number"} for key in base_stats_name[:, -1]},
+                    "additionalProperties": False },
+                "subs_stats": {      # 遗器副属性 (词条数为 1-4)
+                    "type": "object",
+                    "minProperties": 1,
+                    "maxProperties": 4,
+                    "properties": {
+                        key: {"type": "number"} for key in subs_stats_name[:, -1]},
+                    "additionalProperties": False }
+            },
+            "required": ["relic_set", "equip_set", "rarity", "level", "base_stats", "subs_stats"],  # 需包含全部属性
+            "additionalProperties": False
+    }}
+    loadout_schema = {            # 人物遗器配装数据集
+        "type": "object",
+        "additionalProperties": {       # [主键]人物名称 (以OCR结果为准)
+            "type": "object",
+            "additionalProperties": {   # [次主键]配装名称 (自定义)
+                "type": "array",        # 配装组成 (6件遗器，按部位排序)
+                "minItems": 6,
+                "maxItems": 6,
+                "items": {"type": "string"}  # [外键]遗器哈希值
+    }}}
+    team_schema = {                # 队伍遗器配装数据集
+        "type": "object",
+        "additionalProperties": {       # [主键]队伍名称 (自定义)
+            "type": "object",
+            "additionalProperties": {   # [外键]队伍成员名称 (以OCR结果为准)
+                "type": "string"        # [外键]各队伍成员的配装名称
+            },
+            "minProperties": 1,
+            "maxProperties": 4
+    }}
+
     def __init__(self, title=_("崩坏：星穹铁道")):
+        """
+        说明：
+            初始化，载入遗器数据并校验
+        """
         if sra_config_obj.language != "zh_CN":
             raise Exception(_("暂不支持简体中文之外的语言"))
         self.calculated = calculated(title)
-        self.is_fuzzy_match = sra_config_obj.fuzzy_match_for_relic   # 是否在遗器搜索时开启模糊匹配
-        self.is_check_stats = sra_config_obj.check_stats_for_relic   # 是否在遗器OCR时开启对副词条的数据验证 (关闭后，会将is_detail强制关闭)
-        self.is_detail = sra_config_obj.detail_for_relic and self.is_check_stats     # 是否在打印遗器信息时显示详细信息 (如各副词条的强化次数、档位积分，以及提高原数据的小数精度)
 
-        # 部位，已经按页面顺序排序
-        self.equip_set_name = [_("头部"), _("手部"), _("躯干"), _("脚部"), _("位面球"), _("连结绳")
-                               ] 
-        # 套装:np，0-套装散件的共有词(ocr-必须)，1-套装简称(ocr-可选，为了增强鲁棒性)，2-套装全称(json)，已按[1.4游戏]遗器筛选界面排序
-        self.relic_set_name = np.array([        # 注：因为数据有时要行取有时要列取，故采用数组存储
-            [_("过客"), _("过客"), _("云无留迹的过客")],
-            [_("枪手"), _("枪手"), _("野穗伴行的快枪手")], 
-            [_("圣骑"), _("圣骑"), _("净庭教宗的圣骑士")], 
-            [_("雪猎"), _("猎人"), _("密林卧雪的猎人")], 
-            [_("拳王"), _("拳王"), _("街头出身的拳王")], 
-            [_("铁卫"), _("铁卫"), _("戍卫风雪的铁卫")], 
-            [_("火匠"), _("火匠"), _("熔岩锻铸的火匠")], 
-            [_("天才"), _("天才"), _("繁星璀璨的天才")], 
-            [_("乐队"), _("雷电"), _("激奏雷电的乐队")], 
-            [_("翔"), _("翔"), _("晨昏交界的翔鹰")], 
-            [_("怪盗"), _("怪盗"), _("流星追迹的怪盗")], 
-            [_("废"), _("废"), _("盗匪荒漠的废土客")],
-            [_("者"), _("长存"), _("宝命长存的莳者")], 
-            [_("信使"), _("信使"), _("骇域漫游的信使")], 
-            [_("黑塔"), _("太空"), _("太空封印站")], 
-            [_("仙"), _("仙"), _("不老者的仙舟")], 
-            [_("公司"), _("公司"), _("泛银河商业公司")], 
-            [_("贝洛"), _("贝洛"), _("筑城者的贝洛伯格")], 
-            [_("螺丝"), _("差分"), _("星体差分机")], 
-            [_("萨尔"), _("停转"), _("停转的萨尔索图")], 
-            [_("利亚"), _("盗贼"), _("盗贼公国塔利亚")], 
-            [_("瓦克"), _("瓦克"), _("生命的翁瓦克")], 
-            [_("泰科"), _("繁星"), _("繁星竞技场")], 
-            [_("伊须"), _("龙骨"), _("折断的龙骨")]
-            ], dtype=np.str_)
-        # 属性:np，0-属性简称(ocr-不区分大小词条)，1-属性全称(json-区分大小词条)
-        self.stats_name = np.array([
-            [_("命值"), _("生命值")], [_("击力"), _("攻击力")], [_("防御"), _("防御力")], 
-            [_("命值"), _("生命值%")], [_("击力"), _("攻击力%")], [_("防御"), _("防御力%")],
-            [_("度"), _("速度")], [_("击率"), _("暴击率")], [_("击伤"), _("暴击伤害")], [_("命中"), _("效果命中")], [_("治疗"), _("治疗量加成")],
-            [_("理"), _("物理属性伤害")], [_("火"), _("火属性伤害")], [_("水"), _("冰属性伤害")], [_("雷"), _("雷属性伤害")], [_("风"), _("风属性伤害")], 
-            [_("量"), _("量子属性伤害")], [_("数"), _("虚数属性伤害")], 
-            [_("抵抗"), _("效果抵抗")], [_("破"), _("击破特攻")], [_("恢复"), _("能量恢复效率")]
-            ], dtype=np.str_)
-        # 整数属性
-        self.not_pre_stats = [_("生命值"), _("攻击力"), _("防御力"), _("速度")]
-        # 主属性
-        self.base_stats_name = np.concatenate((self.stats_name[:2],self.stats_name[3:-3],self.stats_name[-2:]), axis=0)
-        # 各部位主属性:list[np]
-        self.base_stats_name4equip = [self.base_stats_name[0:1],
-                                      self.base_stats_name[1:2],
-                                      np.vstack((self.base_stats_name[2:5],self.base_stats_name[6:10])),
-                                      self.base_stats_name[2:6],
-                                      np.vstack((self.base_stats_name[2:5],self.base_stats_name[10:17])),
-                                      np.vstack((self.base_stats_name[2:5],self.base_stats_name[-2:]))]
-        # 副属性，已按副词条顺序排序
-        self.subs_stats_name = np.vstack((self.stats_name[:10],self.stats_name[-3:-1]))
-        # 副属性词条档位: 0-基础值，1-每提升一档的数值 <<数据来源：米游社@666bj>>
-        self.subs_stats_tier = [
-            [(27.096, 3.3870  ), (13.548 , 1.6935  ), (13.548 , 1.6935  ), (2.7648, 0.3456), (2.7648, 0.3456), (3.456, 0.4320),  # 四星遗器数值
-                (1.60, 0.20), (2.0736, 0.2592), (4.1472, 0.5184), (2.7648, 0.3456), (2.7648, 0.3456), (4.1472, 0.5184)],
-            [(33.870, 4.233755), (16.935 , 2.116877), (16.935 , 2.116877), (3.4560, 0.4320), (3.4560, 0.4320), (4.320, 0.5400),  # 五星遗器数值
-                (2.00, 0.30), (2.5920, 0.3240), (5.1840, 0.6480), (3.4560, 0.4320), (3.4560, 0.4320), (5.1840, 0.6480)]]
-        # json数据格式规范
-        self.relics_schema = {           # 遗器数据集
-            "type": "object",
-            "additionalProperties": {    # [主键]遗器哈希值 (由其键值遗器数据自动生成)
-                "type": "object",
-                "properties": {
-                    "equip_set": {       # 遗器部位
-                        "type": "string",
-                        "enum": self.equip_set_name
-                    },
-                    "relic_set": {       # 遗器套装
-                        "type": "string",
-                        "enum": self.relic_set_name[:, -1].tolist()
-                    },
-                    "rarity": {          # 遗器稀有度 (2-5星)
-                        "type": "integer",
-                        "minimum": 2,
-                        "maximum": 5
-                    },
-                    "level": {           # 遗器等级 (0-15级)
-                        "type": "integer",
-                        "minimum": 0,
-                        "maximum": 15
-                    },
-                    "base_stats": {      # 遗器主属性 (词条数为 1)
-                        "type": "object",
-                        "minProperties": 1,
-                        "maxProperties": 1,
-                        "properties": {
-                            key: {"type": "number"} for key in self.base_stats_name[:, -1]},
-                        "additionalProperties": False
-                    },
-                    "subs_stats": {      # 遗器副属性 (词条数为 1-4)
-                        "type": "object",
-                        "minProperties": 1,
-                        "maxProperties": 4,
-                        "properties": {
-                            key: {"type": "number"} for key in self.subs_stats_name[:, -1]},
-                        "additionalProperties": False
-                    }
-                },
-                "required": ["relic_set", "equip_set", "rarity", "level", "base_stats", "subs_stats"],  # 需包含全部属性
-                "additionalProperties": False
-        }}
-        self.loadout_schema = {          # 人物遗器配装数据集
-            "type": "object",
-            "additionalProperties": {    # [主键]人物名称 (以OCR结果为准)
-                "type": "object",
-                "additionalProperties": {   # [次主键]配装名称 (自定义)
-                    "type": "array",        # 配装组成 (6件遗器，按部位排序)
-                    "minItems": 6,
-                    "maxItems": 6,
-                    "items": {"type": "string"}  # [外键]遗器哈希值
-        }}}
-        self.team_schema = {             # 队伍遗器配装数据集
-            "type": "object",
-            "additionalProperties": {    # [主键]队伍名称 (自定义)
-                "type": "object",
-                "additionalProperties": {   # [外键]队伍成员名称 (以OCR结果为准)
-                    "type": "string"        # [外键]各队伍成员的配装名称
-                },
-                "minProperties": 1,
-                "maxProperties": 4
-        }}
+        self.is_fuzzy_match = sra_config_obj.fuzzy_match_for_relic
+        """是否在遗器搜索时开启模糊匹配"""
+        self.is_check_stats = sra_config_obj.check_stats_for_relic
+        """是否在遗器OCR时开启对副词条的数据验证 (关闭后，会将is_detail强制关闭)"""
+        self.is_detail = sra_config_obj.detail_for_relic and self.is_check_stats
+        """是否在打印遗器信息时显示详细信息 (如各副词条的强化次数、档位积分，以及提高原数据的小数精度)"""
+
         # 读取json文件，仅初始化时检查格式规范
         self.relics_data = read_json_file(RELIC_FILE_NAME, schema=self.relics_schema)
         self.loadout_data = read_json_file(LOADOUT_FILE_NAME, schema=self.loadout_schema)
@@ -157,26 +184,6 @@ class Relic:
         """
         说明：
             遗器模块入口
-            已完成功能：
-                1.识别遗器数据
-                    a.[新增]支持所有稀有度遗器 (识别指定点位色相[黄,紫,蓝,绿])
-                2.保存人物配装
-                3.读取人物配装并装备 (遗器将强制替换，支持精确匹配与模糊匹配)
-                4.[新增]兼容四星遗器：
-                    a.兼容校验函数 (增加四星遗器副词条档位数据)
-            待解决问题：
-                1.OCR准确率低 (对模型进行重训练?)
-                    a.测试结果看PC端比模拟器的OCR准确率还低，但明明PC端的截图分辨率更高
-                    b.[新增]初步怀疑是由于测试环境的模型不同导致 (模拟器测试使用的是项目早期的OCR模型)，待验证
-            待开发功能：
-                1.保存队伍配装
-                2.读取队伍配装并装备
-                3.遗器管理与配装管理
-                4.[准备]模糊匹配成功后更新相关数据库
-                ...
-            相关说明：
-                1.[新增]本模块的所有识别位点均采用百分比相对坐标，以兼容不同平台支持不同分辨率
-                2.[新增]本模块首先会基于安卓模拟器进行测试，再基于PC端测试
         """
         title = _("遗器模块：")
         options = [_("保存当前人物的配装"), _("读取当前人物的配装"), _("识别当前遗器的数据"), _("返回主菜单")]
@@ -401,7 +408,7 @@ class Relic:
                     self.calculated.relative_click((35,35) if IS_PC else (35,32), 0.5)   # 长按选中
                     self.calculated.relative_click((35,35) if IS_PC else (35,32))        # 取消选中
             points = ((28,33,42,63) if is_left else (53,33,67,63)) if IS_PC else ((22,29,41,65) if is_left else (53,29,72,65))
-            self.calculated.ocr_click(self.relic_set_name[relic_set_index, 1], points=points)
+            self.calculated.ocr_click(Relic.relic_set_name[relic_set_index, 1], points=points)
 
 
     def search_relic(self, equip_indx:int, key_hash:str=None, key_data:dict=None, overtime=180, max_retries=3) -> tuple[int, int]:
