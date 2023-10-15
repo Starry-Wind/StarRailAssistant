@@ -311,6 +311,7 @@ class SRA:
                     commission = Commission(4, game_title)
                     commission.start()  # 读取配置
                 elif option == _("遗器模块"):
+                    log.info(_("遗器模块初始化中..."))
                     relic = Relic(game_title)
                     relic.relic_entrance()
                     return True
