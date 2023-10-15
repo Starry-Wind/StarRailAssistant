@@ -67,7 +67,7 @@ class Relic:
         [_("命值"), _("生命值")], [_("击力"), _("攻击力")], [_("防御"), _("防御力")], 
         [_("命值"), _("生命值%")], [_("击力"), _("攻击力%")], [_("防御"), _("防御力%")],
         [_("度"), _("速度")], [_("击率"), _("暴击率")], [_("击伤"), _("暴击伤害")], [_("命中"), _("效果命中")], [_("治疗"), _("治疗量加成")],
-        [_("理"), _("物理属性伤害")], [_("火"), _("火属性伤害")], [_("水"), _("冰属性伤害")], [_("雷"), _("雷属性伤害")], [_("风"), _("风属性伤害")], 
+        [_("理"), _("物理属性伤害")], [_("火"), _("火属性伤害")], [_("冰"), _("冰属性伤害")], [_("雷"), _("雷属性伤害")], [_("风"), _("风属性伤害")], 
         [_("量"), _("量子属性伤害")], [_("数"), _("虚数属性伤害")], 
         [_("抵抗"), _("效果抵抗")], [_("破"), _("击破特攻")], [_("恢复"), _("能量恢复效率")]
         ], dtype=np.str_)
@@ -328,9 +328,9 @@ class Relic:
                 self.add_relic_data(tmp_data, tmp_hash)
             relics_hash.append(tmp_hash)
         log.info(_("配装识别完毕"))
-        loadout_name = input(_("自定义配装名称: "))  # 需作为字典key值，确保唯一性 (但不同的人物可以有同一配装名称)
+        loadout_name = input(_(">>>>命名配装名称: "))  # 需作为字典key值，确保唯一性 (但不同的人物可以有同一配装名称)
         while loadout_name in character_data:
-            loadout_name = input(_("名称冲突，请重定义: "))
+            loadout_name = input(_(">>>>命名冲突，请重命名: "))
         character_data[loadout_name] = relics_hash
         self.loadout_data = modify_json_file(LOADOUT_FILE_NAME, character_name, character_data)
         log.info(_("配装录入成功"))
@@ -750,12 +750,13 @@ class Relic:
             a_ = int(a)           # 从个分位截断小数
         else:
             a_ = int(a * 10)/10   # 从十分位截断小数
-        level = int(value / a_)                           # 向下取整
-        score = (math.ceil((value - a*level) / d - 1.e-6))  # 向上取整 (考虑浮点数运算的数值损失)
+        level = int(value / a_)   # 向下取整
+        a_ = a_ if name == _("速度") else a    # 给四星速度打补丁
+        score = (math.ceil((value - a_*level) / d - 1.e-6))  # 向上取整 (考虑浮点数运算的数值损失)
         if score < 0:   # 总分小于零打补丁 (由于真实总分过大导致)
             level -= 1
-            score = math.ceil((value - a*level) / d - 1.e-6)
-        result = round(a*level + d*score, 3)              # 四舍五入 (考虑浮点数运算的数值损失)
+            score = math.ceil((value - a_*level) / d - 1.e-6)
+        result = round(a*level + d*score, 3)                 # 四舍五入 (考虑浮点数运算的数值损失)
         # 校验数据
         check = result - value
         log.debug(f"[{a}, {d}], l={level}, s={score}, r={result}")
