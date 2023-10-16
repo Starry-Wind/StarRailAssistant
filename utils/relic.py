@@ -258,6 +258,7 @@ class Relic:
         """
         equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
         relic_filter = self.Relic_filter(self.calculated)   # 遗器筛选器初始化
+        relic_set_name_dict = Array2dict(self.relic_set_name)
         for equip_indx, equip_pos in enumerate(equip_pos_list):   # 遗器部位循环
             # 选择部位
             log.info(_(f"选择部位：{self.equip_set_name[equip_indx]}"))
@@ -267,7 +268,7 @@ class Relic:
             tmp_hash = relics_hash[equip_indx]
             tmp_data = self.relics_data[tmp_hash]
             log.debug(tmp_hash)
-            relic_set_index = np.where(self.relic_set_name[:, -1] == tmp_data["relic_set"])[0][0]
+            relic_set_index = relic_set_name_dict[tmp_data["relic_set"]]
             rarity = tmp_data["rarity"]
             # 筛选遗器 (加快遗器搜索)
             relic_filter.do(relic_set_index, rarity)
@@ -724,13 +725,15 @@ class Relic:
         pre = " " if name in self.not_pre_stats else "%"
         print(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
         print(_("副词条:"))
+        subs_stats_dict = Array2dict(self.subs_stats_name)
         for name, value in data["subs_stats"].items():
             pre = " " if name in self.not_pre_stats else "%"
             if not self.is_detail or data["rarity"] not in [4,5]:    # 不满足校验条件
                 print(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
                 continue
+            stats_index = subs_stats_dict[name]
             # 增强信息并校验数据
-            ret = self.get_subs_stats_detail((name, value), data["rarity"])
+            ret = self.get_subs_stats_detail((name, value), data["rarity"], stats_index)
             if ret:  # 数据校验成功
                 level, score, result = ret
                 tag = '>'*(level-1)   # 强化次数的标识
@@ -739,7 +742,7 @@ class Relic:
                 print(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))           
         print('-'*50)
 
-    def get_subs_stats_detail(self, data:tuple[str, float], rarity:int=5, stats_index:int=None) -> tuple[int, int, float]:
+    def get_subs_stats_detail(self, data:tuple[str, float], rarity:int, stats_index:int = None) -> tuple[int, int, float]:
         """
         说明：
             计算副词条的详细信息 (如强化次数、档位积分，以及提高原数据的小数精度)
