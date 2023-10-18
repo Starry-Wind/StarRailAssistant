@@ -231,12 +231,13 @@ class Relic:
             log.info(_("当前人物配装记录为空"))
             return
         title = _("请选择将要进行装备的配装：")
-        options = list(character_data.keys())
+        options_map = {str_just(loadout_name, 12) + self.get_loadout_brief(hash_list): hash_list for loadout_name, hash_list in character_data.items()}
+        options = list(options_map.keys())
         options.append(_("返回上一级"))
         option = questionary.select(title, options).ask()
         if option == _("返回上一级"):
             return
-        relic_hash = character_data[option]
+        relic_hash = options_map[option]
         # 进行配装
         self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器，进入[人物]-[遗器]界面
         time.sleep(0.5)
@@ -741,6 +742,33 @@ class Relic:
             else:    # 数据校验失败
                 print(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))           
         print('-'*50)
+
+    def get_loadout_brief(self, relics_hash:list[str]) -> str:
+        """
+        说明：
+            获取配装的简要信息 (包含内外圈套装信息与主词条信息)
+        """
+        set_abbr_dict = Array2dict(self.relic_set_name, -1, 2)
+        stats_abbr_dict = Array2dict(self.base_stats_name, -1, 1)
+        outer_set_list, inner_set_list, base_stats_list = [], [], []
+        # 获取遗器数据
+        for equip_indx in range(len((relics_hash))):
+            tmp_data = self.relics_data[relics_hash[equip_indx]]
+            tmp_set = set_abbr_dict[tmp_data["relic_set"]]
+            tmp_base_stats = stats_abbr_dict[list(tmp_data["base_stats"].keys())[0]]
+            base_stats_list.append(tmp_base_stats)
+            if equip_indx < 4:
+                outer_set_list.append(tmp_set)  # 外圈
+            else:
+                inner_set_list.append(tmp_set)  # 内圈
+        outer_set_cnt = Counter(outer_set_list)
+        inner_set_cnt = Counter(inner_set_list)
+        # 生成信息
+        msg =  "外:" + '+'.join([str(cnt) + name for name, cnt in outer_set_cnt.items()]) + "  "
+        msg += "内:" + '+'.join([str(cnt) + name for name, cnt in inner_set_cnt.items()]) + "  "
+        # msg += " ".join([self.equip_set_abbr[idx]+":"+name for idx, name in enumerate(base_stats_list) if idx > 1])
+        msg += ".".join([name for idx, name in enumerate(base_stats_list) if idx > 1])   # 排除头部与手部
+        return msg
 
     def get_subs_stats_detail(self, data:tuple[str, float], rarity:int, stats_index:int = None) -> tuple[int, int, float]:
         """
