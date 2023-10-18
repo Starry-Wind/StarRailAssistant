@@ -580,7 +580,7 @@ class Relic:
         返回：
             :return character_name: 人物名称
         """
-        str = self.calculated.ocr_pos_for_single_line(points=(10,6,18,9) if IS_PC else (13,4,22,9))   # 识别人物名称 (主角名称为玩家自定义，无法适用预选列表)
+        str = self.calculated.ocr_pos_for_single_line(points=(10.4,6,18,9) if IS_PC else (13,4,22,9))   # 识别人物名称 (主角名称为玩家自定义，无法适用预选列表)
         character_name = re.sub(r"[.’,，。、·'-_——\"/\\]", '', str)   # 删除由于背景光点造成的误判
         log.info(_(f"识别人物: {character_name}"))
         if character_name not in self.loadout_data:
