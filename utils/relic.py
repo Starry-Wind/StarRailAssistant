@@ -23,9 +23,8 @@ class Relic:
         5.[新增]模糊匹配成功后自动更新相关数据库 (同时会在新旧遗器间建立后继关系)
         6.[新增]在配装选择界面，打印配装的简要信息
     待解决问题：
-        1.OCR准确率低 (对模型进行重训练?)
-            a.测试结果看PC端比模拟器的OCR准确率还低，但明明PC端的截图分辨率更高
-            b.[新增]初步怀疑是由于测试环境的模型不同导致 (模拟器测试使用的是项目早期的OCR模型)，待验证
+        1.[已解决]OCR准确率低：
+            对于中文识别更换为项目早期的OCR模型；对于数字识别更换为仅包含英文数字的轻量模型
     待开发功能：
         1.保存队伍配装
         2.读取队伍配装并装备
@@ -169,7 +168,7 @@ class Relic:
         """
         if sra_config_obj.language != "zh_CN":
             raise Exception(_("暂不支持简体中文之外的语言"))
-        self.calculated = calculated(title)
+        self.calculated = calculated(title, rec_root="model/cnocr_for_relic")
 
         self.is_fuzzy_match = sra_config_obj.fuzzy_match_for_relic
         """是否在遗器搜索时开启模糊匹配"""
