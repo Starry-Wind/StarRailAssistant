@@ -877,6 +877,12 @@ class calculated(CV_Tools):
             log.info(_('没找到窗口{title}').format(title=self.title))
         time.sleep(dt)
 
+    def switch_cmd(self, dt=0.1):
+        time.sleep(dt)
+        log.debug(self.cmd.title)
+        self.cmd.activate()
+        time.sleep(dt)
+
     def open_map(self, open_key):
         while True:
             self.keyboard.press(open_key)

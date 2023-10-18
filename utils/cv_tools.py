@@ -36,11 +36,12 @@ def show_imgs(imgs, title='Image'):
 
 class CV_Tools:
     def __init__(self, title=_("崩坏：星穹铁道")):
+        self.cmd = pwc.getActiveWindow()
         self.window = pwc.getWindowsWithTitle(title)
         if not self.window:
             raise Exception(_("你游戏没开，我真服了"))
         self.window = self.window[0]
-        self.window.activate() # 将游戏调至前台
+        # self.window.activate() # 将游戏调至前台
         self.hwnd = self.window._hWnd
 
     def take_screenshot(self,points=(0,0,0,0),sleep = 3):

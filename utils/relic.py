@@ -196,12 +196,15 @@ class Relic:
         options = [_("保存当前人物的配装"), _("读取当前人物的配装"), _("识别当前遗器的数据"), _("返回主菜单")]
         option = None  # 保存上一次的选择
         while True:
+            self.calculated.switch_cmd()
             option = questionary.select(title, options, default=option).ask()
             if option == _("保存当前人物的配装"):
+                self.calculated.switch_window()
                 self.save_loadout_for_char()
             elif option == _("读取当前人物的配装"):
                 self.equip_loadout_for_char()
             elif option == _("识别当前遗器的数据"):
+                self.calculated.switch_window()
                 data = self.try_ocr_relic()
                 self.print_relic(data)
             elif option == _("返回主菜单"):
@@ -232,6 +235,7 @@ class Relic:
         option = questionary.select(title, options).ask()
         if option == _("返回上一级"):
             return
+        self.calculated.switch_window()
         relic_hash = character_data[option]
         # 进行配装
         self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器，进入[人物]-[遗器]界面
@@ -335,12 +339,14 @@ class Relic:
                 self.add_relic_data(tmp_data, tmp_hash)
             relics_hash.append(tmp_hash)
         log.info(_("配装识别完毕"))
+        self.calculated.switch_cmd()
         loadout_name = input(_(">>>>命名配装名称: "))  # 需作为字典key值，确保唯一性 (但不同的人物可以有同一配装名称)
         while loadout_name in character_data:
             loadout_name = input(_(">>>>命名冲突，请重命名: "))
         character_data[loadout_name] = relics_hash
         self.loadout_data = modify_json_file(LOADOUT_FILE_NAME, character_name, character_data)
         log.info(_("配装录入成功"))
+        self.calculated.switch_window()
     
     class Relic_filter:
         """
@@ -413,6 +419,7 @@ class Relic:
                 self.calculated.relative_swipe((30,60) if IS_PC else (30,62), (30,31) if IS_PC else (30,27)) # 整页翻动 (此界面的动态延迟较大)
                 if i != last_page:  # 非末页，将翻页的动态延迟暂停 (末页会有个短暂反弹动画后自动停止)
                     self.calculated.relative_click((35,35) if IS_PC else (35,32), 0.5)   # 长按选中
+                    time.sleep(0.5)
                     self.calculated.relative_click((35,35) if IS_PC else (35,32))        # 取消选中
             points = ((28,33,42,63) if is_left else (53,33,67,63)) if IS_PC else ((22,29,41,65) if is_left else (53,29,72,65))
             self.calculated.ocr_click(Relic.relic_set_name[relic_set_index, 1], points=points)
