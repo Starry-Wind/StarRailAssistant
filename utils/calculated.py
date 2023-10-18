@@ -1002,4 +1002,40 @@ class calculated(CV_Tools):
             return None
         # pprint默认sort_dicts=True，对键值进行排序，以确保字典类型的唯一性
         return hashlib.md5(pprint.pformat(tmp_data).encode('utf-8')).hexdigest()
+
+
+class Array2dict:
+
+    def __init__(self, arr:np.ndarray, key_index:int = -1, value_index:int = None):
+        """
+        说明：
+            将np数组转化为字典暂住内存，用于对数组短时间内的频繁查找
+        参数:
+            :param arr: 二维数组
+            :param key_index: 待查找的关键字所在的数组列标
+            :param value_index: 待查找的数值所在的数组列标 (为空时表示查找关键字的行标)
+        """
+        if arr.ndim != 2:
+            raise ValueError("输入的数组必须为二维数组")
+        # 将np数组转化为字典
+        if value_index is None:  # 默认将key的行标作为value，以取代np.where
+            self.data_dict = {row[key_index]: idx for idx, row in enumerate(arr)}
+        else:
+            self.data_dict = {row[key_index]: row[value_index] for row in arr}
+        log.debug(self.data_dict)
+
+    def __getitem__(self, key):
+        return self.data_dict[key]
+    
+    
+def str_just(text:str, width:int, left = True):
+    """
+    说明：
+        封装str.rjust()&str.ljust()，以适应中文字符的实际宽度
+    """
+    ch_cnt = (len(text.encode('utf-8')) - len(text)) // 2   # 中文字符的个数
+    if left:
+        return text.ljust(width-ch_cnt)
+    else:
+        return text.rjust(width-ch_cnt)
     

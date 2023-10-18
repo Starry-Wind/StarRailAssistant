@@ -2,6 +2,7 @@ import math
 import pprint
 import questionary
 import numpy as np
+from collections import Counter
 from .calculated import *
 from .config import read_json_file, modify_json_file, rewrite_json_file, RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, _, sra_config_obj
 from .exceptions import Exception, RelicOCRException
@@ -41,42 +42,44 @@ class Relic:
     # 静态参数
     equip_set_name = [_("头部"), _("手部"), _("躯干"), _("脚部"), _("位面球"), _("连结绳")]
     """遗器部位名称，已经按游戏界面顺序排序"""
+    equip_set_abbr = [_("头"), _("手"), _("衣"), _("鞋"), _("球"), _("绳")]
+    """遗器部位简称"""
     relic_set_name = np.array([                   # 注：因为数据有时要行取有时要列取，故采用数组存储
-        [_("过客"), _("过客"), _("云无留迹的过客")],
-        [_("枪手"), _("枪手"), _("野穗伴行的快枪手")], 
-        [_("圣骑"), _("圣骑"), _("净庭教宗的圣骑士")], 
-        [_("雪猎"), _("猎人"), _("密林卧雪的猎人")], 
-        [_("拳王"), _("拳王"), _("街头出身的拳王")], 
-        [_("铁卫"), _("铁卫"), _("戍卫风雪的铁卫")], 
-        [_("火匠"), _("火匠"), _("熔岩锻铸的火匠")], 
-        [_("天才"), _("天才"), _("繁星璀璨的天才")], 
-        [_("乐队"), _("雷电"), _("激奏雷电的乐队")], 
-        [_("翔"), _("翔"), _("晨昏交界的翔鹰")], 
-        [_("怪盗"), _("怪盗"), _("流星追迹的怪盗")], 
-        [_("废"), _("废"), _("盗匪荒漠的废土客")],
-        [_("者"), _("长存"), _("宝命长存的莳者")], 
-        [_("信使"), _("信使"), _("骇域漫游的信使")], 
-        [_("黑塔"), _("太空"), _("太空封印站")], 
-        [_("仙"), _("仙"), _("不老者的仙舟")], 
-        [_("公司"), _("公司"), _("泛银河商业公司")], 
-        [_("贝洛"), _("贝洛"), _("筑城者的贝洛伯格")], 
-        [_("螺丝"), _("差分"), _("星体差分机")], 
-        [_("萨尔"), _("停转"), _("停转的萨尔索图")], 
-        [_("利亚"), _("盗贼"), _("盗贼公国塔利亚")], 
-        [_("瓦克"), _("瓦克"), _("生命的翁瓦克")], 
-        [_("泰科"), _("繁星"), _("繁星竞技场")], 
-        [_("伊须"), _("龙骨"), _("折断的龙骨")]
+        [_("过客"), _("过客"), _("治疗"), _("云无留迹的过客")],
+        [_("枪手"), _("枪手"), _("快枪手"), _("野穗伴行的快枪手")], 
+        [_("圣骑"), _("圣骑"), _("防御"), _("净庭教宗的圣骑士")], 
+        [_("雪猎"), _("猎人"), _("冰套"), _("密林卧雪的猎人")], 
+        [_("拳王"), _("拳王"), _("物理"), _("街头出身的拳王")], 
+        [_("铁卫"), _("铁卫"), _("减伤"), _("戍卫风雪的铁卫")], 
+        [_("火匠"), _("火匠"), _("火套"), _("熔岩锻铸的火匠")], 
+        [_("天才"), _("天才"), _("量子"), _("繁星璀璨的天才")], 
+        [_("乐队"), _("雷电"), _("雷套"), _("激奏雷电的乐队")], 
+        [_("翔"),   _("翔"),   _("风套"), _("晨昏交界的翔鹰")], 
+        [_("怪盗"), _("怪盗"), _("怪盗"), _("流星追迹的怪盗")], 
+        [_("废"),   _("废"),   _("虚数"), _("盗匪荒漠的废土客")],
+        [_("者"),   _("长存"), _("莳者"), _("宝命长存的莳者")], 
+        [_("信使"), _("信使"), _("速度"), _("骇域漫游的信使")], 
+        [_("黑塔"), _("太空"), _("空间站"), _("太空封印站")], 
+        [_("仙"),   _("仙"),   _("仙舟"), _("不老者的仙舟")], 
+        [_("公司"), _("公司"), _("命中"), _("泛银河商业公司")], 
+        [_("贝洛"), _("贝洛"), _("防御"), _("筑城者的贝洛伯格")], 
+        [_("螺丝"), _("差分"), _("差分"), _("星体差分机")], 
+        [_("萨尔"), _("停转"), _("停转"), _("停转的萨尔索图")], 
+        [_("利亚"), _("盗贼"), _("击破"), _("盗贼公国塔利亚")], 
+        [_("瓦克"), _("瓦克"), _("翁瓦克"), _("生命的翁瓦克")], 
+        [_("泰科"), _("繁星"), _("繁星"), _("繁星竞技场")], 
+        [_("伊须"), _("龙骨"), _("龙骨"), _("折断的龙骨")]
         ], dtype=np.str_)
-    """遗器套装名称：0-套装散件的共有词(ocr-必须)，1-套装简称(ocr-可选，为了增强鲁棒性)，2-套装全称(json)，已按[1.4游戏]遗器筛选界面排序"""
+    """遗器套装名称：0-套装散件名的共有词(ocr-必须)，1-套装名的特异词(ocr-可选，为了增强鲁棒性)，2-玩家惯用简称(print)，3-套装全称(json)，已按[1.4游戏]遗器筛选界面排序"""
     stats_name = np.array([
-        [_("命值"), _("生命值")], [_("击力"), _("攻击力")], [_("防御"), _("防御力")], 
-        [_("命值"), _("生命值%")], [_("击力"), _("攻击力%")], [_("防御"), _("防御力%")],
-        [_("度"), _("速度")], [_("击率"), _("暴击率")], [_("击伤"), _("暴击伤害")], [_("命中"), _("效果命中")], [_("治疗"), _("治疗量加成")],
-        [_("理"), _("物理属性伤害")], [_("火"), _("火属性伤害")], [_("冰"), _("冰属性伤害")], [_("雷"), _("雷属性伤害")], [_("风"), _("风属性伤害")], 
-        [_("量"), _("量子属性伤害")], [_("数"), _("虚数属性伤害")], 
-        [_("抵抗"), _("效果抵抗")], [_("破"), _("击破特攻")], [_("恢复"), _("能量恢复效率")]
+        [_("命值"), _("生"), _("生命值")], [_("击力"), _("攻"), _("攻击力")], [_("防御"), _("防"), _("防御力")], 
+        [_("命值"), _("生"), _("生命值%")], [_("击力"), _("攻"), _("攻击力%")], [_("防御"), _("防"), _("防御力%")],
+        [_("度"), _("速"), _("速度")], [_("击率"), _("暴击"), _("暴击率")], [_("击伤"), _("爆伤"), _("暴击伤害")], [_("命中"), _("命中"), _("效果命中")], [_("治疗"), _("治疗"), _("治疗量加成")],
+        [_("理"), _("伤害"), _("物理属性伤害")], [_("火"), _("火伤"), _("火属性伤害")], [_("冰"), _("冰伤"), _("冰属性伤害")], [_("雷"), _("雷伤"), _("雷属性伤害")], [_("风"), _("风伤"), _("风属性伤害")], 
+        [_("量"), _("量子"), _("量子属性伤害")], [_("数"), _("虚数"), _("虚数属性伤害")], 
+        [_("抵抗"), _("效果抵抗"), _("效果抵抗")], [_("破"), _("击破"), _("击破特攻")], [_("恢复"), _("能"), _("能量恢复效率")]
         ], dtype=np.str_)
-    """遗器属性名称：0-属性简称(ocr-不区分大小词条)，1-属性全称(json-区分大小词条)"""
+    """遗器属性名称：0-属性名的特异词(ocr-不区分大小词条)，1-玩家惯用简称(print)，2-属性全称(json-区分大小词条)"""
     not_pre_stats = [_("生命值"), _("攻击力"), _("防御力"), _("速度")]
     """遗器的整数属性名称"""
     base_stats_name = np.concatenate((stats_name[:2],stats_name[3:-3],stats_name[-2:]), axis=0)
@@ -228,12 +231,13 @@ class Relic:
             log.info(_("当前人物配装记录为空"))
             return
         title = _("请选择将要进行装备的配装：")
-        options = list(character_data.keys())
+        options_map = {str_just(loadout_name, 12) + self.get_loadout_brief(hash_list): hash_list for loadout_name, hash_list in character_data.items()}
+        options = list(options_map.keys())
         options.append(_("返回上一级"))
         option = questionary.select(title, options).ask()
         if option == _("返回上一级"):
             return
-        relic_hash = character_data[option]
+        relic_hash = options_map[option]
         # 进行配装
         self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器，进入[人物]-[遗器]界面
         time.sleep(0.5)
@@ -255,6 +259,7 @@ class Relic:
         """
         equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
         relic_filter = self.Relic_filter(self.calculated)   # 遗器筛选器初始化
+        relic_set_name_dict = Array2dict(self.relic_set_name)
         for equip_indx, equip_pos in enumerate(equip_pos_list):   # 遗器部位循环
             # 选择部位
             log.info(_(f"选择部位：{self.equip_set_name[equip_indx]}"))
@@ -264,7 +269,7 @@ class Relic:
             tmp_hash = relics_hash[equip_indx]
             tmp_data = self.relics_data[tmp_hash]
             log.debug(tmp_hash)
-            relic_set_index = np.where(self.relic_set_name[:, -1] == tmp_data["relic_set"])[0][0]
+            relic_set_index = relic_set_name_dict[tmp_data["relic_set"]]
             rarity = tmp_data["rarity"]
             # 筛选遗器 (加快遗器搜索)
             relic_filter.do(relic_set_index, rarity)
@@ -721,13 +726,15 @@ class Relic:
         pre = " " if name in self.not_pre_stats else "%"
         print(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
         print(_("副词条:"))
+        subs_stats_dict = Array2dict(self.subs_stats_name)
         for name, value in data["subs_stats"].items():
             pre = " " if name in self.not_pre_stats else "%"
             if not self.is_detail or data["rarity"] not in [4,5]:    # 不满足校验条件
                 print(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
                 continue
+            stats_index = subs_stats_dict[name]
             # 增强信息并校验数据
-            ret = self.get_subs_stats_detail((name, value), data["rarity"])
+            ret = self.get_subs_stats_detail((name, value), data["rarity"], stats_index)
             if ret:  # 数据校验成功
                 level, score, result = ret
                 tag = '>'*(level-1)   # 强化次数的标识
@@ -736,7 +743,34 @@ class Relic:
                 print(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))           
         print('-'*50)
 
-    def get_subs_stats_detail(self, data:tuple[str, float], rarity:int=5, stats_index:int=None) -> tuple[int, int, float]:
+    def get_loadout_brief(self, relics_hash:list[str]) -> str:
+        """
+        说明：
+            获取配装的简要信息 (包含内外圈套装信息与主词条信息)
+        """
+        set_abbr_dict = Array2dict(self.relic_set_name, -1, 2)
+        stats_abbr_dict = Array2dict(self.base_stats_name, -1, 1)
+        outer_set_list, inner_set_list, base_stats_list = [], [], []
+        # 获取遗器数据
+        for equip_indx in range(len((relics_hash))):
+            tmp_data = self.relics_data[relics_hash[equip_indx]]
+            tmp_set = set_abbr_dict[tmp_data["relic_set"]]
+            tmp_base_stats = stats_abbr_dict[list(tmp_data["base_stats"].keys())[0]]
+            base_stats_list.append(tmp_base_stats)
+            if equip_indx < 4:
+                outer_set_list.append(tmp_set)  # 外圈
+            else:
+                inner_set_list.append(tmp_set)  # 内圈
+        outer_set_cnt = Counter(outer_set_list)
+        inner_set_cnt = Counter(inner_set_list)
+        # 生成信息
+        msg =  "外:" + '+'.join([str(cnt) + name for name, cnt in outer_set_cnt.items()]) + "  "
+        msg += "内:" + '+'.join([str(cnt) + name for name, cnt in inner_set_cnt.items()]) + "  "
+        # msg += " ".join([self.equip_set_abbr[idx]+":"+name for idx, name in enumerate(base_stats_list) if idx > 1])
+        msg += ".".join([name for idx, name in enumerate(base_stats_list) if idx > 1])   # 排除头部与手部
+        return msg
+
+    def get_subs_stats_detail(self, data:tuple[str, float], rarity:int, stats_index:int = None) -> tuple[int, int, float]:
         """
         说明：
             计算副词条的详细信息 (如强化次数、档位积分，以及提高原数据的小数精度)
