@@ -699,7 +699,7 @@ class calculated(CV_Tools):
             log.info(data)
             # show_img(img_fp)
             timestamp_str = str(int(datetime.timestamp(datetime.now())))
-            cv.imwrite(f"log/image/relic_{str(points)}_{timestamp_str}.png", img_fp)
+            cv.imwrite(f"logs/image/relic_{str(points)}_{timestamp_str}.png", img_fp)
         else:
             log.debug(data)
         return data
@@ -875,6 +875,12 @@ class calculated(CV_Tools):
                     break
         else:
             log.info(_('没找到窗口{title}').format(title=self.title))
+        time.sleep(dt)
+
+    def switch_cmd(self, dt=0.1):
+        time.sleep(dt)
+        log.debug(self.cmd.title)
+        self.cmd.activate()
         time.sleep(dt)
 
     def open_map(self, open_key):

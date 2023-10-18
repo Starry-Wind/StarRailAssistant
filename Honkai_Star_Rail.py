@@ -293,6 +293,11 @@ class SRA:
         if option in self.option_list:
             (start, role_list) = self.choose_map(option) if not start else (start, role_list)
             if start:
+                if option == _("遗器模块"):     # 遗器模块此时不需要将游戏窗口激活
+                    log.info(_("遗器模块初始化中..."))
+                    relic = Relic(game_title)
+                    relic.relic_entrance()
+                    return True
                 log.info(_("脚本将自动切换至游戏窗口，请保持游戏窗口激活"))
                 calculated(game_title, start=False).switch_window()
                 time.sleep(0.5)
@@ -310,11 +315,6 @@ class SRA:
                 elif option == _("派遣委托"):
                     commission = Commission(4, game_title)
                     commission.start()  # 读取配置
-                elif option == _("遗器模块"):
-                    log.info(_("遗器模块初始化中..."))
-                    relic = Relic(game_title)
-                    relic.relic_entrance()
-                    return True
             else:
                 raise Exception(role_list)
         else:

@@ -203,12 +203,15 @@ class Relic:
         options = [_("保存当前人物的配装"), _("读取当前人物的配装"), _("识别当前遗器的数据"), _("返回主菜单")]
         option = None  # 保存上一次的选择
         while True:
+            self.calculated.switch_cmd()
             option = questionary.select(title, options, default=option).ask()
             if option == _("保存当前人物的配装"):
+                self.calculated.switch_window()
                 self.save_loadout_for_char()
             elif option == _("读取当前人物的配装"):
                 self.equip_loadout_for_char()
             elif option == _("识别当前遗器的数据"):
+                self.calculated.switch_window()
                 data = self.try_ocr_relic()
                 self.print_relic(data)
             elif option == _("返回主菜单"):
@@ -241,6 +244,7 @@ class Relic:
         if option == _("返回上一级"):
             return
         relic_hash = options_map[option]
+        self.calculated.switch_window()
         # 进行配装
         self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器，进入[人物]-[遗器]界面
         time.sleep(0.5)
@@ -344,12 +348,14 @@ class Relic:
                 self.add_relic_data(tmp_data, tmp_hash)
             relics_hash.append(tmp_hash)
         log.info(_("配装识别完毕"))
+        self.calculated.switch_cmd()
         loadout_name = input(_(">>>>命名配装名称: "))  # 需作为字典key值，确保唯一性 (但不同的人物可以有同一配装名称)
         while loadout_name in character_data:
             loadout_name = input(_(">>>>命名冲突，请重命名: "))
         character_data[loadout_name] = relics_hash
         self.loadout_data = modify_json_file(LOADOUT_FILE_NAME, character_name, character_data)
         log.info(_("配装录入成功"))
+        self.calculated.switch_window()
     
     class Relic_filter:
         """
@@ -422,6 +428,7 @@ class Relic:
                 self.calculated.relative_swipe((30,60) if IS_PC else (30,62), (30,31) if IS_PC else (30,27)) # 整页翻动 (此界面的动态延迟较大)
                 if i != last_page:  # 非末页，将翻页的动态延迟暂停 (末页会有个短暂反弹动画后自动停止)
                     self.calculated.relative_click((35,35) if IS_PC else (35,32), 0.5)   # 长按选中
+                    time.sleep(0.5)
                     self.calculated.relative_click((35,35) if IS_PC else (35,32))        # 取消选中
             points = ((28,33,42,63) if is_left else (53,33,67,63)) if IS_PC else ((22,29,41,65) if is_left else (53,29,72,65))
             self.calculated.ocr_click(Relic.relic_set_name[relic_set_index, 1], points=points)
@@ -582,7 +589,7 @@ class Relic:
         返回：
             :return character_name: 人物名称
         """
-        str = self.calculated.ocr_pos_for_single_line(points=(10,6,18,9) if IS_PC else (13,4,22,9))   # 识别人物名称 (主角名称为玩家自定义，无法适用预选列表)
+        str = self.calculated.ocr_pos_for_single_line(points=(10.4,6,18,9) if IS_PC else (13,4,22,9))   # 识别人物名称 (主角名称为玩家自定义，无法适用预选列表)
         character_name = re.sub(r"[.’,，。、·'-_——\"/\\]", '', str)   # 删除由于背景光点造成的误判
         log.info(_(f"识别人物: {character_name}"))
         if character_name not in self.loadout_data:
@@ -656,7 +663,7 @@ class Relic:
             raise RelicOCRException(_("遗器等级OCR错误"))
         # [5]主属性识别
         name_list = self.base_stats_name4equip[equip_set_index][:, 0].tolist()
-        base_stats_index = self.calculated.ocr_pos_for_single_line(name_list, points=(79,25,92,29) if IS_PC else (74,29,89,34), img_pk=img_pc)
+        base_stats_index = self.calculated.ocr_pos_for_single_line(name_list, points=(79.5,25,92,29) if IS_PC else (74,29,89,34), img_pk=img_pc)
         base_stats_value = self.calculated.ocr_pos_for_single_line(points=(93,25,98,29) if IS_PC else (91,29,98,34), number=True, img_pk=img_pc)
         if base_stats_index < 0: 
             raise RelicOCRException(_("遗器主词条OCR错误"))
@@ -669,7 +676,7 @@ class Relic:
         base_stats_value = float(base_stats_value)
         base_stats_name = str(self.base_stats_name4equip[equip_set_index][base_stats_index, -1])
         # [6]副属性识别 (词条数量 2-4)
-        subs_stats_name_points =  [(79,29,85,33),(79,33,85,36.5),(79,36.5,85,40),(79,40,85,44)] if IS_PC else [(74,35,81,38),(74,39,81,43),(74,44,81,47),(74,48,81,52)]
+        subs_stats_name_points =  [(79.5,29,85,33),(79.5,33,85,36.5),(79.5,36.5,85,40),(79.5,40,85,44)] if IS_PC else [(74,35,81,38),(74,39,81,43),(74,44,81,47),(74,48,81,52)]
         subs_stats_value_points = [(93,29,98,33),(93,33,98,36.5),(93,36.5,98,40),(93,40,98,44)] if IS_PC else [(92,35,98,38),(92,39,98,43),(92,44,98,47),(92,48,98,52)]
         name_list = self.subs_stats_name[:, 0].tolist()
         subs_stats_dict = {}
