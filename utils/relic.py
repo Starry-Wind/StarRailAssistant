@@ -330,7 +330,7 @@ class Relic:
             self.calculated.relative_click(equip_pos)
             time.sleep(1)
             tmp_data = self.try_ocr_relic(equip_indx, max_retries)
-            tmp_hash = self.calculated.get_data_hash(tmp_data, self.relic_data_filter)
+            tmp_hash = get_data_hash(tmp_data, self.relic_data_filter)
             log.debug("\n"+pp.pformat(tmp_data))
             self.print_relic(tmp_data)
             if tmp_hash in self.relics_data:
@@ -454,7 +454,7 @@ class Relic:
                 log.info(f"({i+1},{j+1},{len(pre_pos)})")  # 显示当前所识别遗器的方位与序列号
                 tmp_data = self.try_ocr_relic(equip_indx, max_retries)
                 # log.info("\n"+pp.pformat(tmp_data))
-                tmp_hash = self.calculated.get_data_hash(tmp_data)
+                tmp_hash = get_data_hash(tmp_data)
                 if key_hash and key_hash == tmp_hash:  # 精确匹配
                     return (x, y)
                 if key_data and self.is_fuzzy_match and self.compare_relics(key_data, tmp_data):  # 模糊匹配
@@ -513,7 +513,7 @@ class Relic:
         relics_data_copy = self.relics_data.copy()  # 字典迭代过程中不允许修改key
         cnt = 0
         for old_hash, data in relics_data_copy.items():
-            new_hash = self.calculated.get_data_hash(data, self.relic_data_filter)
+            new_hash = get_data_hash(data, self.relic_data_filter)
             if old_hash != new_hash:
                 equip_indx = equip_set_dict[data["equip_set"]]
                 log.debug(f"(old={old_hash}, new={new_hash})")
@@ -563,7 +563,7 @@ class Relic:
             录入仪器数据
         """
         if not data_hash:
-            data_hash = self.calculated.get_data_hash(data, self.relic_data_filter)
+            data_hash = get_data_hash(data, self.relic_data_filter)
         if data_hash not in self.relics_data:
             self.relics_data = modify_json_file(RELIC_FILE_NAME, data_hash, data) # 返回更新后的字典
             return True
