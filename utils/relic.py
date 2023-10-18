@@ -166,7 +166,7 @@ class Relic:
         """
         if sra_config_obj.language != "zh_CN":
             raise Exception(_("暂不支持简体中文之外的语言"))
-        self.calculated = calculated(title)
+        self.calculated = calculated(title, rec_root="model/cnocr_for_relic")
 
         self.is_fuzzy_match = sra_config_obj.fuzzy_match_for_relic
         """是否在遗器搜索时开启模糊匹配"""
