@@ -647,7 +647,7 @@ class Relic:
             raise RelicOCRException(_("遗器等级OCR错误"))
         # [5]主属性识别
         name_list = self.base_stats_name4equip[equip_set_index][:, 0].tolist()
-        base_stats_index = self.calculated.ocr_pos_for_single_line(name_list, points=(79,25,92,29) if IS_PC else (74,29,89,34), img_pk=img_pc)
+        base_stats_index = self.calculated.ocr_pos_for_single_line(name_list, points=(79.5,25,92,29) if IS_PC else (74,29,89,34), img_pk=img_pc)
         base_stats_value = self.calculated.ocr_pos_for_single_line(points=(93,25,98,29) if IS_PC else (91,29,98,34), number=True, img_pk=img_pc)
         if base_stats_index < 0: 
             raise RelicOCRException(_("遗器主词条OCR错误"))
@@ -660,7 +660,7 @@ class Relic:
         base_stats_value = float(base_stats_value)
         base_stats_name = str(self.base_stats_name4equip[equip_set_index][base_stats_index, -1])
         # [6]副属性识别 (词条数量 2-4)
-        subs_stats_name_points =  [(79,29,85,33),(79,33,85,36.5),(79,36.5,85,40),(79,40,85,44)] if IS_PC else [(74,35,81,38),(74,39,81,43),(74,44,81,47),(74,48,81,52)]
+        subs_stats_name_points =  [(79.5,29,85,33),(79.5,33,85,36.5),(79.5,36.5,85,40),(79.5,40,85,44)] if IS_PC else [(74,35,81,38),(74,39,81,43),(74,44,81,47),(74,48,81,52)]
         subs_stats_value_points = [(93,29,98,33),(93,33,98,36.5),(93,36.5,98,40),(93,40,98,44)] if IS_PC else [(92,35,98,38),(92,39,98,43),(92,44,98,47),(92,48,98,52)]
         name_list = self.subs_stats_name[:, 0].tolist()
         subs_stats_dict = {}
