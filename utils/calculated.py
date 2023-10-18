@@ -32,7 +32,7 @@ from .log import log
 
 class calculated(CV_Tools):
 
-    def __init__(self, title=_("崩坏：星穹铁道"), det_model_name="ch_PP-OCRv3_det", rec_model_name= "densenet_lite_114-fc", number=False, start=True):
+    def __init__(self, title=_("崩坏：星穹铁道"), det_model_name="ch_PP-OCRv3_det", rec_model_name= "densenet_lite_114-fc", det_root="model/cnstd", rec_root="model/cnocr", number=False, start=True):
         """
         参数: 
             :param det_model_name: 文字定位模型
@@ -56,7 +56,7 @@ class calculated(CV_Tools):
                 dir = sys._MEIPASS
             else:
                 dir = Path()
-            det_root, rec_root = os.path.join(dir, "model/cnstd"), os.path.join(dir, "model/cnocr")
+            det_root, rec_root = os.path.join(dir, det_root), os.path.join(dir, rec_root)
             self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name, rec_vocab_fp="model/cnocr/label_cn.txt", det_root=det_root, rec_root=rec_root) if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnstd", rec_root="./model/cnocr", cand_alphabet='0123456789')
             self.number_ocr = CnOcr(det_model_name=det_model_name, rec_model_name="en_number_mobile_v2.0", det_root=det_root, rec_root=rec_root, cand_alphabet='0123456789.+%')
             #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
