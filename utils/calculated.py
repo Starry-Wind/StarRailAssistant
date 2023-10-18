@@ -1027,3 +1027,15 @@ class Array2dict:
     def __getitem__(self, key):
         return self.data_dict[key]
     
+    
+def str_just(text:str, width:int, left = True):
+    """
+    说明：
+        封装str.rjust()&str.ljust()，以适应中文字符的实际宽度
+    """
+    ch_cnt = (len(text.encode('utf-8')) - len(text)) // 2   # 中文字符的个数
+    if left:
+        return text.ljust(width-ch_cnt)
+    else:
+        return text.rjust(width-ch_cnt)
+    
