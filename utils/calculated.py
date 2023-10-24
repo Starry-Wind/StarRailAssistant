@@ -32,7 +32,7 @@ from .log import log
 
 class calculated(CV_Tools):
 
-    def __init__(self, title=_("崩坏：星穹铁道"), det_model_name="ch_PP-OCRv3_det", rec_model_name= "densenet_lite_114-fc", number=False, start=True):
+    def __init__(self, title=_("崩坏：星穹铁道"), det_model_name="ch_PP-OCRv3_det", rec_model_name= "densenet_lite_114-fc", det_root="model/cnstd", rec_root="model/cnocr", number=False, start=True):
         """
         参数: 
             :param det_model_name: 文字定位模型
@@ -56,9 +56,9 @@ class calculated(CV_Tools):
                 dir = sys._MEIPASS
             else:
                 dir = Path()
-            det_root, rec_root = os.path.join(dir, "model/cnstd"), os.path.join(dir, "model/cnocr")
+            det_root, rec_root = os.path.join(dir, det_root), os.path.join(dir, rec_root)
             self.ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name, rec_vocab_fp="model/cnocr/label_cn.txt", det_root=det_root, rec_root=rec_root) if not number else CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name,det_root="./model/cnstd", rec_root="./model/cnocr", cand_alphabet='0123456789')
-            self.number_ocr = CnOcr(det_model_name=det_model_name, rec_model_name=rec_model_name, det_root=det_root, rec_root=rec_root, cand_alphabet='0123456789.+%')
+            self.number_ocr = CnOcr(det_model_name=det_model_name, rec_model_name="en_number_mobile_v2.0", det_root=det_root, rec_root=rec_root, cand_alphabet='0123456789.+%')
             #self.ocr = CnOcr(det_model_name='db_resnet34', rec_model_name='densenet_lite_114-fc')
         self.check_list = lambda x,y: re.match(x, str(y)) != None
         self.compare_lists = lambda a, b: all(x <= y for x, y in zip(a, b))
@@ -441,7 +441,7 @@ class calculated(CV_Tools):
         time.sleep(0.1)
         if self.has_red((4, 7, 10, 19)):
             while True:
-                result = self.get_pix_hsv(pos=(40, 62))
+                result = self.get_pix_hsv(game_pos=(40, 62))
                 log.debug(f"进入战斗取色: {result}")
                 if self.compare_lists([0, 0, 222], result) and self.compare_lists(result, [0, 0, 255]):
                     self.click()
@@ -454,7 +454,7 @@ class calculated(CV_Tools):
             self.wait_fight_end()
             return True
         time.sleep(0.2)
-        result = self.get_pix_hsv(pos=(40, 62))
+        result = self.get_pix_hsv(game_pos=(40, 62))
         log.debug(f"进入战斗取色: {result}")
         if not (self.compare_lists([0, 0, 225], result) and self.compare_lists(result, [0, 0, 255])):
             self.wait_fight_end() # 无论是否识别到敌人都判断是否结束战斗，反正怪物袭击
@@ -463,10 +463,10 @@ class calculated(CV_Tools):
     def check_fighting(self):
         while True:
             if (
-                self.compare_lists([0, 0, 222], self.get_pix_hsv(pos=(1435, 58))) and
-                self.compare_lists(self.get_pix_hsv(pos=(1435, 58)), [0, 0, 240]) and
-                self.compare_lists([20, 90, 80], self.get_pix_hsv(pos=(88, 979))) and
-                self.compare_lists(self.get_pix_hsv(pos=(88, 979)), [25, 100, 90])
+                self.compare_lists([0, 0, 222], self.get_pix_hsv(game_pos=(1435, 58))) and
+                self.compare_lists(self.get_pix_hsv(game_pos=(1435, 58)), [0, 0, 240]) and
+                self.compare_lists([20, 90, 80], self.get_pix_hsv(game_pos=(88, 979))) and
+                self.compare_lists(self.get_pix_hsv(game_pos=(88, 979)), [25, 100, 90])
             ):
                 log.info(_("未在战斗状态"))
                 break
@@ -502,10 +502,10 @@ class calculated(CV_Tools):
         while True:
             if type == 0:
                 if (
-                    self.compare_lists([0, 0, 222], self.get_pix_hsv(pos=(1435, 58))) and
-                    self.compare_lists(self.get_pix_hsv(pos=(1435, 58)), [0, 0, 240]) and
-                    self.compare_lists([20, 90, 80], self.get_pix_hsv(pos=(88, 979))) and
-                    self.compare_lists(self.get_pix_hsv(pos=(88, 979)), [25, 100, 90])
+                    self.compare_lists([0, 0, 222], self.get_pix_hsv(game_pos=(1435, 58))) and
+                    self.compare_lists(self.get_pix_hsv(game_pos=(1435, 58)), [0, 0, 240]) and
+                    self.compare_lists([20, 90, 80], self.get_pix_hsv(game_pos=(88, 979))) and
+                    self.compare_lists(self.get_pix_hsv(game_pos=(88, 979)), [25, 100, 90])
                 ):
                     log.info(_("完成自动战斗"))
                     break
@@ -574,7 +574,7 @@ class calculated(CV_Tools):
         self.keyboard.press(com)
         start_time = time.perf_counter()
         if sra_config_obj.sprint:
-            result = self.get_pix_rgb(pos=(1712, 958))
+            result = self.get_pix_rgb(game_pos=(1712, 958))
             if (self.compare_lists(result, [130, 160, 180]) or self.compare_lists([200, 200, 200], result)):
                 time.sleep(0.05)
                 log.info("疾跑")
@@ -699,18 +699,40 @@ class calculated(CV_Tools):
             log.info(data)
             # show_img(img_fp)
             timestamp_str = str(int(datetime.timestamp(datetime.now())))
-            cv.imwrite(f"log/image/relic_{str(points)}_{timestamp_str}.png", img_fp)
+            cv.imwrite(f"logs/image/relic_{str(points)}_{timestamp_str}.png", img_fp)
         else:
             log.debug(data)
         return data
-
-    def get_pix_rgb(self, desktop_pos: Union[tuple, None]=None, pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
+    
+    def get_relative_pix_rgb(self, game_pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
         """
         说明：
-            获取指定坐标的BGR颜色
+            获取相对坐标的BGR颜色
+        参数：
+            :param game_pos: 游戏图片的相对坐标
+        返回:
+            :return rgb: 颜色
+        """
+        return self.get_pix_rgb(game_pos=self.rp2ap(game_pos), points=points)
+    
+    def get_relative_pix_hsv(self, game_pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
+        """
+        说明：
+            获取相对坐标的HSV颜色
+        参数：
+            :param game_pos: 游戏图片的相对坐标
+        返回:
+            :return hsv: 颜色
+        """
+        return self.get_pix_hsv(game_pos=self.rp2ap(game_pos), points=points)
+
+    def get_pix_rgb(self, desktop_pos: Union[tuple, None]=None, game_pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
+        """
+        说明：
+            获取绝对坐标的BGR颜色
         参数：
             :param desktop_pos: 包含桌面的坐标
-            :param pos: 图片的坐标
+            :param game_pos: 游戏图片的绝对坐标
         返回:
             :return rgb: 颜色
         """
@@ -719,22 +741,22 @@ class calculated(CV_Tools):
         if desktop_pos:
             x = int(desktop_pos[0])-int(left)
             y = int(desktop_pos[1])-int(top)
-        elif pos:
-            x = int(pos[0])
-            y = int(pos[1])
+        elif game_pos:
+            x = int(game_pos[0])
+            y = int(game_pos[1])
         rgb = img[y, x]
         blue = img[y, x, 0]
         green = img[y, x, 1]
         red = img[y, x, 2]
         return [blue,green,red]
 
-    def get_pix_hsv(self, desktop_pos: Union[tuple, None]=None, pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
+    def get_pix_hsv(self, desktop_pos: Union[tuple, None]=None, game_pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
         """
         说明：
-            获取指定坐标的HSV颜色
+            获取绝对坐标的HSV颜色
         参数：
             :param desktop_pos: 包含桌面的坐标
-            :param pos: 图片的坐标
+            :param game_pos: 游戏图片的绝对坐标
         返回:
             :return hsv: 颜色
         """
@@ -743,9 +765,9 @@ class calculated(CV_Tools):
         if desktop_pos:
             x = int(desktop_pos[0])-int(left)
             y = int(desktop_pos[1])-int(top)
-        elif pos:
-            x = int(pos[0])
-            y = int(pos[1])
+        elif game_pos:
+            x = int(game_pos[0])
+            y = int(game_pos[1])
         hsv = HSV[y, x]
         hue = HSV[y, x, 0]     # 色相
         satu = HSV[y, x, 1]    # 饱和度
@@ -811,7 +833,7 @@ class calculated(CV_Tools):
         join_time = sra_config_obj.join_time
         while True:
             '''
-            result = self.get_pix_r(pos=(960, 86))
+            result = self.get_pix_rgb(pos=(960, 86))
             log.info(result)
             endtime = time.time() - start_time
             if self.compare_lists([222, 222, 116], result):
@@ -828,7 +850,7 @@ class calculated(CV_Tools):
                 return endtime
             '''
             endtime = time.time() - start_time
-            result = self.get_pix_hsv(pos=(40, 62))
+            result = self.get_pix_hsv(game_pos=(40, 62))
             log.debug(result)
             if self.compare_lists([0, 0, 222], result):
                 log.info(_("已进入地图"))
@@ -855,6 +877,12 @@ class calculated(CV_Tools):
             log.info(_('没找到窗口{title}').format(title=self.title))
         time.sleep(dt)
 
+    def switch_cmd(self, dt=0.1):
+        time.sleep(dt)
+        log.debug(self.cmd.title)
+        self.cmd.activate()
+        time.sleep(dt)
+
     def open_map(self, open_key):
         while True:
             self.keyboard.press(open_key)
@@ -879,10 +907,10 @@ class calculated(CV_Tools):
         time.sleep(0.3) # 缓冲
         while True:            
             if (
-                self.compare_lists([0, 0, 222], self.get_pix_hsv(pos=(1435, 58))) and
-                self.compare_lists(self.get_pix_hsv(pos=(1435, 58)), [0, 0, 240]) and
-                self.compare_lists([20, 90, 80], self.get_pix_hsv(pos=(88, 979))) and
-                self.compare_lists(self.get_pix_hsv(pos=(88, 979)), [25, 100, 90])
+                self.compare_lists([0, 0, 222], self.get_pix_hsv(game_pos=(1435, 58))) and
+                self.compare_lists(self.get_pix_hsv(game_pos=(1435, 58)), [0, 0, 240]) and
+                self.compare_lists([20, 90, 80], self.get_pix_hsv(game_pos=(88, 979))) and
+                self.compare_lists(self.get_pix_hsv(game_pos=(88, 979)), [25, 100, 90])
             ):
                 log.info(_("完成入画"))
                 break
@@ -961,12 +989,58 @@ class calculated(CV_Tools):
         else:
             return False
 
-    def get_data_hash(self, data) -> str:
+
+class Array2dict:
+
+    def __init__(self, arr:np.ndarray, key_index:int = -1, value_index:int = None):
         """
         说明：
-            求任意类型数据 (包括list和dict) 的哈希值
-            首先将数据规范化输出为str，再计算md5转16进制
+            将np数组转化为字典暂住内存，用于对数组短时间内的频繁查找
+        参数:
+            :param arr: 二维数组
+            :param key_index: 待查找的关键字所在的数组列标
+            :param value_index: 待查找的数值所在的数组列标 (为空时表示查找关键字的行标)
         """
-        # pprint默认sort_dicts=True，对键值进行排序，以确保字典类型数据的唯一性
-        return hashlib.md5(pprint.pformat(data).encode('utf-8')).hexdigest()
+        if arr.ndim != 2:
+            raise ValueError("输入的数组必须为二维数组")
+        # 将np数组转化为字典
+        if value_index is None:  # 默认将key的行标作为value，以取代np.where
+            self.data_dict = {row[key_index]: idx for idx, row in enumerate(arr)}
+        else:
+            self.data_dict = {row[key_index]: row[value_index] for row in arr}
+        log.debug(self.data_dict)
+
+    def __getitem__(self, key):
+        return self.data_dict[key]
+    
+def get_data_hash(data:Any, key_filter:list[str] = None) -> str:
+    """
+    说明：
+        求任意类型数据 (包括list和dict) 的哈希值
+        首先将数据规范化输出为str，再计算md5转16进制
+    参数:
+        :param data: 任意类型数据
+        :param key_filter: 键值过滤器
+    """
+    if not key_filter:
+        tmp_data = data
+    elif type(data) is dict:
+        tmp_data = dict(data).copy()    # 注意dict'='为引用传递，此处需拷贝副本
+        [tmp_data.pop(key) if key in tmp_data else None for key in key_filter]
+    else:
+        log.eror(_("不支持dict以外类型的类型使用键值过滤器"))
+        return None
+    # pprint默认sort_dicts=True，对键值进行排序，以确保字典类型的唯一性
+    return hashlib.md5(pprint.pformat(tmp_data).encode('utf-8')).hexdigest()
+    
+def str_just(text:str, width:int, left = True):
+    """
+    说明：
+        封装str.rjust()&str.ljust()，以适应中文字符的实际宽度
+    """
+    ch_cnt = (len(text.encode('utf-8')) - len(text)) // 2   # 中文字符的个数
+    if left:
+        return text.ljust(width-ch_cnt)
+    else:
+        return text.rjust(width-ch_cnt)
     
