@@ -5,6 +5,7 @@ import pprint
 import questionary
 import numpy as np
 from collections import Counter
+from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
 from .calculated import calculated, Array2dict, get_data_hash, str_just
 from .config import (read_json_file, modify_json_file, rewrite_json_file, 
@@ -256,7 +257,7 @@ class Relic:
         self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器]界面，返回[人物]界面
         time.sleep(1)
 
-    def equip_loadout(self, relics_hash:list[str]):
+    def equip_loadout(self, relics_hash:List[str]):
         """
         说明：
             装备当前[人物]-[遗器]-[遗器详情]页面内的指定遗器配装。
@@ -324,7 +325,7 @@ class Relic:
         self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器]界面，返回[人物]界面
         time.sleep(2)
 
-    def save_loadout(self, character_name:str=None, max_retries=3):
+    def save_loadout(self, character_name: Optional[str]=None, max_retries=3):
         """
         说明：
             保存当前[人物]-[遗器]-[遗器详情]界面内的遗器配装
@@ -367,7 +368,7 @@ class Relic:
         rarity_pos_list = [(77,38),(89,38),(77,42),(89,42)] if IS_PC else [(71,45),(86,45),(71,52),(86,52)]
         """稀有度筛选项的点击位点 (分别为2,3,4,5星稀有度)"""
 
-        def __init__(self, calculated:calculated):
+        def __init__(self, calculated: calculated):
             self.calculated = calculated
             # 记录上一次的筛选状态
             self.pre_relic_set_index = -1
@@ -375,7 +376,7 @@ class Relic:
             self.pre_rarity = -1
             """过去稀有度"""
         
-        def do(self, relic_set_index:int, rairty:int):
+        def do(self, relic_set_index: int, rairty: int):
             """
             说明：
                 在当前[人物]-[遗器]-[遗器详情]内进行遗器筛选
@@ -411,7 +412,7 @@ class Relic:
             ...  # 其他筛选条件
             self.calculated.relative_click((3,92) if IS_PC else (4,92))  # 任意点击筛选框外退出[遗器筛选]界面
 
-        def search_relic_set_for_filter(self, relic_set_index:int):
+        def search_relic_set_for_filter(self, relic_set_index: int):
             """
             说明：
                 在当前滑动[人物]-[遗器]-[遗器详情]-[遗器筛选]-[遗器套装筛选]界面内，搜索遗器套装名，并点击。
@@ -434,7 +435,8 @@ class Relic:
             self.calculated.ocr_click(Relic.relic_set_name[relic_set_index, 1], points=points)
 
 
-    def search_relic(self, equip_indx:int, key_hash:str=None, key_data:dict=None, overtime=180, max_retries=3) -> tuple[int, int]:
+    def search_relic(self, equip_indx: int, key_hash: Optional[str]=None, key_data: Optional[Dict[str, Any]]=None, overtime=180, max_retries=3
+                     ) -> Optional[tuple[int, int]]:
         """
         说明：
             在当前滑动[人物]-[遗器]-[遗器详情]界面内，搜索匹配的遗器。
@@ -496,7 +498,7 @@ class Relic:
                 break
         return None
     
-    def compare_relics(self, old_data:dict, new_data:dict) -> bool:
+    def compare_relics(self, old_data: Dict[str, Any], new_data: Dict[str, Any]) -> bool:
         """
         说明：
             比对两者遗器数据，判断新遗器是否为旧遗器升级后
@@ -514,7 +516,7 @@ class Relic:
                 return False
         return True
     
-    def check_relic_data_hash(self, updata=False):
+    def check_relic_data_hash(self, updata=False) -> bool:
         """
         说明：
             检查遗器数据是否发生手动修改 (应对json数据格式变动或手动矫正仪器数值)，
@@ -541,7 +543,7 @@ class Relic:
             log.error(_(f"发现 {cnt} 件遗器的哈希值校验失败"))
             return False
 
-    def updata_relic_data(self, old_hash:str, new_hash:str, equip_indx:int, new_data:dict=None, delete_old_data=False):
+    def updata_relic_data(self, old_hash: str, new_hash: str, equip_indx: int, new_data: Optional[Dict[str, Any]]=None, delete_old_data=False):
         """
         说明：
             更改仪器数据，先后修改遗器与配装文件
@@ -568,7 +570,7 @@ class Relic:
         rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
         # 队伍配装文件无需修改
         
-    def add_relic_data(self, data:dict, data_hash:str=None) -> bool:
+    def add_relic_data(self, data: Dict[str, Any], data_hash: Optional[str]=None) -> bool:
         """
         说明：
             录入仪器数据
@@ -597,7 +599,7 @@ class Relic:
             log.info(_("创建新人物"))
         return character_name
     
-    def try_ocr_relic(self, equip_set_index:int = None, max_retries = 3) -> dict:
+    def try_ocr_relic(self, equip_set_index:Optional[int]=None, max_retries=3) -> Dict[str, Any]:
         """
         说明：
             在规定次数内尝试OCR遗器数据
@@ -618,7 +620,7 @@ class Relic:
                 retry += 1
                 log.info(_(f"第 {retry} 次尝试重新OCR"))
         
-    def ocr_relic(self, equip_set_index:int = None) -> dict:
+    def ocr_relic(self, equip_set_index: Optional[int]=None) -> Dict[str, Any]:
         """
         说明：
             OCR当前静态[人物]-[遗器]-[遗器详情]界面内的遗器数据，单次用时约0.5s。
@@ -643,7 +645,7 @@ class Relic:
         if relic_set_index < 0: 
             raise RelicOCRException(_("遗器部位OCR错误"))
         relic_set_name = self.relic_set_name[relic_set_index, -1]
-        # [3] 稀有度识别
+        # [3]稀有度识别
         hue, __, __ = self.calculated.get_relative_pix_hsv((43,55) if IS_PC else (41,55))   # 识别指定位点色相
         log.debug(f"hue = {hue}")
         if hue < 40:     # [黄]模拟器测试结果的均值为 25
@@ -721,7 +723,7 @@ class Relic:
         log.info(f"用时\033[1;92m『{seconds:.1f}秒』\033[0m")
         return result_data
     
-    def print_relic(self, data:dict):
+    def print_relic(self, data: Dict[str, Any]):
         """
         说明：
             打印遗器信息，
@@ -753,7 +755,7 @@ class Relic:
                 print(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))           
         print('-'*50)
 
-    def get_loadout_brief(self, relics_hash:list[str]) -> str:
+    def get_loadout_brief(self, relics_hash: List[str]) -> str:
         """
         说明：
             获取配装的简要信息 (包含内外圈套装信息与主词条信息)
@@ -780,7 +782,7 @@ class Relic:
         msg += ".".join([name for idx, name in enumerate(base_stats_list) if idx > 1])   # 排除头部与手部
         return msg
 
-    def get_subs_stats_detail(self, data:tuple[str, float], rarity:int, stats_index:int = None) -> tuple[int, int, float]:
+    def get_subs_stats_detail(self, data: Tuple[str, float], rarity: int, stats_index: Optional[int]=None) -> Optional[Tuple[int, int, float]]:
         """
         说明：
             计算副词条的详细信息 (如强化次数、档位积分，以及提高原数据的小数精度)
