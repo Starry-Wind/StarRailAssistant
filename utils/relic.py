@@ -181,6 +181,8 @@ class Relic:
         """是否在遗器OCR时开启对副词条的数据验证 (关闭后，会将is_detail强制关闭)"""
         self.is_detail = sra_config_obj.detail_for_relic and self.is_check_stats
         """是否在打印遗器信息时显示详细信息 (如各副词条的强化次数、档位积分，以及提高原数据的小数精度)"""
+        self.ndigits: Literal[0, 1, 2, 3] = sra_config_obj.ndigits_for_relic
+        """在打印遗器信息时的小数精度"""
 
         # 读取json文件，仅初始化时检查格式规范
         self.relics_data = read_json_file(RELIC_FILE_NAME, schema=self.relics_schema)
@@ -750,7 +752,8 @@ class Relic:
             if ret:  # 数据校验成功
                 level, score, result = ret
                 tag = '>'*(level-1)   # 强化次数的标识
-                print(_("   {name:<4}\t{tag:<7}{value:>6.3f}{pre}   [{score}]").format(name=name, tag=tag, value=result, score=score, pre=pre))
+                print(_("   {name:<4}\t{tag:<7}{value:>7.{ndigits}f}{pre}   [{score}]").
+                      format(name=name, tag=tag, value=result, score=score, pre=pre, ndigits=self.ndigits))
             else:    # 数据校验失败
                 print(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))           
         print('-'*50)
@@ -814,7 +817,7 @@ class Relic:
         if score < 0:   # 总分小于零打补丁 (由于真实总分过大导致)
             level -= 1
             score = math.ceil((value - a_*level) / d - 1.e-6)
-        result = round(a*level + d*score, 3)                 # 四舍五入 (考虑浮点数运算的数值损失)
+        result = round(a*level + d*score, 4)                 # 四舍五入 (考虑浮点数运算的数值损失)
         # 校验数据
         check = result - value
         log.debug(f"[{a}, {d}], l={level}, s={score}, r={result}")
