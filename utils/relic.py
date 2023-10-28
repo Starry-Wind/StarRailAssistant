@@ -739,20 +739,21 @@ class Relic:
             打印遗器信息，
             可通过is_detail设置打印普通信息与拓展信息
         """
-        print(_("部位: {equip_set}").format(equip_set=data["equip_set"]))
-        print(_("套装: {relic_set}").format(relic_set=data["relic_set"]))
-        print(_("星级: {star}").format(star='★'*data["rarity"]))
-        print(_("等级: +{level}").format(level=data["level"]))
-        print(_("主词条:"))
+        token = []
+        token.append(_("部位: {equip_set}").format(equip_set=data["equip_set"]))
+        token.append(_("套装: {relic_set}").format(relic_set=data["relic_set"]))
+        token.append(_("星级: {star}").format(star='★'*data["rarity"]))
+        token.append(_("等级: +{level}").format(level=data["level"]))
+        token.append(_("主词条:"))
         name, value = list(data["base_stats"].items())[0]
         pre = " " if name in self.not_pre_stats else "%"
-        print(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
-        print(_("副词条:"))
+        token.append(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
+        token.append(_("副词条:"))
         subs_stats_dict = Array2dict(self.subs_stats_name)
         for name, value in data["subs_stats"].items():
             pre = " " if name in self.not_pre_stats else "%"
             if not self.is_detail or data["rarity"] not in [4,5]:    # 不满足校验条件
-                print(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
+                token.append(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
                 continue
             stats_index = subs_stats_dict[name]
             # 增强信息并校验数据
@@ -760,11 +761,12 @@ class Relic:
             if ret:  # 数据校验成功
                 level, score, result = ret
                 tag = '>'*(level-1)   # 强化次数的标识
-                print(_("   {name:<4}\t{tag:<7}{value:>7.{ndigits}f}{pre}   [{score}]").
+                token.append(_("   {name:<4}\t{tag:<7}{value:>7.{ndigits}f}{pre}   [{score}]").
                       format(name=name, tag=tag, value=result, score=score, pre=pre, ndigits=self.ndigits))
             else:    # 数据校验失败
-                print(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))           
-        print('-'*50)
+                token.append(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))           
+        token.append('-'*50)
+        print("\n".join(token))
 
     def get_loadout_brief(self, relics_hash: List[str]) -> str:
         """
