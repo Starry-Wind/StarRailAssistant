@@ -747,7 +747,11 @@ class Relic:
         token.append(_("主词条:"))
         name, value = list(data["base_stats"].items())[0]
         pre = " " if name in self.not_pre_stats else "%"
-        token.append(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
+        result = self.get_base_stats_detail((name, value), data["rarity"], data["level"])
+        if result:
+            token.append(_("   {name:<4}\t{value:>7.{ndigits}f}{pre}").format(name=name, value=result, pre=pre, ndigits=self.ndigits))
+        else:
+            token.append(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))
         token.append(_("副词条:"))
         subs_stats_dict = Array2dict(self.subs_stats_name)
         for name, value in data["subs_stats"].items():
@@ -794,6 +798,37 @@ class Relic:
         # msg += " ".join([self.equip_set_abbr[idx]+":"+name for idx, name in enumerate(base_stats_list) if idx > 1])
         msg += ".".join([name for idx, name in enumerate(base_stats_list) if idx > 1])   # 排除头部与手部
         return msg
+
+    def get_base_stats_detail(self, data: Tuple[str, float], rarity: int, level: int, stats_index: Optional[int]=None) -> Optional[float]:
+        """
+        说明：
+            计算主词条的详细信息 (提高原数据的小数精度)
+            可以作为主词条校验函数 (可以检测出大部分的OCR错误)
+            支持五星遗器与四星遗器
+        参数：
+            :param data: 遗器副词条键值对
+            :param stats_index: 遗器副词条索引
+            :param rarity: 遗器稀有度
+            :param level: 遗器等级
+        返回：
+            :return result: 修正后数值 (提高了原数值精度)
+        """
+        name, value = data
+        if not self.is_check_stats or rarity not in [4,5]:   # 仅支持五星遗器与四星遗器
+            return value
+        stats_index = np.where(self.base_stats_name[:, -1] == name)[0][0] if stats_index is None else stats_index
+        rarity_index = rarity - 4   # 0-四星，1-五星
+        a, d = self.base_stats_tier[rarity_index][stats_index]
+        result = round(a + d*level, 4)    # 四舍五入 (考虑浮点数运算的数值损失)
+        # 校验数据
+        check = result - value
+        log.debug(f"[{a}, {d}], l={level} r={result}")
+        if check < 0 or \
+            name in self.not_pre_stats and check >= 1 or \
+            name not in self.not_pre_stats and check >= 0.1:
+            log.error(_(f"校验失败，原数据或计算方法有误: {data}"))
+            return None
+        return result
 
     def get_subs_stats_detail(self, data: Tuple[str, float], rarity: int, stats_index: Optional[int]=None) -> Optional[Tuple[int, int, float]]:
         """
