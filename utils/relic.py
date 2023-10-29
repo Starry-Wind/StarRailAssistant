@@ -522,8 +522,9 @@ class Relic:
         for key in old_data["subs_stats"].keys():
             if key not in new_data["subs_stats"]:
                 return False
-            if old_data["subs_stats"][key] > new_data["subs_stats"][key]:
-                return False
+            if key == _("速度") and int(old_data["subs_stats"][key]) > int(new_data["subs_stats"][key]) or \
+                key != _("速度") and old_data["subs_stats"][key] > new_data["subs_stats"][key]:
+                return False        # 考虑手动提高速度数据精度的情况
         return True
     
     def check_relic_data_hash(self, updata=False) -> bool:
@@ -536,7 +537,7 @@ class Relic:
         relics_data_copy = self.relics_data.copy()  # 字典迭代过程中不允许修改key
         cnt = 0
         for old_hash, data in relics_data_copy.items():
-            new_hash = get_data_hash(data, self.relic_data_filter)
+            new_hash = get_data_hash(data, self.relic_data_filter, speed_modified=True)
             if old_hash != new_hash:
                 equip_indx = equip_set_dict[data["equip_set"]]
                 log.debug(f"(old={old_hash}, new={new_hash})")

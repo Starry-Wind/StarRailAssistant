@@ -1014,7 +1014,7 @@ class Array2dict:
     def __getitem__(self, key: Any) -> Any:
         return self.data_dict[key]
     
-def get_data_hash(data: Any, key_filter: Optional[List[str]]=None) -> str:
+def get_data_hash(data: Any, key_filter: Optional[List[str]]=None, speed_modified=False) -> str:
     """
     说明：
         求任意类型数据 (包括list和dict) 的哈希值
@@ -1022,12 +1022,14 @@ def get_data_hash(data: Any, key_filter: Optional[List[str]]=None) -> str:
     参数:
         :param data: 任意类型数据
         :param key_filter: 键值过滤器
+        :param speed_modified: 是否对速度属性进行修饰 (忽略小数位数值)
     """
     if not key_filter:
         tmp_data = data
-    elif type(data) is dict:
-        tmp_data = dict(data).copy()    # 注意dict'='为引用传递，此处需拷贝副本
-        [tmp_data.pop(key) if key in tmp_data else None for key in key_filter]
+    elif isinstance(data, dict):
+        tmp_data = {key: value for key, value in data.items() if key not in key_filter}
+        if speed_modified and _("速度") in tmp_data["subs_stats"]:
+            tmp_data["subs_stats"][_("速度")] = float(int(tmp_data["subs_stats"][_("速度")]))  # 去除小数部分
     else:
         raise ValueError(_("不支持dict以外类型的类型使用键值过滤器"))
     # pprint默认sort_dicts=True，对键值进行排序，以确保字典类型的唯一性
