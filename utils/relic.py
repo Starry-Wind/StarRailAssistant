@@ -108,26 +108,25 @@ class Relic:
         """
         ...
 
-    def equip_loadout_for_char(self):
+    def equip_loadout_for_char(self, character_name :Optional[str]=None):
         """
         说明：
             装备当前[人物]界面本人物的遗器配装
         """
         # 识别当前人物名称
-        character_name = self.ocr_character_name() 
+        character_name = self.ocr_character_name() if character_name is None else character_name
         character_data = self.loadout_data[character_name]
         # 选择配装
         if not character_data:  # 字典为空
             log.info(_("当前人物配装记录为空"))
             return
-        title = _("请选择将要进行装备的配装：")
-        options_map = {str_just(loadout_name, 12) + self.get_loadout_brief(hash_list): hash_list for loadout_name, hash_list in character_data.items()}
-        options = list(options_map.keys())
-        options.append(_("返回上一级"))
-        option = select(title, options).ask()
+        option = select(
+            _("请选择将要进行装备的配装："),
+            choices = self.get_loadout_choice_options(character_name) + [(_("返回上一级"))],
+            show_description = True,   # 需questionary具备对show_description的相关支持
+        ).ask()
         if option == _("返回上一级"):
             return
-        relic_hash = options_map[option]
         self.calculated.switch_window()
         # 进行配装
         self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器，进入[人物]-[遗器]界面
@@ -136,7 +135,7 @@ class Relic:
         time.sleep(2)
         self.calculated.relative_click((82,12) if IS_PC else (78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
         time.sleep(1)
-        self.equip_loadout(relic_hash)
+        self.equip_loadout(option)
         self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器]界面，返回[人物]界面
         time.sleep(1)
 
@@ -646,6 +645,70 @@ class Relic:
         token.append('-'*50)
         print("\n".join(token))
 
+    def get_loadout_choice_options(self, character_name:str) -> List[Dict[str, Any]]:
+        """
+        说明：
+            获取该人物配装记录的选项列表，包含配装的简要信息与详细信息
+        参数：
+            :param character_name: 人物名称
+        返回：
+            :return choice_options: 人物配装记录的选项表，格式如下：
+                [{
+                    "name":str = 配装名称+配装简要信息,
+                    "value":list[str] = 遗器哈希值列表 (作为选项的返回值),
+                    "description":str = 配装详细信息
+                },...]
+        """
+        character_data = self.loadout_data[character_name]
+        choice_options = [{
+                "name": str_just(loadout_name, 12) + " " + self.get_loadout_brief(hash_list), 
+                "value": hash_list,
+                "description": '\n' + self.get_loadout_detail(hash_list, 5)   # 需questionary具备对show_description的相关支持
+            } for loadout_name, hash_list in character_data.items()]
+        return choice_options
+    
+    def get_loadout_detail(self, relics_hash: List[str], tab_num: int=0) -> str:
+        """
+        说明：
+            获取配装的详细信息 (各属性数值统计)
+        """
+        stats_total_value = [0 for _ in range(len(STATS_NAME))]
+        stats_name_dict = Array2dict(STATS_NAME)
+        base_stats_dict = Array2dict(BASE_STATS_NAME)
+        subs_stats_dict = Array2dict(SUBS_STATS_NAME)
+        for equip_indx in range(len((relics_hash))):
+            tmp_data = self.relics_data[relics_hash[equip_indx]]
+            rarity = tmp_data["rarity"]
+            level = tmp_data["level"]
+            stats_list = [(key, self.get_base_stats_detail((key, value), rarity, level, base_stats_dict[key]))
+                          for key, value in tmp_data["base_stats"].items()]           # 获取数值精度提高后的主词条
+            stats_list.extend([(key, self.get_subs_stats_detail((key, value), rarity, subs_stats_dict[key])[-1]) 
+                               for key, value in tmp_data["subs_stats"].items()])     # 获取数值精度提高后的副词条
+            for key, value in stats_list:
+                stats_total_value[stats_name_dict[key]] += value  # 数值统计
+        token_list = []
+        has_ = False  # 标记有无属性伤害
+        for index, value in enumerate(stats_total_value):
+            name = STATS_NAME[index, -1]
+            if index in range(11, 18):
+                if index == 17 and not has_ and value == 0 :  # 无属性伤害的情形
+                    name = _("属性伤害")
+                elif value == 0:  continue
+                else:  has_ = True
+            pre = " " if name in NOT_PRE_STATS else "%"
+            token_list.append(_("{name}{value:>7.{ndigits}f}{pre}").format(name=str_just(name, 15), value=value, pre=pre, ndigits=self.ndigits))
+        msg = ""
+        column = 2    # 栏数 (可调节)
+        tab = " " * tab_num
+        for index in range(len(token_list)):   # 分栏输出 (纵向顺序，横向逆序，保证余数项在左栏)
+            i = index // column
+            j = index % column
+            n = (column-j-1) * len(token_list) // column + i
+            msg += token_list[n] if j != 0 else tab+token_list[n]
+            msg += "\n" if j == column-1 else "   "
+        msg += "\n\n" + tab + _("(未计算遗器套装的属性加成)")    # 【待扩展】
+        return msg
+
     def get_loadout_brief(self, relics_hash: List[str]) -> str:
         """
         说明：
@@ -720,9 +783,9 @@ class Relic:
             :return score: 档位总积分: 1档记0分, 2档记1分, 3档记2分
             :return result: 修正后数值 (提高了原数值精度)
         """
-        if not self.is_check_stats or rarity not in [4,5]:   # 仅支持五星遗器与四星遗器
-            return (0,0,0)
         name, value = data
+        if not self.is_check_stats or rarity not in [4,5]:   # 仅支持五星遗器与四星遗器
+            return (-1, -1, value)
         stats_index = np.where(SUBS_STATS_NAME[:, -1] == name)[0][0] if stats_index is None else stats_index
         rarity_index = rarity - 4  # 0-四星，1-五星
         a, d = SUBS_STATS_TIER[rarity_index][stats_index]
