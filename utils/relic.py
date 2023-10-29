@@ -7,6 +7,7 @@ import numpy as np
 from collections import Counter
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
+from .relic_constants import *
 from .calculated import calculated, Array2dict, get_data_hash, str_just
 from .config import (read_json_file, modify_json_file, rewrite_json_file, 
                      RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, _, sra_config_obj)
@@ -43,136 +44,6 @@ class Relic:
         1.[新增]本模块的所有识别位点均采用百分比相对坐标，以兼容不同平台支持不同分辨率
         2.[新增]本模块首先会基于安卓模拟器进行测试，再基于PC端测试
     """
-    # 静态参数
-    equip_set_name = [_("头部"), _("手部"), _("躯干"), _("脚部"), _("位面球"), _("连结绳")]
-    """遗器部位名称，已经按游戏界面顺序排序"""
-    equip_set_abbr = [_("头"), _("手"), _("衣"), _("鞋"), _("球"), _("绳")]
-    """遗器部位简称"""
-    relic_set_name = np.array([                   # 注：因为数据有时要行取有时要列取，故采用数组存储
-        [_("过客"), _("过客"), _("治疗"), _("云无留迹的过客")],
-        [_("枪手"), _("枪手"), _("快枪手"), _("野穗伴行的快枪手")], 
-        [_("圣骑"), _("圣骑"), _("防御"), _("净庭教宗的圣骑士")], 
-        [_("雪猎"), _("猎人"), _("冰套"), _("密林卧雪的猎人")], 
-        [_("拳王"), _("拳王"), _("物理"), _("街头出身的拳王")], 
-        [_("铁卫"), _("铁卫"), _("减伤"), _("戍卫风雪的铁卫")], 
-        [_("火匠"), _("火匠"), _("火套"), _("熔岩锻铸的火匠")], 
-        [_("天才"), _("天才"), _("量子"), _("繁星璀璨的天才")], 
-        [_("乐队"), _("雷电"), _("雷套"), _("激奏雷电的乐队")], 
-        [_("翔"),   _("翔"),   _("风套"), _("晨昏交界的翔鹰")], 
-        [_("怪盗"), _("怪盗"), _("怪盗"), _("流星追迹的怪盗")], 
-        [_("废"),   _("废"),   _("虚数"), _("盗匪荒漠的废土客")],
-        [_("者"),   _("长存"), _("莳者"), _("宝命长存的莳者")], 
-        [_("信使"), _("信使"), _("速度"), _("骇域漫游的信使")], 
-        [_("黑塔"), _("太空"), _("空间站"), _("太空封印站")], 
-        [_("仙"),   _("仙"),   _("仙舟"), _("不老者的仙舟")], 
-        [_("公司"), _("公司"), _("命中"), _("泛银河商业公司")], 
-        [_("贝洛"), _("贝洛"), _("防御"), _("筑城者的贝洛伯格")], 
-        [_("螺丝"), _("差分"), _("差分"), _("星体差分机")], 
-        [_("萨尔"), _("停转"), _("停转"), _("停转的萨尔索图")], 
-        [_("利亚"), _("盗贼"), _("击破"), _("盗贼公国塔利亚")], 
-        [_("瓦克"), _("瓦克"), _("翁瓦克"), _("生命的翁瓦克")], 
-        [_("泰科"), _("繁星"), _("繁星"), _("繁星竞技场")], 
-        [_("伊须"), _("龙骨"), _("龙骨"), _("折断的龙骨")]
-        ], dtype=np.str_)
-    """遗器套装名称：0-套装散件名的共有词(ocr-必须)，1-套装名的特异词(ocr-可选，为了增强鲁棒性)，2-玩家惯用简称(print)，3-套装全称(json)，已按[1.4游戏]遗器筛选界面排序"""
-    stats_name = np.array([
-        [_("命值"), _("生"), _("生命值")], [_("击力"), _("攻"), _("攻击力")], [_("防御"), _("防"), _("防御力")], 
-        [_("命值"), _("生"), _("生命值%")], [_("击力"), _("攻"), _("攻击力%")], [_("防御"), _("防"), _("防御力%")],
-        [_("度"), _("速"), _("速度")], [_("击率"), _("暴击"), _("暴击率")], [_("击伤"), _("爆伤"), _("暴击伤害")], [_("命中"), _("命中"), _("效果命中")], [_("治疗"), _("治疗"), _("治疗量加成")],
-        [_("理"), _("伤害"), _("物理属性伤害")], [_("火"), _("火伤"), _("火属性伤害")], [_("冰"), _("冰伤"), _("冰属性伤害")], [_("雷"), _("雷伤"), _("雷属性伤害")], [_("风"), _("风伤"), _("风属性伤害")], 
-        [_("量"), _("量子"), _("量子属性伤害")], [_("数"), _("虚数"), _("虚数属性伤害")], 
-        [_("抵抗"), _("效果抵抗"), _("效果抵抗")], [_("破"), _("击破"), _("击破特攻")], [_("恢复"), _("能"), _("能量恢复效率")]
-        ], dtype=np.str_)
-    """遗器属性名称：0-属性名的特异词(ocr-不区分大小词条)，1-玩家惯用简称(print)，2-属性全称(json-区分大小词条)"""
-    not_pre_stats = [_("生命值"), _("攻击力"), _("防御力"), _("速度")]
-    """遗器的整数属性名称"""
-    base_stats_name = np.concatenate((stats_name[:2],stats_name[3:-3],stats_name[-2:]), axis=0)
-    """遗器主属性名称"""
-    base_stats_name4equip = [base_stats_name[0:1],
-                             base_stats_name[1:2],
-                             np.vstack((base_stats_name[2:5],base_stats_name[6:10])),
-                             base_stats_name[2:6],
-                             np.vstack((base_stats_name[2:5],base_stats_name[10:17])),
-                             np.vstack((base_stats_name[2:5],base_stats_name[-2:]))]
-    """遗器各部位主属性名称"""
-    subs_stats_name = np.vstack((stats_name[:10],stats_name[-3:-1]))
-    """遗器副属性名称，已按副词条顺序排序"""
-    subs_stats_tier = [
-        [(27.096, 3.3870  ), (13.548 , 1.6935  ), (13.548 , 1.6935  ), (2.7648, 0.3456), (2.7648, 0.3456), (3.456, 0.4320),  # 四星遗器数值
-            (1.60, 0.20), (2.0736, 0.2592), (4.1472, 0.5184), (2.7648, 0.3456), (2.7648, 0.3456), (4.1472, 0.5184)],
-        [(33.870, 4.233755), (16.935 , 2.116877), (16.935 , 2.116877), (3.4560, 0.4320), (3.4560, 0.4320), (4.320, 0.5400),  # 五星遗器数值
-            (2.00, 0.30), (2.5920, 0.3240), (5.1840, 0.6480), (3.4560, 0.4320), (3.4560, 0.4320), (5.1840, 0.6480)]]
-    """副属性词条档位：t0-基础值，t1-每提升一档的数值；l1-四星遗器数值，l2-五星遗器数值 <<数据来源：米游社@666bj>>"""
-    base_stats_tier = [
-        [( 90.3168, 31.61088), (45.1584, 15.80544), (5.5296, 1.9354), (5.5296, 1.9354), (6.9120, 2.4192), (3.2256, 1.1),    # 四星遗器数值
-         (4.1472, 1.4515), ( 8.2944, 2.9030), (5.5296, 1.9354), (4.4237, 1.5483), (4.9766, 1.7418), ( 8.2944, 2.9030), (2.4883, 0.8709)],
-        [(112.896,  39.5136 ), (56.448,  19.7568 ), (6.9120, 2.4192), (6.9120, 2.4192), (8.6400, 3.0240), (4.032,  1.4),    # 五星遗器数值
-         (5.1840, 1.8144), (10.3680, 3.6288), (6.9120, 2.4192), (5.5296, 1.9354), (6.2208, 2.1773), (10.3680, 3.6288), (3.1104, 1.0886)]]
-    """主属性词条级别：t0-基础值，t1-每提升一级的数值；l1-四星遗器数值，l2-五星遗器数值 <<数据来源：米游社@666bj>>"""
-    for i in range(len(base_stats_tier)):
-        base_stats_tier[i][10:10] = [base_stats_tier[i][10]] * 6   # 复制属性伤害
-
-    # json数据格式规范
-    relics_schema = {           # 遗器数据集
-        "type": "object",
-        "additionalProperties": {    # [主键]遗器哈希值 (由其键值遗器数据自动生成)
-            "type": "object",
-            "properties": {
-                "equip_set": {       # 遗器部位
-                    "type": "string",
-                    "enum": equip_set_name },
-                "relic_set": {       # 遗器套装
-                    "type": "string",
-                    "enum": relic_set_name[:, -1].tolist() },
-                "rarity": {          # 遗器稀有度 (2-5星)
-                    "type": "integer",
-                    "minimum": 2,
-                    "maximum": 5 },
-                "level": {           # 遗器等级 (0-15级)
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 15 },
-                "base_stats": {      # 遗器主属性 (词条数为 1)
-                    "type": "object",
-                    "minProperties": 1,
-                    "maxProperties": 1,
-                    "properties": {
-                        key: {"type": "number"} for key in base_stats_name[:, -1]},
-                    "additionalProperties": False },
-                "subs_stats": {      # 遗器副属性 (词条数为 1-4)
-                    "type": "object",
-                    "minProperties": 1,
-                    "maxProperties": 4,
-                    "properties": {
-                        key: {"type": "number"} for key in subs_stats_name[:, -1]},
-                    "additionalProperties": False },
-                "pre_ver_hash": {"type": "string"}     # [外键]本次升级前的版本
-            },
-            "required": ["relic_set", "equip_set", "rarity", "level", "base_stats", "subs_stats"],  # 需包含遗器的全部固有属性
-            "additionalProperties": False
-    }}
-    loadout_schema = {            # 人物遗器配装数据集
-        "type": "object",
-        "additionalProperties": {       # [主键]人物名称 (以OCR结果为准)
-            "type": "object",
-            "additionalProperties": {   # [次主键]配装名称 (自定义)
-                "type": "array",        # 配装组成 (6件遗器，按部位排序)
-                "minItems": 6,
-                "maxItems": 6,
-                "items": {"type": "string"}  # [外键]遗器哈希值
-    }}}
-    team_schema = {                # 队伍遗器配装数据集
-        "type": "object",
-        "additionalProperties": {       # [主键]队伍名称 (自定义)
-            "type": "object",
-            "additionalProperties": {   # [外键]队伍成员名称 (以OCR结果为准)
-                "type": "string"        # [外键]各队伍成员的配装名称
-            },
-            "minProperties": 1,
-            "maxProperties": 4
-    }}
-    relic_data_filter = ["pre_ver_hash"]
-    """遗器数据过滤器"""
 
     def __init__(self, title=_("崩坏：星穹铁道")):
         """
@@ -193,9 +64,9 @@ class Relic:
         """在打印遗器信息时的小数精度"""
 
         # 读取json文件，仅初始化时检查格式规范
-        self.relics_data = read_json_file(RELIC_FILE_NAME, schema=self.relics_schema)
-        self.loadout_data = read_json_file(LOADOUT_FILE_NAME, schema=self.loadout_schema)
-        self.team_data = read_json_file(TEAM_FILE_NAME, schema=self.team_schema)
+        self.relics_data = read_json_file(RELIC_FILE_NAME, schema = RELIC_SCHEMA)
+        self.loadout_data = read_json_file(LOADOUT_FILE_NAME, schema = LOADOUT_SCHEMA)
+        self.team_data = read_json_file(TEAM_FILE_NAME, schema = TEAM_SCHEMA)
         log.info(_("遗器数据载入完成"))
         log.info(_(f"共载入 {len(list(self.relics_data.keys()))} 件遗器数据"))
 
@@ -277,7 +148,7 @@ class Relic:
         """
         equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
         relic_filter = self.Relic_filter(self.calculated)   # 遗器筛选器初始化
-        relic_set_name_dict = Array2dict(self.relic_set_name)
+        relic_set_name_dict = Array2dict(RELIC_SET_NAME)
         for equip_indx, equip_pos in enumerate(equip_pos_list):   # 遗器部位循环
             # 选择部位
             log.info(_(f"选择部位：{self.equip_set_name[equip_indx]}"))
@@ -349,7 +220,7 @@ class Relic:
             self.calculated.relative_click(equip_pos)
             time.sleep(1)
             tmp_data = self.try_ocr_relic(equip_indx, max_retries)
-            tmp_hash = get_data_hash(tmp_data, self.relic_data_filter)
+            tmp_hash = get_data_hash(tmp_data, RELIC_DATA_FILTER)
             log.debug("\n"+pp.pformat(tmp_data))
             self.print_relic(tmp_data)
             if tmp_hash in self.relics_data:
@@ -442,7 +313,7 @@ class Relic:
                     time.sleep(0.5)
                     self.calculated.relative_click((35,35) if IS_PC else (35,32))        # 取消选中
             points = ((28,33,42,63) if is_left else (53,33,67,63)) if IS_PC else ((22,29,41,65) if is_left else (53,29,72,65))
-            self.calculated.ocr_click(Relic.relic_set_name[relic_set_index, 1], points=points)
+            self.calculated.ocr_click(RELIC_SET_NAME[relic_set_index, 1], points=points)
 
 
     def search_relic(self, equip_indx: int, key_hash: Optional[str]=None, key_data: Optional[Dict[str, Any]]=None, overtime=180, max_retries=3
@@ -533,11 +404,11 @@ class Relic:
             检查遗器数据是否发生手动修改 (应对json数据格式变动或手动矫正仪器数值)，
             若发生修改，可选择更新仪器哈希值，并替换配装数据中相应的数值
         """
-        equip_set_dict = {key: value for value, key in enumerate(self.equip_set_name)}
+        equip_set_dict = {key: value for value, key in enumerate(EQUIP_SET_NAME)}
         relics_data_copy = self.relics_data.copy()  # 字典迭代过程中不允许修改key
         cnt = 0
         for old_hash, data in relics_data_copy.items():
-            new_hash = get_data_hash(data, self.relic_data_filter, speed_modified=True)
+            new_hash = get_data_hash(data, RELIC_DATA_FILTER, speed_modified=True)
             if old_hash != new_hash:
                 equip_indx = equip_set_dict[data["equip_set"]]
                 log.debug(f"(old={old_hash}, new={new_hash})")
@@ -587,7 +458,7 @@ class Relic:
             录入仪器数据
         """
         if not data_hash:
-            data_hash = get_data_hash(data, self.relic_data_filter)
+            data_hash = get_data_hash(data, RELIC_DATA_FILTER)
         if data_hash not in self.relics_data:
             self.relics_data = modify_json_file(RELIC_FILE_NAME, data_hash, data) # 返回更新后的字典
             return True
@@ -646,16 +517,16 @@ class Relic:
         img_pc = self.calculated.take_screenshot()  # 仅截取一次图片
         # [1]部位识别
         if equip_set_index is None:
-            equip_set_index = self.calculated.ocr_pos_for_single_line(self.equip_set_name, points=(77,19,83,23) if IS_PC else (71,22,78,26), img_pk=img_pc)
+            equip_set_index = self.calculated.ocr_pos_for_single_line(EQUIP_SET_NAME, points=(77,19,83,23) if IS_PC else (71,22,78,26), img_pk=img_pc)
             if equip_set_index < 0:
                 raise RelicOCRException(_("遗器套装OCR错误"))
-        equip_set_name = self.equip_set_name[equip_set_index]
+        equip_set_name = EQUIP_SET_NAME[equip_set_index]
         # [2]套装识别
-        name_list = self.relic_set_name[:, 0].tolist()
+        name_list = RELIC_SET_NAME[:, 0].tolist()
         relic_set_index = self.calculated.ocr_pos_for_single_line(name_list, points=(77,15,92,19) if IS_PC else (71,17,88,21), img_pk=img_pc)
         if relic_set_index < 0: 
             raise RelicOCRException(_("遗器部位OCR错误"))
-        relic_set_name = self.relic_set_name[relic_set_index, -1]
+        relic_set_name = RELIC_SET_NAME[relic_set_index, -1]
         # [3]稀有度识别
         hue, __, __ = self.calculated.get_relative_pix_hsv((43,55) if IS_PC else (41,55))   # 识别指定位点色相
         log.debug(f"hue = {hue}")
@@ -675,7 +546,7 @@ class Relic:
         if level > 15:
             raise RelicOCRException(_("遗器等级OCR错误"))
         # [5]主属性识别
-        name_list = self.base_stats_name4equip[equip_set_index][:, 0].tolist()
+        name_list = BASE_STATS_NAME_FOR_EQUIP[equip_set_index][:, 0].tolist()
         base_stats_index = self.calculated.ocr_pos_for_single_line(name_list, points=(79.5,25,92,29) if IS_PC else (74,29,89,34), img_pk=img_pc)
         base_stats_value = self.calculated.ocr_pos_for_single_line(points=(93,25,98,29) if IS_PC else (91,29,98,34), number=True, img_pk=img_pc)
         if base_stats_index < 0: 
@@ -687,11 +558,11 @@ class Relic:
             s = base_stats_value.split('%')[0]   # 修正'48%1'如此的错误识别
             base_stats_value = s[:-1] + '.' + s[-1:]   # 添加未识别的小数点
         base_stats_value = float(base_stats_value)
-        base_stats_name = str(self.base_stats_name4equip[equip_set_index][base_stats_index, -1])
+        base_stats_name = str(BASE_STATS_NAME_FOR_EQUIP[equip_set_index][base_stats_index, -1])
         # [6]副属性识别 (词条数量 2-4)
         subs_stats_name_points =  [(79.5,29,85,33),(79.5,33,85,36.5),(79.5,36.5,85,40),(79.5,40,85,44)] if IS_PC else [(74,35,81,38),(74,39,81,43),(74,44,81,47),(74,48,81,52)]
         subs_stats_value_points = [(93,29,98,33),(93,33,98,36.5),(93,36.5,98,40),(93,40,98,44)] if IS_PC else [(92,35,98,38),(92,39,98,43),(92,44,98,47),(92,48,98,52)]
-        name_list = self.subs_stats_name[:, 0].tolist()
+        name_list = SUBS_STATS_NAME[:, 0].tolist()
         subs_stats_dict = {}
         total_level = 0
         for name_point, value_point in zip(subs_stats_name_points, subs_stats_value_points):
@@ -709,7 +580,7 @@ class Relic:
                 if tmp_index >= 0 and tmp_index < 3:
                     tmp_index += 3            # 小词条转为大词条
             tmp_value = float(tmp_value)
-            tmp_name = str(self.subs_stats_name[tmp_index, -1])
+            tmp_name = str(SUBS_STATS_NAME[tmp_index, -1])
             check = self.get_subs_stats_detail((tmp_name, tmp_value), rarity, tmp_index)
             if check is None:   
                 raise RelicOCRException(_("遗器副词条数值OCR错误"))
@@ -747,16 +618,16 @@ class Relic:
         token.append(_("等级: +{level}").format(level=data["level"]))
         token.append(_("主词条:"))
         name, value = list(data["base_stats"].items())[0]
-        pre = " " if name in self.not_pre_stats else "%"
+        pre = " " if name in NOT_PRE_STATS else "%"
         result = self.get_base_stats_detail((name, value), data["rarity"], data["level"])
         if result:
             token.append(_("   {name:<4}\t{value:>7.{ndigits}f}{pre}").format(name=name, value=result, pre=pre, ndigits=self.ndigits))
         else:
             token.append(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))
         token.append(_("副词条:"))
-        subs_stats_dict = Array2dict(self.subs_stats_name)
+        subs_stats_dict = Array2dict(SUBS_STATS_NAME)
         for name, value in data["subs_stats"].items():
-            pre = " " if name in self.not_pre_stats else "%"
+            pre = " " if name in NOT_PRE_STATS else "%"
             if not self.is_detail or data["rarity"] not in [4,5]:    # 不满足校验条件
                 token.append(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
                 continue
@@ -778,8 +649,8 @@ class Relic:
         说明：
             获取配装的简要信息 (包含内外圈套装信息与主词条信息)
         """
-        set_abbr_dict = Array2dict(self.relic_set_name, -1, 2)
-        stats_abbr_dict = Array2dict(self.base_stats_name, -1, 1)
+        set_abbr_dict = Array2dict(RELIC_SET_NAME, -1, 2)
+        stats_abbr_dict = Array2dict(BASE_STATS_NAME, -1, 1)
         outer_set_list, inner_set_list, base_stats_list = [], [], []
         # 获取遗器数据
         for equip_indx in range(len((relics_hash))):
@@ -817,16 +688,16 @@ class Relic:
         name, value = data
         if not self.is_check_stats or rarity not in [4,5]:   # 仅支持五星遗器与四星遗器
             return value
-        stats_index = np.where(self.base_stats_name[:, -1] == name)[0][0] if stats_index is None else stats_index
+        stats_index = np.where(BASE_STATS_NAME[:, -1] == name)[0][0] if stats_index is None else stats_index
         rarity_index = rarity - 4   # 0-四星，1-五星
-        a, d = self.base_stats_tier[rarity_index][stats_index]
+        a, d = BASE_STATS_TIER[rarity_index][stats_index]
         result = round(a + d*level, 4)    # 四舍五入 (考虑浮点数运算的数值损失)
         # 校验数据
         check = result - value
         log.debug(f"[{a}, {d}], l={level} r={result}")
         if check < 0 or \
-            name in self.not_pre_stats and check >= 1 or \
-            name not in self.not_pre_stats and check >= 0.1:
+            name in NOT_PRE_STATS and check >= 1 or \
+            name not in NOT_PRE_STATS and check >= 0.1:
             log.error(_(f"校验失败，原数据或计算方法有误: {data}"))
             return None
         return result
@@ -850,10 +721,10 @@ class Relic:
         if not self.is_check_stats or rarity not in [4,5]:   # 仅支持五星遗器与四星遗器
             return (0,0,0)
         name, value = data
-        stats_index = np.where(self.subs_stats_name[:, -1] == name)[0][0] if stats_index is None else stats_index
+        stats_index = np.where(SUBS_STATS_NAME[:, -1] == name)[0][0] if stats_index is None else stats_index
         rarity_index = rarity - 4  # 0-四星，1-五星
-        a, d = self.subs_stats_tier[rarity_index][stats_index]
-        if name in self.not_pre_stats:
+        a, d = SUBS_STATS_TIER[rarity_index][stats_index]
+        if name in NOT_PRE_STATS:
             a_ = int(a)           # 从个分位截断小数
         else:
             a_ = int(a * 10)/10   # 从十分位截断小数
@@ -868,8 +739,8 @@ class Relic:
         check = result - value
         log.debug(f"[{a}, {d}], l={level}, s={score}, r={result}")
         if check < 0 or \
-            name in self.not_pre_stats and check >= 1 or \
-            name not in self.not_pre_stats and check >= 0.1 or \
+            name in NOT_PRE_STATS and check >= 1 or \
+            name not in NOT_PRE_STATS and check >= 0.1 or \
             level > 6 or level < 1 or \
             score > level*2 or score < 0:
             log.error(_(f"校验失败，原数据或计算方法有误: {data}"))
