@@ -2,11 +2,13 @@ import re
 import time
 import math
 import pprint
-import questionary
 import numpy as np
 from collections import Counter
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
+from .questionary.questionary import select
+# 改用本地的questionary模块，使之具备show_description功能，基于'tmbo/questionary/pull/330'
+# from questionary import select   # questionary原项目更新并具备当前功能后，可进行替换
 from .relic_constants import *
 from .calculated import calculated, Array2dict, get_data_hash, str_just
 from .config import (read_json_file, modify_json_file, rewrite_json_file, 
@@ -72,7 +74,7 @@ class Relic:
 
         # 校验遗器哈希值
         if not self.check_relic_data_hash():
-            option = questionary.select(_("是否依据当前遗器数据更新哈希值："), [_("是"), _("否")]).ask()
+            option = select(_("是否依据当前遗器数据更新哈希值："), [_("是"), _("否")]).ask()
             if option == _("是"):
                 self.check_relic_data_hash(updata=True)
 
@@ -86,7 +88,7 @@ class Relic:
         option = None  # 保存上一次的选择
         while True:
             self.calculated.switch_cmd()
-            option = questionary.select(title, options, default=option).ask()
+            option = select(title, options, default=option).ask()
             if option == _("保存当前人物的配装"):
                 self.calculated.switch_window()
                 self.save_loadout_for_char()
@@ -122,7 +124,7 @@ class Relic:
         options_map = {str_just(loadout_name, 12) + self.get_loadout_brief(hash_list): hash_list for loadout_name, hash_list in character_data.items()}
         options = list(options_map.keys())
         options.append(_("返回上一级"))
-        option = questionary.select(title, options).ask()
+        option = select(title, options).ask()
         if option == _("返回上一级"):
             return
         relic_hash = options_map[option]
