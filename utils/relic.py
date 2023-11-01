@@ -87,21 +87,37 @@ class Relic:
             遗器模块入口
         """
         title = _("遗器模块：")
-        options = [_("保存当前人物的配装"), _("读取当前人物的配装"), _("识别当前遗器的数据"), _("返回主菜单")]
+        tab = "\n" + " " * 5
+        options = [
+            Choice(_("保存当前人物的配装"), value = 0,
+                   description = tab + _("请使游戏保持在[人物]界面")),
+            Choice(_("保存当前队伍的配装"), value = 1,
+                   description = tab + _("请使游戏保持在[人物]界面")),
+            Choice(_("读取当前人物的配装记录"), value = 2,
+                   description = tab + _("请使游戏保持在[人物]界面")),
+            Choice(_("读取队伍的配装记录"), value = 3,
+                   description = tab + _("请使游戏保持在[人物]界面")),
+            Choice(_("识别当前遗器数据"), value = 4,
+                   description = tab + _("请使游戏保持在[人物]-[遗器]-[遗器详情]界面") + tab + _("推荐手动点击[对比]增加识别率")),
+            _("<返回主菜单>")]
         option = None  # 保存上一次的选择
         while True:
             self.calculated.switch_cmd()
-            option = select(title, options, default=option).ask()
-            if option == _("保存当前人物的配装"):
+            option = select(title, options, default=option, show_description=True).ask()
+            if option == 0:
                 self.calculated.switch_window()
                 self.save_loadout_for_char()
-            elif option == _("读取当前人物的配装"):
+            elif option == 1:
+                self.save_loadout_for_team()
+            elif option == 2:
                 self.equip_loadout_for_char()
-            elif option == _("识别当前遗器的数据"):
+            elif option == 3:
+                self.equip_loadout_for_team()
+            elif option == 4:
                 self.calculated.switch_window()
                 data = self.try_ocr_relic()
                 self.print_relic(data)
-            elif option == _("返回主菜单"):
+            elif option == _("<返回主菜单>"):
                 break
     
     def equip_loadout_for_team(self):
@@ -109,7 +125,34 @@ class Relic:
         说明：
             装备当前[人物]界面本队伍的遗器配装
         """
-        ...
+        char_pos_list = [(26,6),(31,6),(37,6),(42,6)] if IS_PC else [(5,16),(5,27),(5,38),(5,49)]
+        # 选择队伍
+        option = select(
+            _("请选择对当前队伍进行遗器装备的编队："),
+            choices = self.get_team_choice_options() + [(_("<返回上一级>"))],
+            show_description = True,   # 需questionary具备对show_description的相关支持
+        ).ask()
+        if option == _("<返回上一级>"):
+            return
+        team_members = option  # 得到 (char_name: loadout_name) 的键值对
+        # 检查人物列表是否移动至开头
+        self.calculated.switch_window()
+        self.calculated.relative_swipe(char_pos_list[0], char_pos_list[-1])  # 滑动人物列表
+        time.sleep(0.5)
+        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[人物]-[遗器]界面
+        time.sleep(1)
+        # 依次点击人物，进行配装 (编队人物无序)
+        for char_index in range(len(team_members)):
+            char_pos = char_pos_list[char_index]
+            self.calculated.relative_click(char_pos)    # 点击人物
+            time.sleep(2)
+            character_name = self.ocr_character_name()  # 识别当前人物名称
+            if character_name not in team_members:
+                log.error(_(f"编队错误：角色'{character_name}'不应在当前队伍中"))
+                return
+            relic_hash = self.loadout_data[character_name][team_members[character_name]]
+            self.equip_loadout(relic_hash)
+        log.info(_("队伍配装完毕"))
 
     def equip_loadout_for_char(self, character_name :Optional[str]=None):
         """
@@ -193,7 +236,91 @@ class Relic:
         说明：
             保存当前[人物]界面本队伍的遗器配装
         """
-        ...
+        char_pos_list = [(26,6),(31,6),(37,6),(42,6)] if IS_PC else [(5,16),(5,27),(5,38),(5,49)]
+        char_name_list = []
+        relics_hash_list = []
+        loadout_name_list = []
+        # [1]选择队伍的人数 (能否通过页面识别？)
+        char_num = int(select(_("请选择队伍人数："), ['4','3','2','1']).ask())
+        # [2]选择是否为互斥队伍组别 
+        group_name = "compatible"     # 默认为非互斥队组别
+        ...  # 互斥队组别【待扩展】
+        if group_name not in self.team_data:
+            self.team_data[group_name] = {}
+        group_data = self.team_data[group_name]
+        # [3]选择组建方式
+        options = {
+            _("全识别"): 0,
+            _("参考已有的配装数据"): 1
+        }
+        option_ = select(_("请选择组建方式："), options).ask()
+        state = options[option_]
+        # [4]检查人物列表是否移动至开头
+        self.calculated.switch_window()
+        self.calculated.relative_swipe(char_pos_list[0], char_pos_list[-1])  # 滑动人物列表
+        time.sleep(0.5)
+        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[人物]-[遗器]界面
+        time.sleep(1)
+        # [5]依次点击人物，识别配装
+        char_index = 0
+        is_retrying = False
+        character_name = None
+        loadout_dict = self.HashList2dict()
+        while char_index < char_num:
+            char_pos = char_pos_list[char_index]
+            # [5.1]识别人物名称
+            if not is_retrying:
+                self.calculated.switch_window()
+                self.calculated.relative_click(char_pos)    # 点击人物
+                time.sleep(2)
+                character_name = self.ocr_character_name()  # 识别当前人物名称
+            # [5.2]选择识别当前，还是录入已有
+            option = None
+            if state == 1:
+                self.calculated.switch_cmd()
+                option = select(
+                    _("请选择配装："),
+                    choices = [_("<识别当前配装>")] + self.get_loadout_choice_options(character_name) + [_("<退出>")],
+                    show_description = True,   # 需questionary具备对show_description的相关支持
+                ).ask()
+                if option == _("<退出>"):   # 退出本次编队
+                    return
+                elif option != _("<识别当前配装>"):
+                    loadout_name, relics_hash = option    # 获取已录入的配装数据
+            if state == 0 or option == _("<识别当前配装>"):
+                self.calculated.switch_window()
+                relics_hash = self.save_loadout()
+                loadout_name = None   # 等待最终统一命名
+                print(_("配装信息：\n  {}\n{}").format(self.get_loadout_brief(relics_hash), self.get_loadout_detail(relics_hash, 2)))      
+            # [5.3]检查是否存在冲突遗器
+            loadout_check = loadout_dict.add(relics_hash, character_name).find_duplicate_hash()
+            if loadout_check:  # 列表非空，表示存在遗器冲突
+                for equip_index, char_names, element in loadout_check:
+                    self.calculated.switch_cmd()
+                    log.error(_("编队遗器冲突：{}间的'{}'遗器冲突，遗器哈希值：{}").format(char_names, EQUIP_SET_NAME[equip_index], element))
+                    is_retrying = True  # 将重复本次循环
+                    continue   
+            log.info(_("配装校验成功"))
+            char_name_list.append(character_name)
+            relics_hash_list.append(relics_hash)
+            loadout_name_list.append(loadout_name)
+            is_retrying = False
+            char_index += 1
+        # [6]自定义名称
+        self.calculated.switch_cmd()
+        team_name = input(_(">>>>命名编队名称 (将同时作为各人物新建配装的名称): "))
+        while team_name in group_data or \
+            any([team_name in self.loadout_data[character_name] for character_name, loadout_name in zip(char_name_list, loadout_name_list) if loadout_name is None]):
+            team_name = input(_(">>>>命名冲突，请重命名: "))
+        # [7]录入数据
+        for i, (char_name, relics_hash, loadout_name) in enumerate(zip(char_name_list, relics_hash_list, loadout_name_list)):
+            if loadout_name is None:
+                loadout_name_list[i] = team_name
+                self.loadout_data[char_name][team_name] = relics_hash
+                rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
+        group_data[team_name]["team_members"] = {key: value for key, value in zip(char_name_list, loadout_name_list)}
+        rewrite_json_file(TEAM_FILE_NAME, self.team_data)
+        log.info(_("编队录入成功"))
 
     def save_loadout_for_char(self):
         """
@@ -706,6 +833,28 @@ class Relic:
                 token.append(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))           
         token.append('-'*50)
         print("\n".join(token))
+
+    def get_team_choice_options(self) -> List[Choice]:
+        """
+        说明：
+            获取所有队伍配装记录的选项表
+        返回：
+            :return choice_options: 队伍配装记录的选项列表，Choice构造参数如下：
+                :return title: 队伍名称,
+                :return value: 队员信息字典(key-人物名称，value-配装名称),
+                :return description: 队员配装的简要信息
+        """
+        group_data = self.team_data["compatible"]    # 获取非互斥队组别信息
+        ...  # 获取互斥队伍组别信息【待扩展】
+        prefix = "\n" + " " * 5
+        choice_options = [Choice(
+                title = str_just(team_name, 12), 
+                value = team_data["team_members"],
+                description = "".join(
+                        prefix + str_just(char_name, 10) + " " + self.get_loadout_brief(self.loadout_data[char_name][loadout_name]) 
+                    for char_name, loadout_name in team_data["team_members"].items())
+            ) for team_name, team_data in group_data.items()]
+        return choice_options
 
     def get_loadout_choice_options(self, character_name:str) -> List[Choice]:
         """
