@@ -290,8 +290,10 @@ class Relic:
             if state == 0 or option == _("<识别当前配装>"):
                 self.calculated.switch_window()
                 relics_hash = self.save_loadout()
-                loadout_name = None   # 等待最终统一命名
-                print(_("配装信息：\n  {}\n{}").format(self.get_loadout_brief(relics_hash), self.get_loadout_detail(relics_hash, 2)))      
+                print(_("配装信息：\n  {}\n{}").format(self.get_loadout_brief(relics_hash), self.get_loadout_detail(relics_hash, 2)))    
+                loadout_name = self.find_loadout_name(character_name, relics_hash)
+                if loadout_name:
+                    log.info(_(f"配装记录已存在，配装名称：{loadout_name}"))
             # [5.3]检查是否存在冲突遗器
             loadout_check = loadout_dict.add(relics_hash, character_name).find_duplicate_hash()
             if loadout_check:  # 列表非空，表示存在遗器冲突
@@ -334,6 +336,10 @@ class Relic:
         relics_hash = self.save_loadout()
         self.calculated.switch_cmd()
         print(_("配装信息：\n  {}\n{}").format(self.get_loadout_brief(relics_hash), self.get_loadout_detail(relics_hash, 2)))
+        loadout_name = self.find_loadout_name(character_name, relics_hash)
+        if loadout_name:
+            log.info(_(f"配装记录已存在，配装名称：{loadout_name}"))
+            return
         loadout_name = input(_(">>>>命名配装名称: "))  # 需作为字典key值，确保唯一性 (但不同的人物可以有同一配装名称)
         while loadout_name in character_data:
             loadout_name = input(_(">>>>命名冲突，请重命名: "))
@@ -531,6 +537,16 @@ class Relic:
                 key != _("速度") and old_data["subs_stats"][key] > new_data["subs_stats"][key]:
                 return False        # 考虑手动提高速度数据精度的情况
         return True
+    
+    def find_loadout_name(self, char_name: str, relics_hash: List[str]) -> Optional[str]:
+        """
+        说明：
+            通过配装数据在记录中寻找配装名称
+        """
+        for loadout_name, hash_list in self.loadout_data[char_name].items():
+            if hash_list == relics_hash:
+                return loadout_name
+        return None
 
     def check_team_data(self) -> bool:
         """
