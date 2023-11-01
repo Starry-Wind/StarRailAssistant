@@ -818,11 +818,11 @@ class Relic:
         result = round(a + d*level, 4)    # 四舍五入 (考虑浮点数运算的数值损失)
         # 校验数据
         check = result - value
-        log.debug(f"[{a}, {d}], l={level} r={result}")
         if check < 0 or \
             name in NOT_PRE_STATS and check >= 1 or \
             name not in NOT_PRE_STATS and check >= 0.1:
             log.error(_(f"校验失败，原数据或计算方法有误: {data}"))
+            log.debug(f"[{a}, {d}], l={level} r={result}")
             return None
         return result
 
@@ -861,12 +861,12 @@ class Relic:
         result = round(a*level + d*score, 4)                 # 四舍五入 (考虑浮点数运算的数值损失)
         # 校验数据
         check = result - value
-        log.debug(f"[{a}, {d}], l={level}, s={score}, r={result}")
         if check < 0 or \
             name in NOT_PRE_STATS and check >= 1 or \
             name not in NOT_PRE_STATS and check >= 0.1 or \
             level > 6 or level < 1 or \
             score > level*2 or score < 0:
             log.error(_(f"校验失败，原数据或计算方法有误: {data}"))
+            log.debug(f"[{a}, {d}], l={level}, s={score}, r={result}")
             return None
         return (level, score, result)
