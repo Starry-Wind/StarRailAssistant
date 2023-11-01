@@ -135,18 +135,12 @@ class Relic:
         # 进行配装
         self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器，进入[人物]-[遗器]界面
         time.sleep(0.5)
-        self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[人物]-[遗器]-[遗器详情]界面
-        time.sleep(2)
-        self.calculated.relative_click((82,12) if IS_PC else (78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
-        time.sleep(1)
         self.equip_loadout(relic_hash)
-        self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器]界面，返回[人物]界面
-        time.sleep(1)
 
     def equip_loadout(self, relics_hash:List[str]):
         """
         说明：
-            装备当前[人物]-[遗器]-[遗器详情]页面内的指定遗器配装。
+            装备当前[人物]-[遗器]页面内的指定遗器配装。
             遗器将强制替换 (1-替换己方已装备的遗器，2-替换对方已装备的遗器)
         参数：
             :param relics_hash: 遗器配装哈希值列表
@@ -154,9 +148,13 @@ class Relic:
         equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
         relic_filter = self.Relic_filter(self.calculated)   # 遗器筛选器初始化
         relic_set_name_dict = Array2dict(RELIC_SET_NAME)
+        self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[人物]-[遗器]-[遗器详情]界面
+        time.sleep(2)
+        self.calculated.relative_click((82,12) if IS_PC else (78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
+        time.sleep(1)
         for equip_indx, equip_pos in enumerate(equip_pos_list):   # 遗器部位循环
             # 选择部位
-            log.info(_(f"选择部位：{self.equip_set_name[equip_indx]}"))
+            log.info(_(f"选择部位：{EQUIP_SET_NAME[equip_indx]}"))
             self.calculated.relative_click(equip_pos)
             time.sleep(0.5)
             # 获取遗器数据
@@ -186,6 +184,8 @@ class Relic:
                     time.sleep(0.5)
             elif button == 2:
                 log.info(_("已装备"))
+        self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器详情]界面，返回[人物]-[遗器]界面
+        time.sleep(0.5)
         log.info(_("配装装备完毕"))
 
     def save_loadout_for_team(self):
@@ -201,27 +201,34 @@ class Relic:
             保存当前[人物]界面本人物的遗器配装
         """
         character_name = self.ocr_character_name()  # 识别当前人物名称
-        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器
+        character_data = self.loadout_data[character_name]
+        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[人物]-[遗器]界面
         time.sleep(1)
-        self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[人物]-[遗器]界面
+        relics_hash = self.save_loadout()
+        self.calculated.switch_cmd()
+        print(_("配装信息：\n  {}\n{}").format(self.get_loadout_brief(relics_hash), self.get_loadout_detail(relics_hash, 2)))
+        loadout_name = input(_(">>>>命名配装名称: "))  # 需作为字典key值，确保唯一性 (但不同的人物可以有同一配装名称)
+        while loadout_name in character_data:
+            loadout_name = input(_(">>>>命名冲突，请重命名: "))
+        character_data[loadout_name] = relics_hash
+        self.loadout_data = modify_json_file(LOADOUT_FILE_NAME, character_name, character_data)
+        log.info(_("配装录入成功"))
+
+    def save_loadout(self, max_retries=3) -> list[str]:
+        """
+        说明：
+            保存当前[人物]-[遗器]界面内的遗器配装
+        返回：
+            :return relics_hash: 遗器配装哈希值列表
+        """
+        equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
+        relics_hash = []
+        self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[人物]-[遗器]-[遗器详情]界面
         time.sleep(2)
         self.calculated.relative_click((82,12) if IS_PC else (78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
         time.sleep(1)
-        self.save_loadout(character_name)
-        self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器]界面，返回[人物]界面
-        time.sleep(2)
-
-    def save_loadout(self, character_name: Optional[str]=None, max_retries=3):
-        """
-        说明：
-            保存当前[人物]-[遗器]-[遗器详情]界面内的遗器配装
-        """
-        character_name = character_name if character_name else self.ocr_character_name()
-        character_data = self.loadout_data[character_name]
-        equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14), (11,14), (17,14), (23,14), (28,14), (34,14)]
-        relics_hash = []
         for equip_indx, equip_pos in enumerate(equip_pos_list):   # 遗器部位循环
-            log.info(_(f"选择部位：{self.equip_set_name[equip_indx]}"))
+            log.info(_(f"选择部位：{EQUIP_SET_NAME[equip_indx]}"))
             self.calculated.relative_click(equip_pos)
             time.sleep(1)
             tmp_data = self.try_ocr_relic(equip_indx, max_retries)
@@ -234,15 +241,10 @@ class Relic:
                 log.info(_("录入遗器数据"))
                 self.add_relic_data(tmp_data, tmp_hash)
             relics_hash.append(tmp_hash)
+        self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器详情]界面，返回[人物]-[遗器]界面
+        time.sleep(0.5)
         log.info(_("配装识别完毕"))
-        self.calculated.switch_cmd()
-        loadout_name = input(_(">>>>命名配装名称: "))  # 需作为字典key值，确保唯一性 (但不同的人物可以有同一配装名称)
-        while loadout_name in character_data:
-            loadout_name = input(_(">>>>命名冲突，请重命名: "))
-        character_data[loadout_name] = relics_hash
-        self.loadout_data = modify_json_file(LOADOUT_FILE_NAME, character_name, character_data)
-        log.info(_("配装录入成功"))
-        self.calculated.switch_window()
+        return relics_hash
     
     class Relic_filter:
         """
