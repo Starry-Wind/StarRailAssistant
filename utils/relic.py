@@ -77,6 +77,9 @@ class Relic:
             option = select(_("是否依据当前遗器数据更新哈希值："), [_("是"), _("否")]).ask()
             if option == _("是"):
                 self.check_relic_data_hash(updata=True)
+        # 校验队伍配装规范
+        if not self.check_team_data():
+            log.error(_("怀疑为手动错误修改json文件导致"))
 
     def relic_entrance(self):
         """
@@ -398,7 +401,63 @@ class Relic:
                 key != _("速度") and old_data["subs_stats"][key] > new_data["subs_stats"][key]:
                 return False        # 考虑手动提高速度数据精度的情况
         return True
-    
+
+    def check_team_data(self) -> bool:
+        """
+        说明：
+            检查队伍配装数据是否满足规范
+        """
+        ret = True
+        for group_name, team_group in self.team_data.items():
+            for team_name, team_data in team_group.items():
+                loadout_dict = self.HashList2dict()
+                [loadout_dict.add(self.loadout_data[char_name][loadout_name], char_name) for char_name, loadout_name in team_data["team_members"].items()]
+                for equip_index, char_names, element in loadout_dict.find_duplicate_hash():
+                    log.error(_("编队遗器冲突：'{}'队伍的{}间的'{}'遗器冲突，遗器哈希值：{}").format(team_name, char_names, EQUIP_SET_NAME[equip_index], element))
+                    ret = False
+            if group_name != "compatible": ...   # 互斥队伍组别【待扩展】
+        return ret
+
+    class HashList2dict:
+        """
+        说明：
+            将队伍或队伍组别的配装按遗器部位进行字典统计，以查找可能存在的重复遗器
+        """
+
+        def __init__(self):
+            self.hash_dict_for_equip: List[Dict[str, List[str]]] = [{},{},{},{},{},{}]
+            """按遗器部位分别的配装统计，key-遗器哈希值，value-装备者的名称"""
+
+        def add(self, relics_hash: List[str], char_name: str) -> 'Relic.HashList2dict':
+            """
+            说明：
+                添加一组数据
+            参数：
+                :param relics_hash: 配装遗器哈希值列表
+                :param char_name: 配装装备者的名称
+            """
+            for equip_index, element in enumerate(relics_hash):
+                if element in self.hash_dict_for_equip[equip_index]:
+                    self.hash_dict_for_equip[equip_index][element].append(char_name)
+                else:
+                    self.hash_dict_for_equip[equip_index][element] = [char_name]
+            return self
+
+        def find_duplicate_hash(self) -> List[Tuple[int, List[str], str]]:
+            """
+            说明：
+                按遗器部位遍历字典，查找可能存在的重复遗器
+            返回：
+                :return ret[list(tuple)]:
+                    0-遗器部位索引，1-装备者的名称序列，2-遗器哈希值
+            """
+            ret = []
+            for equip_index in range(len(self.hash_dict_for_equip)):
+                for element, char_names in self.hash_dict_for_equip[equip_index].items():
+                    if len(char_names) > 1:
+                        ret.append((equip_index, char_names, element))
+            return ret
+
     def check_relic_data_hash(self, updata=False) -> bool:
         """
         说明：
