@@ -211,7 +211,7 @@ class Relic:
         while loadout_name in character_data:
             loadout_name = input(_(">>>>命名冲突，请重命名: "))
         character_data[loadout_name] = relics_hash
-        self.loadout_data = modify_json_file(LOADOUT_FILE_NAME, character_name, character_data)
+        rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
         log.info(_("配装录入成功"))
 
     def save_loadout(self, max_retries=3) -> list[str]:
