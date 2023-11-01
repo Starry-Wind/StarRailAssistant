@@ -6,9 +6,9 @@ import numpy as np
 from collections import Counter
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
-from .questionary.questionary import select
+from .questionary.questionary import select, Choice
 # 改用本地的questionary模块，使之具备show_description功能，基于'tmbo/questionary/pull/330'
-# from questionary import select   # questionary原项目更新并具备当前功能后，可进行替换
+# from questionary import select, Choice   # questionary原项目更新并具备当前功能后，可进行替换
 from .relic_constants import *
 from .calculated import calculated, Array2dict, get_data_hash, str_just
 from .config import (read_json_file, modify_json_file, rewrite_json_file, 
@@ -125,11 +125,12 @@ class Relic:
             return
         option = select(
             _("请选择将要进行装备的配装："),
-            choices = self.get_loadout_choice_options(character_name) + [(_("返回上一级"))],
+            choices = self.get_loadout_choice_options(character_name) + [(_("<返回上一级>"))],
             show_description = True,   # 需questionary具备对show_description的相关支持
         ).ask()
-        if option == _("返回上一级"):
+        if option == _("<返回上一级>"):
             return
+        loadout_name, relic_hash = option
         self.calculated.switch_window()
         # 进行配装
         self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器，进入[人物]-[遗器]界面
@@ -138,7 +139,7 @@ class Relic:
         time.sleep(2)
         self.calculated.relative_click((82,12) if IS_PC else (78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
         time.sleep(1)
-        self.equip_loadout(option)
+        self.equip_loadout(relic_hash)
         self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器]界面，返回[人物]界面
         time.sleep(1)
 
@@ -704,29 +705,27 @@ class Relic:
         token.append('-'*50)
         print("\n".join(token))
 
-    def get_loadout_choice_options(self, character_name:str) -> List[Dict[str, Any]]:
+    def get_loadout_choice_options(self, character_name:str) -> List[Choice]:
         """
         说明：
-            获取该人物配装记录的选项列表，包含配装的简要信息与详细信息
+            获取该人物配装记录的选项表
         参数：
             :param character_name: 人物名称
         返回：
-            :return choice_options: 人物配装记录的选项表，格式如下：
-                [{
-                    "name":str = 配装名称+配装简要信息,
-                    "value":list[str] = 遗器哈希值列表 (作为选项的返回值),
-                    "description":str = 配装详细信息
-                },...]
+            :return choice_options: 人物配装记录的选项表，Choice构造参数如下：
+                :return title: 配装名称+配装简要信息,
+                :return value: 元组(配装名称, 遗器哈希值列表),
+                :return description: 配装各属性数值统计
         """
         character_data = self.loadout_data[character_name]
-        choice_options = [{
-                "name": str_just(loadout_name, 12) + " " + self.get_loadout_brief(hash_list), 
-                "value": hash_list,
-                "description": '\n' + self.get_loadout_detail(hash_list, 5)   # 需questionary具备对show_description的相关支持
-            } for loadout_name, hash_list in character_data.items()]
+        choice_options = [Choice(
+                title = str_just(loadout_name, 14) + " " + self.get_loadout_brief(relics_hash), 
+                value = (loadout_name, relics_hash),
+                description = '\n' + self.get_loadout_detail(relics_hash, 5, True)
+            ) for loadout_name, relics_hash in character_data.items()]
         return choice_options
     
-    def get_loadout_detail(self, relics_hash: List[str], tab_num: int=0) -> str:
+    def get_loadout_detail(self, relics_hash: List[str], tab_num: int=0, flag=False) -> str:
         """
         说明：
             获取配装的详细信息 (各属性数值统计)
@@ -765,7 +764,8 @@ class Relic:
             n = (column-j-1) * len(token_list) // column + i
             msg += token_list[n] if j != 0 else tab+token_list[n]
             msg += "\n" if j == column-1 else "   "
-        msg += "\n\n" + tab + _("(未计算遗器套装的属性加成)")    # 【待扩展】
+        if msg[-1] != "\n": msg += "\n"
+        if flag: msg += "\n" + tab + _("(未计算遗器套装的属性加成)")    # 【待扩展】
         return msg
 
     def get_loadout_brief(self, relics_hash: List[str]) -> str:
@@ -789,10 +789,11 @@ class Relic:
         outer_set_cnt = Counter(outer_set_list)
         inner_set_cnt = Counter(inner_set_list)
         # 生成信息
-        msg =  "外:" + '+'.join([str(cnt) + name for name, cnt in outer_set_cnt.items()]) + "  "
-        msg += "内:" + '+'.join([str(cnt) + name for name, cnt in inner_set_cnt.items()]) + "  "
-        # msg += " ".join([self.equip_set_abbr[idx]+":"+name for idx, name in enumerate(base_stats_list) if idx > 1])
-        msg += ".".join([name for idx, name in enumerate(base_stats_list) if idx > 1])   # 排除头部与手部
+        inner = _("外:") + '+'.join([str(cnt) + name for name, cnt in outer_set_cnt.items()]) + "  "
+        outer = _("内:") + '+'.join([str(cnt) + name for name, cnt in inner_set_cnt.items()]) + "  "
+        # stats = " ".join([self.equip_set_abbr[idx]+":"+name for idx, name in enumerate(base_stats_list) if idx > 1])
+        stats = ".".join([name for idx, name in enumerate(base_stats_list) if idx > 1])   # 排除头部与手部
+        msg = str_just(stats, 17) + " " + str_just(outer, 10) + " " + inner   # 将长度最不定的外圈信息放至最后
         return msg
 
     def get_base_stats_detail(self, data: Tuple[str, float], rarity: int, level: int, stats_index: Optional[int]=None) -> Optional[float]:
