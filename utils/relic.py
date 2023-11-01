@@ -320,7 +320,7 @@ class Relic:
                 loadout_name_list[i] = team_name
                 self.loadout_data[char_name][team_name] = relics_hash
                 rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
-        group_data[team_name]["team_members"] = {key: value for key, value in zip(char_name_list, loadout_name_list)}
+        group_data[team_name] = {"team_members": {key: value for key, value in zip(char_name_list, loadout_name_list)}}
         rewrite_json_file(TEAM_FILE_NAME, self.team_data)
         log.info(_("编队录入成功"))
 
@@ -729,9 +729,12 @@ class Relic:
         equip_set_name = EQUIP_SET_NAME[equip_set_index]
         # [2]套装识别
         name_list = RELIC_SET_NAME[:, 0].tolist()
+        name_list = name_list[:RELIC_INNER_SET_INDEX] if equip_set_index < 4 else name_list[RELIC_INNER_SET_INDEX:]   # 取外圈/内圈的切片
         relic_set_index = self.calculated.ocr_pos_for_single_line(name_list, points=(77,15,92,19) if IS_PC else (71,17,88,21), img_pk=img_pc)
         if relic_set_index < 0: 
             raise RelicOCRException(_("遗器部位OCR错误"))
+        if equip_set_index in [4, 5]:
+            relic_set_index += RELIC_INNER_SET_INDEX    # 还原内圈遗器的真实索引
         relic_set_name = RELIC_SET_NAME[relic_set_index, -1]
         # [3]稀有度识别
         hue, __, __ = self.calculated.get_relative_pix_hsv((43,55) if IS_PC else (41,55))   # 识别指定位点色相
