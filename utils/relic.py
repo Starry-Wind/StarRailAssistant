@@ -66,9 +66,9 @@ class Relic:
         """在打印遗器信息时的小数精度"""
 
         # 读取json文件，仅初始化时检查格式规范
-        self.relics_data = read_json_file(RELIC_FILE_NAME, schema = RELIC_SCHEMA)
-        self.loadout_data = read_json_file(LOADOUT_FILE_NAME, schema = LOADOUT_SCHEMA)
-        self.team_data = read_json_file(TEAM_FILE_NAME, schema = TEAM_SCHEMA)
+        self.relics_data: Dict[str, Dict[str, Any]] = read_json_file(RELIC_FILE_NAME, schema = RELIC_SCHEMA)
+        self.loadout_data: Dict[str, Dict[str, List[str]]] = read_json_file(LOADOUT_FILE_NAME, schema = LOADOUT_SCHEMA)
+        self.team_data: Dict[str, Dict[str, Any]] = read_json_file(TEAM_FILE_NAME, schema = TEAM_SCHEMA)
         log.info(_("遗器数据载入完成"))
         log.info(_(f"共载入 {len(list(self.relics_data.keys()))} 件遗器数据"))
 

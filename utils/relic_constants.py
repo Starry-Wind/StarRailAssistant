@@ -102,7 +102,7 @@ for i in range(len(BASE_STATS_TIER)):
     BASE_STATS_TIER[i][10:10] = [BASE_STATS_TIER[i][10]] * 6   # 复制属性伤害
 
 
-RELIC_SCHEMA = {           # 遗器数据集
+RELIC_SCHEMA = {
     "type": "object",
     "additionalProperties": {    # [主键]遗器哈希值 (由其键值遗器数据自动生成)
         "type": "object",
@@ -150,7 +150,7 @@ RELIC_SCHEMA = {           # 遗器数据集
 }}
 """遗器数据json格式规范"""
 
-LOADOUT_SCHEMA = {            # 人物遗器配装数据集
+LOADOUT_SCHEMA = {
     "type": "object",
     "additionalProperties": {       # [主键]人物名称 (以OCR结果为准)
         "type": "object",
@@ -162,16 +162,32 @@ LOADOUT_SCHEMA = {            # 人物遗器配装数据集
 }}}
 """人物配装数据json格式规范"""
 
-TEAM_SCHEMA = {                # 队伍遗器配装数据集
-    "type": "object",
+TEAM_SCHEMA_PART = {
     "additionalProperties": {       # [主键]队伍名称 (自定义)
         "type": "object",
-        "additionalProperties": {   # [外键]队伍成员名称 (以OCR结果为准)
-            "type": "string"        # [外键]各队伍成员的配装名称
+        "properties": {
+            "team_members": {       # 队伍成员 (无序，1-4人)
+                "type": "object",
+                "additionalProperties": {   # [外键]队伍成员名称 (以OCR结果为准)
+                    "type": "string"        # [外键]各队伍成员的配装名称
+                },
+                "minProperties": 1,
+                "maxProperties": 4
+            },
+            # 【可扩展】如"visible","ordered"等其他队伍属性
         },
-        "minProperties": 1,
-        "maxProperties": 4
+        "required": ["team_members"],  # 需包含遗器的全部固有属性
+        "additionalProperties": False
 }}
+TEAM_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "compatible":          # [主键]非互斥队伍组别 (默认，不可更改)
+            TEAM_SCHEMA_PART,
+    },
+    "additionalProperties":    # [主键]互斥队伍组别名称 (自定义，例如用于忘却之庭上下半配队)【待扩展】 
+        TEAM_SCHEMA_PART,
+}
 """队伍配装数据json格式规范"""
 
 RELIC_DATA_FILTER = ["pre_ver_hash"]
