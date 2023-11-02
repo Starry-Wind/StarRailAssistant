@@ -69,8 +69,11 @@ class Relic:
         self.relics_data: Dict[str, Dict[str, Any]] = read_json_file(RELIC_FILE_NAME, schema = RELIC_SCHEMA)
         self.loadout_data: Dict[str, Dict[str, List[str]]] = read_json_file(LOADOUT_FILE_NAME, schema = LOADOUT_SCHEMA)
         self.team_data: Dict[str, Dict[str, Any]] = read_json_file(TEAM_FILE_NAME, schema = TEAM_SCHEMA)
-        log.info(_("遗器数据载入完成"))
+
+        log.info(_("遗器模块初始化完成"))
         log.info(_(f"共载入 {len(list(self.relics_data.keys()))} 件遗器数据"))
+        log.info(_(f"共载入 {sum(len(char_loadouts) for char_name, char_loadouts in self.loadout_data.items())} 套配装数据"))
+        log.info(_(f"共载入 {sum(len(group_data) for group_name, group_data in self.team_data.items())} 组队伍数据"))
 
         # 校验遗器哈希值
         if not self.check_relic_data_hash():
@@ -89,11 +92,11 @@ class Relic:
         title = _("遗器模块：")
         tab = "\n" + " " * 5
         options = [
-            Choice(_("保存当前人物的配装"), value = 0,
+            Choice(_("保存当前角色的配装"), value = 0,
                    description = tab + _("请使游戏保持在[角色]界面")),
             Choice(_("保存当前队伍的配装"), value = 1,
                    description = tab + _("请使游戏保持在[角色]界面") + tab + _("并确保[角色头像列表]移动至开头")),
-            Choice(_("读取当前人物的配装记录"), value = 2,
+            Choice(_("读取当前角色的配装记录"), value = 2,
                    description = tab + _("请使游戏保持在[角色]界面")),
             Choice(_("读取队伍的配装记录"), value = 3,
                    description = tab + _("请使游戏保持在[角色]界面") + tab + _("并确保[角色头像列表]移动至开头")),
@@ -281,7 +284,7 @@ class Relic:
                 self.calculated.switch_cmd()
                 option = select(
                     _("请选择配装："),
-                    choices = [_("<识别当前配装>")] + self.get_loadout_choice_options(character_name) + [_("<退出>")],
+                    choices = self.get_loadout_choice_options(character_name) + [_("<识别当前配装>"), _("<退出>")],
                     show_description = True,   # 需questionary具备对show_description的相关支持
                 ).ask()
                 if option == _("<退出>"):   # 退出本次编队
@@ -300,7 +303,7 @@ class Relic:
             if loadout_check:  # 列表非空，表示存在遗器冲突
                 for equip_index, char_names, element in loadout_check:
                     self.calculated.switch_cmd()
-                    log.error(_("编队遗器冲突：{}间的'{}'遗器冲突，遗器哈希值：{}").format(char_names, EQUIP_SET_NAME[equip_index], element))
+                    log.error(_("队伍遗器冲突：{}间的'{}'遗器冲突，遗器哈希值：{}").format(char_names, EQUIP_SET_NAME[equip_index], element))
                     is_retrying = True  # 将重复本次循环
             if is_retrying:
                 log.error(_("请重新选择配装"))
@@ -411,7 +414,7 @@ class Relic:
             if self.pre_relic_set_index == relic_set_index and self.pre_rarity == rairty:  # 筛选条件未改变
                 return
             # 若筛选条件之一发生改变，未改变的不会进行重复动作
-            log.info(_(f"进行遗器筛选，筛选条件: set={relic_set_index}, rairty={rairty}"))
+            log.debug(_(f"进行遗器筛选，筛选条件: set={relic_set_index}, rairty={rairty}"))
             self.calculated.relative_click((3,92) if IS_PC else (4,92))  # 点击筛选图标进入[遗器筛选]界面
             time.sleep(0.5)
             # 筛选遗器套装
@@ -562,9 +565,11 @@ class Relic:
                 loadout_dict = self.HashList2dict()
                 [loadout_dict.add(self.loadout_data[char_name][loadout_name], char_name) for char_name, loadout_name in team_data["team_members"].items()]
                 for equip_index, char_names, element in loadout_dict.find_duplicate_hash():
-                    log.error(_("编队遗器冲突：'{}'队伍的{}间的'{}'遗器冲突，遗器哈希值：{}").format(team_name, char_names, EQUIP_SET_NAME[equip_index], element))
+                    log.error(_("队伍遗器冲突：'{}'队伍的{}间的'{}'遗器冲突，遗器哈希值：{}").format(team_name, char_names, EQUIP_SET_NAME[equip_index], element))
                     ret = False
             if group_name != "compatible": ...   # 互斥队伍组别【待扩展】
+        if ret:
+            log.info(_("队伍配装校验成功"))
         return ret
 
     class HashList2dict:
@@ -625,7 +630,7 @@ class Relic:
                     self.updata_relic_data(old_hash, new_hash, equip_indx)
                 cnt += 1
         if not cnt:
-            log.info(_(f"遗器哈希值校验成功"))
+            log.info(_("遗器哈希值校验成功"))
             return True
         if updata:
             log.info(_(f"已更新 {cnt} 件遗器的哈希值"))
