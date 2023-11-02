@@ -1009,7 +1009,7 @@ class Array2dict:
             self.data_dict = {row[key_index]: idx for idx, row in enumerate(arr)}
         else:
             self.data_dict = {row[key_index]: row[value_index] for row in arr}
-        log.debug(self.data_dict)
+        # log.debug(self.data_dict)
 
     def __getitem__(self, key: Any) -> Any:
         return self.data_dict[key]
