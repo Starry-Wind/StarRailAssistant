@@ -270,7 +270,7 @@ class Relic:
         while char_index < char_num:
             char_pos = char_pos_list[char_index]
             # [5.1]识别人物名称
-            if not is_retrying:
+            if not is_retrying:    # 如果处于重试，则不再次识别人物名称
                 self.calculated.switch_window()
                 self.calculated.relative_click(char_pos)    # 点击人物
                 time.sleep(2)
@@ -302,7 +302,9 @@ class Relic:
                     self.calculated.switch_cmd()
                     log.error(_("编队遗器冲突：{}间的'{}'遗器冲突，遗器哈希值：{}").format(char_names, EQUIP_SET_NAME[equip_index], element))
                     is_retrying = True  # 将重复本次循环
-                    continue   
+            if is_retrying:
+                log.error(_("请重新选择配装"))
+                continue
             log.info(_("配装校验成功"))
             char_name_list.append(character_name)
             relics_hash_list.append(relics_hash)
