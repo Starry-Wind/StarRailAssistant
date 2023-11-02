@@ -59,25 +59,10 @@ def read_json_file(filename: str, path=False, schema:dict=None) -> dict:
             else:
                 return data
     else:
-        if filename in [RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME]:
-            init_json_file(filename)
-            return read_json_file(filename, path)
         if path:
             return {}, filename
         else:
             return {}
-        
-
-def init_json_file(filename: str):
-    """
-    说明：
-        初始化json文件为空字典
-    参数：
-        :param filename: 文件名称
-    """
-    with open(filename, "wb") as f:
-        log.info(_(f"{filename} 文件初始化"))
-        f.write(orjson.dumps({}, option = orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2))
 
 
 def modify_json_file(filename:str, key:str, value:Any) -> dict:
