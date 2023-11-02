@@ -90,16 +90,17 @@ class Relic:
         tab = "\n" + " " * 5
         options = [
             Choice(_("保存当前人物的配装"), value = 0,
-                   description = tab + _("请使游戏保持在[人物]界面")),
+                   description = tab + _("请使游戏保持在[角色]界面")),
             Choice(_("保存当前队伍的配装"), value = 1,
-                   description = tab + _("请使游戏保持在[人物]界面") + tab + _("并确保[人物列表]移动至开头")),
+                   description = tab + _("请使游戏保持在[角色]界面") + tab + _("并确保[角色头像列表]移动至开头")),
             Choice(_("读取当前人物的配装记录"), value = 2,
-                   description = tab + _("请使游戏保持在[人物]界面")),
+                   description = tab + _("请使游戏保持在[角色]界面")),
             Choice(_("读取队伍的配装记录"), value = 3,
-                   description = tab + _("请使游戏保持在[人物]界面") + tab + _("并确保[人物列表]移动至开头")),
+                   description = tab + _("请使游戏保持在[角色]界面") + tab + _("并确保[角色头像列表]移动至开头")),
             Choice(_("识别当前遗器数据"), value = 4,
-                   description = tab + _("请使游戏保持在[人物]-[遗器]-[遗器详情]界面") + tab + _("推荐手动点击[对比]提高识别度")),
-            _("<返回主菜单>")]
+                   description = tab + _("请使游戏保持在[角色]-[遗器]-[遗器替换]界面") + tab + _("推荐手动点击[对比]提高识别度")),
+            _("<返回主菜单>")
+        ]  # 注：[角色]界面的前继可为[队伍]-[角色选择]-[详情]界面
         option = None  # 保存上一次的选择
         while True:
             self.calculated.switch_cmd()
@@ -123,7 +124,7 @@ class Relic:
     def equip_loadout_for_team(self):
         """
         说明：
-            装备当前[人物]界面本队伍的遗器配装
+            装备当前[角色]界面本队伍的遗器配装
         """
         char_pos_list = [(26,6),(31,6),(37,6),(42,6),...,(75,6)] if IS_PC else [(5,16),(5,27),(5,38),(5,49),...,(5,81)]
         # 选择队伍
@@ -139,7 +140,7 @@ class Relic:
         self.calculated.switch_window()
         self.calculated.relative_swipe(char_pos_list[0], char_pos_list[-1])  # 滑动人物列表
         time.sleep(1)
-        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[人物]-[遗器]界面
+        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[角色]-[遗器]界面
         time.sleep(1)
         # 依次点击人物，进行配装 (编队人物无序)
         for char_index in range(len(team_members)):
@@ -157,7 +158,7 @@ class Relic:
     def equip_loadout_for_char(self, character_name :Optional[str]=None):
         """
         说明：
-            装备当前[人物]界面本人物的遗器配装
+            装备当前[角色]界面本人物的遗器配装
         """
         # 识别当前人物名称
         character_name = self.ocr_character_name() if character_name is None else character_name
@@ -176,14 +177,14 @@ class Relic:
         loadout_name, relic_hash = option
         self.calculated.switch_window()
         # 进行配装
-        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器，进入[人物]-[遗器]界面
+        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器，进入[角色]-[遗器]界面
         time.sleep(0.5)
         self.equip_loadout(relic_hash)
 
     def equip_loadout(self, relics_hash:List[str]):
         """
         说明：
-            装备当前[人物]-[遗器]页面内的指定遗器配装。
+            装备当前[角色]-[遗器]页面内的指定遗器配装。
             遗器将强制替换 (1-替换己方已装备的遗器，2-替换对方已装备的遗器)
         参数：
             :param relics_hash: 遗器配装哈希值列表
@@ -191,7 +192,7 @@ class Relic:
         equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
         relic_filter = self.Relic_filter(self.calculated)   # 遗器筛选器初始化
         relic_set_name_dict = Array2dict(RELIC_SET_NAME)
-        self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[人物]-[遗器]-[遗器详情]界面
+        self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[角色]-[遗器]-[遗器替换]界面
         time.sleep(2)
         self.calculated.relative_click((82,12) if IS_PC else (78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
         time.sleep(1)
@@ -227,14 +228,14 @@ class Relic:
                     time.sleep(0.5)
             elif button == 2:
                 log.info(_("已装备"))
-        self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器详情]界面，返回[人物]-[遗器]界面
+        self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器替换]界面，返回[角色]-[遗器]界面
         time.sleep(0.5)
         log.info(_("配装装备完毕"))
 
     def save_loadout_for_team(self):
         """
         说明：
-            保存当前[人物]界面本队伍的遗器配装
+            保存当前[角色]界面本队伍的遗器配装
         """
         char_pos_list = [(26,6),(31,6),(37,6),(42,6),...,(75,6)] if IS_PC else [(5,16),(5,27),(5,38),(5,49),...,(5,81)]
         char_name_list = []
@@ -259,7 +260,7 @@ class Relic:
         self.calculated.switch_window()
         self.calculated.relative_swipe(char_pos_list[0], char_pos_list[-1])  # 滑动人物列表
         time.sleep(1)
-        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[人物]-[遗器]界面
+        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[角色]-[遗器]界面
         time.sleep(1)
         # [5]依次点击人物，识别配装
         char_index = 0
@@ -327,11 +328,11 @@ class Relic:
     def save_loadout_for_char(self):
         """
         说明：
-            保存当前[人物]界面本人物的遗器配装
+            保存当前[角色]界面本人物的遗器配装
         """
         character_name = self.ocr_character_name()  # 识别当前人物名称
         character_data = self.loadout_data[character_name]
-        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[人物]-[遗器]界面
+        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[角色]-[遗器]界面
         time.sleep(1)
         relics_hash = self.save_loadout()
         self.calculated.switch_cmd()
@@ -350,13 +351,13 @@ class Relic:
     def save_loadout(self, max_retries=3) -> list[str]:
         """
         说明：
-            保存当前[人物]-[遗器]界面内的遗器配装
+            保存当前[角色]-[遗器]界面内的遗器配装
         返回：
             :return relics_hash: 遗器配装哈希值列表
         """
         equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
         relics_hash = []
-        self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[人物]-[遗器]-[遗器详情]界面
+        self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[角色]-[遗器]-[遗器替换]界面
         time.sleep(2)
         self.calculated.relative_click((82,12) if IS_PC else (78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
         time.sleep(1)
@@ -374,7 +375,7 @@ class Relic:
                 log.info(_("录入遗器数据"))
                 self.add_relic_data(tmp_data, tmp_hash)
             relics_hash.append(tmp_hash)
-        self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器详情]界面，返回[人物]-[遗器]界面
+        self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器替换]界面，返回[角色]-[遗器]界面
         time.sleep(0.5)
         log.info(_("配装识别完毕"))
         return relics_hash
@@ -382,9 +383,9 @@ class Relic:
     class Relic_filter:
         """
         说明：
-            遗器筛选器。封装了在[人物]-[遗器]-[遗器详情]-[遗器筛选]界面内的遗器筛选方法，
+            遗器筛选器。封装了在[角色]-[遗器]-[遗器替换]-[遗器筛选]界面内的遗器筛选方法，
             目前可以对遗器套装与稀有度进行筛选，并记录先前的筛选状态
-                (注意在未退出[遗器详情]界面时切换遗器，会保留上一次的筛选状态)
+                (注意在未退出[遗器替换]界面时切换遗器，会保留上一次的筛选状态)
         """
         rarity_pos_list = [(77,38),(89,38),(77,42),(89,42)] if IS_PC else [(71,45),(86,45),(71,52),(86,52)]
         """稀有度筛选项的点击位点 (分别为2,3,4,5星稀有度)"""
@@ -400,7 +401,7 @@ class Relic:
         def do(self, relic_set_index: int, rairty: int):
             """
             说明：
-                在当前[人物]-[遗器]-[遗器详情]内进行遗器筛选
+                在当前[角色]-[遗器]-[遗器替换]内进行遗器筛选
             参数：
                 :param relic_set_index: 遗器套装索引
                 :param rairty: 稀有度
@@ -436,7 +437,7 @@ class Relic:
         def search_relic_set_for_filter(self, relic_set_index: int):
             """
             说明：
-                在当前滑动[人物]-[遗器]-[遗器详情]-[遗器筛选]-[遗器套装筛选]界面内，搜索遗器套装名，并点击。
+                在当前滑动[角色]-[遗器]-[遗器替换]-[遗器筛选]-[遗器套装筛选]界面内，搜索遗器套装名，并点击。
                 综合OCR识别与方位计算
             参数：
                 :param equip_set_index: 遗器套装索引
@@ -460,7 +461,7 @@ class Relic:
                      ) -> Optional[tuple[int, int]]:
         """
         说明：
-            在当前滑动[人物]-[遗器]-[遗器详情]界面内，搜索匹配的遗器。
+            在当前滑动[角色]-[遗器]-[遗器替换]界面内，搜索匹配的遗器。
                 key_hash非空: 激活精确匹配 (假设数据保存期间遗器未再次升级); 
                 key_data非空: 激活模糊匹配 (假设数据保存期间遗器再次升级，匹配成功后自动更新遗器数据);
                 key_hash & key_data均空: 遍历当前页面内的遗器
@@ -711,7 +712,7 @@ class Relic:
     def ocr_relic(self, equip_set_index: Optional[int]=None) -> Dict[str, Any]:
         """
         说明：
-            OCR当前静态[人物]-[遗器]-[遗器详情]界面内的遗器数据，单次用时约0.5s。
+            OCR当前静态[角色]-[遗器]-[遗器替换]界面内的遗器数据，单次用时约0.5s。
             更改为ocr_for_single_line()后，相较ocr()已缩短一半用时，且提高了部分识别的准确性，
             若更改为ocr_for_single_lines()后的性能变化【待测】(代码重构较大)
         参数：
