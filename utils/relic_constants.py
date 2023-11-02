@@ -13,6 +13,7 @@ EQUIP_SET_ADDR = [_("头"), _("手"), _("衣"), _("鞋"), _("球"), _("绳")]
 
 # 注：因为数据有时要行取有时要列取，故采用数组存储
 RELIC_SET_NAME = np.array([
+# 外圈
     [_("过客"), _("过客"), _("治疗"), _("云无留迹的过客")],
     [_("枪手"), _("枪手"), _("快枪手"), _("野穗伴行的快枪手")], 
     [_("圣骑"), _("圣骑"), _("圣骑"), _("净庭教宗的圣骑士")], 
@@ -27,10 +28,11 @@ RELIC_SET_NAME = np.array([
     [_("废"),   _("废"),   _("虚数"), _("盗匪荒漠的废土客")],
     [_("者"),   _("长存"), _("莳者"), _("宝命长存的莳者")], 
     [_("信使"), _("信使"), _("信使"), _("骇域漫游的信使")], 
+# 内圈
     [_("黑塔"), _("太空"), _("空间站"), _("太空封印站")], 
     [_("仙"),   _("仙"),   _("仙舟"), _("不老者的仙舟")], 
     [_("公司"), _("公司"), _("命中"), _("泛银河商业公司")], 
-    [_("贝洛"), _("贝洛"), _("防御"), _("筑城者的贝洛伯格")], 
+    [_("贝洛"), _("贝洛"), _("防御"), _("筑城者的贝洛伯格")],   # 注：有散件名为'贝洛伯格的铁卫防线'
     [_("螺丝"), _("差分"), _("差分"), _("星体差分机")], 
     [_("萨尔"), _("停转"), _("停转"), _("停转的萨尔索图")], 
     [_("利亚"), _("盗贼"), _("击破"), _("盗贼公国塔利亚")], 
@@ -38,7 +40,10 @@ RELIC_SET_NAME = np.array([
     [_("泰科"), _("繁星"), _("繁星"), _("繁星竞技场")], 
     [_("伊须"), _("龙骨"), _("龙骨"), _("折断的龙骨")]
 ], dtype=np.str_)
-"""遗器套装名称：0-套装散件名的共有词(ocr-必须)，1-套装名的特异词(ocr-可选，为了增强鲁棒性)，2-玩家惯用简称(print)，3-套装全称(json)，已按[1.4游戏]遗器筛选界面排序"""
+"""遗器套装名称：0-套装散件名的共有词(ocr-必须)，1-套装名的特异词(ocr-可选，为了增强鲁棒性)，2-玩家惯用简称(print)，3-套装全称(json)，已按[1.4游戏]遗器筛选界面排序 (且前段为外圈，后段为内圈)"""
+
+RELIC_INNER_SET_INDEX = 14
+"""RELIC_SET_NAME参数的遗器内圈的起始点索引"""
 
 STATS_NAME = np.array([
     [_("命值"), _("生"), _("生命值")], 
@@ -102,7 +107,7 @@ for i in range(len(BASE_STATS_TIER)):
     BASE_STATS_TIER[i][10:10] = [BASE_STATS_TIER[i][10]] * 6   # 复制属性伤害
 
 
-RELIC_SCHEMA = {           # 遗器数据集
+RELIC_SCHEMA = {
     "type": "object",
     "additionalProperties": {    # [主键]遗器哈希值 (由其键值遗器数据自动生成)
         "type": "object",
@@ -150,7 +155,7 @@ RELIC_SCHEMA = {           # 遗器数据集
 }}
 """遗器数据json格式规范"""
 
-LOADOUT_SCHEMA = {            # 人物遗器配装数据集
+LOADOUT_SCHEMA = {
     "type": "object",
     "additionalProperties": {       # [主键]人物名称 (以OCR结果为准)
         "type": "object",
@@ -162,16 +167,32 @@ LOADOUT_SCHEMA = {            # 人物遗器配装数据集
 }}}
 """人物配装数据json格式规范"""
 
-TEAM_SCHEMA = {                # 队伍遗器配装数据集
-    "type": "object",
+TEAM_SCHEMA_PART = {
     "additionalProperties": {       # [主键]队伍名称 (自定义)
         "type": "object",
-        "additionalProperties": {   # [外键]队伍成员名称 (以OCR结果为准)
-            "type": "string"        # [外键]各队伍成员的配装名称
+        "properties": {
+            "team_members": {       # 队伍成员 (无序，1-4人)
+                "type": "object",
+                "additionalProperties": {   # [外键]队伍成员名称 (以OCR结果为准)
+                    "type": "string"        # [外键]各队伍成员的配装名称
+                },
+                "minProperties": 1,
+                "maxProperties": 4
+            },
+            # 【可扩展】如"visible","ordered"等其他队伍属性
         },
-        "minProperties": 1,
-        "maxProperties": 4
+        "required": ["team_members"],  # 需包含遗器的全部固有属性
+        "additionalProperties": False
 }}
+TEAM_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "compatible":          # [主键]非互斥队伍组别 (默认，不可更改)
+            TEAM_SCHEMA_PART,
+    },
+    "additionalProperties":    # [主键]互斥队伍组别名称 (自定义，例如用于忘却之庭上下半配队)【待扩展】 
+        TEAM_SCHEMA_PART,
+}
 """队伍配装数据json格式规范"""
 
 RELIC_DATA_FILTER = ["pre_ver_hash"]

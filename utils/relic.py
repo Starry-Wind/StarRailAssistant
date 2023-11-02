@@ -6,9 +6,9 @@ import numpy as np
 from collections import Counter
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
-from .questionary.questionary import select
+from .questionary.questionary import select, Choice
 # 改用本地的questionary模块，使之具备show_description功能，基于'tmbo/questionary/pull/330'
-# from questionary import select   # questionary原项目更新并具备当前功能后，可进行替换
+# from questionary import select, Choice   # questionary原项目更新并具备当前功能后，可进行替换
 from .relic_constants import *
 from .calculated import calculated, Array2dict, get_data_hash, str_just
 from .config import (read_json_file, modify_json_file, rewrite_json_file, 
@@ -66,17 +66,23 @@ class Relic:
         """在打印遗器信息时的小数精度"""
 
         # 读取json文件，仅初始化时检查格式规范
-        self.relics_data = read_json_file(RELIC_FILE_NAME, schema = RELIC_SCHEMA)
-        self.loadout_data = read_json_file(LOADOUT_FILE_NAME, schema = LOADOUT_SCHEMA)
-        self.team_data = read_json_file(TEAM_FILE_NAME, schema = TEAM_SCHEMA)
-        log.info(_("遗器数据载入完成"))
+        self.relics_data: Dict[str, Dict[str, Any]] = read_json_file(RELIC_FILE_NAME, schema = RELIC_SCHEMA)
+        self.loadout_data: Dict[str, Dict[str, List[str]]] = read_json_file(LOADOUT_FILE_NAME, schema = LOADOUT_SCHEMA)
+        self.team_data: Dict[str, Dict[str, Any]] = read_json_file(TEAM_FILE_NAME, schema = TEAM_SCHEMA)
+
+        log.info(_("遗器模块初始化完成"))
         log.info(_(f"共载入 {len(list(self.relics_data.keys()))} 件遗器数据"))
+        log.info(_(f"共载入 {sum(len(char_loadouts) for char_name, char_loadouts in self.loadout_data.items())} 套配装数据"))
+        log.info(_(f"共载入 {sum(len(group_data) for group_name, group_data in self.team_data.items())} 组队伍数据"))
 
         # 校验遗器哈希值
         if not self.check_relic_data_hash():
             option = select(_("是否依据当前遗器数据更新哈希值："), [_("是"), _("否")]).ask()
             if option == _("是"):
                 self.check_relic_data_hash(updata=True)
+        # 校验队伍配装规范
+        if not self.check_team_data():
+            log.error(_("怀疑为手动错误修改json文件导致"))
 
     def relic_entrance(self):
         """
@@ -84,34 +90,78 @@ class Relic:
             遗器模块入口
         """
         title = _("遗器模块：")
-        options = [_("保存当前人物的配装"), _("读取当前人物的配装"), _("识别当前遗器的数据"), _("返回主菜单")]
+        tab = "\n" + " " * 5
+        options = [
+            Choice(_("保存当前角色的配装"), value = 0,
+                   description = tab + _("请使游戏保持在[角色]界面")),
+            Choice(_("保存当前队伍的配装"), value = 1,
+                   description = tab + _("请使游戏保持在[角色]界面") + tab + _("并确保[角色头像列表]移动至开头")),
+            Choice(_("读取当前角色的配装记录"), value = 2,
+                   description = tab + _("请使游戏保持在[角色]界面")),
+            Choice(_("读取队伍的配装记录"), value = 3,
+                   description = tab + _("请使游戏保持在[角色]界面") + tab + _("并确保[角色头像列表]移动至开头")),
+            Choice(_("识别当前遗器数据"), value = 4,
+                   description = tab + _("请使游戏保持在[角色]-[遗器]-[遗器替换]界面") + tab + _("推荐手动点击[对比]提高识别度")),
+            _("<返回主菜单>")
+        ]  # 注：[角色]界面的前继可为[队伍]-[角色选择]-[详情]界面
         option = None  # 保存上一次的选择
         while True:
             self.calculated.switch_cmd()
-            option = select(title, options, default=option).ask()
-            if option == _("保存当前人物的配装"):
+            option = select(title, options, default=option, show_description=True).ask()
+            if option == 0:
                 self.calculated.switch_window()
                 self.save_loadout_for_char()
-            elif option == _("读取当前人物的配装"):
+            elif option == 1:
+                self.save_loadout_for_team()
+            elif option == 2:
                 self.equip_loadout_for_char()
-            elif option == _("识别当前遗器的数据"):
+            elif option == 3:
+                self.equip_loadout_for_team()
+            elif option == 4:
                 self.calculated.switch_window()
                 data = self.try_ocr_relic()
                 self.print_relic(data)
-            elif option == _("返回主菜单"):
+            elif option == _("<返回主菜单>"):
                 break
     
     def equip_loadout_for_team(self):
         """
         说明：
-            装备当前[人物]界面本队伍的遗器配装
+            装备当前[角色]界面本队伍的遗器配装
         """
-        ...
+        char_pos_list = [(26,6),(31,6),(37,6),(42,6),...,(75,6)] if IS_PC else [(5,16),(5,27),(5,38),(5,49),...,(5,81)]
+        # 选择队伍
+        option = select(
+            _("请选择对当前队伍进行遗器装备的编队："),
+            choices = self.get_team_choice_options() + [(_("<返回上一级>"))],
+            show_description = True,   # 需questionary具备对show_description的相关支持
+        ).ask()
+        if option == _("<返回上一级>"):
+            return
+        team_members = option  # 得到 (char_name: loadout_name) 的键值对
+        # 检查人物列表是否移动至开头
+        self.calculated.switch_window()
+        self.calculated.relative_swipe(char_pos_list[0], char_pos_list[-1])  # 滑动人物列表
+        time.sleep(1)
+        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[角色]-[遗器]界面
+        time.sleep(1)
+        # 依次点击人物，进行配装 (编队人物无序)
+        for char_index in range(len(team_members)):
+            char_pos = char_pos_list[char_index]
+            self.calculated.relative_click(char_pos)    # 点击人物
+            time.sleep(2)
+            character_name = self.ocr_character_name()  # 识别当前人物名称
+            if character_name not in team_members:
+                log.error(_(f"编队错误：角色'{character_name}'不应在当前队伍中"))
+                return
+            relic_hash = self.loadout_data[character_name][team_members[character_name]]
+            self.equip_loadout(relic_hash)
+        log.info(_("队伍配装完毕"))
 
     def equip_loadout_for_char(self, character_name :Optional[str]=None):
         """
         说明：
-            装备当前[人物]界面本人物的遗器配装
+            装备当前[角色]界面本人物的遗器配装
         """
         # 识别当前人物名称
         character_name = self.ocr_character_name() if character_name is None else character_name
@@ -122,27 +172,22 @@ class Relic:
             return
         option = select(
             _("请选择将要进行装备的配装："),
-            choices = self.get_loadout_choice_options(character_name) + [(_("返回上一级"))],
+            choices = self.get_loadout_choice_options(character_name) + [(_("<返回上一级>"))],
             show_description = True,   # 需questionary具备对show_description的相关支持
         ).ask()
-        if option == _("返回上一级"):
+        if option == _("<返回上一级>"):
             return
+        loadout_name, relic_hash = option
         self.calculated.switch_window()
         # 进行配装
-        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器，进入[人物]-[遗器]界面
+        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器，进入[角色]-[遗器]界面
         time.sleep(0.5)
-        self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[人物]-[遗器]-[遗器详情]界面
-        time.sleep(2)
-        self.calculated.relative_click((82,12) if IS_PC else (78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
-        time.sleep(1)
-        self.equip_loadout(option)
-        self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器]界面，返回[人物]界面
-        time.sleep(1)
+        self.equip_loadout(relic_hash)
 
     def equip_loadout(self, relics_hash:List[str]):
         """
         说明：
-            装备当前[人物]-[遗器]-[遗器详情]页面内的指定遗器配装。
+            装备当前[角色]-[遗器]页面内的指定遗器配装。
             遗器将强制替换 (1-替换己方已装备的遗器，2-替换对方已装备的遗器)
         参数：
             :param relics_hash: 遗器配装哈希值列表
@@ -150,9 +195,13 @@ class Relic:
         equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
         relic_filter = self.Relic_filter(self.calculated)   # 遗器筛选器初始化
         relic_set_name_dict = Array2dict(RELIC_SET_NAME)
+        self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[角色]-[遗器]-[遗器替换]界面
+        time.sleep(2)
+        self.calculated.relative_click((82,12) if IS_PC else (78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
+        time.sleep(1)
         for equip_indx, equip_pos in enumerate(equip_pos_list):   # 遗器部位循环
             # 选择部位
-            log.info(_(f"选择部位：{self.equip_set_name[equip_indx]}"))
+            log.info(_(f"选择部位：{EQUIP_SET_NAME[equip_indx]}"))
             self.calculated.relative_click(equip_pos)
             time.sleep(0.5)
             # 获取遗器数据
@@ -182,42 +231,143 @@ class Relic:
                     time.sleep(0.5)
             elif button == 2:
                 log.info(_("已装备"))
+        self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器替换]界面，返回[角色]-[遗器]界面
+        time.sleep(0.5)
         log.info(_("配装装备完毕"))
 
     def save_loadout_for_team(self):
         """
         说明：
-            保存当前[人物]界面本队伍的遗器配装
+            保存当前[角色]界面本队伍的遗器配装
         """
-        ...
+        char_pos_list = [(26,6),(31,6),(37,6),(42,6),...,(75,6)] if IS_PC else [(5,16),(5,27),(5,38),(5,49),...,(5,81)]
+        char_name_list = []
+        relics_hash_list = []
+        loadout_name_list = []
+        # [1]选择队伍的人数 (能否通过页面识别？)
+        char_num = int(select(_("请选择队伍人数："), ['4','3','2','1']).ask())
+        # [2]选择是否为互斥队伍组别 
+        group_name = "compatible"     # 默认为非互斥队组别
+        ...  # 互斥队组别【待扩展】
+        if group_name not in self.team_data:
+            self.team_data[group_name] = {}
+        group_data = self.team_data[group_name]
+        # [3]选择组建方式
+        options = {
+            _("全识别"): 0,
+            _("参考已有的配装数据"): 1
+        }
+        option_ = select(_("请选择组建方式："), options).ask()
+        state = options[option_]
+        # [4]检查人物列表是否移动至开头
+        self.calculated.switch_window()
+        self.calculated.relative_swipe(char_pos_list[0], char_pos_list[-1])  # 滑动人物列表
+        time.sleep(1)
+        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[角色]-[遗器]界面
+        time.sleep(1)
+        # [5]依次点击人物，识别配装
+        char_index = 0
+        is_retrying = False
+        character_name = None
+        loadout_dict = self.HashList2dict()
+        while char_index < char_num:
+            char_pos = char_pos_list[char_index]
+            # [5.1]识别人物名称
+            if not is_retrying:    # 如果处于重试，则不再次识别人物名称
+                self.calculated.switch_window()
+                self.calculated.relative_click(char_pos)    # 点击人物
+                time.sleep(2)
+                character_name = self.ocr_character_name()  # 识别当前人物名称
+            # [5.2]选择识别当前，还是录入已有
+            option = None
+            if state == 1:
+                self.calculated.switch_cmd()
+                option = select(
+                    _("请选择配装："),
+                    choices = self.get_loadout_choice_options(character_name) + [_("<识别当前配装>"), _("<退出>")],
+                    show_description = True,   # 需questionary具备对show_description的相关支持
+                ).ask()
+                if option == _("<退出>"):   # 退出本次编队
+                    return
+                elif option != _("<识别当前配装>"):
+                    loadout_name, relics_hash = option    # 获取已录入的配装数据
+            if state == 0 or option == _("<识别当前配装>"):
+                self.calculated.switch_window()
+                relics_hash = self.save_loadout()
+                print(_("配装信息：\n  {}\n{}").format(self.get_loadout_brief(relics_hash), self.get_loadout_detail(relics_hash, 2)))    
+                loadout_name = self.find_loadout_name(character_name, relics_hash)
+                if loadout_name:
+                    log.info(_(f"配装记录已存在，配装名称：{loadout_name}"))
+            # [5.3]检查是否存在冲突遗器
+            loadout_check = loadout_dict.add(relics_hash, character_name).find_duplicate_hash()
+            if loadout_check:  # 列表非空，表示存在遗器冲突
+                for equip_index, char_names, element in loadout_check:
+                    self.calculated.switch_cmd()
+                    log.error(_("队伍遗器冲突：{}间的'{}'遗器冲突，遗器哈希值：{}").format(char_names, EQUIP_SET_NAME[equip_index], element))
+                    is_retrying = True  # 将重复本次循环
+            if is_retrying:
+                log.error(_("请重新选择配装"))
+                continue
+            log.info(_("配装校验成功"))
+            char_name_list.append(character_name)
+            relics_hash_list.append(relics_hash)
+            loadout_name_list.append(loadout_name)
+            is_retrying = False
+            char_index += 1
+        # [6]自定义名称
+        self.calculated.switch_cmd()
+        team_name = input(_(">>>>命名编队名称 (将同时作为各人物新建配装的名称): "))
+        while team_name in group_data or \
+            any([team_name in self.loadout_data[character_name] for character_name, loadout_name in zip(char_name_list, loadout_name_list) if loadout_name is None]):
+            team_name = input(_(">>>>命名冲突，请重命名: "))
+        # [7]录入数据
+        for i, (char_name, relics_hash, loadout_name) in enumerate(zip(char_name_list, relics_hash_list, loadout_name_list)):
+            if loadout_name is None:
+                loadout_name_list[i] = team_name
+                self.loadout_data[char_name][team_name] = relics_hash
+                rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
+        group_data[team_name] = {"team_members": {key: value for key, value in zip(char_name_list, loadout_name_list)}}
+        rewrite_json_file(TEAM_FILE_NAME, self.team_data)
+        log.info(_("编队录入成功"))
 
     def save_loadout_for_char(self):
         """
         说明：
-            保存当前[人物]界面本人物的遗器配装
+            保存当前[角色]界面本人物的遗器配装
         """
         character_name = self.ocr_character_name()  # 识别当前人物名称
-        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器
+        character_data = self.loadout_data[character_name]
+        self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[角色]-[遗器]界面
         time.sleep(1)
-        self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[人物]-[遗器]界面
+        relics_hash = self.save_loadout()
+        self.calculated.switch_cmd()
+        print(_("配装信息：\n  {}\n{}").format(self.get_loadout_brief(relics_hash), self.get_loadout_detail(relics_hash, 2)))
+        loadout_name = self.find_loadout_name(character_name, relics_hash)
+        if loadout_name:
+            log.info(_(f"配装记录已存在，配装名称：{loadout_name}"))
+            return
+        loadout_name = input(_(">>>>命名配装名称: "))  # 需作为字典key值，确保唯一性 (但不同的人物可以有同一配装名称)
+        while loadout_name in character_data:
+            loadout_name = input(_(">>>>命名冲突，请重命名: "))
+        character_data[loadout_name] = relics_hash
+        rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
+        log.info(_("配装录入成功"))
+
+    def save_loadout(self, max_retries=3) -> list[str]:
+        """
+        说明：
+            保存当前[角色]-[遗器]界面内的遗器配装
+        返回：
+            :return relics_hash: 遗器配装哈希值列表
+        """
+        equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
+        relics_hash = []
+        self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[角色]-[遗器]-[遗器替换]界面
         time.sleep(2)
         self.calculated.relative_click((82,12) if IS_PC else (78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
         time.sleep(1)
-        self.save_loadout(character_name)
-        self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器]界面，返回[人物]界面
-        time.sleep(2)
-
-    def save_loadout(self, character_name: Optional[str]=None, max_retries=3):
-        """
-        说明：
-            保存当前[人物]-[遗器]-[遗器详情]界面内的遗器配装
-        """
-        character_name = character_name if character_name else self.ocr_character_name()
-        character_data = self.loadout_data[character_name]
-        equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14), (11,14), (17,14), (23,14), (28,14), (34,14)]
-        relics_hash = []
         for equip_indx, equip_pos in enumerate(equip_pos_list):   # 遗器部位循环
-            log.info(_(f"选择部位：{self.equip_set_name[equip_indx]}"))
+            log.info(_(f"选择部位：{EQUIP_SET_NAME[equip_indx]}"))
             self.calculated.relative_click(equip_pos)
             time.sleep(1)
             tmp_data = self.try_ocr_relic(equip_indx, max_retries)
@@ -230,22 +380,17 @@ class Relic:
                 log.info(_("录入遗器数据"))
                 self.add_relic_data(tmp_data, tmp_hash)
             relics_hash.append(tmp_hash)
+        self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器替换]界面，返回[角色]-[遗器]界面
+        time.sleep(0.5)
         log.info(_("配装识别完毕"))
-        self.calculated.switch_cmd()
-        loadout_name = input(_(">>>>命名配装名称: "))  # 需作为字典key值，确保唯一性 (但不同的人物可以有同一配装名称)
-        while loadout_name in character_data:
-            loadout_name = input(_(">>>>命名冲突，请重命名: "))
-        character_data[loadout_name] = relics_hash
-        self.loadout_data = modify_json_file(LOADOUT_FILE_NAME, character_name, character_data)
-        log.info(_("配装录入成功"))
-        self.calculated.switch_window()
+        return relics_hash
     
     class Relic_filter:
         """
         说明：
-            遗器筛选器。封装了在[人物]-[遗器]-[遗器详情]-[遗器筛选]界面内的遗器筛选方法，
+            遗器筛选器。封装了在[角色]-[遗器]-[遗器替换]-[遗器筛选]界面内的遗器筛选方法，
             目前可以对遗器套装与稀有度进行筛选，并记录先前的筛选状态
-                (注意在未退出[遗器详情]界面时切换遗器，会保留上一次的筛选状态)
+                (注意在未退出[遗器替换]界面时切换遗器，会保留上一次的筛选状态)
         """
         rarity_pos_list = [(77,38),(89,38),(77,42),(89,42)] if IS_PC else [(71,45),(86,45),(71,52),(86,52)]
         """稀有度筛选项的点击位点 (分别为2,3,4,5星稀有度)"""
@@ -261,7 +406,7 @@ class Relic:
         def do(self, relic_set_index: int, rairty: int):
             """
             说明：
-                在当前[人物]-[遗器]-[遗器详情]内进行遗器筛选
+                在当前[角色]-[遗器]-[遗器替换]内进行遗器筛选
             参数：
                 :param relic_set_index: 遗器套装索引
                 :param rairty: 稀有度
@@ -269,7 +414,7 @@ class Relic:
             if self.pre_relic_set_index == relic_set_index and self.pre_rarity == rairty:  # 筛选条件未改变
                 return
             # 若筛选条件之一发生改变，未改变的不会进行重复动作
-            log.info(_(f"进行遗器筛选，筛选条件: set={relic_set_index}, rairty={rairty}"))
+            log.debug(_(f"进行遗器筛选，筛选条件: set={relic_set_index}, rairty={rairty}"))
             self.calculated.relative_click((3,92) if IS_PC else (4,92))  # 点击筛选图标进入[遗器筛选]界面
             time.sleep(0.5)
             # 筛选遗器套装
@@ -297,7 +442,7 @@ class Relic:
         def search_relic_set_for_filter(self, relic_set_index: int):
             """
             说明：
-                在当前滑动[人物]-[遗器]-[遗器详情]-[遗器筛选]-[遗器套装筛选]界面内，搜索遗器套装名，并点击。
+                在当前滑动[角色]-[遗器]-[遗器替换]-[遗器筛选]-[遗器套装筛选]界面内，搜索遗器套装名，并点击。
                 综合OCR识别与方位计算
             参数：
                 :param equip_set_index: 遗器套装索引
@@ -321,7 +466,7 @@ class Relic:
                      ) -> Optional[tuple[int, int]]:
         """
         说明：
-            在当前滑动[人物]-[遗器]-[遗器详情]界面内，搜索匹配的遗器。
+            在当前滑动[角色]-[遗器]-[遗器替换]界面内，搜索匹配的遗器。
                 key_hash非空: 激活精确匹配 (假设数据保存期间遗器未再次升级); 
                 key_data非空: 激活模糊匹配 (假设数据保存期间遗器再次升级，匹配成功后自动更新遗器数据);
                 key_hash & key_data均空: 遍历当前页面内的遗器
@@ -399,6 +544,74 @@ class Relic:
                 return False        # 考虑手动提高速度数据精度的情况
         return True
     
+    def find_loadout_name(self, char_name: str, relics_hash: List[str]) -> Optional[str]:
+        """
+        说明：
+            通过配装数据在记录中寻找配装名称
+        """
+        for loadout_name, hash_list in self.loadout_data[char_name].items():
+            if hash_list == relics_hash:
+                return loadout_name
+        return None
+
+    def check_team_data(self) -> bool:
+        """
+        说明：
+            检查队伍配装数据是否满足规范
+        """
+        ret = True
+        for group_name, team_group in self.team_data.items():
+            for team_name, team_data in team_group.items():
+                loadout_dict = self.HashList2dict()
+                [loadout_dict.add(self.loadout_data[char_name][loadout_name], char_name) for char_name, loadout_name in team_data["team_members"].items()]
+                for equip_index, char_names, element in loadout_dict.find_duplicate_hash():
+                    log.error(_("队伍遗器冲突：'{}'队伍的{}间的'{}'遗器冲突，遗器哈希值：{}").format(team_name, char_names, EQUIP_SET_NAME[equip_index], element))
+                    ret = False
+            if group_name != "compatible": ...   # 互斥队伍组别【待扩展】
+        if ret:
+            log.info(_("队伍配装校验成功"))
+        return ret
+
+    class HashList2dict:
+        """
+        说明：
+            将队伍或队伍组别的配装按遗器部位进行字典统计，以查找可能存在的重复遗器
+        """
+
+        def __init__(self):
+            self.hash_dict_for_equip: List[Dict[str, List[str]]] = [{},{},{},{},{},{}]
+            """按遗器部位分别的配装统计，key-遗器哈希值，value-装备者的名称"""
+
+        def add(self, relics_hash: List[str], char_name: str) -> 'Relic.HashList2dict':
+            """
+            说明：
+                添加一组数据
+            参数：
+                :param relics_hash: 配装遗器哈希值列表
+                :param char_name: 配装装备者的名称
+            """
+            for equip_index, element in enumerate(relics_hash):
+                if element in self.hash_dict_for_equip[equip_index]:
+                    self.hash_dict_for_equip[equip_index][element].append(char_name)
+                else:
+                    self.hash_dict_for_equip[equip_index][element] = [char_name]
+            return self
+
+        def find_duplicate_hash(self) -> List[Tuple[int, List[str], str]]:
+            """
+            说明：
+                按遗器部位遍历字典，查找可能存在的重复遗器
+            返回：
+                :return ret[list(tuple)]:
+                    0-遗器部位索引，1-装备者的名称序列，2-遗器哈希值
+            """
+            ret = []
+            for equip_index in range(len(self.hash_dict_for_equip)):
+                for element, char_names in self.hash_dict_for_equip[equip_index].items():
+                    if len(char_names) > 1:
+                        ret.append((equip_index, char_names, element))
+            return ret
+
     def check_relic_data_hash(self, updata=False) -> bool:
         """
         说明：
@@ -417,7 +630,7 @@ class Relic:
                     self.updata_relic_data(old_hash, new_hash, equip_indx)
                 cnt += 1
         if not cnt:
-            log.info(_(f"遗器哈希值校验成功"))
+            log.info(_("遗器哈希值校验成功"))
             return True
         if updata:
             log.info(_(f"已更新 {cnt} 件遗器的哈希值"))
@@ -475,7 +688,7 @@ class Relic:
             :return character_name: 人物名称
         """
         str = self.calculated.ocr_pos_for_single_line(points=(10.4,6,18,9) if IS_PC else (13,4,22,9))   # 识别人物名称 (主角名称为玩家自定义，无法适用预选列表)
-        character_name = re.sub(r"[.’,，。、·'-_——\"/\\]", '', str)   # 删除由于背景光点造成的误判
+        character_name = re.sub(r"[.’,，。、·'-_——「」/|\[\]\"\\]", '', str)   # 删除由于背景光点造成的误判
         log.info(_(f"识别人物: {character_name}"))
         if character_name not in self.loadout_data:
             self.loadout_data = modify_json_file(LOADOUT_FILE_NAME, character_name, {})
@@ -506,7 +719,7 @@ class Relic:
     def ocr_relic(self, equip_set_index: Optional[int]=None) -> Dict[str, Any]:
         """
         说明：
-            OCR当前静态[人物]-[遗器]-[遗器详情]界面内的遗器数据，单次用时约0.5s。
+            OCR当前静态[角色]-[遗器]-[遗器替换]界面内的遗器数据，单次用时约0.5s。
             更改为ocr_for_single_line()后，相较ocr()已缩短一半用时，且提高了部分识别的准确性，
             若更改为ocr_for_single_lines()后的性能变化【待测】(代码重构较大)
         参数：
@@ -524,9 +737,12 @@ class Relic:
         equip_set_name = EQUIP_SET_NAME[equip_set_index]
         # [2]套装识别
         name_list = RELIC_SET_NAME[:, 0].tolist()
+        name_list = name_list[:RELIC_INNER_SET_INDEX] if equip_set_index < 4 else name_list[RELIC_INNER_SET_INDEX:]   # 取外圈/内圈的切片
         relic_set_index = self.calculated.ocr_pos_for_single_line(name_list, points=(77,15,92,19) if IS_PC else (71,17,88,21), img_pk=img_pc)
         if relic_set_index < 0: 
             raise RelicOCRException(_("遗器部位OCR错误"))
+        if equip_set_index in [4, 5]:
+            relic_set_index += RELIC_INNER_SET_INDEX    # 还原内圈遗器的真实索引
         relic_set_name = RELIC_SET_NAME[relic_set_index, -1]
         # [3]稀有度识别
         hue, __, __ = self.calculated.get_relative_pix_hsv((43,55) if IS_PC else (41,55))   # 识别指定位点色相
@@ -645,29 +861,49 @@ class Relic:
         token.append('-'*50)
         print("\n".join(token))
 
-    def get_loadout_choice_options(self, character_name:str) -> List[Dict[str, Any]]:
+    def get_team_choice_options(self) -> List[Choice]:
         """
         说明：
-            获取该人物配装记录的选项列表，包含配装的简要信息与详细信息
+            获取所有队伍配装记录的选项表
+        返回：
+            :return choice_options: 队伍配装记录的选项列表，Choice构造参数如下：
+                :return title: 队伍名称,
+                :return value: 队员信息字典(key-人物名称，value-配装名称),
+                :return description: 队员配装的简要信息
+        """
+        group_data = self.team_data["compatible"]    # 获取非互斥队组别信息
+        ...  # 获取互斥队伍组别信息【待扩展】
+        prefix = "\n" + " " * 5
+        choice_options = [Choice(
+                title = str_just(team_name, 12), 
+                value = team_data["team_members"],
+                description = "".join(
+                        prefix + str_just(char_name, 10) + " " + self.get_loadout_brief(self.loadout_data[char_name][loadout_name]) 
+                    for char_name, loadout_name in team_data["team_members"].items())
+            ) for team_name, team_data in group_data.items()]
+        return choice_options
+
+    def get_loadout_choice_options(self, character_name:str) -> List[Choice]:
+        """
+        说明：
+            获取该人物配装记录的选项表
         参数：
             :param character_name: 人物名称
         返回：
-            :return choice_options: 人物配装记录的选项表，格式如下：
-                [{
-                    "name":str = 配装名称+配装简要信息,
-                    "value":list[str] = 遗器哈希值列表 (作为选项的返回值),
-                    "description":str = 配装详细信息
-                },...]
+            :return choice_options: 人物配装记录的选项表，Choice构造参数如下：
+                :return title: 配装名称+配装简要信息,
+                :return value: 元组(配装名称, 遗器哈希值列表),
+                :return description: 配装各属性数值统计
         """
         character_data = self.loadout_data[character_name]
-        choice_options = [{
-                "name": str_just(loadout_name, 12) + " " + self.get_loadout_brief(hash_list), 
-                "value": hash_list,
-                "description": '\n' + self.get_loadout_detail(hash_list, 5)   # 需questionary具备对show_description的相关支持
-            } for loadout_name, hash_list in character_data.items()]
+        choice_options = [Choice(
+                title = str_just(loadout_name, 14) + " " + self.get_loadout_brief(relics_hash), 
+                value = (loadout_name, relics_hash),
+                description = '\n' + self.get_loadout_detail(relics_hash, 5, True)
+            ) for loadout_name, relics_hash in character_data.items()]
         return choice_options
     
-    def get_loadout_detail(self, relics_hash: List[str], tab_num: int=0) -> str:
+    def get_loadout_detail(self, relics_hash: List[str], tab_num: int=0, flag=False) -> str:
         """
         说明：
             获取配装的详细信息 (各属性数值统计)
@@ -706,7 +942,8 @@ class Relic:
             n = (column-j-1) * len(token_list) // column + i
             msg += token_list[n] if j != 0 else tab+token_list[n]
             msg += "\n" if j == column-1 else "   "
-        msg += "\n\n" + tab + _("(未计算遗器套装的属性加成)")    # 【待扩展】
+        if msg[-1] != "\n": msg += "\n"
+        if flag: msg += "\n" + tab + _("(未计算遗器套装的属性加成)")    # 【待扩展】
         return msg
 
     def get_loadout_brief(self, relics_hash: List[str]) -> str:
@@ -730,10 +967,11 @@ class Relic:
         outer_set_cnt = Counter(outer_set_list)
         inner_set_cnt = Counter(inner_set_list)
         # 生成信息
-        msg =  "外:" + '+'.join([str(cnt) + name for name, cnt in outer_set_cnt.items()]) + "  "
-        msg += "内:" + '+'.join([str(cnt) + name for name, cnt in inner_set_cnt.items()]) + "  "
-        # msg += " ".join([self.equip_set_abbr[idx]+":"+name for idx, name in enumerate(base_stats_list) if idx > 1])
-        msg += ".".join([name for idx, name in enumerate(base_stats_list) if idx > 1])   # 排除头部与手部
+        inner = _("外:") + '+'.join([str(cnt) + name for name, cnt in outer_set_cnt.items()]) + "  "
+        outer = _("内:") + '+'.join([str(cnt) + name for name, cnt in inner_set_cnt.items()]) + "  "
+        # stats = " ".join([self.equip_set_abbr[idx]+":"+name for idx, name in enumerate(base_stats_list) if idx > 1])
+        stats = ".".join([name for idx, name in enumerate(base_stats_list) if idx > 1])   # 排除头部与手部
+        msg = str_just(stats, 17) + " " + str_just(outer, 10) + " " + inner   # 将长度最不定的外圈信息放至最后
         return msg
 
     def get_base_stats_detail(self, data: Tuple[str, float], rarity: int, level: int, stats_index: Optional[int]=None) -> Optional[float]:
@@ -759,11 +997,11 @@ class Relic:
         result = round(a + d*level, 4)    # 四舍五入 (考虑浮点数运算的数值损失)
         # 校验数据
         check = result - value
-        log.debug(f"[{a}, {d}], l={level} r={result}")
         if check < 0 or \
             name in NOT_PRE_STATS and check >= 1 or \
             name not in NOT_PRE_STATS and check >= 0.1:
             log.error(_(f"校验失败，原数据或计算方法有误: {data}"))
+            log.debug(f"[{a}, {d}], l={level} r={result}")
             return None
         return result
 
@@ -802,12 +1040,12 @@ class Relic:
         result = round(a*level + d*score, 4)                 # 四舍五入 (考虑浮点数运算的数值损失)
         # 校验数据
         check = result - value
-        log.debug(f"[{a}, {d}], l={level}, s={score}, r={result}")
         if check < 0 or \
             name in NOT_PRE_STATS and check >= 1 or \
             name not in NOT_PRE_STATS and check >= 0.1 or \
             level > 6 or level < 1 or \
             score > level*2 or score < 0:
             log.error(_(f"校验失败，原数据或计算方法有误: {data}"))
+            log.debug(f"[{a}, {d}], l={level}, s={score}, r={result}")
             return None
         return (level, score, result)
