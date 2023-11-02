@@ -967,11 +967,11 @@ class Relic:
         outer_set_cnt = Counter(outer_set_list)
         inner_set_cnt = Counter(inner_set_list)
         # 生成信息
-        inner = _("外:") + '+'.join([str(cnt) + name for name, cnt in outer_set_cnt.items()]) + "  "
-        outer = _("内:") + '+'.join([str(cnt) + name for name, cnt in inner_set_cnt.items()]) + "  "
-        # stats = " ".join([self.equip_set_abbr[idx]+":"+name for idx, name in enumerate(base_stats_list) if idx > 1])
+        outer = _("外:") + '+'.join([str(cnt) + name for name, cnt in outer_set_cnt.items()]) + "  "
+        inner = _("内:") + '+'.join([str(cnt) + name for name, cnt in inner_set_cnt.items()]) + "  "
+        # stats = " ".join([EQUIP_SET_ADDR[idx]+":"+name for idx, name in enumerate(base_stats_list) if idx > 1])
         stats = ".".join([name for idx, name in enumerate(base_stats_list) if idx > 1])   # 排除头部与手部
-        msg = str_just(stats, 17) + " " + str_just(outer, 10) + " " + inner   # 将长度最不定的外圈信息放至最后
+        msg = str_just(stats, 17) + " " + str_just(inner, 10) + " " + outer   # 将长度最不定的外圈信息放至最后
         return msg
 
     def get_base_stats_detail(self, data: Tuple[str, float], rarity: int, level: int, stats_index: Optional[int]=None) -> Optional[float]:
