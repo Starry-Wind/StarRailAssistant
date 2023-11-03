@@ -314,6 +314,8 @@ class Relic:
             loadout_name_list.append(loadout_name)
             is_retrying = False
             char_index += 1
+        print(_("队伍配装信息：{}").format("".join("\n  " + str_just(char_name, 10) + " " + self.get_loadout_brief(relics_hash) 
+                                                for char_name, relics_hash in zip(char_name_list, relics_hash_list))))
         # [6]自定义名称
         self.calculated.switch_cmd()
         team_name = input(_(">>>>命名编队名称 (将同时作为各人物新建配装的名称): "))
