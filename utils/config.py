@@ -53,7 +53,7 @@ def read_json_file(filename: str, path=False, schema:dict=None) -> dict:
                 try:
                     jsonschema.validate(data, schema)
                 except jsonschema.exceptions.ValidationError as e:
-                    log.error(_(f"JSON 数据不符合格式规范: {e}"))
+                    raise Exception(_(f"JSON 数据不符合格式规范: {e}"))
             if path:
                 return data, file_path
             else:
@@ -326,6 +326,8 @@ class SRAData(metaclass=SRADataMeta):
     """是否在遗器OCR时开启对副词条的数据验证"""
     detail_for_relic: bool = True
     """是否在打印遗器信息时显示拓展信息"""
+    ndigits_for_relic: int = 2
+    """在打印遗器信息时的小数精度"""
 
 
     def __init__(self) -> None:
