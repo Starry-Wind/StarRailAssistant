@@ -357,14 +357,13 @@ if __name__ == "__main__":
                     sra.set_config(False)
                 elif option == None:
                     ...
+                elif option ==  _('退出脚本'):
+                    if questionary.select(_("请问要退出脚本吗？"), [_("退出"), _("返回主菜单")]).ask() == _("返回主菜单"):
+                        select()
                 else:
-                    if option:
-                        is_loop = sra.main(option)
-                        if is_loop:
-                            select()
-                    else:
-                        if questionary.select(_("请问要退出脚本吗？"), [_("退出"), _("返回主菜单")]).ask() == _("返回主菜单"):
-                            select()
+                    is_loop = sra.main(option)
+                    if is_loop:
+                        select()
             serial_map = args.get("--map") if args.get("--map") != "default" else "1-1_1" # 地图编号
             select() if not serial_map else sra.main(start=serial_map)
             sra.end()

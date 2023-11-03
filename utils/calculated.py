@@ -602,7 +602,7 @@ class calculated(CV_Tools):
         screenshot = cv.cvtColor(self.take_screenshot()[0], cv.COLOR_BGR2GRAY)
         return cv.mean(screenshot)[0] < threshold
 
-    def ocr_pos(self, characters:str = None, points = (0,0,0,0)):
+    def ocr_pos(self, characters: Optional[str]=None, points = (0,0,0,0)):
         """
         说明：
             获取指定文字的坐标
@@ -625,7 +625,8 @@ class calculated(CV_Tools):
         pos = data[characters] if characters in data else None
         return characters, pos
 
-    def ocr_pos_for_single_line(self, characters_list:list[str] = None, points = (0,0,0,0), number = False, debug = False, img_pk:tuple = None) -> Union[int, str]:
+    def ocr_pos_for_single_line(self, characters_list: Optional[List[str]]=None, points=(0,0,0,0), number=False, debug=False, img_pk: Optional[Tuple]=None
+                                ) -> Optional[Union[int, str]]:
         """
         说明：
             获取指定坐标的单行文字
@@ -661,7 +662,7 @@ class calculated(CV_Tools):
         """
         return cv.imread(f'{prefix}{path}')
 
-    def part_ocr(self, points = (0,0,0,0), debug=False, left=False, number = False, img_pk:tuple = None, is_single_line = False, only_white=False
+    def part_ocr(self, points = (0,0,0,0), debug=False, left=False, number=False, img_pk: Optional[tuple]=None, is_single_line=False, only_white=False
                        ) -> Union[str, dict[str, tuple[int, int]]]:
         """
         说明：
@@ -992,7 +993,7 @@ class calculated(CV_Tools):
 
 class Array2dict:
 
-    def __init__(self, arr:np.ndarray, key_index:int = -1, value_index:int = None):
+    def __init__(self, arr: np.ndarray, key_index: int = -1, value_index: Optional[int]=None):
         """
         说明：
             将np数组转化为字典暂住内存，用于对数组短时间内的频繁查找
@@ -1008,12 +1009,12 @@ class Array2dict:
             self.data_dict = {row[key_index]: idx for idx, row in enumerate(arr)}
         else:
             self.data_dict = {row[key_index]: row[value_index] for row in arr}
-        log.debug(self.data_dict)
+        # log.debug(self.data_dict)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: Any) -> Any:
         return self.data_dict[key]
     
-def get_data_hash(data:Any, key_filter:list[str] = None) -> str:
+def get_data_hash(data: Any, key_filter: Optional[List[str]]=None, speed_modified=False) -> str:
     """
     说明：
         求任意类型数据 (包括list和dict) 的哈希值
@@ -1021,19 +1022,20 @@ def get_data_hash(data:Any, key_filter:list[str] = None) -> str:
     参数:
         :param data: 任意类型数据
         :param key_filter: 键值过滤器
+        :param speed_modified: 是否对速度属性进行修饰 (忽略小数位数值)
     """
     if not key_filter:
         tmp_data = data
-    elif type(data) is dict:
-        tmp_data = dict(data).copy()    # 注意dict'='为引用传递，此处需拷贝副本
-        [tmp_data.pop(key) if key in tmp_data else None for key in key_filter]
+    elif isinstance(data, dict):
+        tmp_data = {key: value for key, value in data.items() if key not in key_filter}
+        if speed_modified and _("速度") in tmp_data["subs_stats"]:
+            tmp_data["subs_stats"][_("速度")] = float(int(tmp_data["subs_stats"][_("速度")]))  # 去除小数部分
     else:
-        log.eror(_("不支持dict以外类型的类型使用键值过滤器"))
-        return None
+        raise ValueError(_("不支持dict以外类型的类型使用键值过滤器"))
     # pprint默认sort_dicts=True，对键值进行排序，以确保字典类型的唯一性
     return hashlib.md5(pprint.pformat(tmp_data).encode('utf-8')).hexdigest()
     
-def str_just(text:str, width:int, left = True):
+def str_just(text: str, width: int, left=True):
     """
     说明：
         封装str.rjust()&str.ljust()，以适应中文字符的实际宽度
