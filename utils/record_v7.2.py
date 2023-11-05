@@ -2,26 +2,26 @@
 Author: AlisaCat
 Date: 2023-05-07 21:45:43
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-07-21 01:54:22
+LastEditTime: 2023-08-01 21:35:31
 Description: wasd移动，x是进战斗，鼠标左键是打障碍物等，不要用鼠标移动视角，用方向键左右来移动视角（脚本运行后方向键左右会映射成鼠标）
             F9停止录制并保存
 Copyright (c) 2023 by AlisaCat, All Rights Reserved. 
 '''
-import os
 import builtins
+import os
 import time
 from collections import defaultdict
 from datetime import datetime
+
+import cv2 as cv
+import numpy as np
+import orjson
+import pyautogui  # 缩放纠正
+import pywinctl as pwc  # 跨平台支持
 import win32api
 import win32con
-import orjson
-import numpy as np
-import cv2 as cv
-import pyautogui # 缩放纠正
-import pygetwindow as gw
 from PIL import ImageGrab
-from pynput import keyboard
-from pynput import mouse
+from pynput import keyboard, mouse
 from pynput.mouse import Controller as mouseController
 
 
@@ -146,7 +146,7 @@ def take_screenshot(points=(0,0,0,0)):
     borderless = read_json_file("config.json").get("borderless", False)
     left_border = read_json_file("config.json").get("left_border", 11)
     up_border = read_json_file("config.json").get("up_border", 56)
-    window = gw.getWindowsWithTitle("崩坏：星穹铁道")[0]
+    window = pwc.getWindowsWithTitle("崩坏：星穹铁道")[0]
     #points = (points[0]*1.5/scaling,points[1]*1.5/scaling,points[2]*1.5/scaling,points[3]*1.5/scaling)
     if borderless:
         left, top, right, bottom = window.left, window.top, window.right, window.bottom

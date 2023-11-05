@@ -8,12 +8,15 @@ Description:
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
 '''
 import base64
+from subprocess import DEVNULL, run
+from typing import Any, Dict, Optional, Union
+
 import cv2 as cv
 import numpy as np
-from subprocess import run, DEVNULL
-from PIL import ImageGrab, Image
-from typing import Dict, Optional, Any, Union
+from PIL import Image, ImageGrab
+
 from .log import log
+
 
 class ADB:
     def __init__(self, order="127.0.0.1:62001", adb_path="picture\\adb\\adb"):

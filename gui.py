@@ -2,7 +2,7 @@
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2023-05-29 16:54:51
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
-LastEditTime: 2023-07-21 01:19:21
+LastEditTime: 2023-07-30 18:39:41
 Description: 
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
@@ -101,7 +101,7 @@ def page_main(page: ft.Page):
         说明；
             log在gui上输出
         """
-        page.title = _("星穹铁道小助手-{VER}").format(VER=VER)
+        page.title = _("Auto_Star_Rail-{VER}").format(VER=VER)
         log_text.controls.append(ft.Text(message[:-1]))
         page.update()
 
@@ -150,10 +150,9 @@ def page_main(page: ft.Page):
         page.vertical_alignment = "START"
         page.horizontal_alignment = "START"
         add(log_text)
-        calculated(_("崩坏：星穹铁道")).switch_window()
+        #calculated(_("崩坏：星穹铁道"), start=False).switch_window()
         time.sleep(0.5)
         get_width(_("崩坏：星穹铁道"))
-        import pyautogui # 缩放纠正
         map_word().auto_map(start)
         add(ft.ElevatedButton(_("返回"), on_click=to_page_main))
 
@@ -175,7 +174,7 @@ def page_main(page: ft.Page):
         """
         page.clean()
         add(
-            ft.Text(_("星穹铁道小助手"), size=50),
+            ft.Text(_("Auto_Star_Rail"), size=50),
             ft.Text(_("大世界"), size=30),
             ft.Text(VER, size=20),
             word_select_rg,
@@ -194,50 +193,7 @@ def page_main(page: ft.Page):
         rawghproxy = sra_config_obj.rawgithub_proxy
         # asyncio.run(check_file(ghproxy, "map"))
         # asyncio.run(check_file(ghproxy, "picture"))
-        data = {
-            _("脚本"):{
-                'url_proxy': ghproxy,
-                'raw_proxy': rawghproxy,
-                'skip_verify': False,
-                'type': "star",
-                'version': "main",
-                'url_zip': "https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/main.zip",
-                'unzip_path': ".",
-                'keep_folder': ['.git', 'logs', 'picture', 'map', 'tmp', 'venv'],
-                'keep_file': ['config.json', 'version.json', 'star_list.json', 'README_CHT.md', 'README.md'],
-                'zip_path': "StarRailAssistant-main/",
-                'name': _("脚本"),
-                'delete_file': False
-            },
-            _("地图"):{
-                'url_proxy': ghproxy,
-                'raw_proxy': rawghproxy,
-                'skip_verify': False,
-                'type': "map",
-                'version': "map",
-                'url_zip': "https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/map.zip",
-                'unzip_path': "map",
-                'keep_folder': [],
-                'keep_file': [],
-                'zip_path': "map/",
-                'name': _("地图"),
-                'delete_file': True
-            },
-            _("图片"):{
-                'url_proxy': ghproxy,
-                'raw_proxy': rawghproxy,
-                'skip_verify': False,
-                'type': "picture",
-                'version': "map",
-                'url_zip': "https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/map/picture.zip",
-                'unzip_path': "picture",
-                'keep_folder': [],
-                'keep_file': [],
-                'zip_path': "map/",
-                'name': _("图片"),
-                'delete_file': True
-            },
-        }
+        data = sra.updata_dict
         if not check_console:
             del data[_("脚本")]
         def add_updata_log(message):
@@ -253,7 +209,7 @@ def page_main(page: ft.Page):
             page.clean()
             up_close = ft.ElevatedButton(_("返回"), disabled=True, on_click=to_page_main)
             add(
-                ft.Text(_("星穹铁道小助手"), size=50),
+                ft.Text(_("Auto_Star_Rail"), size=50),
                 ft.Text(_("检查更新"), size=30),
                 ft.Text(VER, size=20),
                 ft.Column([ text, pb]),
@@ -265,7 +221,7 @@ def page_main(page: ft.Page):
         Column.controls = [ft.ElevatedButton(i, on_click=up_data) for i in data]
         page.clean()
         add(
-            ft.Text(_("星穹铁道小助手"), size=50),
+            ft.Text(_("Auto_Star_Rail"), size=50),
             ft.Text(_("检查更新"), size=30),
             ft.Text(VER, size=20),
             Column,
@@ -289,10 +245,12 @@ def page_main(page: ft.Page):
         fighting_list = [_('没打开'), _('打开了'), _('这是什么')]
         fighting = fighting_list[sra_config_obj.auto_battle_persistence]
 
-        github_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', "不设置代理"]
+        github_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', "不设置代理"]
         github_proxy = sra_config_obj.github_proxy
-        rawgithub_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.fgit.ml', 'raw.iqiq.io', "不设置代理"]
+        rawgithub_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', 'raw.iqiq.io', "不设置代理"]
         rawgithub_proxy = sra_config_obj.rawgithub_proxy
+        apigithub_proxy_list = ['https://github.srap.link/', "不设置代理"]
+        apigithub_proxy = sra_config_obj.apigithub_proxy
         open_map = sra_config_obj.open_map
         level = sra_config_obj.level
 
@@ -310,6 +268,13 @@ def page_main(page: ft.Page):
                 value=rawgithub_proxy,
                 width=200,
             )
+        apigithub_proxy_dd = ft.Dropdown(
+                label=_("RAWGITHUB代理"),
+                hint_text=_("如果你无法下载资源，请设置此代理"),
+                options=[ft.dropdown.Option(i) for i in apigithub_proxy_list],
+                value=apigithub_proxy,
+                width=200,
+            )
         level_dd = ft.Dropdown(
                 label=_("日志等级"),
                 hint_text=_("日志等级"),
@@ -323,7 +288,7 @@ def page_main(page: ft.Page):
             )
         language_dd = ft.Dropdown(
                 label=_("游戏语言"),
-                hint_text=_("设置星穹铁道小助手的语言"),
+                hint_text=_("设置Auto_Star_Rail的语言"),
                 options=[ft.dropdown.Option(i) for i in list(language_dict.keys())],
                 value=language,
                 width=200,
@@ -340,6 +305,7 @@ def page_main(page: ft.Page):
         def save(e):
             sra_config_obj.github_proxy = "" if github_proxy_dd.value == "不设置代理" else github_proxy_dd.value
             sra_config_obj.rawgithub_proxy = "" if rawgithub_proxy_dd.value == "不设置代理" else rawgithub_proxy_dd.value
+            sra_config_obj.apigithub_proxy = "" if apigithub_proxy_dd.value == "不设置代理" else apigithub_proxy_dd.value
             sra_config_obj.open_map = open_map_tf.value
             sra_config_obj.level = level_dd.value
             sra_config_obj.language = language_dict[language_dd.value]
@@ -348,11 +314,12 @@ def page_main(page: ft.Page):
             to_page_main(page)
         page.clean()
         add(
-            ft.Text(_("星穹铁道小助手"), size=50),
+            ft.Text(_("Auto_Star_Rail"), size=50),
             ft.Text(_("大世界"), size=30),
             ft.Text(VER, size=20),
             github_proxy_dd,
             rawgithub_proxy_dd,
+            apigithub_proxy_dd,
             level_dd,
             open_map_tf,
             language_dd,
@@ -379,7 +346,7 @@ def page_main(page: ft.Page):
         """
         page.clean()
         add(
-            ft.Text(_("星穹铁道小助手"), size=50),
+            ft.Text(_("Auto_Star_Rail"), size=50),
             ft.Text(_("关于"), size=30),
             ft.Text(VER, size=20),
             ft.Text(get_mess(0), size=40, color=ft.colors.RED),
@@ -390,9 +357,9 @@ def page_main(page: ft.Page):
                 spans=[
                     ft.TextSpan(get_mess(2)),
                     ft.TextSpan(
-                        "https://github.com/Starry-Wind/StarRailAssistant",
+                        "https://github.com/Night-stars-1/Auto_Star_Rail",
                         ft.TextStyle(decoration=ft.TextDecoration.UNDERLINE,color = ft.colors.BLUE),
-                        url="https://github.com/Starry-Wind/StarRailAssistant",
+                        url="https://github.com/Night-stars-1/Auto_Star_Rail",
                     ),
                 ],
             ),
@@ -482,7 +449,7 @@ def page_main(page: ft.Page):
     )
     # %%
     page.clean()
-    page.title = _("星穹铁道小助手")
+    page.title = _("Auto_Star_Rail")
     page.scroll = "AUTO"
     page.theme = ft.Theme(font_family="Verdana")
     page.vertical_alignment = "center"
@@ -503,7 +470,7 @@ def page_main(page: ft.Page):
     }
     button_dict = sra.run_plugins()[-1]
     page_list = [
-        ft.Text(_("星穹铁道小助手"), size=50),
+        ft.Text(_("Auto_Star_Rail"), size=50),
         ft.Text(VER, size=20),
         ft.ElevatedButton(_("大世界"), on_click=word),
         #ft.ElevatedButton(_("模拟宇宙")),
@@ -513,7 +480,7 @@ def page_main(page: ft.Page):
     ]
     if sra_config_obj.picture_version == "0" or sra_config_obj.map_version == "0":
         page_list = [
-            ft.Text(_("星穹铁道小助手"), size=50),
+            ft.Text(_("Auto_Star_Rail"), size=50),
             ft.Text(VER, size=20),
             ft.ElevatedButton(_("更新资源"), on_click=updata),
             ft.ElevatedButton(_("编辑配置"), on_click=set_config),

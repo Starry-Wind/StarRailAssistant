@@ -116,11 +116,15 @@ picture/
 tmp/
 plugins/
 StarRailAssistant_backup/
-test.py
+/*test*.py
+/*map*.py
+new_cv_tools.py
+old_cv_tools.py
 map_list.json
 LICENSE
 picture_list.json
 version.json
+*relics*.json
 screencast.png
 screencast1.png
 utils/A_.py

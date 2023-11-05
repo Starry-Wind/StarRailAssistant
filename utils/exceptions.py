@@ -8,8 +8,10 @@ Description:
 
 Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
 '''
-from .log import log
 import traceback
+
+from .log import log
+
 
 class Exception(Exception):
 
@@ -20,6 +22,12 @@ class Exception(Exception):
 
 class TypeError(Exception):
 
+    def __init__(self, message):
+        super().__init__(message)
+        log.error(message)
+
+class RelicOCRException(Exception):
+    
     def __init__(self, message):
         super().__init__(message)
         log.error(message)

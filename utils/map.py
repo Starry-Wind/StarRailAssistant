@@ -1,17 +1,21 @@
+import os
 import time
 import threading
-
+import cv2 as cv
 from pynput import keyboard
+from datetime import datetime
 
-from .calculated import *
-from .config import get_file, sra_config_obj, read_json_file, read_maps, insert_key, CONFIG_FILE_NAME, _
-from .log import log, fight_log, set_log
+from .calculated import calculated
+from .config import (CONFIG_FILE_NAME, _, get_file, insert_key, read_json_file,
+                     read_maps, sra_config_obj)
+from .log import fight_log, log, set_log
 from .requests import webhook_and_log
+
 
 class Map:
     def __init__(self,title = _("崩坏：星穹铁道")):
         """
-        参数: 
+        参数:
             :param platform: 运行设备
         """
         if sra_config_obj.language != "EN":
@@ -42,7 +46,6 @@ class Map:
         with keyboard.Listener(on_press=on_press) as listener:  # 创建按键监听线程
             listener.join()  # 等待按键监听线程结束
 
-            
     def map_init(self):
         # 进行地图初始化，把地图缩小,需要缩小5次
         target = cv.imread(f'./picture/pc/contraction.jpg')
@@ -66,18 +69,19 @@ class Map:
         # 开始寻路
         log.info(_("开始寻路"))
         for map_index, map in enumerate(map_data["map"]):
+            # map: 导航数据
             self.calculated.monthly_pass()
             log.info(_("执行{map_filename}文件:{map_index}/{map_data2} {map}").format(map_filename=map_filename,map_index=map_index+1,map_data2=len(map_data['map']),map=map))
             key = list(map.keys())[0]
             value = map[key]
-            if key in ["w", "s", "a", "d"]:
+            if key in ["w", "s", "a", "d"]: # 移动
                 pos = self.calculated.move(key, value, map_name)
                 if self.DEBUG:
                     map_data["map"][map_index]["pos"] = pos
                     log.debug(map_data["map"])
-            elif key == "f":
+            elif key == "f": # 交互
                 self.calculated.teleport(key, value)
-            elif key == "mouse_move":
+            elif key == "mouse_move": # 移动鼠标
                 self.calculated.mouse_move(value)
             elif key == "fighting":
                 if value == 1:  # 进战斗
@@ -137,7 +141,7 @@ class Map:
             wrong_map = True
             if f'map_{start}.json' in self.map_list:
                 if not check:
-                    map_list = self.map_list[self.map_list.index(f'map_{start}.json'):len(self.map_list)] 
+                    map_list = self.map_list[self.map_list.index(f'map_{start}.json'):len(self.map_list)]
                 else:
                     log.info("开始捡漏")
                     map_list = sra_config_obj.fight_data.get("data", [])
@@ -149,6 +153,8 @@ class Map:
                     planet_number=map.split("-")[0]
                     map_data = read_json_file(f"map/{map}.json")
                     name:str = map_data['name']
+                    split_name = name.split('-')
+                    name = _(split_name[0]) + '-' + split_name[1]
                     author = map_data['author']
                     start_dict = map_data['start']
                     webhook_and_log(_("开始\033[0;34;40m{name}\033[0m锄地").format(name=name))
@@ -165,6 +171,7 @@ class Map:
                             self.map_init()
                         else:
                             if "orientation" in key:
+                                # 避免在目标星球时仍然选择星球
                                 map_data = {
                                     "map_1": "空间站",
                                     "map_2": "雅利洛",
@@ -175,12 +182,13 @@ class Map:
                                         continue
                             else:
                                 time.sleep(value)
-                            if check and "point" in key and map.split("_")[-1] != "1":
+                            # TODO 地图选择改为检测状态
+                            if check and "point" in key and map.split("_")[-1] != "1": # 捡漏时选择地图
                                 self.calculated.click_target("picture\\orientation_1.jpg", 0.98, map=planet_number)
                                 self.calculated.click_target("picture\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98, map=planet_number)
                                 self.calculated.click_target(key.split("_point")[0], 0.98)
                                 self.calculated.click_target(key, 0.98)
-                            elif not check and wrong_map and "point" in key and map.split("_")[-1] != "1":
+                            elif not check and wrong_map and "point" in key and map.split("_")[-1] != "1": # 开始运行时选择地图
                                 self.calculated.click_target("picture\\orientation_1.jpg", 0.98, map=planet_number)
                                 self.calculated.click_target("picture\\orientation_{num}.png".format(num=str(int(key.split("map_")[-1][0])+1)), 0.98, map=planet_number)
                                 self.calculated.click_target(key.split("_point")[0], 0.98)

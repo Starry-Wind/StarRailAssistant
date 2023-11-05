@@ -8,22 +8,23 @@ Description:
 Copyright (c) 2023 by AlisaCat, All Rights Reserved. 
 """
 
-import os
-import time
-import shutil
 import asyncio
 import hashlib
-import flet as ft
-
+import os
+import shutil
+import time
 from pathlib import Path
-from tqdm import tqdm as tq
-from zipfile import ZipFile, BadZipFile
-from typing import Dict, Optional, Any, Union, Tuple, List
+from typing import Any, Dict, List, Optional, Tuple, Union
+from zipfile import BadZipFile, ZipFile
 
+import flet as ft
+from tqdm import tqdm as tq
+
+from .config import (CONFIG_FILE_NAME, _, get_file, normalize_file_path,
+                     sra_config_obj)
+from .exceptions import Exception
 from .log import log
 from .requests import *
-from .exceptions import Exception
-from .config import normalize_file_path, sra_config_obj, get_file, CONFIG_FILE_NAME, _
 
 tmp_dir = "tmp"
 
@@ -37,7 +38,6 @@ class update_file:
         """
         self.page = page
         self.pb = pb
-        self.github_source = sra_config_obj.github_source
 
     async def verify_file_hash(self, json_path: Path, keep_file: Optional[List[str]] = []) -> bool:
         """
@@ -137,7 +137,7 @@ class update_file:
         git_proxy = sra_config_obj.github_proxy
         islatest, version, local_version = await self.is_sra_latest(type, version)
         if not islatest:
-            dl_url = f"{git_proxy}https://github.com/{self.github_source}/StarRailAssistant/archive/refs/tags/{version}.zip"
+            dl_url = f"{git_proxy}https://github.com/Starry-Wind/StarRailAssistant/archive/refs/tags/{version}.zip"
             tmp_zip = Path() / tmp_dir / f"{type}.zip"
             zip_path = f"StarRailAssistant-{version.replace('v','')}/"
             await self.copy_files(Path(), Path() / "StarRailAssistant_backup", ["utils", "picture", "map", "config.json", "get_width.py", "Honkai_Star_Rail.py", "gui.py"])
@@ -177,7 +177,8 @@ class update_file:
         local_version = sra_config_obj.star_version
         for index, __ in enumerate(range(3)):
             try:
-                up_url = f"https://api.github.com/repos/{self.github_source}/StarRailAssistant/releases/latest"
+                api_proxy = sra_config_obj.apigithub_proxy
+                up_url = f"{api_proxy}https://api.github.com/repos/Starry-Wind/StarRailAssistant/releases/latest" if "http" in api_proxy else f"https://api.github.com/repos/Starry-Wind/StarRailAssistant/releases/latest"
                 up_reponse = await get(up_url, timeout=2)
                 up_data = up_reponse.json()
                 version: str = up_data.get("tag_name")
@@ -210,13 +211,13 @@ class update_file:
             :param version: 版本验证地址/仓库分支名称 map
         """
         raw_proxy = sra_config_obj.rawgithub_proxy
-        url_version = f"{raw_proxy}https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/version.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/version.json".replace("raw.githubusercontent.com", raw_proxy)
         log.info(_("[资源文件更新]正在检查远程版本是否有更新...")) if is_log else None
         local_version = sra_config_obj.get_config(f"{type}_version") # read_json_file(CONFIG_FILE_NAME).get(f"{type}_version", "0")
         if type == "star":
             return await self.is_sra_latest(type, version, is_log)
         for index, __ in enumerate(range(3)):
             try:
+                url_version = f"{raw_proxy}https://raw.githubusercontent.com/Night-stars-1/Auto_Star_Rail_MAP/main/version.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/{version}/version.json".replace("raw.githubusercontent.com", raw_proxy)
                 remote_version = await get(url_version, timeout=2)
                 remote_version = remote_version.json()["version"]
                 break
@@ -274,8 +275,10 @@ class update_file:
         url_proxy = sra_config_obj.github_proxy
         raw_proxy = sra_config_obj.rawgithub_proxy
         url_zip = url_proxy+url_zip if "http" in url_proxy or url_proxy == "" else url_zip.replace("github.com", url_proxy)
-        url_list = f"{raw_proxy}https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/{type}_list.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/{self.github_source}/StarRailAssistant/{version}/{type}_list.json".replace("raw.githubusercontent.com", raw_proxy)
-        
+        if type == "star":
+            url_list = f"{raw_proxy}https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/main/{type}_list.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/Starry-Wind/StarRailAssistant/main/{type}_list.json".replace("raw.githubusercontent.com", raw_proxy)
+        else:
+            url_list = f"{raw_proxy}https://raw.githubusercontent.com/Night-stars-1/Auto_Star_Rail_MAP/main/{type}_list.json" if "http" in raw_proxy or raw_proxy == "" else f"https://raw.githubusercontent.com/Night-stars-1/StarRailAssistant_MAP/main/{type}_list.json".replace("raw.githubusercontent.com", raw_proxy)
         #tmp_zip = os.path.join(tmp_dir, f"{type}.zip")
         tmp_zip = Path() / tmp_dir / f"{type}.zip"
         if not os.path.exists(tmp_dir):

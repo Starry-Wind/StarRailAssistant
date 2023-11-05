@@ -7,16 +7,16 @@ Description:
 
 Copyright (c) 2023 by Night-stars-1, All Rights Reserved. 
 '''
-import httpx
-import flet as ft
-import tqdm.asyncio
-
-from httpx_socks import AsyncProxyTransport
 from pathlib import Path
-from typing import Dict, Optional, Any, Union, Tuple
+from typing import Any, Dict, Optional, Tuple, Union
 
+import flet as ft
+import httpx
+import tqdm.asyncio
+from httpx_socks import AsyncProxyTransport
+
+from .config import CONFIG_FILE_NAME, _, sra_config_obj
 from .log import log
-from .config import sra_config_obj, CONFIG_FILE_NAME, _
 
 proxies=sra_config_obj.proxies
 transport = AsyncProxyTransport.from_url(proxies) if proxies else None

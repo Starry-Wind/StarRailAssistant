@@ -22,13 +22,14 @@ from pluggy import PluginManager
 
 from get_width import get_width
 from utils.log import log, fight_log
-from utils.config import read_json_file, load_all_config_data, modify_json_file, add_key_value, read_maps, CONFIG_FILE_NAME, _
+from utils.config import read_json_file, modify_json_file, add_key_value, read_maps, CONFIG_FILE_NAME, _
 from utils.simulated_universe import Simulated_Universe
 from utils.update_file import update_file
 from utils.commission import Commission
 from utils.calculated import calculated
 from utils.exceptions import Exception
 from utils.map import Map as map_word
+from utils.relic import Relic
 from utils.requests import *
 
 game_title = _("崩坏：星穹铁道")
@@ -43,15 +44,17 @@ class SRA:
         self.option_dict = {
             _('大世界'): "",
             _('派遣委托'): "",
+            _('遗器模块'): "",
             _('更新资源'): "",
-            _('编辑配置'): ""
+            _('编辑配置'): "",
+            _('退出脚本'): ""
         }
         self.updata_dict = {
             _("脚本"):{
                 'skip_verify': False,
                 'type': "star",
                 'version': "main",
-                'url_zip': f"https://github.com/{sra_config_obj.github_source}/StarRailAssistant/archive/refs/heads/main.zip",
+                'url_zip': f"https://github.com/Starry-Wind/StarRailAssistant/archive/refs/heads/main.zip",
                 'unzip_path': ".",
                 'keep_folder': ['.git', 'logs', 'picture', 'map', 'tmp', 'venv'],
                 'keep_file': ['config.json', 'version.json', 'star_list.json', 'README_CHT.md', 'README.md'],
@@ -63,7 +66,7 @@ class SRA:
                 'skip_verify': False,
                 'type': "map",
                 'version': "map",
-                'url_zip': f"https://raw.githubusercontent.com/{sra_config_obj.github_source}/StarRailAssistant/map/map.zip",
+                'url_zip': f"https://raw.githubusercontent.com/Night-stars-1/Auto_Star_Rail_MAP/main/map.zip",
                 'unzip_path': "map",
                 'keep_folder': [],
                 'keep_file': [],
@@ -75,7 +78,7 @@ class SRA:
                 'skip_verify': False,
                 'type': "picture",
                 'version': "map",
-                'url_zip': f"https://raw.githubusercontent.com/{sra_config_obj.github_source}/StarRailAssistant/map/picture.zip",
+                'url_zip': f"https://raw.githubusercontent.com/Night-stars-1/Auto_Star_Rail_MAP/main/picture.zip",
                 'unzip_path': "picture",
                 'keep_folder': [],
                 'keep_file': [],
@@ -138,7 +141,8 @@ class SRA:
                 if not options_map:
                     return None, _("你没下载地图，拿什么选？")
                 keys = list(options_map.keys())
-                values = list(options_map.values())+[_("返回上一级")]
+                values = [_(split_name[0]) + '-' + split_name[1] for split_name in (map_name.split('-') for map_name in options_map.values())]
+                values.append(_("返回上一级"))
                 option_ = questionary.select(title_, values).ask()
                 if option_ == _("返回上一级"):
                     return select_word()
@@ -172,7 +176,9 @@ class SRA:
     def set_config(self, start = True):
         global game_title
         if not sra_config_obj.start or not start:
-            title = "请选择你游戏的运行语言:"
+            import utils.config
+            _ = utils.config._
+            title = _("请选择你游戏的运行语言:")
             options = {
                 "简体中文": "zh_CN",
                 "繁體中文": "zh_TC",
@@ -180,9 +186,7 @@ class SRA:
             }
             option = questionary.select(title, options).ask()
             sra_config_obj.language = options[option]
-            import utils.config
             importlib.reload(utils.config)
-            _ = utils.config._
             title = _("请选择代理地址：（不使用代理选空白选项）")
             options = ['https://ghproxy.com/', 'https://ghproxy.net/', 'hub.fgit.ml', '']
             url_ms = []
@@ -223,10 +227,26 @@ class SRA:
             url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
             option = options[url_ms.index(questionary.select(title, url_ms).ask())]
             sra_config_obj.rawgithub_proxy = option
-            title = _("请选择你的仓库来源：")
-            options = ["Starry-Wind", "Night-stars-1"]
-            option = questionary.select(title, options).ask()
-            sra_config_obj.github_source = option
+            title = _("请选择API代理地址：（不使用代理选空白选项）")
+            options = ['https://github.srap.link/', '']
+            url_ms = []
+            pbar = tqdm.tqdm(total=len(options), desc=_('测速中'), unit_scale=True, unit_divisor=1024, colour="green")
+            for index,url in enumerate(options):
+                if url == "":
+                    url = "https://api.github.com"
+                elif "https://" not in url:
+                    url =  f"https://"+url
+                try:
+                    response = asyncio.run(get(url))
+                    ms = response.elapsed.total_seconds()
+                except:
+                    ms = 999
+                finally:
+                    pbar.update(1)
+                url_ms.append(options[index]+f" {ms}ms")
+            url_ms = [i.replace(" "," "*(len(max(url_ms, key=len))-len(i))) if len(i) < len(max(url_ms, key=len)) else i for i in url_ms]
+            option = options[url_ms.index(questionary.select(title, url_ms).ask())]
+            sra_config_obj.apigithub_proxy = option
             while True:
                 if sra_config_obj.picture_version == "0" or sra_config_obj.map_version == "0":
                     sra.up_data()
@@ -261,21 +281,29 @@ class SRA:
             if not asyncio.run(update_file().is_latest(type=up_data['type'], version=up_data['version'], is_log=False))[0]:
                 need_updata.append(name)
         return need_updata
-    
-    def main(self, option:str=_('大世界'),start: str=None,role_list: str=None):
+
+    def main(self, option:str=_('大世界'),start: str=None,role_list: str=None) -> bool:
         """
         参数:
             :param start: 起始地图编号
             :param role_list: 提示
+        返回：
+            :return ret: 是否回到主菜单
         """
         if option in self.option_list:
             (start, role_list) = self.choose_map(option) if not start else (start, role_list)
             if start:
+                if option == _("遗器模块"):     # 遗器模块此时不需要将游戏窗口激活
+                    log.info(_("遗器模块初始化中..."))
+                    relic = Relic(game_title)
+                    relic.relic_entrance()
+                    return True
                 log.info(_("脚本将自动切换至游戏窗口，请保持游戏窗口激活"))
                 calculated(game_title, start=False).switch_window()
                 time.sleep(0.5)
                 get_width(game_title)
                 #map_instance.calculated.CONFIG = read_json_file(CONFIG_FILE_NAME)
+                import pyautogui # 缩放纠正
                 log.info(_("开始运行，请勿移动鼠标和键盘"))
                 log.info(_("若脚本运行无反应,请使用管理员权限运行"))
                 if option == _("大世界"):
@@ -295,9 +323,11 @@ class SRA:
             time.sleep(0.5)
             get_width(game_title)
             #map_instance.calculated.CONFIG = read_json_file(CONFIG_FILE_NAME)
+            import pyautogui # 缩放纠正
             log.info(_("开始运行，请勿移动鼠标和键盘"))
             log.info(_("若脚本运行无反应,请使用管理员权限运行"))
             self.option_dict[option]()
+        return False
 
 if __name__ == "__main__":
     join_time = read_json_file(CONFIG_FILE_NAME).get("join_time", {})
@@ -327,12 +357,13 @@ if __name__ == "__main__":
                     sra.set_config(False)
                 elif option == None:
                     ...
+                elif option ==  _('退出脚本'):
+                    if questionary.select(_("请问要退出脚本吗？"), [_("退出"), _("返回主菜单")]).ask() == _("返回主菜单"):
+                        select()
                 else:
-                    if option:
-                        sra.main(option)
-                    else:
-                        if questionary.select(_("请问要退出脚本吗？"), [_("退出"), _("返回主菜单")]).ask() == _("返回主菜单"):
-                            select()
+                    is_loop = sra.main(option)
+                    if is_loop:
+                        select()
             serial_map = args.get("--map") if args.get("--map") != "default" else "1-1_1" # 地图编号
             select() if not serial_map else sra.main(start=serial_map)
             sra.end()
