@@ -102,6 +102,8 @@ class SRA:
             return [{}]
 
     def end(self):
+        if sra_config_obj.auto_shutdown:
+            os.system("shutdown -s -t 60")
         try:
             plugin_manager.hook.end(SRA=self)
         except:
@@ -256,6 +258,12 @@ class SRA:
             options = [_('没打开'), _('打开了'), _('这是什么')]
             option = questionary.select(title, options).ask()
             sra_config_obj.auto_battle_persistence = options.index(option)
+
+            title = _("需要锄大地结束后自动关机么？：")
+            options = [_('不需要'), _('需要')]
+            option = questionary.select(title, options).ask()
+            sra_config_obj.auto_shutdown = bool(options.index(option))
+
             sra_config_obj.start = True
             raise Exception(_("请重新运行"))
 

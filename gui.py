@@ -243,7 +243,9 @@ def page_main(page: ft.Page):
         language = list(filter(lambda key: language_dict[key] == language, language_dict))[0]
 
         fighting_list = [_('没打开'), _('打开了'), _('这是什么')]
+        shutdown_list = [_('不需要'), _('需要')]
         fighting = fighting_list[sra_config_obj.auto_battle_persistence]
+        shutdown = shutdown_list[sra_config_obj.auto_shutdown]
 
         github_proxy_list = ['https://ghproxy.com/', 'https://ghproxy.net/', "不设置代理"]
         github_proxy = sra_config_obj.github_proxy
@@ -300,7 +302,14 @@ def page_main(page: ft.Page):
                 value=fighting,
                 width=200,
             )
-
+        shutdown_dd = ft.Dropdown(
+                label= _("需要锄大地结束后自动关机么？"),
+                hint_text= _("设置自动关机？"),
+                options=[ft.dropdown.Option(i) for i in shutdown_list],
+                value=shutdown,
+                width=200,
+            )
+        
         open_map_tf = ft.TextField(label=_("打开地图按钮"), value=open_map, width=200)
         def save(e):
             sra_config_obj.github_proxy = "" if github_proxy_dd.value == "不设置代理" else github_proxy_dd.value
@@ -310,6 +319,7 @@ def page_main(page: ft.Page):
             sra_config_obj.level = level_dd.value
             sra_config_obj.language = language_dict[language_dd.value]
             sra_config_obj.auto_battle_persistence = fighting_list.index(fighting_dd.value)
+            sra_config_obj.auto_shutdown = bool(shutdown_list.index(shutdown_dd.value))
             sra_config_obj.start = True
             to_page_main(page)
         page.clean()
@@ -324,6 +334,7 @@ def page_main(page: ft.Page):
             open_map_tf,
             language_dd,
             fighting_dd,
+            shutdown_dd,
             ft.ElevatedButton(_("保存"), on_click=save),
         )
 
