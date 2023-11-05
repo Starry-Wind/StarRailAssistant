@@ -328,7 +328,8 @@ class SRAData(metaclass=SRADataMeta):
     """是否在打印遗器信息时显示拓展信息"""
     ndigits_for_relic: int = 2
     """在打印遗器信息时的小数精度"""
-
+    auto_shutdown: bool = False
+    """是否自动关机"""
 
     def __init__(self) -> None:
         ...
