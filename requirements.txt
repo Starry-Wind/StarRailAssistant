@@ -30,4 +30,4 @@ pluggy
 httpcore
 pydantic
 jsonschema
-prompt-toolkit<=3.0.36,>=2.0
+prompt-toolkit>=2.0,<=3.0.39
