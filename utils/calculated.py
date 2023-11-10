@@ -22,6 +22,8 @@ from pynput import mouse
 from pynput.keyboard import Controller as KeyboardController
 from pynput.keyboard import Key
 from pynput.mouse import Controller as MouseController
+from questionary import Validator, ValidationError
+from collections.abc import Iterable
 
 from .config import CONFIG_FILE_NAME, _, get_file, sra_config_obj
 from .cv_tools import CV_Tools, show_img
@@ -1014,6 +1016,42 @@ class Array2dict:
     def __getitem__(self, key: Any) -> Any:
         return self.data_dict[key]
     
+
+class FloatValidator(Validator):
+    """
+    说明：
+        为questionary校验所输入的文本是否为规定范围内的小数
+    """
+    def __init__(self, st: Optional[float]=None, ed: Optional[float]=None) -> None:
+        super().__init__()
+        self.st = st
+        self.ed = ed
+
+    def validate(self, document):
+        try:
+            number = float(document.text)
+        except ValueError:
+            raise ValidationError(message=_("请输入小数"))
+        if self.st is not None and number < self.st:
+            raise ValidationError(message=_("数字小于下界{}").format(self.st))
+        if self.ed is not None and number > self.ed:
+            raise ValidationError(message=_("数字大于下界{}").format(self.ed))
+
+
+class ConflictValidator(Validator):
+    """
+    说明：
+        为questionary校验所输入的文本是否存在命名冲突
+    """
+    def __init__(self, names: Iterable[str]) -> None:
+        super().__init__()
+        self.names = names
+
+    def validate(self, document):
+        if document.text in self.names:
+            raise ValidationError(message=_("存在命名冲突"), cursor_position=len(document.text))
+
+
 def get_data_hash(data: Any, key_filter: Optional[List[str]]=None, speed_modified=False) -> str:
     """
     说明：
