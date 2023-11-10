@@ -901,6 +901,7 @@ class Relic:
                 :return description: 队员配装的简要信息
         """
         group_data = self.team_data["compatible"]    # 获取非互斥队组别信息
+        group_data = sorted(group_data.items())      # 按键名即队伍名称排序
         ...  # 获取互斥队伍组别信息【待扩展】
         prefix = "\n" + " " * 5
         choice_options = [Choice(
@@ -909,7 +910,7 @@ class Relic:
                 description = "".join(
                         prefix + str_just(char_name, 10) + " " + self.get_loadout_brief(self.loadout_data[char_name][loadout_name]) 
                     for char_name, loadout_name in team_data["team_members"].items())
-            ) for team_name, team_data in group_data.items()]
+            ) for team_name, team_data in group_data]
         return choice_options
 
     def get_loadout_choice_options(self, character_name:str) -> List[Choice]:
@@ -925,11 +926,12 @@ class Relic:
                 :return description: 配装各属性数值统计
         """
         character_data = self.loadout_data[character_name]
+        character_data = sorted(character_data.items())      # 按键名即配装名排序
         choice_options = [Choice(
                 title = str_just(loadout_name, 14) + " " + self.get_loadout_brief(relics_hash), 
                 value = (loadout_name, relics_hash),
                 description = '\n' + self.get_loadout_detail(relics_hash, 5, True)
-            ) for loadout_name, relics_hash in character_data.items()]
+            ) for loadout_name, relics_hash in character_data]
         return choice_options
     
     def get_loadout_detail(self, relics_hash: List[str], tab_num: int=0, flag=False) -> str:
