@@ -22,7 +22,7 @@ from pynput import mouse
 from pynput.keyboard import Controller as KeyboardController
 from pynput.keyboard import Key
 from pynput.mouse import Controller as MouseController
-from questionary import Validator, ValidationError
+from questionary import Validator, ValidationError, Style
 from collections.abc import Iterable
 
 from .config import CONFIG_FILE_NAME, _, get_file, sra_config_obj
@@ -1050,6 +1050,30 @@ class ConflictValidator(Validator):
     def validate(self, document):
         if document.text in self.names:
             raise ValidationError(message=_("存在命名冲突"), cursor_position=len(document.text))
+
+
+class StyledText(List[Tuple[str, str]]):
+    """
+    说明：
+        风格化文本，继承`List`的`(style_class, text)`序列，重载了`append()`方法
+    """
+    def append(self, text: Union[str, Tuple[str, str]], style_class: str="") -> None:
+        if isinstance(text, str):
+            if style_class and "class:" not in style_class:
+                style_class = "class:" + style_class
+            return super().append((style_class, text))
+        else:
+            return super().append(text)
+
+def print_styled_text(text: StyledText, style: Style, **kwargs: Any) -> None:
+    """
+    说明：
+        打印风格化文本
+    """
+    from prompt_toolkit import print_formatted_text
+    from prompt_toolkit.formatted_text import FormattedText
+
+    print_formatted_text(FormattedText(text), style=style, **kwargs)
 
 
 def get_data_hash(data: Any, key_filter: Optional[List[str]]=None, speed_modified=False) -> str:
