@@ -6,9 +6,10 @@ import numpy as np
 from collections import Counter
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
-from .questionary.questionary import select, Choice
+import utils.questionary.questionary as questionary
+from utils.questionary.questionary import Choice
 # 改用本地的questionary模块，使之具备show_description功能，基于'tmbo/questionary/pull/330'
-# from questionary import select, Choice   # questionary原项目更新并具备当前功能后，可进行替换
+# import questionary   # questionary原项目更新并具备当前功能后，可进行替换
 from .relic_constants import *
 from .calculated import calculated, Array2dict, get_data_hash, str_just
 from .config import (read_json_file, modify_json_file, rewrite_json_file, 
@@ -113,7 +114,7 @@ class Relic:
 
         # 校验遗器哈希值
         if not self.check_relic_data_hash():
-            option = select(_("是否依据当前遗器数据更新哈希值："), [_("是"), _("否")]).ask()
+            option = questionary.select(_("是否依据当前遗器数据更新哈希值："), [_("是"), _("否")]).ask()
             if option == _("是"):
                 self.check_relic_data_hash(updata=True)
         # 校验队伍配装规范
@@ -143,7 +144,7 @@ class Relic:
         option = None  # 保存上一次的选择
         while True:
             self.calculated.switch_cmd()
-            option = select(title, options, default=option, show_description=True).ask()
+            option = questionary.select(title, options, default=option, show_description=True).ask()
             if option == 0:
                 self.calculated.switch_window()
                 self.save_loadout_for_char()
@@ -167,7 +168,7 @@ class Relic:
         """
         char_pos_list = [(26,6),(31,6),(37,6),(42,6),...,(75,6)] if IS_PC else [(5,16),(5,27),(5,38),(5,49),...,(5,81)]
         # 选择队伍
-        option = select(
+        option = questionary.select(
             _("请选择对当前队伍进行遗器装备的编队："),
             choices = self.get_team_choice_options() + [(_("<返回上一级>"))],
             show_description = True,   # 需questionary具备对show_description的相关支持
@@ -206,7 +207,7 @@ class Relic:
         if not character_data:  # 字典为空
             log.info(_("当前人物配装记录为空"))
             return
-        option = select(
+        option = questionary.select(
             _("请选择将要进行装备的配装："),
             choices = self.get_loadout_choice_options(character_name) + [(_("<返回上一级>"))],
             show_description = True,   # 需questionary具备对show_description的相关支持
@@ -281,7 +282,7 @@ class Relic:
         relics_hash_list = []
         loadout_name_list = []
         # [1]选择队伍的人数 (能否通过页面识别？)
-        char_num = int(select(_("请选择队伍人数："), ['4','3','2','1']).ask())
+        char_num = int(questionary.select(_("请选择队伍人数："), ['4','3','2','1']).ask())
         # [2]选择是否为互斥队伍组别 
         group_name = "compatible"     # 默认为非互斥队组别
         ...  # 互斥队组别【待扩展】
@@ -293,7 +294,7 @@ class Relic:
             _("全识别"): 0,
             _("参考已有的配装数据"): 1
         }
-        option_ = select(_("请选择组建方式："), options).ask()
+        option_ = questionary.select(_("请选择组建方式："), options).ask()
         state = options[option_]
         # [4]检查人物列表是否移动至开头
         self.calculated.switch_window()
@@ -318,7 +319,7 @@ class Relic:
             option = None
             if state == 1:
                 self.calculated.switch_cmd()
-                option = select(
+                option = questionary.select(
                     _("请选择配装："),
                     choices = self.get_loadout_choice_options(character_name) + [_("<识别当前配装>"), _("<退出>")],
                     show_description = True,   # 需questionary具备对show_description的相关支持
