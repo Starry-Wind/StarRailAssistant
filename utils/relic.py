@@ -132,11 +132,11 @@ class Relic:
             Choice(_("保存当前角色的配装"), value = 0,
                    description = tab + _("请使游戏保持在[角色]界面")),
             Choice(_("保存当前队伍的配装"), value = 1,
-                   description = tab + _("请使游戏保持在[角色]界面") + tab + _("并确保[角色头像列表]移动至开头")),
-            Choice(_("读取当前角色的配装记录"), value = 2,
+                   description = tab + _("请使游戏保持在[角色]界面") + tab + _("并确保目标队伍[1号位]-[角色头像]移动至列表[起始位置]") + tab + _("对于[混沌回忆]的队伍可以分上下半分别保存")),
+            Choice(_("读取当前角色的配装记录并装备"), value = 2,
                    description = tab + _("请使游戏保持在[角色]界面")),
-            Choice(_("读取队伍的配装记录"), value = 3,
-                   description = tab + _("请使游戏保持在[角色]界面") + tab + _("并确保[角色头像列表]移动至开头")),
+            Choice(_("读取队伍的配装记录并装备"), value = 3,
+                   description = tab + _("请使游戏保持在[角色]界面") + tab + _("并确保目标队伍[1号位]-[角色头像]移动至列表[起始位置]") + tab + _("对于[混沌回忆]的队伍可以分上下半分别读取")),
             Choice(_("识别当前遗器数据"), value = 4,
                    description = tab + _("请使游戏保持在[角色]-[遗器]-[遗器替换]界面") + tab + _("推荐手动点击[对比]提高识别度")),
             _("<返回主菜单>")
@@ -175,10 +175,10 @@ class Relic:
         if option == _("<返回上一级>"):
             return
         team_members = option  # 得到 (char_name: loadout_name) 的键值对
-        # 检查人物列表是否移动至开头
+        # 检查人物列表是否移动至开头 (取消自动，改为用户手动)
         self.calculated.switch_window()
-        self.calculated.relative_swipe(char_pos_list[0], char_pos_list[-1])  # 滑动人物列表
-        time.sleep(1)
+        # self.calculated.relative_swipe(char_pos_list[0], char_pos_list[-1])  # 滑动人物列表
+        # time.sleep(1)
         self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[角色]-[遗器]界面
         time.sleep(1)
         # 依次点击人物，进行配装 (编队人物无序)
@@ -297,10 +297,10 @@ class Relic:
         }
         option_ = questionary.select(_("请选择组建方式："), options).ask()
         state = options[option_]
-        # [4]检查人物列表是否移动至开头
+        # [4]检查人物列表是否移动至开头 (取消自动，改为用户手动)
         self.calculated.switch_window()
-        self.calculated.relative_swipe(char_pos_list[0], char_pos_list[-1])  # 滑动人物列表
-        time.sleep(1)
+        # self.calculated.relative_swipe(char_pos_list[0], char_pos_list[-1])  # 滑动人物列表
+        # time.sleep(1)
         self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[角色]-[遗器]界面
         time.sleep(1)
         # [5]依次点击人物，识别配装
