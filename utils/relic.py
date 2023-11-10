@@ -503,7 +503,7 @@ class Relic:
             self.calculated.ocr_click(RELIC_SET_NAME[relic_set_index, 1], points=points)
 
 
-    def search_relic(self, equip_indx: int, key_hash: Optional[str]=None, key_data: Optional[Dict[str, Any]]=None, overtime=180, max_retries=3
+    def search_relic(self, equip_indx: int, key_hash: Optional[str]=None, key_data: Optional[Dict[str, Any]]=None, overtime :Optional[int]=180, max_retries=3
                      ) -> Optional[tuple[int, int]]:
         """
         说明：
@@ -557,14 +557,14 @@ class Relic:
                         log.info(_("已搜索至最后"))
                         return None   # 判断已滑动至末页，结束搜索
                     break     # 本行已搜索过，跳出本行
+                # 判断是否超时
+                if overtime and time.time() - start_time > overtime:
+                    log.info(_("识别超时"))
+                    return None
                 pre_pos.append(tmp_hash)  # 记录
             # 滑动翻页 (从末尾位置滑动至顶部，即刚好滑动一整页)
             log.info(_("滑动翻页"))
             self.calculated.relative_swipe((pos_start[0], pos_start[1]+(k_y-1)*d_y), (pos_start[0], pos_start[1]-d_y))
-            if time.time() - start_time > overtime:
-                log.info(_("识别超时"))
-                break
-        return None
     
     def compare_relics(self, old_data: Dict[str, Any], new_data: Dict[str, Any]) -> bool:
         """
