@@ -5,7 +5,7 @@
   },
   {
     "path": "Honkai_Star_Rail.py",
-    "hash": "b012f1db3f52bd02c426c0cbe92166d9"
+    "hash": "627f474bb8c04c319008e1683074df0d"
   },
   {
     "path": "README.md",
@@ -17,11 +17,11 @@
   },
   {
     "path": "requirements.txt",
-    "hash": "d52010bafd48cfa9717624af567bc6a1"
+    "hash": "a2c9287c9aa1cfc5ed857038e574a92e"
   },
   {
     "path": "gui.py",
-    "hash": "aae914d57203b3b571281e78f06b55aa"
+    "hash": "3dd52a9e9f19d44ee2c06b5abcabcaf7"
   },
   {
     "path": "map_res_list.py",
@@ -137,7 +137,7 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "7b8f6be30b35eef047d782c014261f5f"
+    "hash": "383feaef580d619bea67d18394ce05fb"
   },
   {
     "path": "utils/old_cv_tools.py",
