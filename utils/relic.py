@@ -503,8 +503,9 @@ class Relic:
             self.calculated.ocr_click(RELIC_SET_NAME[relic_set_index, 1], points=points)
 
 
-    def search_relic(self, equip_indx: int, key_hash: Optional[str]=None, key_data: Optional[Dict[str, Any]]=None, overtime :Optional[int]=180, max_retries=3
-                     ) -> Optional[tuple[int, int]]:
+    def search_relic(self, equip_indx: int, key_hash: Optional[str]=None, key_data: Optional[Dict[str, Any]]=None,
+                     max_num :Optional[int]=None, overtime :Optional[int]=180, max_retries=3
+    ) -> Optional[tuple[int, int]]:
         """
         说明：
             在当前滑动[角色]-[遗器]-[遗器替换]界面内，搜索匹配的遗器。
@@ -515,7 +516,9 @@ class Relic:
             :param equip_indx: 遗器部位索引
             :param key_hash: 所记录的遗器哈希值
             :param key_data: 所记录的遗器数据
+            :param max_num: 搜索的遗器数量上限
             :param overtime: 超时
+            :param max_retries: 单个遗器OCR重试次数
         返回:
             :return pos: 坐标
         """
@@ -536,9 +539,11 @@ class Relic:
                 tmp_data = self.try_ocr_relic(equip_indx, max_retries)
                 # log.info("\n"+pp.pformat(tmp_data))
                 tmp_hash = get_data_hash(tmp_data)
-                if key_hash and key_hash == tmp_hash:  # 精确匹配
+                # 精确匹配
+                if key_hash and key_hash == tmp_hash:
                     return (x, y)
-                if key_data and self.is_fuzzy_match and self.compare_relics(key_data, tmp_data):  # 模糊匹配
+                # 模糊匹配
+                if key_data and self.is_fuzzy_match and self.compare_relics(key_data, tmp_data):
                     print(_("<<<<旧遗器>>>>"))
                     self.print_relic(key_data)
                     print(_("<<<<新遗器>>>>"))
@@ -557,6 +562,9 @@ class Relic:
                         log.info(_("已搜索至最后"))
                         return None   # 判断已滑动至末页，结束搜索
                     break     # 本行已搜索过，跳出本行
+                # 判断是否达到搜索上限
+                if max_num and len(pre_pos) >= max_num:
+                    return None
                 # 判断是否超时
                 if overtime and time.time() - start_time > overtime:
                     log.info(_("识别超时"))
