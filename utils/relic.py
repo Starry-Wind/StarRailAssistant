@@ -1031,18 +1031,21 @@ class Relic:
         if flag: msg += "\n" + tab + _("(未计算遗器套装的属性加成)")    # 【待扩展】
         return msg
 
-    def get_loadout_brief(self, relics_hash: List[str]) -> str:
+    def get_loadout_brief(self, relics_hash: List[str], flag = True) -> Union[str, Counter]:
         """
         说明：
             获取配装的简要信息 (包含内外圈套装信息与主词条信息)
+        参数：
+            :param relics_hash: 遗器哈希值列表
+            :param flag: 如果`True`返回消息，如果`False`返回遗器套装计数器
         """
-        set_abbr_dict = Array2dict(RELIC_SET_NAME, -1, 2)
+        set_name_dict = Array2dict(RELIC_SET_NAME)
         stats_abbr_dict = Array2dict(BASE_STATS_NAME, -1, 1)
         outer_set_list, inner_set_list, base_stats_list = [], [], []
         # 获取遗器数据
         for equip_indx in range(len((relics_hash))):
             tmp_data = self.relics_data[relics_hash[equip_indx]]
-            tmp_set = set_abbr_dict[tmp_data["relic_set"]]
+            tmp_set = set_name_dict[tmp_data["relic_set"]]
             tmp_base_stats = stats_abbr_dict[list(tmp_data["base_stats"].keys())[0]]
             base_stats_list.append(tmp_base_stats)
             if equip_indx < 4:
@@ -1051,10 +1054,11 @@ class Relic:
                 inner_set_list.append(tmp_set)  # 内圈
         outer_set_cnt = Counter(outer_set_list)
         inner_set_cnt = Counter(inner_set_list)
+        if not flag:
+            return outer_set_cnt + inner_set_cnt
         # 生成信息
-        outer = _("外:") + '+'.join([str(cnt) + name for name, cnt in outer_set_cnt.items()]) + "  "
-        inner = _("内:") + '+'.join([str(cnt) + name for name, cnt in inner_set_cnt.items()]) + "  "
-        # stats = " ".join([EQUIP_SET_ADDR[idx]+":"+name for idx, name in enumerate(base_stats_list) if idx > 1])
+        outer = _("外:") + '+'.join([str(cnt) + RELIC_SET_NAME[set_idx, 2] for set_idx, cnt in outer_set_cnt.items()]) + "  "
+        inner = _("内:") + '+'.join([str(cnt) + RELIC_SET_NAME[set_idx, 2] for set_idx, cnt in inner_set_cnt.items()]) + "  "
         stats = ".".join([name for idx, name in enumerate(base_stats_list) if idx > 1])   # 排除头部与手部
         msg = str_just(stats, 17) + " " + str_just(inner, 10) + " " + outer   # 将长度最不定的外圈信息放至最后
         return msg
