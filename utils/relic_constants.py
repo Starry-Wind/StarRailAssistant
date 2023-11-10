@@ -53,6 +53,7 @@ STATS_NAME = np.array([
     [_("击力"), _("攻"), _("攻击力%")], 
     [_("防御"), _("防"), _("防御力%")],
     [_("度"), _("速"), _("速度")], 
+    [_("度"), _("速"), _("速度%")],        # 注：非遗器主副属性 (不用于OCR，因为属性相关性放置在此)
     [_("击率"), _("暴击"), _("暴击率")], 
     [_("击伤"), _("爆伤"), _("暴击伤害")], 
     [_("命中"), _("命中"), _("效果命中")], 
@@ -73,7 +74,7 @@ STATS_NAME = np.array([
 NOT_PRE_STATS = [_("生命值"), _("攻击力"), _("防御力"), _("速度")]
 """遗器的整数属性名称"""
 
-BASE_STATS_NAME = np.concatenate((STATS_NAME[:2],STATS_NAME[3:-3],STATS_NAME[-2:]), axis=0)
+BASE_STATS_NAME = np.concatenate((STATS_NAME[:2],STATS_NAME[3:7],STATS_NAME[8:-3],STATS_NAME[-2:]), axis=0)
 """遗器主属性名称"""
 
 BASE_STATS_NAME_FOR_EQUIP = [
@@ -86,7 +87,7 @@ BASE_STATS_NAME_FOR_EQUIP = [
 ]
 """遗器各部位主属性名称"""
 
-SUBS_STATS_NAME = np.vstack((STATS_NAME[:10],STATS_NAME[-3:-1]))
+SUBS_STATS_NAME = np.vstack((STATS_NAME[:7],STATS_NAME[8:11],STATS_NAME[-3:-1]))
 """遗器副属性名称，已按副词条顺序排序"""
 
 SUBS_STATS_TIER = [

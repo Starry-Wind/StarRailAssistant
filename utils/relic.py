@@ -1011,8 +1011,8 @@ class Relic:
         has_ = False  # 标记有无属性伤害
         for index, value in enumerate(stats_total_value):
             name = STATS_NAME[index, -1]
-            if index in range(11, 18):
-                if index == 17 and not has_ and value == 0 :  # 无属性伤害的情形
+            if index in range(12, 19):
+                if index == 18 and not has_ and value == 0 :  # 无属性伤害的情形
                     name = _("属性伤害")
                 elif value == 0:  continue
                 else:  has_ = True
