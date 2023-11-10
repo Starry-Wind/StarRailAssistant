@@ -146,7 +146,6 @@ class Relic:
             self.calculated.switch_cmd()
             option = questionary.select(title, options, default=option, show_description=True).ask()
             if option == 0:
-                self.calculated.switch_window()
                 self.save_loadout_for_char()
             elif option == 1:
                 self.save_loadout_for_team()
@@ -201,12 +200,14 @@ class Relic:
             装备当前[角色]界面本人物的遗器配装
         """
         # 识别当前人物名称
+        self.calculated.switch_window()
         character_name = self.ocr_character_name() if character_name is None else character_name
         character_data = self.loadout_data[character_name]
         # 选择配装
         if not character_data:  # 字典为空
             log.info(_("当前人物配装记录为空"))
             return
+        self.calculated.switch_cmd()
         option = questionary.select(
             _("请选择将要进行装备的配装："),
             choices = self.get_loadout_choice_options(character_name) + [(_("<返回上一级>"))],
@@ -374,6 +375,7 @@ class Relic:
         说明：
             保存当前[角色]界面本人物的遗器配装
         """
+        self.calculated.switch_window()
         character_name = self.ocr_character_name()  # 识别当前人物名称
         character_data = self.loadout_data[character_name]
         self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[角色]-[遗器]界面
