@@ -92,13 +92,24 @@ class Relic:
 
         # 读取json文件，仅初始化时检查格式规范
         self.relics_data: Dict[str, Dict[str, Any]] = read_json_file(RELIC_FILE_NAME, schema = RELIC_SCHEMA)
-        self.loadout_data: Dict[str, Dict[str, List[str]]] = read_json_file(LOADOUT_FILE_NAME, schema = LOADOUT_SCHEMA)
+        try:
+            self.loadout_data: Dict[str, Dict[str, Dict[str, Any]]] = read_json_file(LOADOUT_FILE_NAME, schema = LOADOUT_SCHEMA)
+        except:
+            # 尝试使用旧版本 (<=1.8.6) 格式读取数据
+            log.error(_(f"'{LOADOUT_FILE_NAME}'读取失败，尝试使用旧版本格式读取"))
+            self.loadout_data: Dict[str, Dict[str, List[str]]] = read_json_file(LOADOUT_FILE_NAME, schema = LOADOUT_SCHEMA_OLD)
+            for loadouts in self.loadout_data.values():
+                for loadout_name, relic_hash in loadouts.items():
+                    loadouts[loadout_name] = {"relic_hash": relic_hash}
+            # pp.pprint(self.loadout_data)
+            rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
+            log.info(_(f"'{LOADOUT_FILE_NAME}'再读成功，已将其更新至当前版本格式"))
         self.team_data: Dict[str, Dict[str, Any]] = read_json_file(TEAM_FILE_NAME, schema = TEAM_SCHEMA)
 
         log.info(_("遗器模块初始化完成"))
-        log.info(_(f"共载入 {len(list(self.relics_data.keys()))} 件遗器数据"))
-        log.info(_(f"共载入 {sum(len(char_loadouts) for char_name, char_loadouts in self.loadout_data.items())} 套配装数据"))
-        log.info(_(f"共载入 {sum(len(group_data) for group_name, group_data in self.team_data.items())} 组队伍数据"))
+        log.info(_("共载入 {} 件遗器数据").format(len(list(self.relics_data.keys()))))
+        log.info(_("共载入 {} 套配装数据").format(sum(len(char_loadouts) for char_loadouts in self.loadout_data.values())))
+        log.info(_("共载入 {} 组队伍数据").format(sum(len(group_data) for group_data in self.team_data.values())))
 
         # 校验遗器哈希值
         if not self.check_relic_data_hash():
@@ -179,7 +190,7 @@ class Relic:
             if character_name not in team_members:
                 log.error(_(f"编队错误：角色'{character_name}'不应在当前队伍中"))
                 return
-            relic_hash = self.loadout_data[character_name][team_members[character_name]]
+            relic_hash = self.loadout_data[character_name][team_members[character_name]]["relic_hash"]
             self.equip_loadout(relic_hash)
         log.info(_("队伍配装完毕"))
 
@@ -351,7 +362,7 @@ class Relic:
         for i, (char_name, relics_hash, loadout_name) in enumerate(zip(char_name_list, relics_hash_list, loadout_name_list)):
             if loadout_name is None:
                 loadout_name_list[i] = team_name
-                self.loadout_data[char_name][team_name] = relics_hash
+                self.loadout_data[char_name][team_name]["relic_hash"] = relics_hash
                 rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
         group_data[team_name] = {"team_members": {key: value for key, value in zip(char_name_list, loadout_name_list)}}
         rewrite_json_file(TEAM_FILE_NAME, self.team_data)
@@ -376,7 +387,7 @@ class Relic:
         loadout_name = input(_(">>>>命名配装名称: "))  # 需作为字典key值，确保唯一性 (但不同的人物可以有同一配装名称)
         while loadout_name in character_data:
             loadout_name = input(_(">>>>命名冲突，请重命名: "))
-        character_data[loadout_name] = relics_hash
+        character_data[loadout_name]["relic_hash"] = relics_hash
         rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
         log.info(_("配装录入成功"))
 
@@ -576,8 +587,8 @@ class Relic:
         说明：
             通过配装数据在记录中寻找配装名称
         """
-        for loadout_name, hash_list in self.loadout_data[char_name].items():
-            if hash_list == relics_hash:
+        for loadout_name, loadout_data in self.loadout_data[char_name].items():
+            if loadout_data["relic_hash"] == relics_hash:
                 return loadout_name
         return None
 
@@ -590,7 +601,7 @@ class Relic:
         for group_name, team_group in self.team_data.items():
             for team_name, team_data in team_group.items():
                 loadout_dict = self.HashList2dict()
-                [loadout_dict.add(self.loadout_data[char_name][loadout_name], char_name) for char_name, loadout_name in team_data["team_members"].items()]
+                [loadout_dict.add(self.loadout_data[char_name][loadout_name]["relic_hash"], char_name) for char_name, loadout_name in team_data["team_members"].items()]
                 for equip_index, char_names, element in loadout_dict.find_duplicate_hash():
                     log.error(_("队伍遗器冲突：'{}'队伍的{}间的'{}'遗器冲突，遗器哈希值：{}").format(team_name, char_names, EQUIP_SET_NAME[equip_index], element))
                     ret = False
@@ -689,7 +700,7 @@ class Relic:
         for char_name, loadouts in self.loadout_data.items():
             for loadout_name, hash_list in loadouts.items():
                 if hash_list[equip_indx] == old_hash:
-                    self.loadout_data[char_name][loadout_name][equip_indx] = new_hash
+                    self.loadout_data[char_name][loadout_name][equip_indx]["relic_hash"] = new_hash
         rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
         # 队伍配装文件无需修改
         
@@ -908,7 +919,7 @@ class Relic:
                 title = str_just(team_name, 12), 
                 value = team_data["team_members"],
                 description = "".join(
-                        prefix + str_just(char_name, 10) + " " + self.get_loadout_brief(self.loadout_data[char_name][loadout_name]) 
+                        prefix + str_just(char_name, 10) + " " + self.get_loadout_brief(self.loadout_data[char_name][loadout_name]["relic_hash"]) 
                     for char_name, loadout_name in team_data["team_members"].items())
             ) for team_name, team_data in group_data]
         return choice_options
@@ -928,10 +939,10 @@ class Relic:
         character_data = self.loadout_data[character_name]
         character_data = sorted(character_data.items())      # 按键名即配装名排序
         choice_options = [Choice(
-                title = str_just(loadout_name, 14) + " " + self.get_loadout_brief(relics_hash), 
-                value = (loadout_name, relics_hash),
-                description = '\n' + self.get_loadout_detail(relics_hash, 5, True)
-            ) for loadout_name, relics_hash in character_data]
+                title = str_just(loadout_name, 15) + " " + self.get_loadout_brief(loadout_data["relic_hash"]), 
+                value = (loadout_name, loadout_data["relic_hash"]),
+                description = "\n" + self.get_loadout_detail(loadout_data["relic_hash"], 5, character_name)
+            ) for loadout_name, loadout_data in character_data]
         return choice_options
     
     def get_loadout_detail(self, relics_hash: List[str], tab_num: int=0, flag=False) -> str:

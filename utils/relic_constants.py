@@ -160,12 +160,32 @@ LOADOUT_SCHEMA = {
     "additionalProperties": {       # [主键]人物名称 (以OCR结果为准)
         "type": "object",
         "additionalProperties": {   # [次主键]配装名称 (自定义)
+            "type": "object",
+            "properties": {
+                "relic_hash": {         # 配装组成 (6件遗器，按部位排序)
+                    "type": "array",
+                    "minItems": 6,
+                    "maxItems": 6,
+                    "items": {"type": "string"}  # [外键]遗器哈希值                
+                },
+                # 【待扩展】如裸装面板、遗器属性权重
+            },
+            "required": ["relic_hash"],
+            "additionalProperties": False
+}}}
+"""人物配装数据json格式规范"""
+
+LOADOUT_SCHEMA_OLD = {
+    "type": "object",
+    "additionalProperties": {       # [主键]人物名称 (以OCR结果为准)
+        "type": "object",
+        "additionalProperties": {   # [次主键]配装名称 (自定义)
             "type": "array",        # 配装组成 (6件遗器，按部位排序)
             "minItems": 6,
             "maxItems": 6,
             "items": {"type": "string"}  # [外键]遗器哈希值
 }}}
-"""人物配装数据json格式规范"""
+"""人物配装数据json格式规范 (兼容旧版)"""
 
 TEAM_SCHEMA_PART = {
     "additionalProperties": {       # [主键]队伍名称 (自定义)
