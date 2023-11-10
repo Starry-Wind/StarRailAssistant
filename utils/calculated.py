@@ -995,16 +995,19 @@ class calculated(CV_Tools):
 
 class Array2dict:
 
-    def __init__(self, arr: np.ndarray, key_index: int = -1, value_index: Optional[int]=None):
+    def __init__(self, arr: Union[np.ndarray, List[str]], key_index: int = -1, value_index: Optional[int]=None):
         """
         说明：
-            将np数组转化为字典暂住内存，用于对数组短时间内的频繁查找
+            将np数组或序列转化为字典暂住内存，用于短时间内的频繁查找
         参数:
-            :param arr: 二维数组
+            :param arr: 二维数组或一维序列
             :param key_index: 待查找的关键字所在的数组列标
             :param value_index: 待查找的数值所在的数组列标 (为空时表示查找关键字的行标)
         """
-        if arr.ndim != 2:
+        if isinstance(arr, list):
+            self.data_dict = {element: idx for idx, element in enumerate(arr)}
+            return
+        if isinstance(arr, np.ndarray) and arr.ndim != 2:
             raise ValueError("输入的数组必须为二维数组")
         # 将np数组转化为字典
         if value_index is None:  # 默认将key的行标作为value，以取代np.where
