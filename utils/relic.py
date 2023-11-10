@@ -540,6 +540,8 @@ class Relic:
                 time.sleep(0.2)
                 log.info(f"({i+1},{j+1},{len(pre_pos)})")  # 显示当前所识别遗器的方位与序列号
                 tmp_data = self.try_ocr_relic(equip_indx, max_retries)
+                if tmp_data is None:   # 识别到 "未装备"，即此时遗器表格为空
+                    return None
                 # log.info("\n"+pp.pformat(tmp_data))
                 tmp_hash = get_data_hash(tmp_data)
                 # 精确匹配
@@ -747,7 +749,7 @@ class Relic:
             log.info(_("创建新人物"))
         return character_name
     
-    def try_ocr_relic(self, equip_set_index:Optional[int]=None, max_retries=3) -> Dict[str, Any]:
+    def try_ocr_relic(self, equip_set_index:Optional[int]=None, max_retries=3) -> Optional[Dict[str, Any]]:
         """
         说明：
             在规定次数内尝试OCR遗器数据
@@ -768,7 +770,7 @@ class Relic:
                 retry += 1
                 log.info(_(f"第 {retry} 次尝试重新OCR"))
         
-    def ocr_relic(self, equip_set_index: Optional[int]=None) -> Dict[str, Any]:
+    def ocr_relic(self, equip_set_index: Optional[int]=None) -> Optional[Dict[str, Any]]:
         """
         说明：
             OCR当前静态[角色]-[遗器]-[遗器替换]界面内的遗器数据，单次用时约0.5s。
@@ -790,9 +792,12 @@ class Relic:
         # [2]套装识别
         name_list = RELIC_SET_NAME[:, 0].tolist()
         name_list = name_list[:RELIC_INNER_SET_INDEX] if equip_set_index < 4 else name_list[RELIC_INNER_SET_INDEX:]   # 取外圈/内圈的切片
+        name_list += [_("未装备")]
         relic_set_index = self.calculated.ocr_pos_for_single_line(name_list, points=(77,15,92,19) if IS_PC else (71,17,88,21), img_pk=img_pc)
         if relic_set_index < 0: 
             raise RelicOCRException(_("遗器部位OCR错误"))
+        if relic_set_index == len(name_list)-1:   # 识别到"未装备"，即遗器为空
+            return None
         if equip_set_index in [4, 5]:
             relic_set_index += RELIC_INNER_SET_INDEX    # 还原内圈遗器的真实索引
         relic_set_name = RELIC_SET_NAME[relic_set_index, -1]
