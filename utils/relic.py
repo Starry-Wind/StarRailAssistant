@@ -810,14 +810,16 @@ class Relic:
         subs_stats_dict = {}
         total_level = 0
         for name_point, value_point in zip(subs_stats_name_points, subs_stats_value_points):
-            tmp_index = self.calculated.ocr_pos_for_single_line(name_list, points=name_point, img_pk=img_pc)
-            if tmp_index is None: break   # 所识别data为空，即词条为空，正常退出循环
-            if tmp_index < 0:
-                raise RelicOCRException(_("遗器副词条OCR错误"))
+            # 必须先识别属性数值，后识别属性名称 
+            # (当副词条不足4个时，需判定识别结果为空，而此时属性名称的识别区域会可能与下方的"套装效果"文字重合使结果非空)
             tmp_value = self.calculated.ocr_pos_for_single_line(points=value_point, number=True, img_pk=img_pc)  
-            if tmp_value is None:
-                raise RelicOCRException(_("遗器副词条数值OCR错误"))
-            tmp_value = str(tmp_value).replace('.', '')   # 删除所有真假小数点
+            if tmp_value:
+                tmp_value = str(tmp_value).replace('.', '')   # 删除所有真假小数点
+            if tmp_value is None or tmp_value == '':
+                break    # 所识别data为空，判断词条为空，正常退出循环
+            tmp_index = self.calculated.ocr_pos_for_single_line(name_list, points=name_point, img_pk=img_pc)
+            if tmp_index is None or tmp_index < 0:
+                raise RelicOCRException(_("遗器副词条OCR错误"))
             if '%' in tmp_value:
                 s = tmp_value.split('%')[0]   # 修正'48%1'如此的错误识别
                 tmp_value = s[:-1] + '.' + s[-1:]   # 添加未识别的小数点
