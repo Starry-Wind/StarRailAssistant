@@ -248,10 +248,13 @@ class Relic:
             log.debug(tmp_hash)
             relic_set_index = relic_set_name_dict[tmp_data["relic_set"]]
             rarity = tmp_data["rarity"]
-            # 筛选遗器 (加快遗器搜索)
-            relic_filter.do(relic_set_index, rarity)
-            # 搜索遗器
-            pos = self.search_relic(equip_indx, key_hash=tmp_hash, key_data=tmp_data)
+            # 在筛选遗器前尝试匹配当前遗器表格中的首个遗器 (加快配装)
+            pos = self.search_relic(equip_indx, key_hash=tmp_hash, key_data=tmp_data, max_num=1)
+            if pos is None:
+                # 筛选遗器 (加快遗器搜索)
+                relic_filter.do(relic_set_index, rarity)
+                # 搜索遗器
+                pos = self.search_relic(equip_indx, key_hash=tmp_hash, key_data=tmp_data)
             if pos is None:
                 log.error(_(f"遗器搜索失败: {tmp_hash}"))
                 continue
