@@ -3,6 +3,7 @@ import time
 import math
 import pprint
 import numpy as np
+from itertools import chain
 from collections import Counter
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
@@ -11,7 +12,8 @@ from utils.questionary.questionary import Choice
 # 改用本地的questionary模块，使之具备show_description功能，基于'tmbo/questionary/pull/330'
 # import questionary   # questionary原项目更新并具备当前功能后，可进行替换
 from .relic_constants import *
-from .calculated import calculated, Array2dict, get_data_hash, str_just
+from .calculated import (calculated, Array2dict, FloatValidator, ConflictValidator, 
+                         get_data_hash, str_just)
 from .config import (read_json_file, modify_json_file, rewrite_json_file, 
                      RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, _, sra_config_obj)
 from .exceptions import Exception, RelicOCRException
@@ -359,10 +361,20 @@ class Relic:
                                                 for char_name, relics_hash in zip(char_name_list, relics_hash_list))))
         # [6]自定义名称
         self.calculated.switch_cmd()
-        team_name = input(_(">>>>命名编队名称 (将同时作为各人物新建配装的名称): "))
-        while team_name in group_data or \
-            any([team_name in self.loadout_data[character_name] for character_name, loadout_name in zip(char_name_list, loadout_name_list) if loadout_name is None]):
-            team_name = input(_(">>>>命名冲突，请重命名: "))
+        # 统计互斥名称
+        names = chain(group_data.keys())    # 队伍互斥名称
+        for character_name, loadout_name in zip(char_name_list, loadout_name_list):
+            if loadout_name is None:        # 配装互斥名称
+                names = chain(names, self.loadout_data[character_name].keys())
+        team_name = questionary.text(
+            _("命名编队名称:"),
+            instruction = _("(将同时作为角色的新建配装名称)"),
+            validate = ConflictValidator(names),
+        ).ask()
+        # team_name = input(_(">>>>命名编队名称 (将同时作为各人物新建配装的名称): "))
+        # while team_name in group_data or \
+        #     any([team_name in self.loadout_data[character_name] for character_name, loadout_name in zip(char_name_list, loadout_name_list) if loadout_name is None]):
+        #     team_name = input(_(">>>>命名冲突，请重命名: "))
         # [7]录入数据
         for i, (char_name, relics_hash, loadout_name) in enumerate(zip(char_name_list, relics_hash_list, loadout_name_list)):
             if loadout_name is None:
@@ -390,9 +402,8 @@ class Relic:
         if loadout_name:
             log.info(_(f"配装记录已存在，配装名称：{loadout_name}"))
             return
-        loadout_name = input(_(">>>>命名配装名称: "))  # 需作为字典key值，确保唯一性 (但不同的人物可以有同一配装名称)
-        while loadout_name in character_data:
-            loadout_name = input(_(">>>>命名冲突，请重命名: "))
+        # 需作为字典key值，确保唯一性 (但不同的人物可以有同一配装名称)
+        loadout_name = questionary.text(_("命名配装名称:"), validate=ConflictValidator(character_data.keys())).ask()
         character_data[loadout_name]["relic_hash"] = relics_hash
         rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
         log.info(_("配装录入成功"))
