@@ -2,6 +2,7 @@
 遗器模块相关静态数据
 """
 import numpy as np
+from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 from .config import _
 
 
@@ -89,6 +90,14 @@ BASE_STATS_NAME_FOR_EQUIP = [
 
 SUBS_STATS_NAME = np.vstack((STATS_NAME[:7],STATS_NAME[8:11],STATS_NAME[-3:-1]))
 """遗器副属性名称，已按副词条顺序排序"""
+
+EXTRA_STATS_NAME = [
+    _("护盾量"), _("全属性抗性"), _("受到伤害降低"), _("无视防御力"), 
+    _("伤害"), _("普攻伤害"), _("战技伤害"), _("终结技伤害"), _("追加攻击伤害"), _("持续伤害")]
+"""额外属性名称 (遗器套装效果涉及的部分属性)"""
+
+ALL_STATS_NAME: List[str] = STATS_NAME[:, -1].tolist() + EXTRA_STATS_NAME
+"""全属性名称 (包含遗器属性、遗器套装效果涉及的属性)"""
 
 SUBS_STATS_TIER = [
     [(27.096, 3.3870  ), (13.548 , 1.6935  ), (13.548 , 1.6935  ), (2.7648, 0.3456), (2.7648, 0.3456), (3.456, 0.4320),  # 四星遗器数值
