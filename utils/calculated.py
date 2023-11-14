@@ -1034,7 +1034,7 @@ class FloatValidator(Validator):
         try:
             number = float(document.text)
         except ValueError:
-            raise ValidationError(message=_("请输入小数"))
+            raise ValidationError(message=_("请输入整数或小数"))
         if self.st is not None and number < self.st:
             raise ValidationError(message=_("数字小于下界{}").format(self.st))
         if self.ed is not None and number > self.ed:
