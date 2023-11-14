@@ -1035,15 +1035,16 @@ class Relic:
         # [3]合成属性分词
         token_list = []
         has_ = False  # 标记有无属性伤害
+        normal_stats_len = len(STATS_NAME)   # 额外属性的起始索引 (预防被激活多个属性伤害的情形)
         for index, value in enumerate(stats_panel):
             name = ALL_STATS_NAME[index]
-            if index in range(12, 19):   # 属性伤害
-                if index == 18 and not has_ and value == 0 :  # 无属性伤害的情形
+            if index in range(15, 22):   # 过滤属性伤害
+                if index == 21 and not has_ and value == 0 :  # 无属性伤害的情形
                     name = _("属性伤害")
-                elif value == 0:  continue
+                elif value == 0:
+                    normal_stats_len -= 1
+                    continue
                 else:  has_ = True
-            elif index == len(STATS_NAME) - 1:
-                normal_stats_len = len(token_list) + 1   # 额外属性的起始索引 (预防被激活多个属性伤害的情形)
             elif index >= len(STATS_NAME) and value == 0: 
                 continue                                 # 跳过无效的额外属性
             pre = " " if name in NOT_PRE_STATS else "%"
