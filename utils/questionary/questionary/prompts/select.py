@@ -204,7 +204,7 @@ def select(
                     "for movement are disabled. "
                     "This choice is not reachable.".format(c.title)
                 )
-            if isinstance(c, Separator) or c.shortcut_key is None:
+            if isinstance(c, Separator) or c.shortcut_key is None or c.disabled:
                 continue
 
             # noinspection PyShadowingNames
