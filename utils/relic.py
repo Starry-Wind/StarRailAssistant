@@ -118,8 +118,7 @@ class Relic:
 
         # 校验遗器哈希值
         if not self.check_relic_data_hash():
-            option = questionary.select(_("是否依据当前遗器数据更新哈希值："), [_("是"), _("否")]).ask()
-            if option == _("是"):
+            if questionary.confirm(_("是否依据当前遗器数据更新哈希值")).ask():
                 self.check_relic_data_hash(updata=True)
         # 校验队伍配装规范
         if not self.check_team_data():
