@@ -22,7 +22,7 @@ from pynput import mouse
 from pynput.keyboard import Controller as KeyboardController
 from pynput.keyboard import Key
 from pynput.mouse import Controller as MouseController
-from questionary import Validator, ValidationError
+from questionary import Validator, ValidationError, Style
 from collections.abc import Iterable
 
 from .config import CONFIG_FILE_NAME, _, get_file, sra_config_obj
@@ -995,16 +995,19 @@ class calculated(CV_Tools):
 
 class Array2dict:
 
-    def __init__(self, arr: np.ndarray, key_index: int = -1, value_index: Optional[int]=None):
+    def __init__(self, arr: Union[np.ndarray, List[str]], key_index: int = -1, value_index: Optional[int]=None):
         """
         说明：
-            将np数组转化为字典暂住内存，用于对数组短时间内的频繁查找
+            将np数组或序列转化为字典暂住内存，用于短时间内的频繁查找
         参数:
-            :param arr: 二维数组
+            :param arr: 二维数组或一维序列
             :param key_index: 待查找的关键字所在的数组列标
             :param value_index: 待查找的数值所在的数组列标 (为空时表示查找关键字的行标)
         """
-        if arr.ndim != 2:
+        if isinstance(arr, list):
+            self.data_dict = {element: idx for idx, element in enumerate(arr)}
+            return
+        if isinstance(arr, np.ndarray) and arr.ndim != 2:
             raise ValueError("输入的数组必须为二维数组")
         # 将np数组转化为字典
         if value_index is None:  # 默认将key的行标作为value，以取代np.where
@@ -1014,7 +1017,7 @@ class Array2dict:
         # log.debug(self.data_dict)
 
     def __getitem__(self, key: Any) -> Any:
-        return self.data_dict[key]
+        return self.data_dict.get(key, None)
     
 
 class FloatValidator(Validator):
@@ -1031,7 +1034,7 @@ class FloatValidator(Validator):
         try:
             number = float(document.text)
         except ValueError:
-            raise ValidationError(message=_("请输入小数"))
+            raise ValidationError(message=_("请输入整数或小数"))
         if self.st is not None and number < self.st:
             raise ValidationError(message=_("数字小于下界{}").format(self.st))
         if self.ed is not None and number > self.ed:
@@ -1050,6 +1053,30 @@ class ConflictValidator(Validator):
     def validate(self, document):
         if document.text in self.names:
             raise ValidationError(message=_("存在命名冲突"), cursor_position=len(document.text))
+
+
+class StyledText(List[Tuple[str, str]]):
+    """
+    说明：
+        风格化文本，继承`List`的`(style_class, text)`序列，重载了`append()`方法
+    """
+    def append(self, text: Union[str, Tuple[str, str]], style_class: str="") -> None:
+        if isinstance(text, str):
+            if style_class and "class:" not in style_class:
+                style_class = "class:" + style_class
+            return super().append((style_class, text))
+        else:
+            return super().append(text)
+
+def print_styled_text(text: StyledText, style: Style, **kwargs: Any) -> None:
+    """
+    说明：
+        打印风格化文本
+    """
+    from prompt_toolkit import print_formatted_text
+    from prompt_toolkit.formatted_text import FormattedText
+
+    print_formatted_text(FormattedText(text), style=style, **kwargs)
 
 
 def get_data_hash(data: Any, key_filter: Optional[List[str]]=None, speed_modified=False) -> str:
