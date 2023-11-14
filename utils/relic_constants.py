@@ -5,6 +5,7 @@ import numpy as np
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 from .config import _
 
+StatsEffect = Union[str, Tuple[str, Optional[int], bool]]
 
 EQUIP_SET_NAME = [_("头部"), _("手部"), _("躯干"), _("脚部"), _("位面球"), _("连结绳")]
 """遗器部位名称，已经按游戏界面顺序排序"""
@@ -116,7 +117,7 @@ BASE_STATS_TIER = [
 for i in range(len(BASE_STATS_TIER)):
     BASE_STATS_TIER[i][10:10] = [BASE_STATS_TIER[i][10]] * 6   # 复制属性伤害
 
-SET_EFFECT_OF_TWO_PC: List[List[Union[str, Tuple[str, Optional[int], bool]]]] = [
+SET_EFFECT_OF_TWO_PC: List[List[StatsEffect]] = [
 # 外圈
     [(_("治疗量加成"), 10, True)],
     [(_("攻击力%"), 12, True)],
@@ -150,7 +151,7 @@ for set_index, set_effect in enumerate(SET_EFFECT_OF_TWO_PC):
     if isinstance(set_effect[-1], str):
         set_effect[-1] = RELIC_SET_NAME[set_index, 2] + _("2件套：") + set_effect[-1]
 
-SET_EFFECT_OF_FOUR_PC: List[List[Union[str, Tuple[str, Optional[int], bool]]]] = [
+SET_EFFECT_OF_FOUR_PC: List[List[StatsEffect]] = [
 # 外圈
     [_("在战斗开始时，立即为我方恢复1个战技点")],
     [(_("速度%"), 6, True), (_("普攻伤害"), 10, True)],
