@@ -92,6 +92,8 @@ class Relic:
         """是否在打印遗器信息时显示详细信息 (如各副词条的强化次数、档位积分，以及提高原数据的小数精度)"""
         self.ndigits: Literal[0, 1, 2, 3] = sra_config_obj.ndigits_for_relic
         """在打印遗器信息时的小数精度"""
+        self.activate_conditional = False
+        """在打印面板信息时激活条件效果"""
 
         # 读取json文件，仅初始化时检查格式规范
         self.relics_data: Dict[str, Dict[str, Any]] = read_json_file(RELIC_FILE_NAME, schema = RELIC_SCHEMA)
@@ -988,15 +990,20 @@ class Relic:
             ) for loadout_name, loadout_data in character_data]
         return choice_options
     
-    def get_loadout_detail(self, relics_hash: List[str], tab_num: int=0, flag=False) -> str:
+    def get_loadout_detail(self, relics_hash: List[str], tab_num: int=0) -> str:
         """
         说明：
             获取配装的详细信息 (各属性数值统计)
+        参数：
+            :param relics_hash: 遗器哈希值列表
+            :param tab_num: 缩进长度
         """
-        stats_total_value = [0 for _ in range(len(STATS_NAME))]
-        stats_name_dict = Array2dict(STATS_NAME)
+        stats_panel = np.zeros(len(ALL_STATS_NAME))   # 属性面板
+        extra_effect_list = []   # 额外效果说明
+        stats_name_dict = Array2dict(ALL_STATS_NAME)
         base_stats_dict = Array2dict(BASE_STATS_NAME)
         subs_stats_dict = Array2dict(SUBS_STATS_NAME)
+        # [1]统计遗器主副属性
         for equip_indx in range(len((relics_hash))):
             tmp_data = self.relics_data[relics_hash[equip_indx]]
             rarity = tmp_data["rarity"]
@@ -1006,29 +1013,63 @@ class Relic:
             stats_list.extend([(key, self.get_subs_stats_detail((key, value), rarity, subs_stats_dict[key])[-1]) 
                                for key, value in tmp_data["subs_stats"].items()])     # 获取数值精度提高后的副词条
             for key, value in stats_list:
-                stats_total_value[stats_name_dict[key]] += value  # 数值统计
+                stats_panel[stats_name_dict[key]] += value  # 数值统计
+        # [2]统计遗器套装效果
+        set_cnt: Counter = self.get_loadout_brief(relics_hash, False)
+        def parse_set_effect(set_effect_list: List[StatsEffect]):
+            """
+            说明： 解析遗器套装效果，引用传递返回参数stats_panel
+            """
+            for effect in set_effect_list:
+                if isinstance(effect, str):
+                    extra_effect_list.append(effect)
+                elif isinstance(effect, tuple):
+                    key, value, unconditional = effect
+                    if unconditional or not unconditional and self.activate_conditional:   # 非条件效果或已激活条件效果
+                        stats_panel[stats_name_dict[key]] += value  # 数值统计
+        for set_idx, cnt in set_cnt.items():
+            if cnt >= 2:    # 激活二件套效果
+                parse_set_effect(SET_EFFECT_OF_TWO_PC[set_idx])
+            if cnt >= 4:    # 激活四件套效果
+                parse_set_effect(SET_EFFECT_OF_FOUR_PC[set_idx])
+        # [3]合成属性分词
         token_list = []
         has_ = False  # 标记有无属性伤害
-        for index, value in enumerate(stats_total_value):
-            name = STATS_NAME[index, -1]
-            if index in range(12, 19):
+        for index, value in enumerate(stats_panel):
+            name = ALL_STATS_NAME[index]
+            if index in range(12, 19):   # 属性伤害
                 if index == 18 and not has_ and value == 0 :  # 无属性伤害的情形
                     name = _("属性伤害")
                 elif value == 0:  continue
                 else:  has_ = True
+            elif index == len(STATS_NAME) - 1:
+                normal_stats_len = len(token_list) + 1   # 额外属性的起始索引 (预防被激活多个属性伤害的情形)
+            elif index >= len(STATS_NAME) and value == 0: 
+                continue                                 # 跳过无效的额外属性
             pre = " " if name in NOT_PRE_STATS else "%"
             token_list.append(_("{name}{value:>7.{ndigits}f}{pre}").format(name=str_just(name, 15), value=value, pre=pre, ndigits=self.ndigits))
+        # [4]打印信息
         msg = ""
-        column = 2    # 栏数 (可调节)
         tab = " " * tab_num
-        for index in range(len(token_list)):   # 分栏输出 (纵向顺序，横向逆序，保证余数项在左栏)
-            i = index // column
-            j = index % column
-            n = (column-j-1) * len(token_list) // column + i
-            msg += token_list[n] if j != 0 else tab+token_list[n]
-            msg += "\n" if j == column-1 else "   "
-        if msg[-1] != "\n": msg += "\n"
-        if flag: msg += "\n" + tab + _("(未计算遗器套装的属性加成)")    # 【待扩展】
+        tab_ = "\n" + tab
+        def format_table(sequence: List[str], column=2, reverse=True) -> str:
+            """
+            说明： 打印单个表单
+            """
+            msg = ""
+            for index in range(len(sequence)):   # 分栏输出 (纵向顺序，横向逆序，保证余数项在左栏)
+                i = index // column
+                j = index % column
+                n = ((column-j-1) * len(sequence) // column + i) if reverse else (j * len(sequence) // column + i)
+                msg += "   " + sequence[n] if j != 0 else tab_ + sequence[n]
+            if msg: msg += "\n"
+            return msg    
+        # 打印属性数值统计
+        msg += format_table(token_list[:normal_stats_len])  # 遗器主副属性
+        msg += format_table(token_list[normal_stats_len:])  # 额外属性
+        # 打印额外效果
+        if extra_effect_list:
+            msg += "\n" + " " * (tab_num-3) + _("额外效果：") + tab_ + tab_.join(extra_effect_list)
         return msg
 
     def get_loadout_brief(self, relics_hash: List[str], flag = True) -> Union[str, Counter]:
