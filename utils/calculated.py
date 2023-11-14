@@ -1017,7 +1017,7 @@ class Array2dict:
         # log.debug(self.data_dict)
 
     def __getitem__(self, key: Any) -> Any:
-        return self.data_dict[key]
+        return self.data_dict.get(key, None)
     
 
 class FloatValidator(Validator):
