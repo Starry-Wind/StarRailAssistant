@@ -398,6 +398,7 @@ class Relic:
         char_index = 0
         is_retrying = False
         character_name = None
+        char_weight = StatsWeight()
         loadout_dict = self.HashList2dict()
         while char_index < char_num:
             char_pos = char_pos_list[char_index]
@@ -407,6 +408,7 @@ class Relic:
                 self.calculated.relative_click(char_pos)    # 点击人物
                 time.sleep(2)
                 character_name = self.ocr_character_name()  # 识别当前人物名称
+                __, char_weight = self.find_char_weight(character_name)
             # [5.2]选择识别当前，还是录入已有
             option = None
             if state == 1:
@@ -422,7 +424,7 @@ class Relic:
                     loadout_name, relics_hash = option    # 获取已录入的配装数据
             if state == 0 or option == _("<识别当前配装>"):
                 self.calculated.switch_window()
-                relics_hash = self.save_loadout()
+                relics_hash = self.save_loadout(char_weight)
                 print(_("配装信息：\n  {}\n{}").format(self.get_loadout_brief(relics_hash), self.get_loadout_detail(relics_hash, 2)))    
                 loadout_name = self.find_loadout_name(character_name, relics_hash)
                 if loadout_name:
@@ -479,9 +481,10 @@ class Relic:
         self.calculated.switch_window()
         character_name = self.ocr_character_name()  # 识别当前人物名称
         character_data = self.loadout_data[character_name]
+        __, char_weight = self.find_char_weight(character_name)
         self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击导航栏的遗器，进入[角色]-[遗器]界面
         time.sleep(1)
-        relics_hash = self.save_loadout()
+        relics_hash = self.save_loadout(char_weight)
         self.calculated.switch_cmd()
         print(_("配装信息：\n  {}\n{}").format(self.get_loadout_brief(relics_hash), self.get_loadout_detail(relics_hash, 2)))
         loadout_name = self.find_loadout_name(character_name, relics_hash)
@@ -494,7 +497,7 @@ class Relic:
         rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
         log.info(_("配装录入成功"))
 
-    def save_loadout(self, max_retries=3) -> list[str]:
+    def save_loadout(self, char_weight: StatsWeight=StatsWeight(), max_retries=3) -> list[str]:
         """
         说明：
             保存当前[角色]-[遗器]界面内的遗器配装
@@ -514,7 +517,7 @@ class Relic:
             tmp_data = self.try_ocr_relic(equip_indx, max_retries)
             tmp_hash = get_data_hash(tmp_data, RELIC_DATA_FILTER)
             log.debug("\n"+pp.pformat(tmp_data))
-            self.print_relic(tmp_data)
+            self.print_relic(tmp_data, tmp_hash, char_weight)
             if tmp_hash in self.relics_data:
                 log.info(_("遗器数据已存在"))
             else:
@@ -603,8 +606,12 @@ class Relic:
             self.calculated.ocr_click(RELIC_SET_NAME[relic_set_index, 1], points=points)
 
 
-    def search_relic(self, equip_indx: int, key_hash: Optional[str]=None, key_data: Optional[Dict[str, Any]]=None,
-                     max_num :Optional[int]=None, overtime :Optional[int]=180, max_retries=3
+    def search_relic(
+        self, equip_indx: Optional[int]=None, 
+        key_hash: Optional[str]=None, 
+        key_data: Optional[Dict[str, Any]]=None,
+        stats_weight: StatsWeight=StatsWeight(),
+        max_num :Optional[int]=None, overtime :Optional[int]=180, max_retries=3
     ) -> Optional[tuple[int, int]]:
         """
         说明：
@@ -616,6 +623,7 @@ class Relic:
             :param equip_indx: 遗器部位索引
             :param key_hash: 所记录的遗器哈希值
             :param key_data: 所记录的遗器数据
+            :param stats_weight: 属性权重 (用于修饰遗器打印)
             :param max_num: 搜索的遗器数量上限
             :param overtime: 超时
             :param max_retries: 单个遗器OCR重试次数
@@ -647,11 +655,12 @@ class Relic:
                     return (x, y)
                 # 模糊匹配
                 if key_data and self.is_fuzzy_match and self.compare_relics(key_data, tmp_data):
-                    print(_("<<<<旧遗器>>>>"))
-                    self.print_relic(key_data)
-                    print(_("<<<<新遗器>>>>"))
-                    self.print_relic(tmp_data)
-                    log.info(_("模糊匹配成功！自动更新遗器数据"))
+                    # 打印对比信息
+                    tmp_text = self.print_relic(tmp_data, tmp_hash, stats_weight, False)
+                    key_text = self.print_relic(key_data, key_hash, stats_weight, False)
+                    print("\n  {:>28}    {:<28}".format("<<<<<<< NEW", "OLD >>>>>>>"))
+                    print_styled_text(combine_styled_text(tmp_text, key_text, sep=" "*4, indent=2), style=self.msg_style)
+                    log.info(_("模糊匹配成功！识别到新遗器为旧遗器升级后，自动更新数据库"))
                     # 更新数据库 (录入新遗器数据，并将配装数据中的旧有哈希值替换)
                     tmp_data["pre_ver_hash"] = key_hash   # 建立后继关系
                     self.updata_relic_data(key_hash, tmp_hash, equip_indx, tmp_data)
@@ -1024,44 +1033,91 @@ class Relic:
         log.info(f"用时\033[1;92m『{seconds:.1f}秒』\033[0m")
         return result_data
     
-    def print_relic(self, data: Dict[str, Any]):
+    def print_relic(
+        self, data: Dict[str, Any], relic_hash: Optional[str]=None, 
+        char_weight: StatsWeight=StatsWeight(), flag=True
+    ) -> Optional[StyledText]:
         """
         说明：
-            打印遗器信息，
-            可通过is_detail设置打印普通信息与拓展信息
+            打印遗器信息 (占用窗口列数28)，
+            可通过`detail_for_relic`设置打印普通信息与详细信息，
+        参数：
+            :param data: 遗器数据
+            :param relic_hash: 遗器哈希值 (填入即打印)
+            :param char_weight: 角色属性权重
+            :param flag: 是-打印，否-返回文本
         """
-        token = []
-        token.append(_("部位: {equip_set}").format(equip_set=data["equip_set"]))
-        token.append(_("套装: {relic_set}").format(relic_set=data["relic_set"]))
-        token.append(_("星级: {star}").format(star='★'*data["rarity"]))
-        token.append(_("等级: +{level}").format(level=data["level"]))
-        token.append(_("主词条:"))
-        name, value = list(data["base_stats"].items())[0]
-        pre = " " if name in NOT_PRE_STATS else "%"
-        result = self.get_base_stats_detail((name, value), data["rarity"], data["level"])
-        if result:
-            token.append(_("   {name:<4}\t{value:>7.{ndigits}f}{pre}").format(name=name, value=result, pre=pre, ndigits=self.ndigits))
-        else:
-            token.append(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))
-        token.append(_("副词条:"))
+        token = StyledText()
+        rarity = data["rarity"]
+        token.append("{:<3}".format("+"+str(data["level"])), "bold")
+        token.append(" {}".format(str_just(data["equip_set"], 7)))
+        token.append(" {star:>5}".format(star='★'*rarity), f"rarity_{rarity}")
+        # 副词条
+        sub_token = StyledText()
         subs_stats_dict = Array2dict(SUBS_STATS_NAME)
+        total_num = 0   # 总词条数或有效词条数
+        bad_num = 0     # 强化歪了的次数
         for name, value in data["subs_stats"].items():
             pre = " " if name in NOT_PRE_STATS else "%"
-            if not self.is_detail or data["rarity"] not in [4,5]:    # 不满足校验条件
-                token.append(_("   {name:<4}\t{value:>5}{pre}").format(name=name, value=value, pre=pre))
+            if not self.is_detail or rarity not in [4,5]:    # 不满足校验条件
+                sub_token.append(_("   ■ {name}      {value:>6.{nd}f}{pre}\n").format(name=str_just(name, 10), value=value, pre=pre, nd=self.ndigits))
                 continue
             stats_index = subs_stats_dict[name]
             # 增强信息并校验数据
-            ret = self.get_subs_stats_detail((name, value), data["rarity"], stats_index)
+            ret = self.get_subs_stats_detail((name, value), rarity, stats_index)
             if ret:  # 数据校验成功
                 level, score, result = ret
+                num = self.get_num_of_stats(ret, rarity)  # 计算词条数
+                if char_weight and char_weight.get_weight(name) > 0 or not char_weight:
+                    total_num += num
+                if char_weight and char_weight.get_weight(name) == 0:
+                    bad_num += level-1
                 tag = '>'*(level-1)   # 强化次数的标识
-                token.append(_("   {name:<4}\t{tag:<7}{value:>7.{ndigits}f}{pre}   [{score}]").
-                      format(name=name, tag=tag, value=result, score=score, pre=pre, ndigits=self.ndigits))
+                sub_token.append(
+                    _(" {num:.1f} {name}{tag:<6}{value:>6.{nd}f}{pre}\n"). \
+                        format(name=str_just(name, 10), tag=tag, value=result, num=num, pre=pre, nd=self.ndigits),
+                    char_weight.get_color(name))
             else:    # 数据校验失败
-                token.append(_("   {name:<4}\t{value:>5}{pre}   [ERROR]").format(name=name, value=value, pre=pre))           
-        token.append('-'*50)
-        print("\n".join(token))
+                sub_token.append(" ERR", "red")  
+                sub_token.append(_(" {name}      {value:>6.{nd}f}{pre}\n").format(name=str_just(name, 10), value=value, pre=pre, nd=self.ndigits))           
+        # 遗器得分
+        ...   # 计算方法【待扩展】
+        if rarity in [6]:   # 此处为示例
+            token.append(_(" 36.9分"), "highlighted")
+            token.append(_(" SSS\n"), "orange")
+        else:
+            token.append(" "*11+"\n")
+        # 套装
+        token.append(str_just("="+data["relic_set"]+"=", 18))
+        # 副词条统计
+        if not self.is_detail or rarity not in [4,5]:
+            token.append(" "*10+"\n")
+        elif char_weight:
+            if bad_num == 0:
+                token.append(_("  全中 "), "green")
+            else:
+                token.append(_(" 歪{}次 ").format(bad_num), "green")
+            token.append("{:>3.1f}\n".format(total_num), "green")
+        else:
+            token.append("  总计 ", "green")
+            token.append("{:>3.1f}\n".format(total_num), "green")
+        # 主词条
+        name, value = list(data["base_stats"].items())[0]
+        pre = " " if name in NOT_PRE_STATS else "%"
+        result = self.get_base_stats_detail((name, value), rarity, data["level"])
+        if result:
+            token.append(_("■ {name}{value:>6.{nd}f}{pre}\n").format(name=str_just(name, 19), value=result, pre=pre, nd=self.ndigits))
+        else:
+            token.append(_("■ {name} ").format(name=str_just(name, 13)))
+            token.append("ERR", "red")
+            token.append(_("  {value:>6.{nd}f}{pre}\n").format(value=value, pre=pre, nd=self.ndigits))
+        token.extend(sub_token)
+        if relic_hash:
+            token.append("{:>28}\n".format("hash:"+relic_hash[:10]), "grey")
+        if flag:
+            print_styled_text(token, style=self.msg_style)
+        else:
+            return token
 
     def get_team_choice_options(self) -> List[Choice]:
         """
