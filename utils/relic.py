@@ -380,7 +380,7 @@ class Relic:
         for i, (char_name, relics_hash, loadout_name) in enumerate(zip(char_name_list, relics_hash_list, loadout_name_list)):
             if loadout_name is None:
                 loadout_name_list[i] = team_name
-                self.loadout_data[char_name][team_name]["relic_hash"] = relics_hash
+                self.loadout_data[char_name][team_name] = {"relic_hash": relics_hash}
                 rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
         group_data[team_name] = {"team_members": {key: value for key, value in zip(char_name_list, loadout_name_list)}}
         rewrite_json_file(TEAM_FILE_NAME, self.team_data)
@@ -405,7 +405,7 @@ class Relic:
             return
         # 需作为字典key值，确保唯一性 (但不同的人物可以有同一配装名称)
         loadout_name = questionary.text(_("命名配装名称:"), validate=ConflictValidator(character_data.keys())).ask()
-        character_data[loadout_name]["relic_hash"] = relics_hash
+        character_data[loadout_name] = {"relic_hash": relics_hash}
         rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
         log.info(_("配装录入成功"))
 
@@ -741,7 +741,7 @@ class Relic:
         for char_name, loadouts in self.loadout_data.items():
             for loadout_name, hash_list in loadouts.items():
                 if hash_list[equip_indx] == old_hash:
-                    self.loadout_data[char_name][loadout_name][equip_indx]["relic_hash"] = new_hash
+                    self.loadout_data[char_name][loadout_name]["relic_hash"][equip_indx] = new_hash
         rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
         # 队伍配装文件无需修改
         
