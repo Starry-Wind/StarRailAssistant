@@ -544,7 +544,8 @@ class Relic:
         pre_pos = [""]
         start_time = time.time()
         while True:
-            for index in range(0, k_y*k_x):
+            index = 0
+            while index < k_y*k_x:
                 i = index // k_x   # 行
                 j = index % k_x    # 列
                 x, y = r_x[j], r_y[i]   # 坐标查表
@@ -578,7 +579,9 @@ class Relic:
                     if i == k_y-1:
                         log.info(_("已搜索至最后"))
                         return None   # 判断已滑动至末页，结束搜索
-                    break     # 本行已搜索过，跳出本行
+                    log.info(_("本行已搜索过，跳过本行"))
+                    index += k_x     # 本行已搜索过，跳过本行
+                    continue
                 # 判断是否达到搜索上限
                 if max_num and len(pre_pos) >= max_num:
                     return None
@@ -587,6 +590,7 @@ class Relic:
                     log.info(_("识别超时"))
                     return None
                 pre_pos.append(tmp_hash)  # 记录
+                index += 1
             # 滑动翻页 (从末尾位置滑动至顶部，即刚好滑动一整页)
             log.info(_("滑动翻页"))
             self.calculated.relative_swipe((pos_start[0], pos_start[1]+(k_y-1)*d_y), (pos_start[0], pos_start[1]-d_y))
