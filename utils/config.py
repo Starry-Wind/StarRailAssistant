@@ -13,26 +13,36 @@ from .exceptions import TypeError
 from .log import log
 
 CONFIG_FILE_NAME = "config.json"
-RELIC_FILE_NAME = "relics_set.json"
-LOADOUT_FILE_NAME = "relics_loadout.json"
-TEAM_FILE_NAME = "relics_team.json"
+RELIC_FILE_NAME = "data/relics_set.json"
+LOADOUT_FILE_NAME = "data/relics_loadout.json"
+TEAM_FILE_NAME = "data/relics_team.json"
 
 
 def normalize_file_path(filename):
     # 尝试在当前目录下读取文件
     current_dir = os.getcwd()
-    file_path = os.path.join(current_dir, filename)
-    if os.path.exists(file_path):
-        return file_path
+    pre_file_path = os.path.join(current_dir, filename)
+    if os.path.exists(pre_file_path):
+        return pre_file_path
     else:
         # 如果当前目录下没有该文件，则尝试在上一级目录中查找
         parent_dir = os.path.dirname(current_dir)
         file_path = os.path.join(parent_dir, filename)
         if os.path.exists(file_path):
             return file_path
-        else:
-            # 如果上一级目录中也没有该文件，则返回None
-            return None
+        # 如果仍然没有，则尝试减去文件名称的一个层级
+        pre_filename = str(filename).split('/', 1)[-1]
+        file_path = os.path.join(current_dir, pre_filename)
+        if os.path.exists(file_path):
+            if str(filename).split('/', 1)[0] == "data":
+                # 兼容旧版本 (<=1.8.7)
+                import shutil
+                shutil.move(file_path, pre_file_path)
+                log.info(_("文件位置更新，由'{}'更改至'{}'").format(pre_filename, filename))
+                return pre_file_path
+            return file_path
+    # 如果仍然没有，则返回None
+    return None
 
 
 def read_json_file(filename: str, path=False, schema:dict=None) -> dict:
