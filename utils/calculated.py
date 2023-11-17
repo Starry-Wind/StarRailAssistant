@@ -1058,15 +1058,78 @@ class ConflictValidator(Validator):
 class StyledText(List[Tuple[str, str]]):
     """
     说明：
-        风格化文本，继承`List`的`(style_class, text)`序列，重载了`append()`方法
+        风格化文本序列，继承 List[Tuple[str, str]]，(0-style_class, 1-text)，
+        重载了`append()`和`extend()`方法，支持链式操作。
+        可直接作为`questionary.Choice.description`的初始化参数
     """
-    def append(self, text: Union[str, Tuple[str, str]], style_class: str="") -> None:
+    def __getitem__(self, key: slice) -> List["StyledText"]:
+        return StyledText(super().__getitem__(key))
+
+    def append(self, text: Union[str, Tuple[str, str]], style_class: str="") -> "StyledText":
         if isinstance(text, str):
             if style_class and "class:" not in style_class:
                 style_class = "class:" + style_class
-            return super().append((style_class, text))
+            super().append((style_class, text))
         else:
-            return super().append(text)
+            super().append(text)
+        return self
+    
+    def extend(self, *texts: Iterable[Tuple[str, str]], sep: Optional[Union[str, Tuple[str, str]]]=None, indent: int=0) -> "StyledText":
+        """
+        说明：
+            继承`list.extend()`
+        参数：
+            :param texts: 任意个`StyledText`类型的文本序列
+            :param sep: 插入在文本序列间的内容，默认为空
+            :param indent: 起始位置的缩进长度，默认为零
+        """
+        if indent:
+            self.append(" "*indent)
+        for i, __iterable in enumerate(texts):
+            if i and sep:
+                self.append(sep)
+            super().extend(__iterable)
+        return self
+    
+    def splitlines(self, keepends=False) -> List["StyledText"]:
+        """
+        说明：
+            按行分割为`StyledText`序列
+        """
+        lines_list = [StyledText()]
+        def end_with_n(s :str) -> bool:
+            return s[-1] == "\n"
+        for style, text in self:
+            if text == "":
+                continue
+            lines = str(text).splitlines(keepends=True)
+            lines_list[-1].append(
+                (style, lines[0][:-1] if end_with_n(lines[0]) and not keepends else lines[0])
+            )
+            for line in lines[1:]:
+                lines_list.append(
+                    StyledText([
+                        (style, line[:-1] if end_with_n(line) and not keepends else line)
+                ]))
+            if end_with_n(lines[-1]):  # 开启空的一行
+                lines_list.append(StyledText())
+        if not lines_list[-1]:  # 删除无效行
+            lines_list.pop()
+        return lines_list
+
+def combine_styled_text(*texts: StyledText, **kwargs) -> StyledText:
+    """
+    说明：
+        将多个风格化文本序列，按行进行横向并联
+    """
+    result = StyledText()
+    lines_list_list: List[List[StyledText]] = []
+    for text in texts:
+        lines_list_list.append(text.splitlines())
+    for line in zip(*lines_list_list):
+        result.extend(*line, **kwargs)
+        result.append("\n")
+    return result
 
 def print_styled_text(text: StyledText, style: Style, **kwargs: Any) -> None:
     """
