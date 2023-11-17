@@ -8,12 +8,12 @@ from collections import Counter
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
 import utils.questionary.questionary as questionary
-from utils.questionary.questionary import Choice, Separator
+from utils.questionary.questionary import Choice, Separator, Style
 # 改用本地的questionary模块，使之具备show_description功能，基于'tmbo/questionary/pull/330'
 # import questionary   # questionary原项目更新并具备当前功能后，可进行替换
 from .relic_constants import *
-from .calculated import (calculated, Array2dict, FloatValidator, ConflictValidator, 
-                         get_data_hash, str_just)
+from .calculated import (calculated, Array2dict, StyledText, FloatValidator, ConflictValidator, 
+                         get_data_hash, str_just, print_styled_text, combine_styled_text)
 from .config import (RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, CHAR_PANEL_FILE_NAME, CHAR_WEIGHT_FILE_NAME,
                      read_json_file, modify_json_file, rewrite_json_file, _, sra_config_obj)
 from .exceptions import Exception, RelicOCRException
@@ -141,6 +141,23 @@ class Relic:
         """副词条档位权重选择：0-空，1-主流赋值，2-真实比例赋值，3-主流赋值的比例矫正"""
         self.activate_conditional = False
         """在打印面板信息时激活条件效果"""
+        self.msg_style = Style([
+            ("highlighted", "fg:#FF9D00 bold"),    # 在select中对选中的项进行高亮
+            ("bold", "bold"),
+            ("green", "fg:#45bd45"),
+            ("grey", "fg:#5f819d"),
+            ("orange", "fg:#FF9D00"),
+            ("red", "red"),
+            ("reverse", "reverse"),
+            ("grey_reverse", "fg:#5f819d reverse"),
+            ("rarity_5", "orange"),
+            ("rarity_4", "magenta"),
+            ("rarity_3", "blue"),
+            ("rarity_2", "green"),
+            ("weight_0", "fg:#5f819d"),
+            ("weight_1", "bold"),
+            ("weight_2", "fg:#FF9D00 bold")
+        ])
 
         # 读取json文件，仅初始化时检查格式规范
         self.relics_data: Dict[str, Dict[str, Any]] = read_json_file(RELIC_FILE_NAME, schema=RELIC_SCHEMA)
