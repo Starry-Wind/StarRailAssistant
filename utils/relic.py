@@ -8,7 +8,7 @@ from collections import Counter
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
 import utils.questionary.questionary as questionary
-from utils.questionary.questionary import Choice
+from utils.questionary.questionary import Choice, Separator
 # 改用本地的questionary模块，使之具备show_description功能，基于'tmbo/questionary/pull/330'
 # import questionary   # questionary原项目更新并具备当前功能后，可进行替换
 from .relic_constants import *
@@ -20,6 +20,7 @@ from .exceptions import Exception, RelicOCRException
 from .log import log
 pp = pprint.PrettyPrinter(indent=1, width=40, sort_dicts=False)
 IS_PC = True   # paltform flag (同时保存了模拟器与PC的识别位点)
+INDENT = "\n" + " " * 5    # description的一级缩进
 
 
 class StatsWeight:
@@ -136,6 +137,8 @@ class Relic:
         """是否在打印遗器信息时显示详细信息 (如各副词条的强化次数、档位积分，以及提高原数据的小数精度)"""
         self.ndigits: Literal[0, 1, 2, 3] = sra_config_obj.ndigits_for_relic
         """在打印遗器信息时的小数精度"""
+        self.subs_stats_iter_weight: Literal[0, 1, 2, 3] = sra_config_obj.stats_weight_for_relic
+        """副词条档位权重选择：0-空，1-主流赋值，2-真实比例赋值，3-主流赋值的比例矫正"""
         self.activate_conditional = False
         """在打印面板信息时激活条件效果"""
 
@@ -170,6 +173,24 @@ class Relic:
         # 校验队伍配装规范
         if not self.check_team_data():
             log.error(_("怀疑为手动错误修改json文件导致"))
+        # 首次启动权值进行选择
+        if self.subs_stats_iter_weight == 0:
+            msg = _("仅首次启动进行选择")+INDENT+_("后续可在'config.json'中的'stats_weight_for_relic'设置")
+            self.subs_stats_iter_weight = questionary.select(
+                _("请选择副词条三个档位的权值"),
+                choices = [
+                    Choice(SUBS_STATS_TIER_WEIGHT[1][-1], value = 1, 
+                        description = INDENT+_("主流赋值")+INDENT+msg),
+                    Choice(SUBS_STATS_TIER_WEIGHT[2][-1], value = 2, 
+                        description = INDENT+_("真实比例，除了五星遗器'速度'属性的真实比例为 [0.7692, 0.8846, 1.0]")+INDENT+msg),
+                    Choice(SUBS_STATS_TIER_WEIGHT[3][-1], value = 3, 
+                        description = INDENT+_("主流赋值比例矫正后的结果")+INDENT+msg),
+                    Separator(" ")
+                ],
+                instruction = _("(将影响词条计算与遗器评分)"),
+                use_shortcuts = True,
+            ).ask()
+            sra_config_obj.stats_weight_for_relic = self.subs_stats_iter_weight  # 修改配置文件
 
     def relic_entrance(self):
         """
@@ -1215,7 +1236,7 @@ class Relic:
             return None
         return result
 
-    def get_subs_stats_detail(self, data: Tuple[str, float], rarity: int, stats_index: Optional[int]=None) -> Optional[Tuple[int, int, float]]:
+    def get_subs_stats_detail(self, data: Tuple[str, float], rarity: int, stats_index: Optional[int]=None, check=True) -> Optional[Tuple[int, int, float]]:
         """
         说明：
             计算副词条的详细信息 (如强化次数、档位积分，以及提高原数据的小数精度)
@@ -1226,6 +1247,7 @@ class Relic:
             :param data: 遗器副词条键值对
             :param stats_index: 遗器副词条索引
             :param rarity: 遗器稀有度
+            :param check: 开启校验
         返回：
             :return level: 强化次数: 0次强化记为1，最高5次强化为6
             :return score: 档位总积分: 1档记0分, 2档记1分, 3档记2分
@@ -1248,6 +1270,10 @@ class Relic:
             level -= 1
             score = math.ceil((value - a_*level) / d - 1.e-6)
         result = round(a*level + d*score, 4)                 # 四舍五入 (考虑浮点数运算的数值损失)
+        # 不启用校验，用于统计词条使用
+        if not check:
+            log.debug(f"({name}, {value}): [{a}, {d}], l={level}, s={score}, r={result}")
+            return (level, score, result)
         # 校验数据
         check = result - value
         if check < 0 or \
@@ -1259,3 +1285,17 @@ class Relic:
             log.debug(f"[{a}, {d}], l={level}, s={score}, r={result}")
             return None
         return (level, score, result)
+    
+    def get_num_of_stats(self, stats_detail: Tuple[int, int, Any], rarity: int=5) -> Optional[float]:
+        """
+        说明：
+            计算词条数量
+        """
+        if rarity not in [4,5]:
+            return None
+        level, score, __ = stats_detail
+        level_w, score_w, __ = SUBS_STATS_TIER_WEIGHT[self.subs_stats_iter_weight]
+        num = level*level_w + score*score_w
+        if rarity == 4:  # 四星与五星遗器比值为 0.8
+            num *= 0.8
+        return num

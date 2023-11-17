@@ -340,6 +340,8 @@ class SRAData(metaclass=SRADataMeta):
     """是否在打印遗器信息时显示拓展信息"""
     ndigits_for_relic: int = 2
     """在打印遗器信息时的小数精度"""
+    stats_weight_for_relic: int = 0
+    """遗器副词条档位权重：0-空，1-主流赋值，2-真实比例赋值，3-主流赋值比例矫正"""
 
 
     def __init__(self) -> None:
