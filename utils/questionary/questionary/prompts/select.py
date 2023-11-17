@@ -32,7 +32,7 @@ def select(
     use_shortcuts: bool = False,
     use_arrow_keys: bool = True,
     use_indicator: bool = False,
-    use_jk_keys: bool = True,
+    use_jk_keys: bool = False,
     use_emacs_keys: bool = True,
     show_selected: bool = False,
     show_description: bool = True,
