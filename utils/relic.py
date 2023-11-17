@@ -14,12 +14,56 @@ from utils.questionary.questionary import Choice
 from .relic_constants import *
 from .calculated import (calculated, Array2dict, FloatValidator, ConflictValidator, 
                          get_data_hash, str_just)
-from .config import (RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, CHAR_PANEL_FILE_NAME,
+from .config import (RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, CHAR_PANEL_FILE_NAME, CHAR_WEIGHT_FILE_NAME,
                      read_json_file, modify_json_file, rewrite_json_file, _, sra_config_obj)
 from .exceptions import Exception, RelicOCRException
 from .log import log
 pp = pprint.PrettyPrinter(indent=1, width=40, sort_dicts=False)
 IS_PC = True   # paltform flag (同时保存了模拟器与PC的识别位点)
+
+
+class StatsWeight:
+    """
+    说明：
+        属性权重
+    """
+    def __init__(self, weight: Dict[str, float]={}):
+        self.weight = {}
+        for key, value in weight.items():
+            if key in [_("生命值"), _("攻击力"), _("防御力")]:
+                self.weight[key+"%"] = value  # 大词条
+                self.weight[key] = value / 2  # 小词条，权重减半
+                continue
+            elif key == _("速度"):
+                self.weight["速度%"] = value  # 大小词条，权值等同
+            self.weight[key] = value
+    
+    def get_color(self, key: str) -> str:
+        if self.weight == {}:  # 未载入权重数据的情形
+            return ""
+        # 数值修饰
+        if key[-2:] == _("白值"):
+            value = self.get_weight(key[:-2]+"%")  # 白值视为大词条
+            # if value == 0:
+            #     value = 0.1  # 标记值，意为所有白值至少为"weight_1"
+        else:
+            value = self.get_weight(key)
+        # 赋色
+        if value == 0:
+            return "weight_0"  # 灰色 (无效词条)
+        elif value <= 0.5:
+            return "weight_1"  # 白色
+        else:
+            return "weight_2"  # 黄色
+    
+    def get_weight(self, key: str) -> float:
+        return self.weight.get(key, 0)   # 缺损值默认为无效词条
+    
+    def __repr__(self) -> str:
+        return "\n" + pp.pformat(self.weight)
+    
+    def __bool__(self) -> bool:
+        return self.weight != {}
 
 class Relic:
     """
@@ -98,6 +142,7 @@ class Relic:
         # 读取json文件，仅初始化时检查格式规范
         self.relics_data: Dict[str, Dict[str, Any]] = read_json_file(RELIC_FILE_NAME, schema=RELIC_SCHEMA)
         self.char_panel_data: Dict[str, Dict[str, Dict[str, Any]]] = read_json_file(CHAR_PANEL_FILE_NAME, schema=CHAR_STATS_PANEL_SCHEMA)
+        self.char_weight_data: Dict[str, Dict[str, Dict[str, Any]]] = read_json_file(CHAR_WEIGHT_FILE_NAME, schema=CHAR_STATS_WEIGHT_SCHEMA)
         try:
             self.loadout_data: Dict[str, Dict[str, Dict[str, Any]]] = read_json_file(LOADOUT_FILE_NAME, schema=LOADOUT_SCHEMA)
         except:
@@ -116,6 +161,7 @@ class Relic:
         log.info(_("共载入 {} 套配装数据").format(sum(len(char_loadouts) for char_loadouts in self.loadout_data.values())))
         log.info(_("共载入 {} 组队伍数据").format(sum(len(group_data) for group_data in self.team_data.values())))
         log.info(_("共载入 {} 位角色的裸装面板").format(len(self.char_panel_data)))
+        log.info(_("共载入 {} 位角色的属性权重").format(len(self.char_weight_data)))
 
         # 校验遗器哈希值
         if not self.check_relic_data_hash():
@@ -614,6 +660,21 @@ class Relic:
                 key != _("速度") and old_data["subs_stats"][key] > new_data["subs_stats"][key]:
                 return False        # 考虑手动提高速度数据精度的情况
         return True
+    
+    def find_char_weight(self, char_name:str) -> Tuple[Optional[str], StatsWeight]:
+        """
+            通过角色名查询属性权重
+        """
+        char_weight = StatsWeight()
+        char_weight_name = None
+        if char_name in self.char_weight_data:
+            char_weights = self.char_weight_data[char_name]
+            if len(char_weights) > 0:
+                # 默认载入首个
+                char_weight = StatsWeight(list(char_weights.values())[0]["weight"])
+                char_weight_name =  "{}_{}".format(char_name, list(char_weights.keys())[0])
+                ... # 【待扩展】处理多组权重
+        return char_weight_name, char_weight
 
     def find_char_panel(self, char_name:str) -> Tuple[Optional[str], Optional[Dict[str, Any]]]:
         """

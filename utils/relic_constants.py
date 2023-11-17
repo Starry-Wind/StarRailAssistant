@@ -102,6 +102,9 @@ EXTRA_STATS_NAME = [
 ALL_STATS_NAME: List[str] = STATS_NAME[:, -1].tolist() + EXTRA_STATS_NAME
 """全属性名称 (包含遗器属性、遗器套装效果涉及的属性)"""
 
+WEIGHT_STATS_NAME: List[str] = np.vstack((STATS_NAME[:3],STATS_NAME[6:7],STATS_NAME[8:]))[:, -1].tolist()
+"""供设定权重的属性名称"""
+
 SUBS_STATS_TIER = [
     [(27.096, 3.3870  ), (13.548 , 1.6935  ), (13.548 , 1.6935  ), (2.7648, 0.3456), (2.7648, 0.3456), (3.456, 0.4320),  # 四星遗器数值
         (1.60, 0.20), (2.0736, 0.2592), (4.1472, 0.5184), (2.7648, 0.3456), (2.7648, 0.3456), (4.1472, 0.5184)],
@@ -321,6 +324,35 @@ CHAR_STATS_PANEL_SCHEMA = {
             "additionalProperties": False
 }}}
 """角色属性面板"""
+
+WEIGHT_SCHEMA_PART = {
+    "type": "object",
+    "properties": {
+        "weight": {
+            "type": "object",
+            "properties": {
+                key: {"type": "number"} for key in WEIGHT_STATS_NAME
+            },
+            "additionalProperties": False
+        },
+        # 【待扩展】 如"global"
+    },
+    "required": ["weight"],
+    "additionalProperties": False
+}
+CHAR_STATS_WEIGHT_SCHEMA = {
+    "type": "object",
+    "additionalProperties": { # [主键]人物名称 (以OCR结果为准)
+        "type": "object",
+        "properties": {
+            "default":             # [次主键]默认权重 (默认，名称不可更改)
+                WEIGHT_SCHEMA_PART,
+        },
+        "additionalProperties":    # [次主键]自定义权重 (自定义)【待扩展】 
+            WEIGHT_SCHEMA_PART,
+    }
+}
+"""角色属性权重"""
 
 RELIC_DATA_FILTER = ["pre_ver_hash"]
 """遗器数据过滤器"""
