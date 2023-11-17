@@ -14,8 +14,8 @@ from utils.questionary.questionary import Choice
 from .relic_constants import *
 from .calculated import (calculated, Array2dict, FloatValidator, ConflictValidator, 
                          get_data_hash, str_just)
-from .config import (read_json_file, modify_json_file, rewrite_json_file, 
-                     RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, _, sra_config_obj)
+from .config import (RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, CHAR_PANEL_FILE_NAME,
+                     read_json_file, modify_json_file, rewrite_json_file, _, sra_config_obj)
 from .exceptions import Exception, RelicOCRException
 from .log import log
 pp = pprint.PrettyPrinter(indent=1, width=40, sort_dicts=False)
@@ -96,25 +96,26 @@ class Relic:
         """在打印面板信息时激活条件效果"""
 
         # 读取json文件，仅初始化时检查格式规范
-        self.relics_data: Dict[str, Dict[str, Any]] = read_json_file(RELIC_FILE_NAME, schema = RELIC_SCHEMA)
+        self.relics_data: Dict[str, Dict[str, Any]] = read_json_file(RELIC_FILE_NAME, schema=RELIC_SCHEMA)
+        self.char_panel_data: Dict[str, Dict[str, Dict[str, Any]]] = read_json_file(CHAR_PANEL_FILE_NAME, schema=CHAR_STATS_PANEL_SCHEMA)
         try:
-            self.loadout_data: Dict[str, Dict[str, Dict[str, Any]]] = read_json_file(LOADOUT_FILE_NAME, schema = LOADOUT_SCHEMA)
+            self.loadout_data: Dict[str, Dict[str, Dict[str, Any]]] = read_json_file(LOADOUT_FILE_NAME, schema=LOADOUT_SCHEMA)
         except:
-            # 尝试使用旧版本 (<=1.8.6) 格式读取数据
+            # 尝试使用旧版本 (<=1.8.7) 格式读取数据
             log.error(_(f"'{LOADOUT_FILE_NAME}'读取失败，尝试使用旧版本格式读取"))
-            self.loadout_data: Dict[str, Dict[str, List[str]]] = read_json_file(LOADOUT_FILE_NAME, schema = LOADOUT_SCHEMA_OLD)
+            self.loadout_data: Dict[str, Dict[str, List[str]]] = read_json_file(LOADOUT_FILE_NAME, schema=LOADOUT_SCHEMA_OLD)
             for loadouts in self.loadout_data.values():
                 for loadout_name, relic_hash in loadouts.items():
                     loadouts[loadout_name] = {"relic_hash": relic_hash}
             # pp.pprint(self.loadout_data)
             rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
             log.info(_(f"'{LOADOUT_FILE_NAME}'再读成功，已将其更新至当前版本格式"))
-        self.team_data: Dict[str, Dict[str, Any]] = read_json_file(TEAM_FILE_NAME, schema = TEAM_SCHEMA)
+        self.team_data: Dict[str, Dict[str, Dict[str, Any]]] = read_json_file(TEAM_FILE_NAME, schema=TEAM_SCHEMA)
 
-        log.info(_("遗器模块初始化完成"))
-        log.info(_("共载入 {} 件遗器数据").format(len(list(self.relics_data.keys()))))
+        log.info(_("共载入 {} 件遗器数据").format(len(self.relics_data)))
         log.info(_("共载入 {} 套配装数据").format(sum(len(char_loadouts) for char_loadouts in self.loadout_data.values())))
         log.info(_("共载入 {} 组队伍数据").format(sum(len(group_data) for group_data in self.team_data.values())))
+        log.info(_("共载入 {} 位角色的裸装面板").format(len(self.char_panel_data)))
 
         # 校验遗器哈希值
         if not self.check_relic_data_hash():
@@ -613,7 +614,21 @@ class Relic:
                 key != _("速度") and old_data["subs_stats"][key] > new_data["subs_stats"][key]:
                 return False        # 考虑手动提高速度数据精度的情况
         return True
-    
+
+    def find_char_panel(self, char_name:str) -> Tuple[Optional[str], Optional[Dict[str, Any]]]:
+        """
+            通过角色名查询裸装面板
+        """
+        char_panel, char_panel_name = None, None
+        if char_name in self.char_panel_data:
+            char_panels = self.char_panel_data[char_name]
+            if len(char_panels) > 0:
+                # 默认载入首个
+                char_panel = list(char_panels.values())[0]
+                char_panel_name =  "{}_{}".format(char_name, list(char_panels.keys())[0])
+                ... # 【待扩展】处理多个面板
+        return char_panel_name, char_panel
+
     def find_loadout_name(self, char_name: str, relics_hash: List[str]) -> Optional[str]:
         """
         说明：

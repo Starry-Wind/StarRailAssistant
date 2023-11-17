@@ -16,6 +16,7 @@ CONFIG_FILE_NAME = "config.json"
 RELIC_FILE_NAME = "data/relics_set.json"
 LOADOUT_FILE_NAME = "data/relics_loadout.json"
 TEAM_FILE_NAME = "data/relics_team.json"
+CHAR_PANEL_FILE_NAME = "data/char_panel.json"
 
 
 def normalize_file_path(filename):

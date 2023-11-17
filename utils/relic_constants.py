@@ -72,7 +72,10 @@ STATS_NAME = np.array([
 ], dtype=np.str_)
 """遗器属性名称：0-属性名的特异词(ocr-不区分大小词条)，1-玩家惯用简称(print)，2-属性全称(json-区分大小词条)"""
 
-NOT_PRE_STATS = [_("生命值"), _("攻击力"), _("防御力"), _("速度")]
+BASE_VALUE_NAME = [_("生命值白值"), _("攻击力白值"), _("防御力白值"), _("速度白值")]
+"""角色白值属性名称"""
+
+NOT_PRE_STATS = [_("生命值"), _("攻击力"), _("防御力"), _("速度")] + BASE_VALUE_NAME
 """遗器的整数属性名称"""
 
 BASE_STATS_NAME = np.concatenate((STATS_NAME[:2],STATS_NAME[3:7],STATS_NAME[8:12],STATS_NAME[13:]), axis=0)
@@ -281,6 +284,43 @@ TEAM_SCHEMA = {
         TEAM_SCHEMA_PART,
 }
 """队伍配装数据json格式规范"""
+
+CHAR_STATS_PANEL_SCHEMA = {
+    "type": "object",
+    "additionalProperties": {       # [主键]人物名称 (以OCR结果为准)
+        "type": "object",
+        "additionalProperties": {   # [次主键]面板名称 (自定义)
+            "type": "object",
+            "properties": {
+                "base": {           # 白值属性面板
+                    "properties": {
+                        key: {"type": "number"} for key in BASE_VALUE_NAME
+                    },
+                    "required": BASE_VALUE_NAME,     # 白值属性为必需
+                    "additionalProperties": False
+                },
+                "additonal": {      # 附加属性面板
+                    "properties": {
+                        key: {"type": "number"} for key in ALL_STATS_NAME
+                    },
+                    "additionalProperties": False
+                },
+                "conditional": {    # 条件属性面板
+                    "properties": {
+                        key: {"type": "number"} for key in ALL_STATS_NAME
+                    },
+                    "additionalProperties": False
+                },
+                "extra_effect": {   # 额外效果说明
+                    "type": "array", 
+                    "items": {"type": "string"}
+                },
+                # 【待扩展】 如"global"
+            },
+            "required": ["base"],   # 白值属性面板为必需
+            "additionalProperties": False
+}}}
+"""角色属性面板"""
 
 RELIC_DATA_FILTER = ["pre_ver_hash"]
 """遗器数据过滤器"""
