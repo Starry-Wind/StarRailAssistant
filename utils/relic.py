@@ -1164,7 +1164,37 @@ class Relic:
                 description = self.get_loadout_detail_0(loadout_data["relic_hash"], character_name, 5)
             ) for loadout_name, loadout_data in character_data]
         return choice_options
- 
+
+    def get_loadout_detail_1(self, relics_hash: List[str], character_name: Optional[str]=None, indent_num: int=0) -> StyledText:
+        """
+        说明：
+            获取配装的遗器详情
+        参数：
+            :param relics_hash: 遗器哈希值列表
+            :param character_name: 人物名称 (非空时激活人物属性权重)
+            :param indent_num: 缩进长度
+        """
+        msg = StyledText()
+        text_list = []
+        # 查询角色裸装面板
+        char_weight_name, char_weight = self.find_char_weight(character_name)
+        # 处理遗器数据
+        # for equip_index in [0,2,4,1,3,5]:  # 优化部位显示顺序
+        for equip_index in range(len(relics_hash)):   # 主流显示顺序
+            tmp_hash = relics_hash[equip_index]
+            tmp_data = self.relics_data[tmp_hash]
+            text_list.append(self.print_relic(tmp_data, tmp_hash, char_weight, False))
+        msg.append(_("词条挡位权值{}\n").format(SUBS_STATS_TIER_WEIGHT[self.subs_stats_iter_weight][-1]))
+        msg.append("\n")
+        msg.extend(combine_styled_text(*text_list[:3], sep="  ", indent=indent_num))
+        msg.append("\n")
+        msg.extend(combine_styled_text(*text_list[3:], sep="  ", indent=indent_num))
+        indent = "\n" + " "*indent_num
+        msg.append(indent)
+        msg.append(_("属性权重'{}_{}'").format(character_name, char_weight_name) if char_weight else _("未启用权重"))
+        msg.append(_("  评分系统开发中...\n"), "grey")
+        return msg
+
     def get_loadout_detail_0(self, relics_hash: List[str], character_name: Optional[str]=None, indent_num: int=0) -> StyledText:
         """
         说明：
