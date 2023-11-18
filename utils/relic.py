@@ -298,11 +298,7 @@ class Relic:
             log.info(_("当前人物配装记录为空"))
             return
         self.calculated.switch_cmd()
-        option = questionary.select(
-            _("请选择将要进行装备的配装："),
-            choices = self.get_loadout_options(character_name) + [(_("<返回上一级>"))],
-            show_description = True,   # 需questionary具备对show_description的相关支持
-        ).ask()
+        option = self.ask_loadout_options(character_name, title=_("请选择要装备的配装:"))
         if option == _("<返回上一级>"):
             return
         loadout_name, relic_hash = option
@@ -415,11 +411,12 @@ class Relic:
             option = None
             if state == 1:
                 self.calculated.switch_cmd()
-                option = questionary.select(
-                    _("请选择配装："),
-                    choices = self.get_loadout_options(character_name) + [_("<识别当前配装>"), _("<退出>")],
-                    show_description = True,   # 需questionary具备对show_description的相关支持
-                ).ask()
+                option = self.ask_loadout_options(
+                    character_name,
+                    add_options=[
+                        Choice(_("<识别当前配装>"), shortcut_key='y', description=INDENT+_("请使游戏保持在当前[角色]界面")), 
+                        Choice(_("<退出>"), shortcut_key='z')]
+                )
                 if option == _("<退出>"):   # 退出本次编队
                     return
                 elif option != _("<识别当前配装>"):
@@ -1122,6 +1119,45 @@ class Relic:
             print_styled_text(token, style=self.msg_style)
         else:
             return token
+
+    def ask_loadout_options(
+        self, character_name: str,
+        add_options: Optional[List[Choice]] = [Choice(_("<返回上一级>"), shortcut_key='z')],
+        title: str = _("请选择配装:"),
+    ) -> Union[Tuple[str, List[str]], str]:
+        """
+        说明：
+            询问并获得该角色配装的选择
+        参数：
+            :param character_name: 人物名称
+            :param add_options: 附加选项 (注意已占用快捷键'x','v'，需要至少有一个退出选项)
+            :param title: 标题
+        返回：
+            :return option: (配装名称，遗器哈希值列表)元组 或 附加选项名称
+        """
+        options = self.get_loadout_options(character_name)
+        if options:
+            if self.loadout_detail_type == 0:
+                options.append(Choice(_("<<切换为遗器详情>>"), shortcut_key='v'))
+                options.append(
+                    Choice(_("<<关闭条件效果>>") if self.activate_conditional else _("<<开启条件效果>>"), shortcut_key='x',
+                            description = INDENT+_("涵盖[遗器套装效果]与自定义的[角色裸装面板]中的条件效果"))+INDENT+_("开启时，默认激活全部条件效果的最大效果"))
+                    # 【待扩展】自动激活达到可计算触发条件的条件效果
+            else:
+                options.append(Choice(_("<<切换为面板详情>>"), shortcut_key='v'))
+        else:
+            options.append(Separator(_("--配装记录为空--")))
+        if add_options:
+            options.extend(add_options)
+        options.append(Separator(" "))
+        option = questionary.select(title, choices=options, use_shortcuts=True, style=self.msg_style).ask()
+        if option in [_("<<切换为遗器详情>>"), _("<<切换为面板详情>>")]:
+            self.loadout_detail_type = (self.loadout_detail_type + 1) & 1
+            return self.ask_loadout_options(character_name, add_options)
+        if option in [_("<<关闭条件效果>>"), _("<<开启条件效果>>")]:
+            self.activate_conditional = not self.activate_conditional
+            return self.ask_loadout_options(character_name, add_options)
+        return option
 
     def get_team_choice_options(self) -> List[Choice]:
         """
