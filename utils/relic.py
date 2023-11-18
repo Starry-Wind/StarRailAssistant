@@ -250,6 +250,113 @@ class Relic:
             elif option == _("<返回主菜单>"):
                 break
     
+    def edit_character_panel(self):
+        """
+        说明：
+            编辑角色裸装面板
+        """
+        option_0 = None
+        def interface_2(title: str, stats: Dict[str, float], stats_names: List[str]):
+            """
+            说明：
+                第[2]层级，选择编辑的属性，结果通过stats字典引用返回
+            """
+            option_2 = None
+            def get_choices(st: Optional[int]=None, ed: Optional[int]=None) -> List[Choice]:
+                choices = []
+                for name in stats_names[st:ed]:  # 按需切片，并显示已有数值
+                    value_str = "{value:.2f}{pre}".format(value=stats[name], pre=" " if name in NOT_PRE_STATS else "%") if name in stats else " "
+                    choices.append(Choice(str_just(name, 15) + f"{value_str:>7}", value=name))
+                return choices
+            while True:
+                # 生成选择
+                if stats_names[0] == BASE_VALUE_NAME[0]:  # 白值面板
+                    options_2 = get_choices()
+                else:                                     # 属性面板，使属性按组别呈现
+                    options_2 = get_choices(0,8) + [Separator()] + get_choices(8,15) + [Separator()] + get_choices(15,22) + [Separator()] + get_choices(22,28) + [Separator()] + get_choices(28)
+                options_2.append(Choice(_("<返回上一级>"), shortcut_key='z'))
+                # 进行选择
+                option_2 = questionary.select(title, options_2, default=option_2, use_shortcuts=True, style=self.msg_style).ask()
+                if option_2 == _("<返回上一级>"):
+                    return
+                # 处理选择
+                name = option_2
+                value = questionary.text("请输入数值:", validate=FloatValidator(0)).ask()  # input float
+                stats[name] = float(value)  # 更新数据
+        def interface_1(char_panel: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+            """
+            说明：
+                第[1]层级，选择编辑的类别
+            """
+            option_1 = None
+            base_values = char_panel.get("base", {})   # 白值属性
+            additonal_stats = char_panel.get("additonal", {"暴击率":5, "暴击伤害":50, "能量恢复效率":100})  # 附加属性 (设置角色默认值)
+            conditional_stats = char_panel.get("conditional", {})  # 条件属性
+            extra_effect_list:list = char_panel.get("extra_effect", []) # 额外效果
+            while True:
+                extra_effect_msg = "".join(INDENT+f"{i+1}.{text}" for i, text in enumerate(extra_effect_list))
+                options_1 = [
+                    Choice(_("白值属性"), value = 0,
+                           description = INDENT+_("游戏内的[白值]只显示到整数位，推荐通过第三方获取精确数值")),
+                    Choice(_("附加属性 (可选)"), value=1, 
+                           description = INDENT+_("涵盖[基础面板]、[形迹]、[光锥]、[命座]等提供的固定属性加成")+INDENT+_("注意区分大小词条，不推荐直接无脑录入角色面板内的[绿值]作为小词条")),
+                    Choice(_("条件属性 (可选)"), value=2,
+                           description = INDENT+_("涵盖[形迹]、[光锥]、[命座]等提供的条件属性加成")+INDENT+_("在[角色配装]中打印[面板信息]时可通过开关控制条件效果的开启")+INDENT+_("推荐每一个条件效果对应一条[额外效果说明]记录在下方")),
+                    Choice(_("额外效果说明 (可选)"), value=3,
+                           description = extra_effect_msg if extra_effect_msg else INDENT+_("涵盖条件属性的文本说明、其他额外效果说明，例如：")+INDENT+_("  光锥5叠：当装备者生命百分比小于50%造成伤害提高50%")+INDENT+_("  光锥5叠：当装备者消灭敌方目标后，恢复50%能量")),
+                    Choice(_("<取消>"), shortcut_key='q'),
+                    Choice(_("<完成>"), shortcut_key='z', disabled = None if len(base_values)==len(BASE_VALUE_NAME) else _("白值属性缺失")),
+                    Separator(" "),
+                ]  # 注：必须白值属性非空才可选择完成
+                option_1 = questionary.select(_("编辑人物裸装面板："), choices=options_1, default=option_1, use_shortcuts=True, style=self.msg_style).ask()
+                if option_1 == 0:
+                    interface_2(_("编辑白值属性"), base_values, BASE_VALUE_NAME)
+                elif option_1 == 1:
+                    interface_2(_("编辑附加属性"), additonal_stats, ALL_STATS_NAME)
+                elif option_1 == 2:
+                    interface_2(_("编辑条件属性"), conditional_stats, ALL_STATS_NAME)
+                elif option_1 == 3:
+                    text_lines = questionary.text("添加额外效果 (一行为一条)", multiline=True).ask()
+                    text_lines = filter(lambda x: not re.match(r"\s*$", x), text_lines.split("\n"))  # 过滤无效行
+                    extra_effect_list.extend(text_lines)
+                elif option_1 == _("<取消>"):
+                    return None
+                elif option_1 == _("<完成>"):
+                    char_panel = {
+                        "base": base_values,
+                        "additonal": additonal_stats,
+                        "conditional": conditional_stats,
+                        "extra_effect": extra_effect_list,
+                    }
+                    log.debug("\n"+pp.pformat(char_panel))
+                    return char_panel
+        # 第[0]层级
+        while True:
+            # 选择人物
+            charcacter_names = sorted(self.loadout_data.keys())      # 对配装数据中角色名称排序
+            options_0 = [
+                Choice(str_just(char_name, 15) + _("■ {}").format("1" if char_name in self.char_panel_data else "0"), value = char_name) 
+                for char_name in charcacter_names
+            ] + [Choice(_("<返回上一级>"), shortcut_key='z')]
+            option_0 = questionary.select(_("请选择角色:"), options_0, default=option_0, use_shortcuts=True, style=self.msg_style).ask()
+            if option_0 == _("<返回上一级>"):
+                return
+            # 获取记录
+            charcacter_name = option_0
+            panel_name, charcacter_panel = list(self.char_panel_data.get(charcacter_name, {"None":{}}).items())[0]
+            ... # 【待扩展】同一角色支持保存多个面板
+            # 交互编辑
+            charcacter_panel = interface_1(charcacter_panel)
+            if charcacter_panel is None:   # 取消编辑
+                return
+            # 保存记录
+            if panel_name == "None": panel_name = ""
+            if not panel_name or panel_name and questionary.confirm(_("是否对面板重命名"), default=False).ask():
+                panel_name = questionary.text(_("命名面板名称:"), default=panel_name).ask()
+            self.char_panel_data[charcacter_name] = {panel_name: charcacter_panel}
+            rewrite_json_file(CHAR_PANEL_FILE_NAME, self.char_panel_data)
+            log.info(_("角色面板编辑成功"))
+
     def equip_loadout_for_team(self):
         """
         说明：
