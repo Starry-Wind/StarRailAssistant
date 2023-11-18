@@ -187,7 +187,7 @@ class Relic:
 
         # 校验遗器哈希值
         if not self.check_relic_data_hash():
-            if questionary.confirm(_("是否依据当前遗器数据更新哈希值")).ask():
+            if questionary.confirm(_("是否依据当前遗器数据更新哈希值"), default=False).ask():
                 self.check_relic_data_hash(updata=True)
         # 校验队伍配装规范
         if not self.check_team_data():
@@ -259,8 +259,8 @@ class Relic:
         # 选择队伍
         option = questionary.select(
             _("请选择对当前队伍进行遗器装备的编队："),
-            choices = self.get_team_choice_options() + [(_("<返回上一级>"))],
-            show_description = True,   # 需questionary具备对show_description的相关支持
+            choices = self.get_team_options() + [Choice(_("<返回上一级>"), shortcut_key='z'), Separator(" ")],
+            use_shortcuts=True, style=self.msg_style,
         ).ask()
         if option == _("<返回上一级>"):
             return
@@ -381,8 +381,8 @@ class Relic:
         group_data = self.team_data[group_name]
         # [3]选择组建方式
         options = {
-            _("全识别"): 0,
-            _("参考已有的配装数据"): 1
+            _("参考已有的配装记录"): 0,
+            _("全识别"): 1,
         }
         option_ = questionary.select(_("请选择组建方式："), options).ask()
         state = options[option_]
@@ -409,7 +409,7 @@ class Relic:
                 __, char_weight = self.find_char_weight(character_name)
             # [5.2]选择识别当前，还是录入已有
             option = None
-            if state == 1:
+            if state == 0:
                 self.calculated.switch_cmd()
                 option = self.ask_loadout_options(
                     character_name,
@@ -421,7 +421,11 @@ class Relic:
                     return
                 elif option != _("<识别当前配装>"):
                     loadout_name, relics_hash = option    # 获取已录入的配装数据
-            if state == 0 or option == _("<识别当前配装>"):
+                else:
+                    self.calculated.switch_window()
+                    self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 再次点击导航栏的遗器，防止用户离开此界面
+                    time.sleep(1)
+            if state == 1 or option == _("<识别当前配装>"):
                 self.calculated.switch_window()
                 relics_hash = self.save_loadout(char_weight)
                 print(_("'{}'配装信息：").format(character_name))
@@ -445,7 +449,7 @@ class Relic:
             loadout_name_list.append(loadout_name)
             is_retrying = False
             char_index += 1
-        print(_("队伍配装信息：{}").format("".join("\n  " + str_just(char_name, 10) + " " + self.get_loadout_brief(relics_hash) 
+        print(_("队伍配装信息：{}\n").format("".join("\n  " + str_just(char_name, 10) + " " + self.get_loadout_brief(relics_hash) 
                                                 for char_name, relics_hash in zip(char_name_list, relics_hash_list))))
         # [6]自定义名称
         self.calculated.switch_cmd()
@@ -1159,7 +1163,7 @@ class Relic:
             return self.ask_loadout_options(character_name, add_options)
         return option
 
-    def get_team_choice_options(self) -> List[Choice]:
+    def get_team_options(self) -> List[Choice]:
         """
         说明：
             获取所有队伍配装记录的选项表
@@ -1473,10 +1477,10 @@ class Relic:
         if not flag:
             return outer_set_cnt + inner_set_cnt
         # 生成信息
-        outer = _("外:") + '+'.join([str(cnt) + RELIC_SET_NAME[set_idx, 2] for set_idx, cnt in outer_set_cnt.items()]) + "  "
-        inner = _("内:") + '+'.join([str(cnt) + RELIC_SET_NAME[set_idx, 2] for set_idx, cnt in inner_set_cnt.items()]) + "  "
+        outer = _("外:") + '+'.join([str(cnt) + RELIC_SET_NAME[set_idx, 2] for set_idx, cnt in outer_set_cnt.items()])
+        inner = _("内:") + '+'.join([str(cnt) + RELIC_SET_NAME[set_idx, 2] for set_idx, cnt in inner_set_cnt.items()])
         stats = ".".join([name for idx, name in enumerate(base_stats_list) if idx > 1])   # 排除头部与手部
-        msg = str_just(stats, 17) + " " + str_just(inner, 10) + " " + outer   # 将长度最不定的外圈信息放至最后
+        msg = str_just(stats, 17) + "  " + str_just(inner, 10) + "  " + outer   # 将长度最不定的外圈信息放至最后
         return msg
 
     def get_base_stats_detail(self, data: Tuple[str, float], rarity: int, level: int, stats_index: Optional[int]=None) -> Optional[float]:
