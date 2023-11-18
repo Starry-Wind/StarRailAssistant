@@ -944,12 +944,55 @@ class Relic:
     def find_loadout_name(self, char_name: str, relics_hash: List[str]) -> Optional[str]:
         """
         说明：
-            通过配装数据在记录中寻找配装名称
+            通过配装数据查询配装名称
         """
         for loadout_name, loadout_data in self.loadout_data[char_name].items():
             if loadout_data["relic_hash"] == relics_hash:
                 return loadout_name
         return None
+
+    def find_teams_in_loadout(self, char_name: str, loadout_name: str) -> List[Tuple[str, str]]:
+        """
+        说明：
+            通过角色名与配装名查询所在的队伍
+        """
+        ret = []
+        for group_name, team_group in self.team_data.items():
+            for team_name, team_data in team_group.items():
+                if (char_name, loadout_name) in team_data["team_members"].items():
+                    ret.append((group_name, team_name))
+        return ret
+
+    def updata_loadout_data(self, char_name: str, old_name: str, new_name: str, new_data: Optional[Dict[str, Any]]=None) -> bool:
+        """
+        说明：
+            更改配装数据，先后修改配装与队伍文件，
+            若修改了遗器配装，需检查队伍配装规范性
+        """
+        # 尝试修改配装文件
+        if new_data is None:
+            self.loadout_data[char_name][new_name] = self.loadout_data[char_name].pop(old_name)
+        else:
+            self.loadout_data[char_name].pop(old_name)
+            self.loadout_data[char_name][new_name] = new_data
+        # 尝试修改队伍文件
+        check = True
+        teams_in_loadout = self.find_teams_in_loadout(char_name, old_name)
+        for group_name, team_name in teams_in_loadout:
+            team_data = self.team_data[group_name][team_name]
+            team_data["team_members"][char_name] = new_name
+            if new_data is not None:   # 若修改了遗器配装，需检查队伍配装规范性
+                check = self.check_team_loadout(team_name, team_data)
+        if check:  # 校验成功，保存修改
+            rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
+            rewrite_json_file(TEAM_FILE_NAME, self.team_data)
+            log.info(_("配装修改成功"))
+            return True
+        else:      # 校验失败，任务回滚
+            self.loadout_data = read_json_file(LOADOUT_FILE_NAME)
+            self.team_data = read_json_file(TEAM_FILE_NAME)
+            log.error(_("配装修改失败"))
+            return False
 
     def check_team_data(self) -> bool:
         """
