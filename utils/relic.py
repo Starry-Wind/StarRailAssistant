@@ -345,7 +345,7 @@ class Relic:
                 log.error(_(f"遗器搜索失败: {tmp_hash}"))
                 continue
             # 点击装备
-            self.calculated.relative_click(pos)
+            # self.calculated.relative_click(pos)   # 重复性点击
             button = self.calculated.ocr_pos_for_single_line([_("装备"), _("替换"), _("卸下")], points=(80,90,85,94) if IS_PC else (75,90,82,95))  # 需识别[装备,替换,卸下]
             if button in [0,1]:
                 log.info(_("点击装备"))
@@ -641,6 +641,7 @@ class Relic:
         r_y = range(pos_start[1], pos_start[1]+d_y*k_y, d_y)
         relics_data = {"": None}  # 记录识别的遗器，初始化为标记值
         matching = not (key_hash is None and key_data is None)
+        skiped_line = False  # 是否执行过跳行功能
         def format_return() -> Optional[Dict[str, Dict[str, Any]]]:
             """
             说明： 格式化返回值
@@ -690,7 +691,11 @@ class Relic:
                         return format_return()   # 判断已滑动至末页，结束搜索
                     log.info(_("本行已搜索过，跳过本行"))
                     index += k_x     # 本行已搜索过，跳过本行
+                    skiped_line = True
                     continue
+                if j == k_x-1 and i == k_y-1 and skiped_line:
+                    log.info(_("出现过跳行，判定为搜索至最后"))
+                    return format_return()   # 出现过跳行操作，且搜索至表尾，判断为搜索结束
                 # 判断是否达到搜索上限
                 if max_num and len(relics_data) >= max_num:
                     if not matching:
