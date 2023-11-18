@@ -617,7 +617,7 @@ class Relic:
         key_data: Optional[Dict[str, Any]]=None,
         stats_weight: StatsWeight=StatsWeight(),
         max_num :Optional[int]=None, overtime :Optional[int]=180, max_retries=3
-    ) -> Optional[tuple[int, int]]:
+    ) -> Union[Optional[tuple[int, int]], Dict[str, Dict[str, Any]]]:
         """
         说明：
             在当前滑动[角色]-[遗器]-[遗器替换]界面内，搜索匹配的遗器。
@@ -625,7 +625,7 @@ class Relic:
                 key_data非空: 激活模糊匹配 (假设数据保存期间遗器再次升级，匹配成功后自动更新遗器数据);
                 key_hash & key_data均空: 遍历当前页面内的遗器
         参数：
-            :param equip_indx: 遗器部位索引
+            :param equip_indx: 遗器部位索引 (激活匹配状态时需非空)
             :param key_hash: 所记录的遗器哈希值
             :param key_data: 所记录的遗器数据
             :param stats_weight: 属性权重 (用于修饰遗器打印)
@@ -633,13 +633,23 @@ class Relic:
             :param overtime: 超时
             :param max_retries: 单个遗器OCR重试次数
         返回:
-            :return pos: 坐标
+            :return: 匹配状态返回遗器的坐标，非匹配状态返回遗器记录
         """
         pos_start = (5,24) if IS_PC else (7,28)
         d_x, d_y, k_x, k_y = (7, 14, 4, 5) if IS_PC else (8, 17, 4, 4)
         r_x = range(pos_start[0], pos_start[0]+d_x*k_x, d_x)
         r_y = range(pos_start[1], pos_start[1]+d_y*k_y, d_y)
-        pre_pos = [""]
+        relics_data = {"": None}  # 记录识别的遗器，初始化为标记值
+        matching = not (key_hash is None and key_data is None)
+        def format_return() -> Optional[Dict[str, Dict[str, Any]]]:
+            """
+            说明： 格式化返回值
+            """
+            if matching:  # 激活匹配状态
+                return None
+            # 非匹配状态
+            relics_data.pop("")   # 删除标记值
+            return relics_data
         start_time = time.time()
         while True:
             index = 0
@@ -649,10 +659,10 @@ class Relic:
                 x, y = r_x[j], r_y[i]   # 坐标查表
                 self.calculated.relative_click((x, y))   # 点击遗器，同时将翻页的动态延迟暂停
                 time.sleep(0.2)
-                log.info(f"({i+1},{j+1},{len(pre_pos)})")  # 显示当前所识别遗器的方位与序列号
+                log.info(f"({i+1},{j+1},{len(relics_data)})")  # 显示当前所识别遗器的方位与序列号
                 tmp_data = self.try_ocr_relic(equip_indx, max_retries)
                 if tmp_data is None:   # 识别到 "未装备"，即此时遗器表格为空
-                    return None
+                    return format_return()
                 # log.info("\n"+pp.pformat(tmp_data))
                 tmp_hash = get_data_hash(tmp_data)
                 # 精确匹配
@@ -671,24 +681,31 @@ class Relic:
                     self.updata_relic_data(key_hash, tmp_hash, equip_indx, tmp_data)
                     return (x, y)
                 # 判断是否遍历完毕
-                if pre_pos[-1] == tmp_hash:
-                    log.info(_("遗器数据未发生变化，怀疑点击到空白区域搜索至最后"))
-                    return None   # 判断点击到空白，遗器数据未发生变化，结束搜索
-                if j == 0 and tmp_hash in pre_pos: # 判断当前行的首列遗器是否已被搜索
+                if tmp_hash in relics_data and list(relics_data.keys())[-1] == tmp_hash:
+                    log.info(_("点击到空白区域，判定为搜索至最后"))
+                    return format_return()   # 判断点击到空白，遗器数据未发生变化，结束搜索
+                if j == 0 and tmp_hash in relics_data: # 判断当前行的首列遗器是否已被搜索
                     if i == k_y-1:
                         log.info(_("已搜索至最后"))
-                        return None   # 判断已滑动至末页，结束搜索
+                        return format_return()   # 判断已滑动至末页，结束搜索
                     log.info(_("本行已搜索过，跳过本行"))
                     index += k_x     # 本行已搜索过，跳过本行
                     continue
                 # 判断是否达到搜索上限
-                if max_num and len(pre_pos) >= max_num:
-                    return None
+                if max_num and len(relics_data) >= max_num:
+                    if not matching:
+                        self.print_relic(tmp_data, tmp_hash, stats_weight)
+                    relics_data[tmp_hash] = tmp_data  # 记录
+                    return format_return()
                 # 判断是否超时
                 if overtime and time.time() - start_time > overtime:
                     log.info(_("识别超时"))
-                    return None
-                pre_pos.append(tmp_hash)  # 记录
+                    return format_return()
+                # 非匹配状态，打印每一次的识别结果
+                if not matching:
+                    self.print_relic(tmp_data, tmp_hash, stats_weight)
+                # 本次循环结束
+                relics_data[tmp_hash] = tmp_data  # 记录
                 index += 1
             # 滑动翻页 (从末尾位置滑动至顶部，即刚好滑动一整页)
             log.info(_("滑动翻页"))
