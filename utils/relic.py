@@ -425,7 +425,8 @@ class Relic:
             if state == 0 or option == _("<识别当前配装>"):
                 self.calculated.switch_window()
                 relics_hash = self.save_loadout(char_weight)
-                print(_("配装信息：\n  {}\n{}").format(self.get_loadout_brief(relics_hash), self.get_loadout_detail(relics_hash, 2)))    
+                print(_("'{}'配装信息：").format(character_name))
+                print_styled_text(self.get_loadout_detail_0(relics_hash, character_name, 2), style=self.msg_style)
                 loadout_name = self.find_loadout_name(character_name, relics_hash)
                 if loadout_name:
                     log.info(_(f"配装记录已存在，配装名称：{loadout_name}"))
@@ -486,7 +487,8 @@ class Relic:
         time.sleep(1)
         relics_hash = self.save_loadout(char_weight)
         self.calculated.switch_cmd()
-        print(_("配装信息：\n  {}\n{}").format(self.get_loadout_brief(relics_hash), self.get_loadout_detail(relics_hash, 2)))
+        print(_("'{}'配装信息：").format(character_name))
+        print_styled_text(self.get_loadout_detail_0(relics_hash, character_name, 2), style=self.msg_style)
         loadout_name = self.find_loadout_name(character_name, relics_hash)
         if loadout_name:
             log.info(_(f"配装记录已存在，配装名称：{loadout_name}"))
@@ -1159,58 +1161,103 @@ class Relic:
         choice_options = [Choice(
                 title = str_just(loadout_name, 15) + " " + self.get_loadout_brief(loadout_data["relic_hash"]), 
                 value = (loadout_name, loadout_data["relic_hash"]),
-                description = "\n" + self.get_loadout_detail(loadout_data["relic_hash"], 5, character_name)
+                description = self.get_loadout_detail_0(loadout_data["relic_hash"], character_name, 5)
             ) for loadout_name, loadout_data in character_data]
         return choice_options
-    
-    def get_loadout_detail(self, relics_hash: List[str], tab_num: int=0) -> str:
+ 
+    def get_loadout_detail_0(self, relics_hash: List[str], character_name: Optional[str]=None, indent_num: int=0) -> StyledText:
         """
         说明：
-            获取配装的详细信息 (各属性数值统计)
+            获取配装的面板详情
         参数：
             :param relics_hash: 遗器哈希值列表
-            :param tab_num: 缩进长度
+            :param character_name: 人物名称 (非空时激活人物裸装面板与属性权重)
+            :param indent_num: 缩进长度
         """
-        stats_panel = np.zeros(len(ALL_STATS_NAME))   # 属性面板
+        stats_panel_S = np.zeros(len(ALL_STATS_NAME))   # 固定属性面板
+        stats_panel_C = np.zeros(len(ALL_STATS_NAME))   # 条件属性面板
         extra_effect_list = []   # 额外效果说明
         stats_name_dict = Array2dict(ALL_STATS_NAME)
         base_stats_dict = Array2dict(BASE_STATS_NAME)
         subs_stats_dict = Array2dict(SUBS_STATS_NAME)
+        # [0.1]查询角色裸装面板
+        char_panel_name, char_panel = self.find_char_panel(character_name)
+        # [0.2]查询角色属性权重
+        char_weight_name, char_weight = self.find_char_weight(character_name)
         # [1]统计遗器主副属性
-        for equip_indx in range(len((relics_hash))):
-            tmp_data = self.relics_data[relics_hash[equip_indx]]
+        relic_subs_nums = [.0]*6    # 各部位遗器的副词条词条总数
+        for equip_index, relic_hash in enumerate(relics_hash):
+            tmp_data: Dict[str, Dict[str, float]] = self.relics_data[relic_hash]
             rarity = tmp_data["rarity"]
             level = tmp_data["level"]
             stats_list = [(key, self.get_base_stats_detail((key, value), rarity, level, base_stats_dict[key]))
                           for key, value in tmp_data["base_stats"].items()]           # 获取数值精度提高后的主词条
-            stats_list.extend([(key, self.get_subs_stats_detail((key, value), rarity, subs_stats_dict[key])[-1]) 
-                               for key, value in tmp_data["subs_stats"].items()])     # 获取数值精度提高后的副词条
+            for key, value in tmp_data["subs_stats"].items():
+                ret = self.get_subs_stats_detail((key, value), rarity, subs_stats_dict[key])
+                stats_list.append((key, ret[-1]))        # 获取数值精度提高后的副词条
+                num = self.get_num_of_stats(ret, rarity)   # 计算词条数
+                if char_weight and char_weight.get_weight(key) > 0 or not char_weight:
+                    relic_subs_nums[equip_index] += num    # 当有权重时统计有效词条，无权重时统计总词条
             for key, value in stats_list:
-                stats_panel[stats_name_dict[key]] += value  # 数值统计
+                stats_panel_S[stats_name_dict[key]] += value  # 数值统计
         # [2]统计遗器套装效果
         set_cnt: Counter = self.get_loadout_brief(relics_hash, False)
         def parse_set_effect(set_effect_list: List[StatsEffect]):
             """
-            说明： 解析遗器套装效果，引用传递返回参数stats_panel
+            说明： 解析遗器套装效果，进行数值统计
             """
             for effect in set_effect_list:
                 if isinstance(effect, str):
                     extra_effect_list.append(effect)
                 elif isinstance(effect, tuple):
                     key, value, unconditional = effect
-                    if unconditional or not unconditional and self.activate_conditional:   # 非条件效果或已激活条件效果
-                        stats_panel[stats_name_dict[key]] += value  # 数值统计
+                    if unconditional:   # 非条件效果
+                        stats_panel_S[stats_name_dict[key]] += value
+                    elif not unconditional and self.activate_conditional: # 已开启的条件效果
+                        stats_panel_C[stats_name_dict[key]] += value
         for set_idx, cnt in set_cnt.items():
             if cnt >= 2:    # 激活二件套效果
                 parse_set_effect(SET_EFFECT_OF_TWO_PC[set_idx])
             if cnt >= 4:    # 激活四件套效果
                 parse_set_effect(SET_EFFECT_OF_FOUR_PC[set_idx])
-        # [3]合成属性分词
-        token_list = []
+        # [3]统计人物裸装面板
+        def parse_char_stats_panel() -> List[Tuple[float, float]]:
+            """
+            说明：解析人物裸装面板，引用传递返回参数stats_panel
+            """
+            # 统计附加属性
+            additonal_stats = char_panel.get("additonal", {})
+            for key, value in additonal_stats.items():
+                stats_panel_S[stats_name_dict[key]] += value
+            # 统计条件属性
+            conditional_stats = char_panel.get("conditional", {})
+            if self.activate_conditional:
+                for key, value in conditional_stats.items():
+                    stats_panel_C[stats_name_dict[key]] += value
+            # 统计额外效果
+            extra_effect_list.extend(char_panel.get("extra_effect", []))
+            # 通过白值计算绿值
+            b_value: Dict[str, float] = char_panel["base"]
+            bs_value = [b_value[_("生命值白值")], b_value[_("攻击力白值")], b_value[_("防御力白值")], b_value[_("速度白值")]]
+            en_value = []
+            for i, j, base in zip([3,4,5,7], [0,1,2,6], bs_value):  # 大小词条的索引
+                large = stats_panel_S[i] + stats_panel_C[i]
+                small = stats_panel_S[j] + stats_panel_C[j]
+                en_value.append(base * large / 100 + small)
+            return list(zip(bs_value, en_value))
+        if char_panel:
+            bs_and_en_value = parse_char_stats_panel()
+        else:
+            bs_and_en_value = [(0, 0)] * len(BASE_VALUE_NAME)
+        # [4]合成属性分词 
+        token_list: List[StyledText] = []
+        total_stats_num = .0
         has_ = False  # 标记有无属性伤害
         normal_stats_len = len(STATS_NAME)   # 额外属性的起始索引 (预防被激活多个属性伤害的情形)
-        for index, value in enumerate(stats_panel):
+        for index, (std, cnd) in enumerate(zip(stats_panel_S, stats_panel_C)):
             name = ALL_STATS_NAME[index]
+            value = std + cnd
+            color = char_weight.get_color(name) if index < len(STATS_NAME) else ""
             if index in range(15, 22):   # 过滤属性伤害
                 if index == 21 and not has_ and value == 0 :  # 无属性伤害的情形
                     name = _("属性伤害")
@@ -1220,30 +1267,102 @@ class Relic:
                 else:  has_ = True
             elif index >= len(STATS_NAME) and value == 0: 
                 continue                                 # 跳过无效的额外属性
+            token = StyledText()
             pre = " " if name in NOT_PRE_STATS else "%"
-            token_list.append(_("{name}{value:>7.{ndigits}f}{pre}").format(name=str_just(name, 15), value=value, pre=pre, ndigits=self.ndigits))
-        # [4]打印信息
-        msg = ""
-        tab = " " * tab_num
-        tab_ = "\n" + tab
-        def format_table(sequence: List[str], column=2, reverse=True) -> str:
+            # 词条数量
+            subs_idx = subs_stats_dict[name]
+            if subs_idx is not None or name == _("速度%") and value != 0 and char_panel:
+                tmp_name, tmp_value = name, value  # 修饰
+                if name == _("速度%"):  # 将速度大词条转化为小词条来计算
+                    tmp_name = _("速度")
+                    tmp_value = bs_and_en_value[3][0] * value / 100
+                elif char_panel and name == _("暴击率"):    # 减去面板默认提供的
+                    tmp_value = value - 5
+                elif char_panel and  name == _("暴击伤害"): # 减去面板默认提供的
+                    tmp_value = value - 50
+                num = self.get_num_of_stats(self.get_subs_stats_detail((tmp_name, tmp_value), 5, subs_idx, check=False))
+                if char_weight and char_weight.get_weight(name) > 0 or not char_weight:
+                    total_stats_num += num
+                token.append("{:>4.1f} ".format(num), color)
+            else:
+                token.append(" " * 5)
+            # 名称数值
+            token.append(
+                "{name}{value:>7.{ndigits}f}{pre}".format(name=str_just(name, 13), value=value, pre=pre, ndigits=self.ndigits), color
+            )
+            # 条件效果
+            if self.activate_conditional and cnd != 0:
+                # token.append("{std:>4.{ndigits}f}".format(std=std, ndigits=self.ndigits), "")
+                token.append("{cnd:>7.{ndigits}f}".format(cnd=cnd, ndigits=self.ndigits), "green")
+            elif self.activate_conditional:
+                token.append(" " * 7)
+            token_list.append(token)
+        # # 更改属性的打印顺序
+        # token_list = token_list[0:1]+token_list[3:4]+token_list[1:2]+token_list[4:5]+token_list[2:3]+token_list[5:6]+token_list[6:]
+        # [5]打印信息
+        msg = StyledText()
+        indent = " " * indent_num
+        indent_ = "\n" + indent
+        msg.append(_("词条挡位权值{}\n").format(SUBS_STATS_TIER_WEIGHT[self.subs_stats_iter_weight][-1]))
+        def format_table(sequence: List[StyledText], column=2, reverse=True) -> StyledText:
             """
             说明： 打印单个表单
             """
-            msg = ""
+            msg = StyledText()
+            sep = "   "
             for index in range(len(sequence)):   # 分栏输出 (纵向顺序，横向逆序，保证余数项在左栏)
                 i = index // column
                 j = index % column
                 n = ((column-j-1) * len(sequence) // column + i) if reverse else (j * len(sequence) // column + i)
-                msg += "   " + sequence[n] if j != 0 else tab_ + sequence[n]
-            if msg: msg += "\n"
-            return msg    
-        # 打印属性数值统计
-        msg += format_table(token_list[:normal_stats_len])  # 遗器主副属性
-        msg += format_table(token_list[normal_stats_len:])  # 额外属性
-        # 打印额外效果
+                msg.append(sep if j != 0 else indent_)
+                msg.extend(sequence[n])
+            if msg: msg.append("\n")
+            return msg
+        # [5.1]打印遗器简要信息
+        relic_list: List[StyledText] = []
+        # for equip_index in range(len(relics_hash)):   # 优化部位显示顺序
+        for equip_index in [0,3,1,4,2,5]:  # 主流显示顺序
+            token = StyledText()
+            relic_hash = relics_hash[equip_index]
+            num = relic_subs_nums[equip_index]   # 词条数
+            tmp_data = self.relics_data[relic_hash]
+            rarity = tmp_data["rarity"]
+            token.append("{:.1f}".format(num), "green")
+            token.append("{}".format(EQUIP_SET_ADDR[equip_index]))
+            token.append(":{}".format(relic_hash[:10]))
+            relic_list.append(token)
+        msg.extend(format_table(relic_list, 3, False))
+        # [5.2]打印白值绿值
+        msg.append("\n")
+        for idx, (bs, en) in enumerate(bs_and_en_value):
+            name = BASE_VALUE_NAME[idx]
+            msg.append(indent)
+            msg.append("{name}".format(name=str_just(name[:int(_("-2"))], 8)), char_weight.get_color(name))  # 截除某尾的‘白值’字样
+            msg.append("{total:>9.{ndigits}f}".format(total=bs+en, ndigits=self.ndigits), char_weight.get_color(name))
+            msg.append("{bs:>9.{ndigits}f}".format(bs=bs, ndigits=self.ndigits), "")
+            msg.append("{en:>9.{ndigits}f}".format(en=en, ndigits=self.ndigits), "green")
+            msg.append("  | ")  # 分隔符
+            # [5.3]利用右侧空间打印其他信息
+            if idx == 0:
+                msg.append(_("遗器副词条"))
+                msg.append("{:.1f}".format(sum(relic_subs_nums)), "green")
+                msg.append(_(" 总计词条"))
+                msg.append("{:.1f}".format(total_stats_num), "green")
+            elif idx == 1:
+                msg.append(_("裸装面板'{}'").format(char_panel_name) if char_panel else _("未启用裸装面板"))
+            elif idx == 2:
+                msg.append(_("属性权重'{}'").format(char_weight_name) if char_weight else _("未启用权重"))
+            elif idx == 3:
+                msg.append(_("评分系统开发中..."), "grey")
+            msg.append("\n")
+        # [5.4]打印属性数值统计
+        msg.extend(format_table(token_list[:normal_stats_len]))  # 遗器主副属性
+        msg.extend(format_table(token_list[normal_stats_len:]))  # 额外属性
+        # [5.5]打印额外效果
         if extra_effect_list:
-            msg += "\n" + " " * (tab_num-3) + _("额外效果：") + tab_ + tab_.join(extra_effect_list)
+            msg.append("\n" + " " * (indent_num-3) + _("额外效果："))
+            msg.append("".join(indent_ + f"{i+1}.{text}"  for i, text in enumerate(extra_effect_list)))
+        msg.append("\n")
         return msg
 
     def get_loadout_brief(self, relics_hash: List[str], flag = True) -> Union[str, Counter]:
