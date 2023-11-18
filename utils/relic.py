@@ -250,6 +250,151 @@ class Relic:
             elif option == _("<返回主菜单>"):
                 break
 
+    def edit_loadout_for_char(self):
+        """
+        说明：
+            编辑角色配装 (查看配装、更改名称、替换遗器(更改/新建))
+        """
+        charcacter_names = sorted(self.loadout_data.keys())      # 对配装数据中角色名称排序
+        option_0 = None
+        def interface_3(key_hash: str, equip_index: int) -> Optional[str]:
+            """
+            说明：
+                第[3]层级，替换遗器
+            """
+            option_3 = None
+            options_3 = [
+                Choice(_("识别当前遗器"), value = 0,
+                       description = INDENT+_("请使游戏保持在[角色]-[遗器]-[遗器替换]界面")+INDENT+_("推荐识别前手动点击[对比]提高识别度")),
+                # 【待扩展】查询遗器数据库、推荐系统
+                Choice(_("<返回上一级>"), shortcut_key='z'),
+                Separator(" "),
+            ]
+            # [0]进行选择
+            option_3 = questionary.select(_("请选择替换方式:"), options_3, use_shortcuts=True, style=self.msg_style).ask()
+            if option_3 == _("<返回上一级>"):
+                return
+            elif option_3 != 0:
+                ...  # 【待扩展】
+            # [1]识别当前遗器
+            self.calculated.switch_window()
+            tmp_data = self.try_ocr_relic()
+            tmp_hash = get_data_hash(tmp_data)
+            log.debug("\n"+pp.pformat(tmp_data))
+            if tmp_hash in self.relics_data:
+                tmp_data = self.relics_data[tmp_hash]  # 载入可能的速度修正
+            self.calculated.switch_cmd()
+            # [2]有效性检测
+            key_data = self.relics_data[key_hash]
+            if tmp_data["equip_set"] != key_data["equip_set"]:
+                log.error(_("遗器替换失败：识别到错误部位"))
+                return None
+            if tmp_hash == key_hash:
+                log.error(_("遗器替换失败：识别到相同遗器"))
+                return None
+            # [3]打印对比信息
+            tmp_text = self.print_relic(tmp_data, tmp_hash, char_weight, False)
+            key_text = self.print_relic(key_data, key_hash, char_weight, False)
+            print("\n  {:>28}    {:<28}".format("<<<<<<< NEW", "OLD >>>>>>>"))
+            print_styled_text(combine_styled_text(tmp_text, key_text, sep=" "*4, indent=2), style=self.msg_style)
+            # [4]模糊匹配
+            if self.is_fuzzy_match and self.compare_relics(key_data, tmp_data):
+                log.info(_("模糊匹配成功！识别到新遗器为旧遗器升级后，自动更新数据库"))
+                # 更新数据库 (录入新遗器数据，并将配装数据中的旧有哈希值替换)
+                tmp_data["pre_ver_hash"] = key_hash   # 建立后继关系
+                self.updata_relic_data(key_hash, tmp_hash, equip_index, tmp_data)
+                return tmp_hash
+            # [5]是否进行替换
+            if questionary.confirm(_("是否进行替换:")).ask():
+                # 录入遗器数据
+                if tmp_hash in self.relics_data:
+                    log.info(_("遗器数据已存在"))
+                else:
+                    log.info(_("录入遗器数据"))
+                    self.add_relic_data(tmp_data, tmp_hash)
+                return tmp_hash
+            else:
+                return None
+        def interface_2(old_relics_hash: List[str]):
+            """
+            说明：
+                第[2]层级，配装内部选项
+            """
+            option_2 = None
+            new_relics_hash = old_relics_hash.copy()
+            while True:
+                options_2 = []
+                # 生成选项
+                for equip_index, (equip_set_name, new_hash, old_hash) in enumerate(zip(EQUIP_SET_NAME, new_relics_hash, old_relics_hash)):
+                    msg = StyledText()
+                    msg.append("\n\n")
+                    relic_text = self.print_relic(self.relics_data[new_hash], new_hash, char_weight, False)
+                    relic_text = combine_styled_text(relic_text, indent=2)
+                    msg.extend(relic_text)
+                    tag = _("[已更改]") if new_hash != old_hash else " "
+                    # 使用本配装的队伍
+                    teams_in_loadout = self.find_teams_in_loadout(character_name, loadout_name)
+                    teams_msg = INDENT.join(
+                        "   {}) {} ■ {}".format(i+1, str_just(team_name, 17), ", ".join(list(self.team_data[group_name][team_name]["team_members"].keys()))) 
+                        for i, (group_name, team_name) in enumerate(teams_in_loadout)
+                    ) if teams_in_loadout else _("  --空--")
+                    options_2.append(Choice(_("替换{} {}").format(equip_set_name, tag), value=(equip_index, new_hash), description=msg))
+                options_2.extend([
+                    # 【待扩展】删除配装、更改权重、更改面板
+                    Choice(_("<完成并更新配装 (可进行重命名)>"), shortcut_key='y', description=INDENT+_("使用本配装的队伍:")+INDENT+teams_msg),
+                    Choice(_("<完成并新建配装>"), shortcut_key='x'),
+                    Choice(_("<取消>"), shortcut_key='z'),
+                    Separator(" "),
+                ])
+                # 进行选择
+                option_2 = questionary.select(_("请选择要编辑的内容:"), options_2, use_shortcuts=True, style=self.msg_style).ask()
+                character_data = self.loadout_data[character_name]
+                # 处理特殊选择
+                if option_2 == _("<取消>"):
+                    return
+                elif option_2 == _("<完成并新建配装>"):
+                    new_loadout_name = questionary.text(_("命名配装名称:"), validate=ConflictValidator(character_data.keys())).ask()
+                    self.loadout_data[character_name][new_loadout_name] = {"relic_hash": new_relics_hash}
+                    rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
+                    return
+                elif option_2 == _("<完成并更新配装>"):
+                    new_loadout_name = loadout_name
+                    if questionary.confirm(_("是否更改配装名称"), default=False).ask():
+                        new_loadout_name = questionary.text(_("命名配装名称:"), validate=ConflictValidator(character_data.keys())).ask()
+                    # 判断是否是否修改了遗器数据
+                    new_loadout_data = {"relic_hash": new_relics_hash} if new_relics_hash != old_relics_hash else None
+                    # 尝试进行配装修改
+                    ret = self.updata_loadout_data(character_name, loadout_name, new_loadout_name, new_loadout_data)
+                    if ret:
+                        return    # 配装修改成功
+                    else:
+                        continue  # 配装修改失败，给予机会重新修改
+                # 替换遗器
+                equip_index, key_hash = option_2
+                new_hash = interface_3(key_hash, equip_index)
+                if new_hash:
+                    new_relics_hash[equip_index] = new_hash
+        # 第[0]层级，选择角色
+        while True:
+            options_0 = [
+                Choice(str_just(char_name, 15) + _("■ {}").format(len(self.loadout_data[char_name])), value = char_name) 
+                for char_name in charcacter_names
+            ] + [Choice(_("<返回上一级>"), shortcut_key='z')]
+            option_0 = questionary.select(_("请选择角色:"), options_0, default=option_0, use_shortcuts=True, style=self.msg_style).ask()
+            if option_0 == "<返回上一级>":
+                return
+            character_name = option_0
+            # 查询角色裸装面板
+            char_weight_name, char_weight = self.find_char_weight(character_name)
+            # 第[1]层级，选择配装
+            option_1 = None
+            while True:
+                option_1 = self.ask_loadout_options(character_name, title=_("请选择要编辑的配装:"))
+                if option_1 == _("<返回上一级>"):
+                    break
+                loadout_name, relics_hash = option_1
+                interface_2(relics_hash)
+
     def edit_character_weight(self, tmp=False) -> Optional[StatsWeight]:
         """
         说明：
