@@ -194,16 +194,16 @@ class Relic:
             log.error(_("怀疑为手动错误修改json文件导致"))
         # 首次启动权值进行选择
         if self.subs_stats_iter_weight == 0:
-            msg = _("仅首次启动进行选择")+INDENT+_("后续可在'config.json'中的'stats_weight_for_relic'设置")
+            msg = INDENT+_("仅首次启动进行选择")+INDENT+_("后续可在'config.json'中的'stats_weight_for_relic'选择设置[1,2,3]")
             self.subs_stats_iter_weight = questionary.select(
                 _("请选择副词条三个档位的权值"),
                 choices = [
                     Choice(SUBS_STATS_TIER_WEIGHT[1][-1], value = 1, 
-                        description = INDENT+_("主流赋值")+INDENT+msg),
+                        description = INDENT+_("主流赋值")+msg),
                     Choice(SUBS_STATS_TIER_WEIGHT[2][-1], value = 2, 
-                        description = INDENT+_("真实比例，除了五星遗器'速度'属性的真实比例为 [0.7692, 0.8846, 1.0]")+INDENT+msg),
+                        description = INDENT+_("真实比例，除了五星遗器'速度'属性的真实比例为 [0.7692, 0.8846, 1.0]")+msg),
                     Choice(SUBS_STATS_TIER_WEIGHT[3][-1], value = 3, 
-                        description = INDENT+_("主流赋值比例矫正后的结果")+INDENT+msg),
+                        description = INDENT+_("主流赋值比例矫正后的结果")+msg),
                     Separator(" ")
                 ],
                 instruction = _("(将影响词条计算与遗器评分)"),
@@ -216,25 +216,34 @@ class Relic:
         说明：
             遗器模块入口
         """
-        title = _("遗器模块：")
-        tab = "\n" + " " * 5
-        options = [
-            Choice(_("保存当前角色的配装"), value = 0,
-                   description = tab + _("请使游戏保持在[角色]界面")),
-            Choice(_("保存当前队伍的配装"), value = 1,
-                   description = tab + _("请使游戏保持在[角色]界面") + tab + _("并确保目标队伍[1号位]-[角色头像]移动至列表[起始位置]") + tab + _("对于[混沌回忆]的队伍可以分上下半分别保存")),
-            Choice(_("读取当前角色的配装记录并装备"), value = 2,
-                   description = tab + _("请使游戏保持在[角色]界面")),
-            Choice(_("读取队伍的配装记录并装备"), value = 3,
-                   description = tab + _("请使游戏保持在[角色]界面") + tab + _("并确保目标队伍[1号位]-[角色头像]移动至列表[起始位置]") + tab + _("对于[混沌回忆]的队伍可以分上下半分别读取")),
-            Choice(_("识别当前遗器数据"), value = 4,
-                   description = tab + _("请使游戏保持在[角色]-[遗器]-[遗器替换]界面") + tab + _("推荐手动点击[对比]提高识别度")),
-            _("<返回主菜单>")
-        ]  # 注：[角色]界面的前继可为[队伍]-[角色选择]-[详情]界面
+        title = _("遗器模块:")
         option = None  # 保存上一次的选择
+        msg = "\n"+INDENT+_("注：[角色]界面的前继可为[队伍]-[角色选择]-[详情]等界面")
         while True:
+            options = [
+                Choice(_("保存当前角色的配装"), value = 0,
+                    description = INDENT+_("请使游戏保持在[角色]界面")+msg),
+                Choice(_("保存当前队伍的配装"), value = 1,
+                    description = INDENT+_("请使游戏保持在[角色]界面")+INDENT+_("并确保目标队伍[1号位]-[角色头像]移动至列表[起始位置]")+INDENT+_("对于[混沌回忆]的队伍可以分上下半分别保存")+msg),
+                Choice(_("读取当前角色的配装并装备"), value = 2,
+                    description = INDENT+_("请使游戏保持在[角色]界面")+msg),
+                Choice(_("读取队伍的配装并装备"), value = 3,
+                    description = INDENT+_("请使游戏保持在[角色]界面")+INDENT+_("并确保目标队伍[1号位]-[角色头像]移动至列表[起始位置]")+INDENT+_("对于[混沌回忆]的队伍可以分上下半分别读取")+msg),
+                Choice(_("识别遗器数据"), value = 4,
+                    description = INDENT+_("支持批量识别、载入[属性权重]进行评估、导出数据\n")+INDENT+_("注：对于[速度]副属性只能做保守评估，其他属性可做准确计算")
+                    +INDENT+_("  可以借助第三方工具获得[速度]副属性的精确值，")+INDENT+_("  并手动修改'relics_set.json'文件中相应的小数位，")+INDENT+_("  修改后的数据会永久保存，不影响遗器哈希值，可用于后续评估")),
+                Choice(_("编辑角色配装"), value = 5,
+                    description = INDENT+_("支持查看配装、配装重命名、替换遗器等功能")),
+                Choice(_("编辑角色裸装面板"), value = 6,
+                    description = INDENT+_("此处的[角色裸装面板]是指角色卸下[遗器]、佩戴[光锥]时的角色面板")+INDENT+_("若不满足于交互界面，可在明晰构造方法的前提下直接编辑'char_panel.json'文件")),
+                Choice(_("编辑角色属性权重"), value = 7, 
+                    description = INDENT+_("权重范围为0~1，缺损值为0")+INDENT+_("评分系统开发中...当前权重只会影响[属性着色]与[有效词条]计算")),
+                Choice(_("<清空控制台>"), shortcut_key='c'),
+                Choice(_("<返回主菜单>"), shortcut_key='z'),
+                Separator(" "),
+            ]
             self.calculated.switch_cmd()
-            option = questionary.select(title, options, default=option, show_description=True).ask()
+            option = questionary.select(title, options, default=option, use_shortcuts=True).ask()
             if option == 0:
                 self.save_loadout_for_char()
             elif option == 1:
@@ -244,9 +253,16 @@ class Relic:
             elif option == 3:
                 self.equip_loadout_for_team()
             elif option == 4:
-                self.calculated.switch_window()
-                data = self.try_ocr_relic()
-                self.print_relic(data)
+                self.batch_ocr_relics()
+            elif option == 5:
+                self.edit_loadout_for_char()
+            elif option == 6:
+                self.edit_character_panel()
+            elif option == 7:
+                self.edit_character_weight()
+            elif option == _("<清空控制台>"):
+                import os
+                os.system("cls")
             elif option == _("<返回主菜单>"):
                 break
 
