@@ -959,27 +959,36 @@ class Relic:
         ret = True
         for group_name, team_group in self.team_data.items():
             for team_name, team_data in team_group.items():
-                loadout_dict = self.HashList2dict()
-                # 数据完整性
-                for char_name, loadout_name in team_data["team_members"].items():
-                    char_data = self.loadout_data.get(char_name)
-                    if char_data is None:
-                        log.error(_("角色记录缺失：'{}'队伍的'{}'角色记录缺失").format(team_name, char_name))
-                        ret = False
-                        continue
-                    loadout_data = char_data.get(loadout_name)
-                    if loadout_data is None:
-                        log.error(_("配装记录缺失：'{}'队伍的'{}'角色的'{}'配装记录缺失").format(team_name, char_name, loadout_name))
-                        ret = False
-                        continue
-                    loadout_dict.add(loadout_data["relic_hash"], char_name)
-                # 配装规范性
-                for equip_index, char_names, element in loadout_dict.find_duplicate_hash():
-                    log.error(_("队伍遗器冲突：'{}'队伍的{}间的'{}'遗器冲突，遗器哈希值：{}").format(team_name, char_names, EQUIP_SET_NAME[equip_index], element))
-                    ret = False
+                ret = self.check_team_loadout(team_name, team_data)
             if group_name != "compatible": ...   # 互斥队伍组别【待扩展】
         if ret:
             log.info(_("队伍配装校验成功"))
+        return ret
+    
+    def check_team_loadout(self, team_name: str, team_data: Dict[str, Any]) -> bool:
+        """
+        说明：
+            检查当前队伍配装的数据完整性与配装规范性
+        """
+        ret = True
+        loadout_dict = self.HashList2dict()
+        # 数据完整性
+        for char_name, loadout_name in team_data["team_members"].items():
+            char_data = self.loadout_data.get(char_name)
+            if char_data is None:
+                log.error(_("角色记录缺失：'{}'队伍的'{}'角色记录缺失").format(team_name, char_name))
+                ret = False
+                continue
+            loadout_data = char_data.get(loadout_name)
+            if loadout_data is None:
+                log.error(_("配装记录缺失：'{}'队伍的'{}'角色的'{}'配装记录缺失").format(team_name, char_name, loadout_name))
+                ret = False
+                continue
+            loadout_dict.add(loadout_data["relic_hash"], char_name)
+        # 配装规范性
+        for equip_index, char_names, element in loadout_dict.find_duplicate_hash():
+            log.error(_("队伍遗器冲突：'{}'队伍的{}间的'{}'遗器冲突，遗器哈希值：{}").format(team_name, char_names, EQUIP_SET_NAME[equip_index], element))
+            ret = False
         return ret
 
     class HashList2dict:
