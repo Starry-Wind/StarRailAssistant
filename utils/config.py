@@ -13,11 +13,16 @@ from .exceptions import TypeError
 from .log import log
 
 CONFIG_FILE_NAME = "config.json"
-RELIC_FILE_NAME = "data/relics_set.json"
-LOADOUT_FILE_NAME = "data/relics_loadout.json"
-TEAM_FILE_NAME = "data/relics_team.json"
-CHAR_PANEL_FILE_NAME = "data/char_panel.json"
-CHAR_WEIGHT_FILE_NAME = "data/char_weight.json"
+
+USER_DATA_PREFIX = "data/user_data/"
+FIXED_DATA_PREFIX = "data/fixed_data/"
+os.makedirs(USER_DATA_PREFIX, exist_ok=True)
+
+RELIC_FILE_NAME = USER_DATA_PREFIX + "relics_set.json"
+LOADOUT_FILE_NAME = USER_DATA_PREFIX + "relics_loadout.json"
+TEAM_FILE_NAME = USER_DATA_PREFIX + "relics_team.json"
+CHAR_PANEL_FILE_NAME = USER_DATA_PREFIX + "char_panel.json"
+CHAR_WEIGHT_FILE_NAME = USER_DATA_PREFIX + "char_weight.json"
 
 
 def normalize_file_path(filename):
@@ -32,15 +37,15 @@ def normalize_file_path(filename):
         file_path = os.path.join(parent_dir, filename)
         if os.path.exists(file_path):
             return file_path
-        # 如果仍然没有，则尝试减去文件名称的一个层级
-        pre_filename = str(filename).split('/', 1)[-1]
+        # 如果仍然没有，则尝试在当前目录仅查找文件名
+        pre_filename = str(filename).rsplit('/', 1)[-1]
         file_path = os.path.join(current_dir, pre_filename)
         if os.path.exists(file_path):
-            if str(filename).split('/', 1)[0] == "data":
-                # 兼容旧版本 (<=1.8.7)
+            if str(filename).rsplit('/', 1)[0] == USER_DATA_PREFIX[:-1]:
+                # 判断为旧版本 (<=1.8.7) 数据文件位置
                 import shutil
                 shutil.move(file_path, pre_file_path)
-                log.info(_("文件位置更新，由'{}'更改至'{}'").format(pre_filename, filename))
+                log.info(_("文件位置更改，由'{}'迁移至'{}'").format(pre_filename, filename))
                 return pre_file_path
             return file_path
     # 如果仍然没有，则返回None
