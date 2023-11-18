@@ -140,7 +140,9 @@ class Relic:
         self.subs_stats_iter_weight: Literal[0, 1, 2, 3] = sra_config_obj.stats_weight_for_relic
         """副词条档位权重选择：0-空，1-主流赋值，2-真实比例赋值，3-主流赋值的比例矫正"""
         self.activate_conditional = False
-        """在打印面板信息时激活条件效果"""
+        """在打印面板信息时开启条件效果"""
+        self.loadout_detail_type: Literal[0, 1] = 0
+        """配装详情的类别：0-面板详情，1-遗器详情"""
         self.msg_style = Style([
             ("highlighted", "fg:#FF9D00 bold"),    # 在select中对选中的项进行高亮
             ("bold", "bold"),
@@ -298,7 +300,7 @@ class Relic:
         self.calculated.switch_cmd()
         option = questionary.select(
             _("请选择将要进行装备的配装："),
-            choices = self.get_loadout_choice_options(character_name) + [(_("<返回上一级>"))],
+            choices = self.get_loadout_options(character_name) + [(_("<返回上一级>"))],
             show_description = True,   # 需questionary具备对show_description的相关支持
         ).ask()
         if option == _("<返回上一级>"):
@@ -415,7 +417,7 @@ class Relic:
                 self.calculated.switch_cmd()
                 option = questionary.select(
                     _("请选择配装："),
-                    choices = self.get_loadout_choice_options(character_name) + [_("<识别当前配装>"), _("<退出>")],
+                    choices = self.get_loadout_options(character_name) + [_("<识别当前配装>"), _("<退出>")],
                     show_description = True,   # 需questionary具备对show_description的相关支持
                 ).ask()
                 if option == _("<退出>"):   # 退出本次编队
@@ -1144,7 +1146,7 @@ class Relic:
             ) for team_name, team_data in group_data]
         return choice_options
 
-    def get_loadout_choice_options(self, character_name:str) -> List[Choice]:
+    def get_loadout_options(self, character_name:str) -> List[Choice]:
         """
         说明：
             获取该人物配装记录的选项表
@@ -1159,11 +1161,25 @@ class Relic:
         character_data = self.loadout_data[character_name]
         character_data = sorted(character_data.items())      # 按键名即配装名排序
         choice_options = [Choice(
-                title = str_just(loadout_name, 15) + " " + self.get_loadout_brief(loadout_data["relic_hash"]), 
+                title = str_just(loadout_name, 16) + " " + self.get_loadout_brief(loadout_data["relic_hash"]), 
                 value = (loadout_name, loadout_data["relic_hash"]),
-                description = self.get_loadout_detail_0(loadout_data["relic_hash"], character_name, 5)
+                description = self.get_loadout_detail(loadout_data["relic_hash"], character_name, 5)
             ) for loadout_name, loadout_data in character_data]
         return choice_options
+
+    def get_loadout_detail(self, relics_hash: List[str], character_name: Optional[str]=None, indent_num: int=0) -> StyledText:
+        """
+        说明：
+            获取配装的详细信息 (0-面板详情，1-遗器详情)
+        参数：
+            :param relics_hash: 遗器哈希值列表
+            :param indent_num: 缩进长度
+            :param character_name: 人物名称 (非空时激活人物裸装面板统计)
+        """
+        if self.loadout_detail_type == 0:
+            return self.get_loadout_detail_0(relics_hash, character_name, indent_num)
+        if self.loadout_detail_type == 1:
+            return self.get_loadout_detail_1(relics_hash, character_name, indent_num-3)
 
     def get_loadout_detail_1(self, relics_hash: List[str], character_name: Optional[str]=None, indent_num: int=0) -> StyledText:
         """
