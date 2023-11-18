@@ -14,7 +14,7 @@ from utils.questionary.questionary import Choice, Separator, Style
 from .relic_constants import *
 from .calculated import (calculated, Array2dict, StyledText, FloatValidator, ConflictValidator, 
                          get_data_hash, str_just, print_styled_text, combine_styled_text)
-from .config import (RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, CHAR_PANEL_FILE_NAME, CHAR_WEIGHT_FILE_NAME,
+from .config import (RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, CHAR_PANEL_FILE_NAME, CHAR_WEIGHT_FILE_NAME, USER_DATA_PREFIX,
                      read_json_file, modify_json_file, rewrite_json_file, _, sra_config_obj)
 from .exceptions import Exception, RelicOCRException
 from .log import log
@@ -249,6 +249,84 @@ class Relic:
                 self.print_relic(data)
             elif option == _("<返回主菜单>"):
                 break
+
+    def batch_ocr_relics(self, stats_weight: StatsWeight=StatsWeight(), weight_name: Optional[str]=None):
+        """
+        说明：
+            批量识别遗器
+        """
+        # [1]选择识别范围与权重
+        if stats_weight:
+            log.info(_("启用权重'{}'").format(weight_name))
+            log.debug(stats_weight)
+        options_0 = [
+            Choice(_("仅当前遗器"), value=0,
+                   description = INDENT+_("请使游戏保持在[角色]-[遗器]-[遗器替换]界面")+INDENT+_("推荐识别前手动点击[对比]提高识别度")),
+            Choice(_("当前筛选条件下的当前所选部位的所有遗器"), value=1, 
+                   description = INDENT+_("识别途中不可中断")+INDENT+_("请使游戏保持在[角色]-[遗器]-[遗器替换]界面")+INDENT+_("推荐识别前手动点击[对比]提高识别度")),
+            Choice(_("<<载入属性权重>>"), shortcut_key='x'),
+            Choice(_("<返回上一级>"), shortcut_key='z'),
+            Separator(" "),
+        ]
+        option_0 = questionary.select(_("请选择识别的范围"), options_0, use_shortcuts=True).ask()
+        if option_0 == _("<返回上一级>"):
+            return
+        if option_0 == _("<<载入属性权重>>"):
+            charcacter_names = sorted(self.char_weight_data.keys())      # 对权重数据中角色名称排序
+            options_1 = [
+                Choice(str_just(char_name, 15) + _("■ {}").format(len(self.char_weight_data[char_name])), value = char_name) 
+                for char_name in charcacter_names
+            ]
+            options_1.extend([
+                Choice(_("<<创建临时权重>>"), shortcut_key='x'),
+                Choice(_("<取消>"), shortcut_key='z'),
+            ])
+            option_1 = questionary.select(_("请选择属性权重:"), options_1, use_shortcuts=True, style=self.msg_style).ask()
+            if option_1 == _("<取消>"):
+                return self.batch_ocr_relics()
+            elif option_1 == _("<<创建临时权重>>"):
+                stats_weight = self.edit_character_weight(True)
+                if stats_weight is None:   # 取消创建
+                    return self.batch_ocr_relics()
+                weight_name = _("临时权重")
+            else:
+                weight_name, stats_weight = self.find_char_weight(option_1)
+            return self.batch_ocr_relics(stats_weight, weight_name)
+        # [2]进行识别
+        relics_data = {}
+        self.calculated.switch_window()
+        if option_0 == 0:
+            tmp_data = self.try_ocr_relic()
+            tmp_hash = get_data_hash(tmp_data)
+            self.print_relic(tmp_data, tmp_hash, stats_weight)
+            relics_data[tmp_hash] = tmp_data
+        elif option_0 == 1:
+            relics_data = self.search_relic(stats_weight=stats_weight, overtime=None)
+            log.info(_("共识别到 {} 件遗器").format(len(relics_data)))
+        # [3]选择数据保存方式
+        self.calculated.switch_cmd()
+        options_3 = [
+            Choice(_("不保存"), value=0),
+            Choice(_("录入遗器数据库"), value=1),
+            Choice(_("保存至单独文件"), value=2),
+        ]
+        option_3 = questionary.select(_("请选择保存方式:"), options_3).ask()
+        if option_3 == 0:
+            return self.batch_ocr_relics(stats_weight, weight_name)
+        elif option_3 == 1:
+            cnt = 0
+            for tmp_hash, tmp_data in relics_data.items():
+                if tmp_hash not in self.relics_data:
+                    self.add_relic_data(tmp_data, tmp_hash)
+                    cnt += 1
+            rewrite_json_file(RELIC_FILE_NAME, self.relics_data)
+            log.info(_("共写入 {} 件新遗器至'{}'文件").format(cnt, RELIC_FILE_NAME))
+        elif option_3 == 2:
+            from datetime import datetime
+            file_name = "{}relics_set_{}.json".format(USER_DATA_PREFIX, str(int(datetime.timestamp(datetime.now()))))
+            rewrite_json_file(file_name, relics_data)
+            log.info(_("共写入 {} 件遗器至'{}'文件").format(len(relics_data), file_name))
+        return self.batch_ocr_relics(stats_weight, weight_name)
 
     def edit_loadout_for_char(self):
         """
