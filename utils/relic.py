@@ -249,7 +249,77 @@ class Relic:
                 self.print_relic(data)
             elif option == _("<返回主菜单>"):
                 break
-    
+
+    def edit_character_weight(self, tmp=False) -> Optional[StatsWeight]:
+        """
+        说明：
+            编辑角色属性权重
+        参数：
+            :parma tmp: 是否为创建临时权重
+        """
+        option_0 = None
+        def interface_1(char_weight: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+            """
+            说明：
+                第[1]层级，编辑权重
+            """
+            option_1 = None
+            weight: Dict[str, float] = char_weight["weight"]
+            def get_choices(st: Optional[int]=None, ed: Optional[int]=None) -> List[Choice]:
+                choices = []
+                for name in WEIGHT_STATS_NAME[st:ed]:  # 按需切片
+                    # 按需显示已有数值
+                    value_str = "{value:.2f}".format(value=weight[name]) if name in weight else " "
+                    choices.append(Choice(str_just(name, 15) + f"{value_str:>7}", value=name))
+                return choices
+            while True:
+                options_1 = get_choices(0,-7) + [Separator()] + get_choices(-7) + [Separator()]
+                options_1.extend([
+                    Choice(_("<取消>"), shortcut_key='q'),
+                    Choice(_("<完成>"), shortcut_key='z'),
+                    Separator(" "),
+                ])
+                # 进行选择
+                option_1 = questionary.select(_("编辑权重"), options_1, default=option_1, use_shortcuts=True, style=self.msg_style).ask()
+                if option_1 == _("<取消>"):
+                    return None
+                elif option_1 == _("<完成>"):
+                    log.debug("\n"+pp.pformat(char_weight))
+                    return char_weight
+                # 进行编辑
+                name = option_1
+                value = questionary.text("请输入数值:", validate=FloatValidator(0, 1)).ask()  # input float
+                weight[name] = float(value[:4])  # 更新数据 (截取数据到百分位)
+        # 第[0]层级
+        if tmp:    # 创建临时权重
+            tmp_weight = interface_1({"weight": {}})
+            return StatsWeight(tmp_weight["weight"])
+        while True:
+            # 选择人物
+            charcacter_names = sorted(self.loadout_data.keys())      # 对配装数据中角色名称排序
+            options_0 = [
+                Choice(str_just(char_name, 15) + _("■ {}").format("1" if char_name in self.char_weight_data else "0"), value = char_name) 
+                for char_name in charcacter_names
+            ] + [Choice(_("<返回上一级>"), shortcut_key='z')]
+            option_0 = questionary.select(_("请选择角色:"), options_0, default=option_0, use_shortcuts=True, style=self.msg_style).ask()
+            if option_0 == _("<返回上一级>"):
+                return
+            # 获取记录
+            charcacter_name = option_0
+            weight_name, charcacter_weight = list(self.char_weight_data.get(charcacter_name, {"None":{"weight": {}}}).items())[0]
+            ... # 【待扩展】同一角色支持保存多组权重
+            # 交互编辑
+            charcacter_weight = interface_1(charcacter_weight)
+            if charcacter_weight is None:   # 取消编辑
+                return
+            # 保存记录
+            if weight_name == "None": weight_name = ""
+            if not weight_name or weight_name and questionary.confirm(_("是否对权重重命名"), default=False).ask():
+                weight_name = questionary.text(_("命名权重名称:"), default=weight_name).ask()
+            self.char_weight_data[charcacter_name] = {weight_name: charcacter_weight}
+            rewrite_json_file(CHAR_WEIGHT_FILE_NAME, self.char_weight_data)
+            log.info(_("角色权重编辑成功"))
+
     def edit_character_panel(self):
         """
         说明：
