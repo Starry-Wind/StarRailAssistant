@@ -213,6 +213,8 @@ class Relic:
                 use_shortcuts = True,
             ).ask()
             sra_config_obj.stats_weight_for_relic = self.subs_stats_iter_weight  # 修改配置文件
+        # 用户提示
+        questionary.print(_("推荐使用 Windows Termianl 并将窗口调整至合适宽度，以达到更加的显示效果"), "green")
 
     def relic_entrance(self):
         """
@@ -224,6 +226,9 @@ class Relic:
         msg = "\n"+INDENT+_("注：[角色]界面的前继可为[队伍]-[角色选择]-[详情]等界面")
         while True:
             options = [
+                Choice(_("识别遗器数据"), value = 4,
+                    description = INDENT+_("支持批量识别、载入[属性权重]进行评估、导出数据\n")+INDENT+_("注：对于[速度]副属性只能做保守评估，其他属性可做准确计算")
+                    +INDENT+_("  可以借助第三方工具获得[速度]副属性的精确值，")+INDENT+_("  并手动修改'relics_set.json'文件中相应的小数位，")+INDENT+_("  修改后的数据会永久保存，不影响遗器哈希值，可用于后续评估")),
                 Choice(_("保存当前角色的配装"), value = 0,
                     description = INDENT+_("请使游戏保持在[角色]界面")+msg),
                 Choice(_("保存当前队伍的配装"), value = 1,
@@ -232,9 +237,6 @@ class Relic:
                     description = INDENT+_("请使游戏保持在[角色]界面")+msg),
                 Choice(_("读取队伍的配装并装备"), value = 3,
                     description = INDENT+_("请使游戏保持在[角色]界面")+INDENT+_("并确保目标队伍[1号位]-[角色头像]移动至列表[起始位置]")+INDENT+_("对于[混沌回忆]的队伍可以分上下半分别读取")+msg),
-                Choice(_("识别遗器数据"), value = 4,
-                    description = INDENT+_("支持批量识别、载入[属性权重]进行评估、导出数据\n")+INDENT+_("注：对于[速度]副属性只能做保守评估，其他属性可做准确计算")
-                    +INDENT+_("  可以借助第三方工具获得[速度]副属性的精确值，")+INDENT+_("  并手动修改'relics_set.json'文件中相应的小数位，")+INDENT+_("  修改后的数据会永久保存，不影响遗器哈希值，可用于后续评估")),
                 Choice(_("编辑角色配装"), value = 5,
                     description = INDENT+_("支持查看配装、配装重命名、替换遗器等功能")),
                 Choice(_("编辑角色裸装面板"), value = 6,
@@ -246,7 +248,7 @@ class Relic:
                 Separator(" "),
             ]
             self.calculated.switch_cmd()
-            option = questionary.select(title, options, default=option, use_shortcuts=True).ask()
+            option = questionary.select(title, options, default=option, use_shortcuts=True, style=self.msg_style).ask()
             if option == 0:
                 self.save_loadout_for_char()
             elif option == 1:
@@ -458,7 +460,7 @@ class Relic:
                     self.loadout_data[character_name][new_loadout_name] = {"relic_hash": new_relics_hash}
                     rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
                     return
-                elif option_2 == _("<完成并更新配装>"):
+                elif option_2 == _("<完成并更新配装 (可进行重命名)>"):
                     new_loadout_name = loadout_name
                     if questionary.confirm(_("是否更改配装名称"), default=False).ask():
                         new_loadout_name = questionary.text(_("命名配装名称:"), validate=ConflictValidator(character_data.keys())).ask()
@@ -480,7 +482,10 @@ class Relic:
             options_0 = [
                 Choice(str_just(char_name, 15) + _("■ {}").format(len(self.loadout_data[char_name])), value = char_name) 
                 for char_name in charcacter_names
-            ] + [Choice(_("<返回上一级>"), shortcut_key='z')]
+            ]
+            if not options_0:
+                options_0.append(Choice(_(" --空--"), disabled=_("请先保存角色配装")))
+            options_0.append(Choice(_("<返回上一级>"), shortcut_key='z'))
             option_0 = questionary.select(_("请选择角色:"), options_0, default=option_0, use_shortcuts=True, style=self.msg_style).ask()
             if option_0 == "<返回上一级>":
                 return
@@ -530,8 +535,8 @@ class Relic:
                 if option_1 == _("<取消>"):
                     return None
                 elif option_1 == _("<完成>"):
-                    log.debug("\n"+pp.pformat(char_weight))
-                    return char_weight
+                    log.debug("\n"+pp.pformat(weight))
+                    return {"weight": weight}
                 # 进行编辑
                 name = option_1
                 value = questionary.text("请输入数值:", validate=FloatValidator(0, 1)).ask()  # input float
@@ -539,7 +544,7 @@ class Relic:
         # 第[0]层级
         if tmp:    # 创建临时权重
             tmp_weight = interface_1({"weight": {}})
-            return StatsWeight(tmp_weight["weight"])
+            return StatsWeight(tmp_weight["weight"]) if tmp_weight else None
         while True:
             # 选择人物
             charcacter_names = sorted(self.loadout_data.keys())      # 对配装数据中角色名称排序
@@ -571,7 +576,7 @@ class Relic:
             # 交互编辑
             charcacter_weight = interface_1(charcacter_weight)
             if charcacter_weight is None:   # 取消编辑
-                return
+                continue
             # 保存记录
             if weight_name == "None": weight_name = ""
             if not weight_name or weight_name and questionary.confirm(_("是否对权重重命名"), default=False).ask():
@@ -667,7 +672,10 @@ class Relic:
             options_0 = [
                 Choice(str_just(char_name, 15) + _("■ {}").format("1" if char_name in self.char_panel_data else "0"), value = char_name) 
                 for char_name in charcacter_names
-            ] + [Choice(_("<返回上一级>"), shortcut_key='z')]
+            ]
+            if not options_0:
+                options_0.append(Choice(_(" --空--"), disabled=_("请先保存角色配装")))
+            options_0.append(Choice(_("<返回上一级>"), shortcut_key='z'))
             option_0 = questionary.select(_("请选择角色:"), options_0, default=option_0, use_shortcuts=True, style=self.msg_style).ask()
             if option_0 == _("<返回上一级>"):
                 return
@@ -678,7 +686,7 @@ class Relic:
             # 交互编辑
             charcacter_panel = interface_1(charcacter_panel)
             if charcacter_panel is None:   # 取消编辑
-                return
+                continue
             # 保存记录
             if panel_name == "None": panel_name = ""
             if not panel_name or panel_name and questionary.confirm(_("是否对面板重命名"), default=False).ask():
@@ -958,13 +966,14 @@ class Relic:
             time.sleep(1)
             tmp_data = self.try_ocr_relic(equip_indx, max_retries)
             tmp_hash = get_data_hash(tmp_data, RELIC_DATA_FILTER)
-            log.debug("\n"+pp.pformat(tmp_data))
-            self.print_relic(tmp_data, tmp_hash, char_weight)
             if tmp_hash in self.relics_data:
                 log.info(_("遗器数据已存在"))
+                tmp_data = self.relics_data[tmp_hash]  # 载入可能的速度修正
             else:
                 log.info(_("录入遗器数据"))
                 self.add_relic_data(tmp_data, tmp_hash)
+            log.debug("\n"+pp.pformat(tmp_data))
+            self.print_relic(tmp_data, tmp_hash, char_weight)
             relics_hash.append(tmp_hash)
         self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器替换]界面，返回[角色]-[遗器]界面
         time.sleep(0.5)
@@ -1350,7 +1359,7 @@ class Relic:
             检查遗器数据是否发生手动修改 (应对json数据格式变动或手动矫正仪器数值)，
             若发生修改，可选择更新仪器哈希值，并替换配装数据中相应的数值
         """
-        equip_set_dict = {key: value for value, key in enumerate(EQUIP_SET_NAME)}
+        equip_set_dict = Array2dict(EQUIP_SET_NAME)
         relics_data_copy = self.relics_data.copy()  # 字典迭代过程中不允许修改key
         cnt = 0
         for old_hash, data in relics_data_copy.items():
@@ -1393,7 +1402,7 @@ class Relic:
         # 修改配装文件
         for char_name, loadouts in self.loadout_data.items():
             for loadout_name, hash_list in loadouts.items():
-                if hash_list[equip_indx] == old_hash:
+                if hash_list["relic_hash"][equip_indx] == old_hash:
                     self.loadout_data[char_name][loadout_name]["relic_hash"][equip_indx] = new_hash
         rewrite_json_file(LOADOUT_FILE_NAME, self.loadout_data)
         # 队伍配装文件无需修改
@@ -1583,6 +1592,7 @@ class Relic:
         subs_stats_dict = Array2dict(SUBS_STATS_NAME)
         total_num = 0   # 总词条数或有效词条数
         bad_num = 0     # 强化歪了的次数
+        good_num = 0    # 强化中了的次数
         for name, value in data["subs_stats"].items():
             pre = " " if name in NOT_PRE_STATS else "%"
             if not self.is_detail or rarity not in [4,5]:    # 不满足校验条件
@@ -1596,6 +1606,7 @@ class Relic:
                 num = self.get_num_of_stats(ret, rarity)  # 计算词条数
                 if char_weight and char_weight.get_weight(name) > 0 or not char_weight:
                     total_num += num
+                    good_num += level-1
                 if char_weight and char_weight.get_weight(name) == 0:
                     bad_num += level-1
                 tag = '>'*(level-1)   # 强化次数的标识
@@ -1619,7 +1630,9 @@ class Relic:
         if not self.is_detail or rarity not in [4,5]:
             token.append(" "*10+"\n")
         elif char_weight:
-            if bad_num == 0:
+            if good_num == 0:  # 未有副词条的强化次数
+                token.append(_("  有效 "), "green")
+            elif bad_num == 0:
                 token.append(_("  全中 "), "green")
             else:
                 token.append(_(" 歪{}次 ").format(bad_num), "green")
@@ -1687,9 +1700,11 @@ class Relic:
             if self.loadout_detail_type == 0:
                 options.append(Choice(_("<<切换为遗器详情>>"), shortcut_key='v'))
                 options.append(
-                    Choice(_("<<关闭条件效果>>") if self.activate_conditional else _("<<开启条件效果>>"), shortcut_key='x',
-                            description = INDENT+_("涵盖[遗器套装效果]与自定义的[角色裸装面板]中的条件效果"))+INDENT+_("开启时，默认激活全部条件效果的最大效果"))
-                    # 【待扩展】自动激活达到可计算触发条件的条件效果
+                    Choice(
+                        _("<<关闭条件效果>>") if self.activate_conditional else _("<<开启条件效果>>"), shortcut_key='x',
+                        description = INDENT+_("涵盖[遗器套装效果]与自定义的[角色裸装面板]中的条件效果")+INDENT+_("开启时，默认激活全部条件效果的最大效果")
+                    )
+                )  # 【待扩展】自动激活达到可计算触发条件的条件效果
             else:
                 options.append(Choice(_("<<切换为面板详情>>"), shortcut_key='v'))
         else:
@@ -1729,7 +1744,7 @@ class Relic:
             ) for team_name, team_data in group_data]
         return choice_options
 
-    def get_loadout_options(self, character_name:str) -> List[Choice]:
+    def get_loadout_options(self, character_name: str) -> List[Choice]:
         """
         说明：
             获取该人物配装记录的选项表
@@ -1790,7 +1805,7 @@ class Relic:
         msg.extend(combine_styled_text(*text_list[3:], sep="  ", indent=indent_num))
         indent = "\n" + " "*indent_num
         msg.append(indent)
-        msg.append(_("属性权重'{}_{}'").format(character_name, char_weight_name) if char_weight else _("未启用权重"))
+        msg.append(_("属性权重'{}'").format(char_weight_name) if char_weight else _("未启用权重"))
         msg.append(_("  评分系统开发中...\n"), "grey")
         return msg
 
@@ -1990,7 +2005,7 @@ class Relic:
         # [5.5]打印额外效果
         if extra_effect_list:
             msg.append("\n" + " " * (indent_num-3) + _("额外效果："))
-            msg.append("".join(indent_ + f"{i+1}.{text}"  for i, text in enumerate(extra_effect_list)))
+            msg.append("".join(indent_ + f"{i+1}) {text}"  for i, text in enumerate(extra_effect_list)))
         msg.append("\n")
         return msg
 
