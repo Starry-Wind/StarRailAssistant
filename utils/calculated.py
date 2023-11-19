@@ -1117,13 +1117,19 @@ class StyledText(List[Tuple[str, str]]):
             lines_list.pop()
         return lines_list
 
-def combine_styled_text(*texts: StyledText, **kwargs) -> StyledText:
+def combine_styled_text(*texts: StyledText, prefix: Optional[Union[str, Tuple[str, str]]]=None, **kwargs) -> StyledText:
     """
     说明：
         将多个风格化文本序列，按行进行横向并联
+    参数：
+        :param sep: 插入在文本序列间的内容，默认为空
+        :param prefix: 文本前缀
+        :param indent: 起始位置的缩进长度，默认为零
     """
     result = StyledText()
     lines_list_list: List[List[StyledText]] = []
+    if prefix:
+        result.append(prefix)
     for text in texts:
         lines_list_list.append(text.splitlines())
     for line in zip(*lines_list_list):
