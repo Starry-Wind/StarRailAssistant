@@ -1026,21 +1026,31 @@ class Relic:
             """
             说明：
                 在当前滑动[角色]-[遗器]-[遗器替换]-[遗器筛选]-[遗器套装筛选]界面内，搜索遗器套装名，并点击。
-                综合OCR识别与方位计算
+                综合OCR识别与方位计算 (游戏1.5版本共28套遗器)
             参数：
                 :param equip_set_index: 遗器套装索引
             """
             is_left = relic_set_index % 2 == 0  # 计算左右栏
-            page_num = 0 if relic_set_index < 8 else (1 if relic_set_index < 16 else 2)  # 计算页数 (将第2页的末尾两件放至第3页来处理)
-            last_page = 1
+            # 计算页数 (页间有重叠，每页滑动4行)
+            if relic_set_index < 8:
+                page_num = 0
+            elif relic_set_index < 16:
+                page_num = 1
+            elif relic_set_index < 24:
+                page_num = 2
+            else:
+                page_num = 3
+            last_page = 3
             # 滑动翻页
             for i in range(page_num):
                 time.sleep(0.2)
-                self.calculated.relative_swipe((30,60) if IS_PC else (30,62), (30,31) if IS_PC else (30,27)) # 整页翻动 (此界面的动态延迟较大)
-                if i != last_page:  # 非末页，将翻页的动态延迟暂停 (末页会有个短暂反弹动画后自动停止)
+                self.calculated.relative_swipe((30,60) if IS_PC else (30,62), (30,36) if IS_PC else (30,32)) # 页面翻动4行 (此动作的动态延迟较大)
+                if page_num != last_page:  # 非末页，将翻页的动态延迟暂停
                     self.calculated.relative_click((35,35) if IS_PC else (35,32), 0.5)   # 长按选中
                     time.sleep(0.5)
                     self.calculated.relative_click((35,35) if IS_PC else (35,32))        # 取消选中
+                elif i == last_page-1:
+                    time.sleep(0.5)  # 等待末页的短暂反弹动画停止
             points = ((28,33,42,63) if is_left else (53,33,67,63)) if IS_PC else ((22,29,41,65) if is_left else (53,29,72,65))
             self.calculated.ocr_click(RELIC_SET_NAME[relic_set_index, 1], points=points)
 
