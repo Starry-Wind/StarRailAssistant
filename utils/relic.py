@@ -39,16 +39,16 @@ class StatsWeight:
                 self.weight["速度%"] = value  # 大小词条，权值等同
             self.weight[key] = value
     
-    def get_color(self, key: str) -> str:
+    def get_color(self, key: str, modify=False) -> str:
         if self.weight == {}:  # 未载入权重数据的情形
             return ""
-        # 数值修饰
+        # 白值打印修饰
         if key[-2:] == _("白值"):
             value = self.get_weight(key[:-2]+"%")  # 白值视为大词条
             # if value == 0:
             #     value = 0.1  # 标记值，意为所有白值至少为"weight_1"
         else:
-            value = self.get_weight(key)
+            value = self.get_weight(key, modify)
         # 赋色
         if value == 0:
             return "weight_0"  # 灰色 (无效词条)
@@ -57,7 +57,10 @@ class StatsWeight:
         else:
             return "weight_2"  # 黄色
     
-    def get_weight(self, key: str) -> float:
+    def get_weight(self, key: str, modify=False) -> float:
+        # 权重打印修饰
+        if modify and key in [_("生命值"), _("攻击力"), _("防御力")]:
+            key += "%"
         return self.weight.get(key, 0)   # 缺损值默认为无效词条
     
     def __repr__(self) -> str:
