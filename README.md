@@ -81,8 +81,19 @@ This software is open source, free of charge and for learning and exchange purpo
 - [ ] 模拟宇宙正在开发
 - [x] GUI开发
 - [ ] 后续将会新增找宝箱、锄大地顺带捡垃圾等功能
+- [x] 遗器模块 (不支持GUI)
+    - [x] 遗器的识别、匹配、搜索
+    - [x] 角色配装的保存、编辑、读取并装备
+    - [x] 队伍配装的保存、读取并装备
+    - [x] 支持创建、编辑、载入角色裸装面板与属性权重
+    - [x] 支持对相关文本的风格化打印
+    - [ ] 对遗器与角色配装的评估、推荐
 
 [项目进度请点击查看](https://github.com/users/Night-stars-1/projects/2)
+
+## 遗器模块展示
+<img src="https://github.com/weiduhuo/StarRailAssistant/blob/picture/relic1.gif" />
+<img src="https://github.com/weiduhuo/StarRailAssistant/blob/picture/relic2.gif" />
 
 ## 贡献
 
