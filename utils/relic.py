@@ -272,30 +272,34 @@ class Relic:
             批量识别遗器
         """
         # [1]选择识别范围与权重
-        if stats_weight:
-            log.info(_("启用权重'{}'").format(weight_name))
-            log.debug(stats_weight)
         options_0 = [
             Choice(_("仅当前遗器"), value=0,
                    description = INDENT+_("请使游戏保持在[角色]-[遗器]-[遗器替换]界面")+INDENT+_("推荐识别前手动点击[对比]提高识别度")),
             Choice(_("当前筛选条件下的当前所选部位的所有遗器"), value=1, 
                    description = INDENT+_("识别途中不可中断")+INDENT+_("请使游戏保持在[角色]-[遗器]-[遗器替换]界面")+INDENT+_("推荐识别前手动点击[对比]提高识别度")),
-            Choice(_("<<载入属性权重>>"), shortcut_key='x'),
+            Choice(_("<<载入属性权重>>"), shortcut_key='x',
+                   description=combine_styled_text(self.print_stats_weight(stats_weight), prefix="\n  启用权重:\n", indent=5) if stats_weight else None),
             Choice(_("<返回上一级>"), shortcut_key='z'),
             Separator(" "),
         ]
-        option_0 = questionary.select(_("请选择识别的范围"), options_0, use_shortcuts=True).ask()
+        option_0 = questionary.select(_("请选择识别的范围"), options_0, use_shortcuts=True, style=self.msg_style).ask()
         if option_0 == _("<返回上一级>"):
             return
         if option_0 == _("<<载入属性权重>>"):
             charcacter_names = sorted(self.char_weight_data.keys())      # 对权重数据中角色名称排序
-            options_1 = [
-                Choice(str_just(char_name, 15) + _("■ {}").format(len(self.char_weight_data[char_name])), value = char_name) 
-                for char_name in charcacter_names
-            ]
+            options_1 = []
+            for char_name in charcacter_names:
+                has_ = char_name in self.char_weight_data
+                __, weight = self.find_char_weight(char_name)
+                weight_text = combine_styled_text(self.print_stats_weight(weight), prefix="\n", indent=5)
+                choice_text = str_just(char_name, 15) + _("■ {}").format("1" if has_ else "0")
+                options_1.append(
+                    Choice(choice_text, value=char_name, description=weight_text) 
+                )
             options_1.extend([
                 Choice(_("<<创建临时权重>>"), shortcut_key='x'),
                 Choice(_("<取消>"), shortcut_key='z'),
+                Separator(" ")
             ])
             option_1 = questionary.select(_("请选择属性权重:"), options_1, use_shortcuts=True, style=self.msg_style).ask()
             if option_1 == _("<取消>"):
@@ -536,10 +540,24 @@ class Relic:
         while True:
             # 选择人物
             charcacter_names = sorted(self.loadout_data.keys())      # 对配装数据中角色名称排序
-            options_0 = [
-                Choice(str_just(char_name, 15) + _("■ {}").format("1" if char_name in self.char_weight_data else "0"), value = char_name) 
-                for char_name in charcacter_names
-            ] + [Choice(_("<返回上一级>"), shortcut_key='z')]
+            options_0 = []
+            for char_name in charcacter_names:
+                has_ = char_name in self.char_weight_data
+                if has_:
+                    __, weight = self.find_char_weight(char_name)
+                    weight_text = combine_styled_text(self.print_stats_weight(weight), prefix="\n", indent=5)
+                else:
+                    weight_text = None
+                choice_text = str_just(char_name, 15) + _("■ {}").format("1" if has_ else "0")
+                options_0.append(
+                    Choice(choice_text, value=char_name, description=weight_text) 
+                )
+            if not options_0:
+                options_0.append(Choice(_(" --空--"), disabled=_("请先保存角色配装")))
+            options_0.extend([
+                Choice(_("<返回上一级>"), shortcut_key='z'),
+                Separator(" ")
+            ])
             option_0 = questionary.select(_("请选择角色:"), options_0, default=option_0, use_shortcuts=True, style=self.msg_style).ask()
             if option_0 == _("<返回上一级>"):
                 return
@@ -1613,6 +1631,28 @@ class Relic:
             print_styled_text(token, style=self.msg_style)
         else:
             return token
+
+    def print_stats_weight(self, stats_weight: Union[StatsWeight, Dict[str, float]]) -> Optional[StyledText]:
+        """
+        说明：
+            打印属性权重信息
+        """
+        if isinstance(stats_weight, dict):
+            stats_weight = StatsWeight(stats_weight)
+        token = StyledText()
+        has_ = False  # 标记有无属性伤害
+        for index, name in enumerate(WEIGHT_STATS_NAME):
+            value = stats_weight.get_weight(name, True)
+            value_str = "{:.2f}".format(value)
+            if index >= 11:   # 过滤属性伤害
+                if index == 17 and not has_ and value == 0 :  # 无属性伤害的情形
+                    token.append(str_just(_("属性伤害"), 15) + f"{value_str:>7}\n", "weight_0")
+                    continue
+                elif value == 0:
+                    continue
+                else:  has_ = True
+            token.append(str_just(name, 15) + f"{value_str:>7}\n", stats_weight.get_color(name, True))
+        return token
 
     def ask_loadout_options(
         self, character_name: str,
