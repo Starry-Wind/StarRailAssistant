@@ -279,9 +279,9 @@ class Relic:
         # [1]选择识别范围与权重
         options_0 = [
             Choice(_("仅当前遗器"), value=0,
-                   description = INDENT+_("请使游戏保持在[角色]-[遗器]-[遗器替换]界面")+INDENT+_("推荐识别前手动点击[对比]提高识别度")),
+                   description = INDENT+_("请使游戏保持在[角色]-[遗器]-[遗器替换]界面")+INDENT+_("建议识别前手动点击[对比]提高识别度")),
             Choice(_("当前筛选条件下的当前所选部位的所有遗器"), value=1, 
-                   description = INDENT+_("识别途中不可中断")+INDENT+_("请使游戏保持在[角色]-[遗器]-[遗器替换]界面")+INDENT+_("推荐识别前手动点击[对比]提高识别度")),
+                   description = INDENT+_("识别途中不可中断")+INDENT+_("请使游戏保持在[角色]-[遗器]-[遗器替换]界面")+INDENT+_("建议识别前手动点击[对比]提高识别度")),
             Choice(_("<<载入属性权重>>"), shortcut_key='x',
                    description=combine_styled_text(self.print_stats_weight(stats_weight), prefix="\n  启用权重:\n", indent=5) if stats_weight else None),
             Choice(_("<返回上一级>"), shortcut_key='z'),
@@ -368,7 +368,7 @@ class Relic:
             option_3 = None
             options_3 = [
                 Choice(_("识别当前遗器"), value = 0,
-                       description = INDENT+_("请使游戏保持在[角色]-[遗器]-[遗器替换]界面")+INDENT+_("推荐识别前手动点击[对比]提高识别度")),
+                       description = INDENT+_("请使游戏保持在[角色]-[遗器]-[遗器替换]界面")+INDENT+_("建议识别前手动点击[对比]提高识别度")),
                 # 【待扩展】查询遗器数据库、推荐系统
                 Choice(_("<返回上一级>"), shortcut_key='z'),
                 Separator(" "),
@@ -1453,6 +1453,7 @@ class Relic:
                 return data
             except: 
                 if retry >= max_retries:
+                    self.calculated.switch_cmd()
                     raise Exception(_("重试次数达到上限"))
                 retry += 1
                 log.info(_(f"第 {retry} 次尝试重新OCR"))
