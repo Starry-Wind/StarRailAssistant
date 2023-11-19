@@ -501,13 +501,13 @@ class Relic:
             :parma tmp: 是否为创建临时权重
         """
         option_0 = None
-        def interface_1(char_weight: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        def interface_1(char_weight: Dict[str, Union[Dict[str, float], Any]]) -> Optional[Dict[str, Union[Dict[str, float], Any]]]:
             """
             说明：
                 第[1]层级，编辑权重
             """
             option_1 = None
-            weight: Dict[str, float] = char_weight["weight"]
+            weight: Dict[str, float] = char_weight["weight"].copy()
             def get_choices(st: Optional[int]=None, ed: Optional[int]=None) -> List[Choice]:
                 choices = []
                 for name in WEIGHT_STATS_NAME[st:ed]:  # 按需切片
@@ -610,16 +610,16 @@ class Relic:
                 name = option_2
                 value = questionary.text("请输入数值:", validate=FloatValidator(0)).ask()  # input float
                 stats[name] = float(value)  # 更新数据
-        def interface_1(char_panel: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        def interface_1(char_panel: Dict[str, Union[Dict[str, float], List[str]]]) -> Optional[Dict[str, Union[Dict[str, float], List[str]]]]:
             """
             说明：
                 第[1]层级，选择编辑的类别
             """
             option_1 = None
-            base_values = char_panel.get("base", {})   # 白值属性
-            additonal_stats = char_panel.get("additonal", {"暴击率":5, "暴击伤害":50, "能量恢复效率":100})  # 附加属性 (设置角色默认值)
-            conditional_stats = char_panel.get("conditional", {})  # 条件属性
-            extra_effect_list:list = char_panel.get("extra_effect", []) # 额外效果
+            base_values = char_panel.get("base", {}).copy()   # 白值属性
+            additonal_stats = char_panel.get("additonal", {"暴击率":5, "暴击伤害":50, "能量恢复效率":100}).copy()  # 附加属性 (设置角色默认值)
+            conditional_stats = char_panel.get("conditional", {}).copy()  # 条件属性
+            extra_effect_list:list = char_panel.get("extra_effect", []).copy() # 额外效果
             while True:
                 extra_effect_msg = "".join(INDENT+f"{i+1}.{text}" for i, text in enumerate(extra_effect_list))
                 options_1 = [

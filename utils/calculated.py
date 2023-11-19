@@ -6,6 +6,7 @@ import os
 import re
 import sys
 import time
+import copy
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
@@ -1161,7 +1162,7 @@ def get_data_hash(data: Any, key_filter: Optional[List[str]]=None, speed_modifie
     if not key_filter:
         tmp_data = data
     elif isinstance(data, dict):
-        tmp_data = {key: value for key, value in data.items() if key not in key_filter}
+        tmp_data = copy.deepcopy({key: value for key, value in data.items() if key not in key_filter})  # 深拷贝
         if speed_modified and _("速度") in tmp_data["subs_stats"]:
             tmp_data["subs_stats"][_("速度")] = float(int(tmp_data["subs_stats"][_("速度")]))  # 去除小数部分
     else:
