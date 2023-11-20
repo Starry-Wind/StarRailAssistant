@@ -9,7 +9,7 @@
   },
   {
     "path": "README.md",
-    "hash": "4262585cc05d08908b3df000c57a4f5d"
+    "hash": "89bbb81ea9c4b2db00c31b9b492dcd46"
   },
   {
     "path": "README_EN.md",
@@ -80,12 +80,16 @@
     "hash": "0a0ccfe2f4f2da8626fda930bd84ef9c"
   },
   {
+    "path": "data/fixed_data/char_weight_default.json",
+    "hash": "50e249d644d2ab442627d8f75a4a649b"
+  },
+  {
     "path": "utils/log.py",
     "hash": "172d7d4d63c1b3136c5600055e666967"
   },
   {
     "path": "utils/relic.py",
-    "hash": "abeeb6dc7a248ae1a290a43879409906"
+    "hash": "b5779bffa7b873a6bae6b42408611cf5"
   },
   {
     "path": "utils/cv_tools.py",
@@ -109,7 +113,7 @@
   },
   {
     "path": "utils/calculated.py",
-    "hash": "165798560ca78e99c9e6c6a25fef3eb2"
+    "hash": "ffbe94b0ab7128b4eb846366c06d1872"
   },
   {
     "path": "utils/route_helper.py",
@@ -117,7 +121,7 @@
   },
   {
     "path": "utils/relic_constants.py",
-    "hash": "b83b876b1d6d0d11351f96a638f69713"
+    "hash": "5d2688a55fa2c412e1e0cd3dfe274be4"
   },
   {
     "path": "utils/exceptions.py",
@@ -137,7 +141,7 @@
   },
   {
     "path": "utils/config.py",
-    "hash": "383feaef580d619bea67d18394ce05fb"
+    "hash": "a05b40a9164a8d15a6aebd1dddf5b88a"
   },
   {
     "path": "utils/old_cv_tools.py",
@@ -209,11 +213,11 @@
   },
   {
     "path": "utils/questionary/questionary/prompts/common.py",
-    "hash": "8df03b31d4bf9e6eb8279e53234bc845"
+    "hash": "e0e1b256a90b2059447647547250763b"
   },
   {
     "path": "utils/questionary/questionary/prompts/select.py",
-    "hash": "0c00084273d24253469a651532a2e803"
+    "hash": "b8565978dd1c2fd2e325b96eba2c932d"
   },
   {
     "path": "utils/questionary/questionary/prompts/press_any_key_to_continue.py",
