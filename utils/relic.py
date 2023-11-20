@@ -1686,6 +1686,8 @@ class Relic:
                 :return value: 队员信息字典(key-人物名称，value-配装名称),
                 :return description: 队员配装的简要信息
         """
+        if not self.team_data:
+            return [(Choice(_(" --空--"), disabled=_("请先保存队伍配装")))]
         group_data = self.team_data["compatible"]    # 获取非互斥队组别信息
         group_data = sorted(group_data.items())      # 按键名即队伍名称排序
         ...  # 获取互斥队伍组别信息【待扩展】
