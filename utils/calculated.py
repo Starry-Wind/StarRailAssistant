@@ -702,6 +702,7 @@ class calculated(CV_Tools):
         if debug:
             log.info(data)
             # show_img(img_fp)
+            os.makedirs("logs/image", exist_ok=True)
             timestamp_str = str(int(datetime.timestamp(datetime.now())))
             cv.imwrite(f"logs/image/relic_{str(points)}_{timestamp_str}.png", img_fp)
         else:

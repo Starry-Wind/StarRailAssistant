@@ -1395,18 +1395,21 @@ class Relic:
             :return result_data: 遗器数据包
         """
         retry = 0
+        debug = False
         while True:  # 视作偶发错误进行重试
             try:  
-                data = self.ocr_relic(equip_set_index)
+                data = self.ocr_relic(equip_set_index, debug)
                 return data
             except: 
                 if retry >= max_retries:
                     self.calculated.switch_cmd()
+                    questionary.print(_("请检查是否按要求与建议进行操作。\n若仍然发生此错误，请同时上传相应的日志文件与'logs/image'目录下的相应截图至交流群或gihub"), "orange")
                     raise Exception(_("重试次数达到上限"))
                 retry += 1
+                debug = True  # 开启对识别区域的截图保存
                 log.info(_(f"第 {retry} 次尝试重新OCR"))
-        
-    def ocr_relic(self, equip_set_index: Optional[int]=None) -> Optional[Dict[str, Any]]:
+
+    def ocr_relic(self, equip_set_index: Optional[int]=None, debug=False) -> Optional[Dict[str, Any]]:
         """
         说明：
             OCR当前静态[角色]-[遗器]-[遗器替换]界面内的遗器数据，单次用时约0.5s。
@@ -1421,7 +1424,7 @@ class Relic:
         img_pc = self.calculated.take_screenshot()  # 仅截取一次图片
         # [1]部位识别
         if equip_set_index is None:
-            equip_set_index = self.calculated.ocr_pos_for_single_line(EQUIP_SET_NAME, points=(77,19,83,23) if IS_PC else (71,22,78,26), img_pk=img_pc)
+            equip_set_index = self.calculated.ocr_pos_for_single_line(EQUIP_SET_NAME, points=(77,19,83,23) if IS_PC else (71,22,78,26), img_pk=img_pc, debug=debug)
             if equip_set_index < 0:
                 raise RelicOCRException(_("遗器套装OCR错误"))
         equip_set_name = EQUIP_SET_NAME[equip_set_index]
@@ -1429,7 +1432,7 @@ class Relic:
         name_list = RELIC_SET_NAME[:, 0].tolist()
         name_list = name_list[:RELIC_INNER_SET_INDEX] if equip_set_index < 4 else name_list[RELIC_INNER_SET_INDEX:]   # 取外圈/内圈的切片
         name_list += [_("未装备")]
-        relic_set_index = self.calculated.ocr_pos_for_single_line(name_list, points=(77,15,92,19) if IS_PC else (71,17,88,21), img_pk=img_pc)
+        relic_set_index = self.calculated.ocr_pos_for_single_line(name_list, points=(77,15,92,19) if IS_PC else (71,17,88,21), img_pk=img_pc, debug=debug)
         if relic_set_index < 0: 
             raise RelicOCRException(_("遗器部位OCR错误"))
         if relic_set_index == len(name_list)-1:   # 识别到"未装备"，即遗器为空
@@ -1451,14 +1454,14 @@ class Relic:
         else:
             raise RelicOCRException(_("遗器稀有度识别错误"))
         # [4]等级识别
-        level = self.calculated.ocr_pos_for_single_line(points=(95,19,98,23) if IS_PC else (94,22,98,26), number=True, img_pk=img_pc)
+        level = self.calculated.ocr_pos_for_single_line(points=(95,19,98,23) if IS_PC else (94,22,98,26), number=True, img_pk=img_pc, debug=debug)
         level = int(level.split('+')[-1])  # 消除开头可能的'+'号
         if level > 15:
             raise RelicOCRException(_("遗器等级OCR错误"))
         # [5]主属性识别
         name_list = BASE_STATS_NAME_FOR_EQUIP[equip_set_index][:, 0].tolist()
-        base_stats_index = self.calculated.ocr_pos_for_single_line(name_list, points=(79.5,25,92,29) if IS_PC else (74,29,89,34), img_pk=img_pc)
-        base_stats_value = self.calculated.ocr_pos_for_single_line(points=(93,25,98,29) if IS_PC else (91,29,98,34), number=True, img_pk=img_pc)
+        base_stats_index = self.calculated.ocr_pos_for_single_line(name_list, points=(79.5,25,92,29) if IS_PC else (74,29,89,34), img_pk=img_pc, debug=debug)
+        base_stats_value = self.calculated.ocr_pos_for_single_line(points=(93,25,98,29) if IS_PC else (91,29,98,34), number=True, img_pk=img_pc, debug=debug)
         if base_stats_index < 0: 
             raise RelicOCRException(_("遗器主词条OCR错误"))
         if base_stats_value is None:
@@ -1478,12 +1481,12 @@ class Relic:
         for name_point, value_point in zip(subs_stats_name_points, subs_stats_value_points):
             # 必须先识别属性数值，后识别属性名称 
             # (当副词条不足4个时，需判定识别结果为空，而此时属性名称的识别区域会可能与下方的"套装效果"文字重合使结果非空)
-            tmp_value = self.calculated.ocr_pos_for_single_line(points=value_point, number=True, img_pk=img_pc)  
+            tmp_value = self.calculated.ocr_pos_for_single_line(points=value_point, number=True, img_pk=img_pc, debug=debug)
             if tmp_value:
                 tmp_value = str(tmp_value).replace('.', '')   # 删除所有真假小数点
             if tmp_value is None or tmp_value == '':
                 break    # 所识别data为空，判断词条为空，正常退出循环
-            tmp_index = self.calculated.ocr_pos_for_single_line(name_list, points=name_point, img_pk=img_pc)
+            tmp_index = self.calculated.ocr_pos_for_single_line(name_list, points=name_point, img_pk=img_pc, debug=debug)
             if tmp_index is None or tmp_index < 0:
                 raise RelicOCRException(_("遗器副词条OCR错误"))
             if '%' in tmp_value:
