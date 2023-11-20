@@ -6,6 +6,7 @@ import os
 import re
 import sys
 import time
+import copy
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
@@ -22,6 +23,8 @@ from pynput import mouse
 from pynput.keyboard import Controller as KeyboardController
 from pynput.keyboard import Key
 from pynput.mouse import Controller as MouseController
+from questionary import Validator, ValidationError, Style
+from collections.abc import Iterable
 
 from .config import CONFIG_FILE_NAME, _, get_file, sra_config_obj
 from .cv_tools import CV_Tools, show_img
@@ -699,6 +702,7 @@ class calculated(CV_Tools):
         if debug:
             log.info(data)
             # show_img(img_fp)
+            os.makedirs("logs/image", exist_ok=True)
             timestamp_str = str(int(datetime.timestamp(datetime.now())))
             cv.imwrite(f"logs/image/relic_{str(points)}_{timestamp_str}.png", img_fp)
         else:
@@ -993,16 +997,19 @@ class calculated(CV_Tools):
 
 class Array2dict:
 
-    def __init__(self, arr: np.ndarray, key_index: int = -1, value_index: Optional[int]=None):
+    def __init__(self, arr: Union[np.ndarray, List[str]], key_index: int = -1, value_index: Optional[int]=None):
         """
         说明：
-            将np数组转化为字典暂住内存，用于对数组短时间内的频繁查找
+            将np数组或序列转化为字典暂住内存，用于短时间内的频繁查找
         参数:
-            :param arr: 二维数组
+            :param arr: 二维数组或一维序列
             :param key_index: 待查找的关键字所在的数组列标
             :param value_index: 待查找的数值所在的数组列标 (为空时表示查找关键字的行标)
         """
-        if arr.ndim != 2:
+        if isinstance(arr, list):
+            self.data_dict = {element: idx for idx, element in enumerate(arr)}
+            return
+        if isinstance(arr, np.ndarray) and arr.ndim != 2:
             raise ValueError("输入的数组必须为二维数组")
         # 将np数组转化为字典
         if value_index is None:  # 默认将key的行标作为value，以取代np.where
@@ -1012,8 +1019,137 @@ class Array2dict:
         # log.debug(self.data_dict)
 
     def __getitem__(self, key: Any) -> Any:
-        return self.data_dict[key]
+        return self.data_dict.get(key, None)
     
+
+class FloatValidator(Validator):
+    """
+    说明：
+        为questionary校验所输入的文本是否为规定范围内的小数
+    """
+    def __init__(self, st: Optional[float]=None, ed: Optional[float]=None) -> None:
+        super().__init__()
+        self.st = st
+        self.ed = ed
+
+    def validate(self, document):
+        try:
+            number = float(document.text)
+        except ValueError:
+            raise ValidationError(message=_("请输入整数或小数"))
+        if self.st is not None and number < self.st:
+            raise ValidationError(message=_("数字小于下界{}").format(self.st))
+        if self.ed is not None and number > self.ed:
+            raise ValidationError(message=_("数字大于下界{}").format(self.ed))
+
+
+class ConflictValidator(Validator):
+    """
+    说明：
+        为questionary校验所输入的文本是否存在命名冲突
+    """
+    def __init__(self, names: Iterable[str]) -> None:
+        super().__init__()
+        self.names = names
+
+    def validate(self, document):
+        if document.text in self.names:
+            raise ValidationError(message=_("存在命名冲突"), cursor_position=len(document.text))
+
+
+class StyledText(List[Tuple[str, str]]):
+    """
+    说明：
+        风格化文本序列，继承 List[Tuple[str, str]]，(0-style_class, 1-text)，
+        重载了`append()`和`extend()`方法，支持链式操作。
+        可直接作为`questionary.Choice.description`的初始化参数
+    """
+    def __getitem__(self, key: slice) -> List["StyledText"]:
+        return StyledText(super().__getitem__(key))
+
+    def append(self, text: Union[str, Tuple[str, str]], style_class: str="") -> "StyledText":
+        if isinstance(text, str):
+            if style_class and "class:" not in style_class:
+                style_class = "class:" + style_class
+            super().append((style_class, text))
+        else:
+            super().append(text)
+        return self
+    
+    def extend(self, *texts: Iterable[Tuple[str, str]], sep: Optional[Union[str, Tuple[str, str]]]=None, indent: int=0) -> "StyledText":
+        """
+        说明：
+            继承`list.extend()`
+        参数：
+            :param texts: 任意个`StyledText`类型的文本序列
+            :param sep: 插入在文本序列间的内容，默认为空
+            :param indent: 起始位置的缩进长度，默认为零
+        """
+        if indent:
+            self.append(" "*indent)
+        for i, __iterable in enumerate(texts):
+            if i and sep:
+                self.append(sep)
+            super().extend(__iterable)
+        return self
+    
+    def splitlines(self, keepends=False) -> List["StyledText"]:
+        """
+        说明：
+            按行分割为`StyledText`序列
+        """
+        lines_list = [StyledText()]
+        def end_with_n(s :str) -> bool:
+            return s[-1] == "\n"
+        for style, text in self:
+            if text == "":
+                continue
+            lines = str(text).splitlines(keepends=True)
+            lines_list[-1].append(
+                (style, lines[0][:-1] if end_with_n(lines[0]) and not keepends else lines[0])
+            )
+            for line in lines[1:]:
+                lines_list.append(
+                    StyledText([
+                        (style, line[:-1] if end_with_n(line) and not keepends else line)
+                ]))
+            if end_with_n(lines[-1]):  # 开启空的一行
+                lines_list.append(StyledText())
+        if not lines_list[-1]:  # 删除无效行
+            lines_list.pop()
+        return lines_list
+
+def combine_styled_text(*texts: StyledText, prefix: Optional[Union[str, Tuple[str, str]]]=None, **kwargs) -> StyledText:
+    """
+    说明：
+        将多个风格化文本序列，按行进行横向并联
+    参数：
+        :param sep: 插入在文本序列间的内容，默认为空
+        :param prefix: 文本前缀
+        :param indent: 起始位置的缩进长度，默认为零
+    """
+    result = StyledText()
+    lines_list_list: List[List[StyledText]] = []
+    if prefix:
+        result.append(prefix)
+    for text in texts:
+        lines_list_list.append(text.splitlines())
+    for line in zip(*lines_list_list):
+        result.extend(*line, **kwargs)
+        result.append("\n")
+    return result
+
+def print_styled_text(text: StyledText, style: Style, **kwargs: Any) -> None:
+    """
+    说明：
+        打印风格化文本
+    """
+    from prompt_toolkit import print_formatted_text
+    from prompt_toolkit.formatted_text import FormattedText
+
+    print_formatted_text(FormattedText(text), style=style, **kwargs)
+
+
 def get_data_hash(data: Any, key_filter: Optional[List[str]]=None, speed_modified=False) -> str:
     """
     说明：
@@ -1027,7 +1163,7 @@ def get_data_hash(data: Any, key_filter: Optional[List[str]]=None, speed_modifie
     if not key_filter:
         tmp_data = data
     elif isinstance(data, dict):
-        tmp_data = {key: value for key, value in data.items() if key not in key_filter}
+        tmp_data = copy.deepcopy({key: value for key, value in data.items() if key not in key_filter})  # 深拷贝
         if speed_modified and _("速度") in tmp_data["subs_stats"]:
             tmp_data["subs_stats"][_("速度")] = float(int(tmp_data["subs_stats"][_("速度")]))  # 去除小数部分
     else:

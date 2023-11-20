@@ -32,7 +32,7 @@ def select(
     use_shortcuts: bool = False,
     use_arrow_keys: bool = True,
     use_indicator: bool = False,
-    use_jk_keys: bool = True,
+    use_jk_keys: bool = False,
     use_emacs_keys: bool = True,
     show_selected: bool = False,
     show_description: bool = True,
@@ -135,14 +135,18 @@ def select(
     if choices is None or len(choices) == 0:
         raise ValueError("A list of choices needs to be provided.")
 
-    if use_shortcuts and len(choices) > len(InquirerControl.SHORTCUT_KEYS):
-        raise ValueError(
-            "A list with shortcuts supports a maximum of {} "
-            "choices as this is the maximum number "
-            "of keyboard shortcuts that are available. You"
-            "provided {} choices!"
-            "".format(len(InquirerControl.SHORTCUT_KEYS), len(choices))
+    if use_shortcuts:
+        real_len_of_choices = sum(
+            1 for c in choices if not isinstance(c, Separator)
         )
+        if real_len_of_choices > len(InquirerControl.SHORTCUT_KEYS):
+            raise ValueError(
+                "A list with shortcuts supports a maximum of {} "
+                "choices as this is the maximum number "
+                "of keyboard shortcuts that are available. You "
+                "provided {} choices!"
+                "".format(len(InquirerControl.SHORTCUT_KEYS), real_len_of_choices)
+            )
 
     merged_style = merge_styles_default([style])
 
@@ -204,7 +208,7 @@ def select(
                     "for movement are disabled. "
                     "This choice is not reachable.".format(c.title)
                 )
-            if isinstance(c, Separator) or c.shortcut_key is None:
+            if isinstance(c, Separator) or c.shortcut_key is None or c.disabled:
                 continue
 
             # noinspection PyShadowingNames
