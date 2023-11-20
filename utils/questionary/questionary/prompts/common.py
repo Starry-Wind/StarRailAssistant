@@ -72,7 +72,7 @@ class Choice:
     shortcut_key: Optional[str]
     """A shortcut key for the choice"""
 
-    description: Optional[str]
+    description: Optional[FormattedText]
     """Choice description"""
 
     def __init__(
@@ -82,7 +82,7 @@ class Choice:
         disabled: Optional[str] = None,
         checked: Optional[bool] = False,
         shortcut_key: Optional[Union[str, bool]] = True,
-        description: Optional[str] = None,
+        description: Optional[FormattedText] = None,
     ) -> None:
         self.disabled = disabled
         self.title = title
@@ -445,7 +445,11 @@ class InquirerControl(FormattedTextControl):
             description = current.description
 
             if description is not None:
-                tokens.append(("class:text", "  Description: {}".format(description)))
+                tokens.append(("class:text", "  Description: "))
+                if isinstance(description, list):
+                    tokens.extend(description)
+                else:
+                    tokens.append(("class:text", description))
         else:
             tokens.pop()  # Remove last newline.
         return tokens

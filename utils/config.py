@@ -13,26 +13,43 @@ from .exceptions import TypeError
 from .log import log
 
 CONFIG_FILE_NAME = "config.json"
-RELIC_FILE_NAME = "relics_set.json"
-LOADOUT_FILE_NAME = "relics_loadout.json"
-TEAM_FILE_NAME = "relics_team.json"
+
+USER_DATA_PREFIX = "data/user_data/"
+FIXED_DATA_PREFIX = "data/fixed_data/"
+os.makedirs(USER_DATA_PREFIX, exist_ok=True)
+
+RELIC_FILE_NAME = USER_DATA_PREFIX + "relics_set.json"
+LOADOUT_FILE_NAME = USER_DATA_PREFIX + "relics_loadout.json"
+TEAM_FILE_NAME = USER_DATA_PREFIX + "relics_team.json"
+CHAR_PANEL_FILE_NAME = USER_DATA_PREFIX + "char_panel.json"
+CHAR_WEIGHT_FILE_NAME = USER_DATA_PREFIX + "char_weight.json"
 
 
 def normalize_file_path(filename):
     # 尝试在当前目录下读取文件
     current_dir = os.getcwd()
-    file_path = os.path.join(current_dir, filename)
-    if os.path.exists(file_path):
-        return file_path
+    pre_file_path = os.path.join(current_dir, filename)
+    if os.path.exists(pre_file_path):
+        return pre_file_path
     else:
         # 如果当前目录下没有该文件，则尝试在上一级目录中查找
         parent_dir = os.path.dirname(current_dir)
         file_path = os.path.join(parent_dir, filename)
         if os.path.exists(file_path):
             return file_path
-        else:
-            # 如果上一级目录中也没有该文件，则返回None
-            return None
+        # 如果仍然没有，则尝试在当前目录仅查找文件名
+        pre_filename = str(filename).rsplit('/', 1)[-1]
+        file_path = os.path.join(current_dir, pre_filename)
+        if os.path.exists(file_path):
+            if str(filename).rsplit('/', 1)[0] == USER_DATA_PREFIX[:-1]:
+                # 判断为旧版本 (<=1.8.7) 数据文件位置
+                import shutil
+                shutil.move(file_path, pre_file_path)
+                log.info(_("文件位置更改，由'{}'迁移至'{}'").format(pre_filename, filename))
+                return pre_file_path
+            return file_path
+    # 如果仍然没有，则返回None
+    return None
 
 
 def read_json_file(filename: str, path=False, schema:dict=None) -> dict:
@@ -328,6 +345,8 @@ class SRAData(metaclass=SRADataMeta):
     """是否在打印遗器信息时显示拓展信息"""
     ndigits_for_relic: int = 2
     """在打印遗器信息时的小数精度"""
+    stats_weight_for_relic: int = 0
+    """遗器副词条档位权重：0-空，1-主流赋值，2-真实比例赋值，3-主流赋值比例矫正"""
     auto_shutdown: bool = False
     """是否自动关机"""
 

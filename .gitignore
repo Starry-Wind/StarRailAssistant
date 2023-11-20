@@ -125,6 +125,8 @@ LICENSE
 picture_list.json
 version.json
 *relics*.json
+char_panel.json
+char_weight.json
 screencast.png
 screencast1.png
 utils/A_.py
