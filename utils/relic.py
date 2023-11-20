@@ -162,7 +162,7 @@ class Relic:
             ).ask()
             sra_config_obj.stats_weight_for_relic = self.subs_stats_iter_weight  # 修改配置文件
         # 用户提示
-        questionary.print(_("推荐使用 Windows Termianl 并将窗口调整至合适宽度，以达到更加的显示效果"), "green")
+        questionary.print(_("推荐使用 Windows Termianl 并将窗口调整至合适宽度，以达到更佳的显示效果"), "green")
 
     def relic_entrance(self):
         """
