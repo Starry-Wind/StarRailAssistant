@@ -1566,6 +1566,9 @@ class Relic:
             else:    # 数据校验失败
                 sub_token.append(" ERR", "red")  
                 sub_token.append(_(" {name}      {value:>6.{nd}f}{pre}\n").format(name=str_just(name, 10), value=value, pre=pre, nd=self.ndigits))           
+        # 填充空缺的副词条 (防止遗器联合打印时出现错位)
+        for __ in range(4-len(data["subs_stats"])):
+            sub_token.append(_("{:>5}{}\n").format(" ", str_just(_("---空---"), 23)), "grey")
         # 遗器得分
         ...   # 计算方法【待扩展】
         if rarity in [6]:   # 此处为示例
