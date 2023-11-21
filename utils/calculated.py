@@ -1019,7 +1019,9 @@ class Array2dict:
         # log.debug(self.data_dict)
 
     def __getitem__(self, key: Any) -> Any:
-        return self.data_dict.get(key, None)
+        if key not in self.data_dict:
+            raise ValueError(_("'{}'不在字典中\n{}").format(key, pprint.pformat(self.data_dict, sort_dicts=False)))
+        return self.data_dict[key]
     
 
 class FloatValidator(Validator):
