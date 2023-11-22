@@ -1871,12 +1871,13 @@ class Relic:
             token = StyledText()
             pre = " " if name in NOT_PRE_STATS else "%"
             # 词条数量
-            subs_idx = subs_stats_dict[name]
+            subs_idx = subs_stats_dict.get(name, None)
             if subs_idx is not None or name == _("速度%") and value != 0 and char_panel:
                 tmp_name, tmp_value = name, value  # 修饰
                 if name == _("速度%"):  # 将速度大词条转化为小词条来计算
                     tmp_name = _("速度")
                     tmp_value = bs_and_en_value[3][0] * value / 100
+                    subs_idx = subs_stats_dict[_("速度")]
                 elif char_panel and name == _("暴击率"):    # 减去面板默认提供的
                     tmp_value = value - 5
                 elif char_panel and  name == _("暴击伤害"): # 减去面板默认提供的

@@ -1023,6 +1023,9 @@ class Array2dict:
             raise ValueError(_("'{}'不在字典中\n{}").format(key, pprint.pformat(self.data_dict, sort_dicts=False)))
         return self.data_dict[key]
     
+    def get(self, key: Any, default: Any) -> Any:
+        return self.data_dict.get(key, default)
+    
 
 class FloatValidator(Validator):
     """
