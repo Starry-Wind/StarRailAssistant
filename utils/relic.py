@@ -79,6 +79,10 @@ class Relic:
         if sra_config_obj.language != "zh_CN":
             raise Exception(_("暂不支持简体中文之外的语言"))
         self.calculated = calculated(title, rec_root="model/cnocr_for_relic")
+        log.info(_("命令行窗口：'{}'").format(self.calculated.cmd.title))
+        if self.calculated.cmd.title == title:
+            log.error(_("获取命令行窗口名称时，请勿点击游戏窗口"))   # 排除常见错误
+            raise Exception(_("命令行窗口获取失败"))
 
         self.is_fuzzy_match = sra_config_obj.fuzzy_match_for_relic
         """是否在遗器搜索时开启模糊匹配"""
@@ -138,11 +142,14 @@ class Relic:
 
         # 校验遗器哈希值
         if not self.check_relic_data_hash():
-            if questionary.confirm(_("是否依据当前遗器数据更新哈希值"), default=False).ask():
+            if questionary.confirm(_("是否依据当前遗器数据更新哈希值 (数据结构更新与功能测试使用)"), default=False).ask():
                 self.check_relic_data_hash(updata=True)
+            else:
+                raise Exception(_("json文件校验失败"))
         # 校验队伍配装规范
         if not self.check_team_data():
             log.error(_("怀疑为手动错误修改json文件导致"))
+            raise Exception(_("json文件校验失败"))
         # 首次启动权值进行选择
         if self.subs_stats_iter_weight == 0:
             msg = INDENT+_("仅首次启动进行选择")+INDENT+_("后续可在'config.json'中的'stats_weight_for_relic'选择设置[1,2,3]")
@@ -649,6 +656,7 @@ class Relic:
             装备当前[角色]界面本队伍的遗器配装
         """
         char_pos_list = [(26,6),(31,6),(37,6),(42,6),...,(75,6)] if IS_PC else [(5,16),(5,27),(5,38),(5,49),...,(5,81)]
+        error_msg = []
         # 选择队伍
         option = questionary.select(
             _("请选择对当前队伍进行遗器装备的编队："),
@@ -674,8 +682,13 @@ class Relic:
                 log.error(_(f"编队错误：角色'{character_name}'不应在当前队伍中"))
                 return
             relic_hash = self.loadout_data[character_name][team_members[character_name]]["relic_hash"]
-            self.equip_loadout(relic_hash)
-        log.info(_("队伍配装完毕"))
+            error_logs = self.equip_loadout(relic_hash)
+            if error_logs:
+                error_msg.append("'{}'的[{}]遗器搜索失败\n".format(character_name, ",".join(error_logs)))
+        if error_msg:
+            log.error(_("配装装备失败：\n")+"".join(error_msg))
+        else:
+            log.info(_("配装装备成功"))
 
     def equip_loadout_for_char(self, character_name :Optional[str]=None):
         """
@@ -685,11 +698,7 @@ class Relic:
         # 识别当前人物名称
         self.calculated.switch_window()
         character_name = self.ocr_character_name() if character_name is None else character_name
-        character_data = self.loadout_data[character_name]
         # 选择配装
-        if not character_data:  # 字典为空
-            log.info(_("当前人物配装记录为空"))
-            return
         self.calculated.switch_cmd()
         option = self.ask_loadout_options(character_name, title=_("请选择要装备的配装:"))
         if option == _("<返回上一级>"):
@@ -699,9 +708,13 @@ class Relic:
         # 进行配装
         self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器，进入[角色]-[遗器]界面
         time.sleep(0.5)
-        self.equip_loadout(relic_hash)
+        error_logs = self.equip_loadout(relic_hash)
+        if error_logs:
+            log.error(_("配装装备失败：\n'{}'的[{}]遗器搜索失败").format(character_name, ",".join(error_logs)))
+        else:
+            log.info(_("配装装备成功"))
 
-    def equip_loadout(self, relics_hash:List[str]):
+    def equip_loadout(self, relics_hash:List[str]) -> List[str]:
         """
         说明：
             装备当前[角色]-[遗器]页面内的指定遗器配装。
@@ -712,6 +725,8 @@ class Relic:
         equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
         relic_filter = self.Relic_filter(self.calculated)   # 遗器筛选器初始化
         relic_set_name_dict = Array2dict(RELIC_SET_NAME)
+        error_logs = []
+        # 进入遗器界面
         self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[角色]-[遗器]-[遗器替换]界面
         time.sleep(2)
         self.calculated.relative_click((82,12) if IS_PC else (78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
@@ -736,6 +751,7 @@ class Relic:
                 pos = self.search_relic(equip_indx, key_hash=tmp_hash, key_data=tmp_data)
             if pos is None:
                 log.error(_(f"遗器搜索失败: {tmp_hash}"))
+                error_logs.append(EQUIP_SET_NAME[equip_indx])
                 continue
             # 点击装备
             # self.calculated.relative_click(pos)   # 重复性点击
@@ -754,6 +770,7 @@ class Relic:
         self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器替换]界面，返回[角色]-[遗器]界面
         time.sleep(0.5)
         log.info(_("配装装备完毕"))
+        return error_logs
 
     def save_loadout_for_team(self):
         """
@@ -856,10 +873,6 @@ class Relic:
             instruction = _("(将同时作为角色的新建配装名称)"),
             validate = ConflictValidator(names),
         ).ask()
-        # team_name = input(_(">>>>命名编队名称 (将同时作为各人物新建配装的名称): "))
-        # while team_name in group_data or \
-        #     any([team_name in self.loadout_data[character_name] for character_name, loadout_name in zip(char_name_list, loadout_name_list) if loadout_name is None]):
-        #     team_name = input(_(">>>>命名冲突，请重命名: "))
         # [7]录入数据
         for i, (char_name, relics_hash, loadout_name) in enumerate(zip(char_name_list, relics_hash_list, loadout_name_list)):
             if loadout_name is None:
@@ -1377,6 +1390,9 @@ class Relic:
             :return character_name: 人物名称
         """
         str = self.calculated.ocr_pos_for_single_line(points=(10.4,6,18,9) if IS_PC else (13,4,22,9))   # 识别人物名称 (主角名称为玩家自定义，无法适用预选列表)
+        if not str:
+            log.error(_("未识别到角色名称，请确认游戏界面是否正确"))
+            return self.relic_entrance()
         character_name = re.sub(r"[.’,，。、·'-_——「」/|\[\]\"\\\s]", '', str)   # 删除由于背景光点造成的误判
         log.info(_(f"识别人物: {character_name}"))
         if character_name not in self.loadout_data:
@@ -1449,6 +1465,11 @@ class Relic:
             rarity = 2
         elif hue < 120:  # [蓝]模拟器测试结果的均值为 105
             rarity = 3
+            self.calculated.switch_cmd()
+            questionary.print(_("警惕识别到三星遗器，很有可能由于误识别到背景蓝色导致"), "orange")
+            if not questionary.confirm(_("请确认是否尝试识别三星遗器"), default=False).ask():
+                raise RelicOCRException(_("遗器稀有度识别错误"))
+            self.calculated.switch_window()
         elif hue < 160:  # [紫]模拟器测试结果的均值为 140
             rarity = 4
         else:
@@ -2086,7 +2107,7 @@ class Relic:
             计算词条数量
         """
         if rarity not in [4,5]:
-            return None
+            return 0
         level, score, __ = stats_detail
         level_w, score_w, __ = SUBS_STATS_TIER_WEIGHT[self.subs_stats_iter_weight]
         num = level*level_w + score*score_w
