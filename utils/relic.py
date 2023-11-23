@@ -1457,9 +1457,9 @@ class Relic:
             relic_set_index += RELIC_INNER_SET_INDEX    # 还原内圈遗器的真实索引
         relic_set_name = RELIC_SET_NAME[relic_set_index, -1]
         # [3]稀有度识别
-        hue, __, __ = self.calculated.get_relative_pix_hsv((43,55) if IS_PC else (41,55))   # 识别指定位点色相
+        hue, __, __ = self.calculated.get_relative_pix_hsv((48.2,70) if IS_PC else (41,55))   # 识别指定位点色相，PC端备选位点 (43,55)
         log.debug(f"hue = {hue}")
-        if hue < 40:     # [黄]模拟器测试结果的均值为 25
+        if hue < 40:     # [黄]模拟器测试结果的均值为 25，PC端为 15
             rarity = 5
         elif hue < 80:   # [绿]未有测试样本
             rarity = 2
@@ -1470,7 +1470,7 @@ class Relic:
             if not questionary.confirm(_("请确认是否尝试识别三星遗器"), default=False).ask():
                 raise RelicOCRException(_("遗器稀有度识别错误"))
             self.calculated.switch_window()
-        elif hue < 160:  # [紫]模拟器测试结果的均值为 140
+        elif hue < 160:  # [紫]模拟器测试结果的均值为 140，PC端为 132
             rarity = 4
         else:
             raise RelicOCRException(_("遗器稀有度识别错误"))
