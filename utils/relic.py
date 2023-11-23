@@ -1522,7 +1522,7 @@ class Relic:
                 raise RelicOCRException(_("遗器副词条数值OCR错误"))
             total_level += check[0]
             subs_stats_dict[tmp_name] = tmp_value
-        if self.is_check_stats and rarity in [4,5] and total_level > level // 3 + 4:
+        if self.is_check_stats and rarity in [4,5] and total_level > level // 3 + 4 + 1:  # +1 是为了规避8个挡位积分归为1次强化次数的情形
             log.error(f"total_level: {total_level}")
             raise RelicOCRException(_("遗器副词条某一数值OCR错误"))
         # [7]生成结果数据包
@@ -1556,17 +1556,21 @@ class Relic:
             :param flag: 是-打印，否-返回文本
         """
         token = StyledText()
+        relic_level = data["level"]
         rarity = data["rarity"]
-        token.append("{:<3}".format("+"+str(data["level"])), "bold")
+        token.append("{:<3}".format("+"+str(relic_level)), "bold")
         token.append(" {}".format(str_just(data["equip_set"], 7)))
         token.append(" {star:>5}".format(star='★'*rarity), f"rarity_{rarity}")
         # 副词条
         sub_token = StyledText()
+        sub_data = []
         subs_stats_dict = Array2dict(SUBS_STATS_NAME)
         total_num = 0   # 总词条数或有效词条数
+        total_level = 0 # 总强化次数 (含基础本身)
+        max_level, max_idx = -1, -1   # 最大强化次数的副词条
         bad_num = 0     # 强化歪了的次数
         good_num = 0    # 强化中了的次数
-        for name, value in data["subs_stats"].items():
+        for idx, (name, value) in enumerate(data["subs_stats"].items()):
             pre = " " if name in NOT_PRE_STATS else "%"
             if not self.is_detail or rarity not in [4,5]:    # 不满足校验条件
                 sub_token.append(_("   ■ {name}      {value:>6.{nd}f}{pre}\n").format(name=str_just(name, 10), value=value, pre=pre, nd=self.ndigits))
@@ -1574,6 +1578,21 @@ class Relic:
             stats_index = subs_stats_dict[name]
             # 增强信息并校验数据
             ret = self.get_subs_stats_detail((name, value), rarity, stats_index)
+            sub_data.append([name, value, ret])
+            if ret:
+                total_level += ret[0]
+                if ret[0] > max_level:
+                    max_level = ret[0]
+                    max_idx = idx
+        # 通过判断整体副词条强化次数是否超限，来判断是否需要强化次数修正
+        if max_level >= 4 and total_level == relic_level // 3 + 4 + 1:  # 判断为8个挡位积分会归为1次强化次数导致，进行修正
+            level, score, result = sub_data[max_idx][-1]
+            sub_data[max_idx][-1] = (level-1, score+8, result)
+            log.debug(_("强化次数修正：{}").format(sub_data[max_idx]))
+        # 打印增强并修正后的数值
+        for name, value, ret in sub_data:
+            pre = " " if name in NOT_PRE_STATS else "%"
+            stats_index = subs_stats_dict[name]
             if ret:  # 数据校验成功
                 level, score, result = ret
                 num = self.get_num_of_stats(ret, rarity)  # 计算词条数
@@ -2058,6 +2077,9 @@ class Relic:
             对于速度属性只能做保守估计，其他属性可做准确计算。
             可以作为副词条校验函数 (可以检测出大部分的OCR错误)
             支持五星遗器与四星遗器
+            注意：
+                此方法8个挡位积分会归为1次强化次数，例如 (4,8)=(5,0) (5,9)=(6,1) (6,12)=(7,4)
+                可通过判断整体副词条强化次数是否超限来修正部分情况下的数值 (初始3词条的情形无法修正)
         参数：
             :param data: 遗器副词条键值对
             :param stats_index: 遗器副词条索引
