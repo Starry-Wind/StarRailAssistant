@@ -241,12 +241,16 @@ RELIC_SCHEMA = {
                 },
                 "additionalProperties": False
             },
-            "pre_ver_hash": {"type": "string"}     # [外键]本次升级前的版本
+            "pre_ver_hash": {"type": "string"},     # [外键]本次升级前的版本
+            "speed_decimal_modified": {"type": "boolean"}   # 是否对速度副词条的小数位进行过修改
         },
         "required": ["relic_set", "equip_set", "rarity", "level", "base_stats", "subs_stats"],  # 需包含遗器的全部固有属性
         "additionalProperties": False
 }}
 """遗器数据json格式规范"""
+
+RELIC_DATA_FILTER = ["pre_ver_hash", "speed_decimal_modified"]
+"""遗器数据过滤器"""
 
 LOADOUT_SCHEMA = {
     "type": "object",
@@ -373,6 +377,3 @@ CHAR_STATS_WEIGHT_SCHEMA = {
     }
 }
 """角色属性权重"""
-
-RELIC_DATA_FILTER = ["pre_ver_hash"]
-"""遗器数据过滤器"""

@@ -183,7 +183,8 @@ class Relic:
             options = [
                 Choice(_("识别遗器数据"), value = 4,
                     description = INDENT+_("支持批量识别、载入[属性权重]进行评估、导出数据\n")+INDENT+_("注：对于[速度]副属性只能做保守评估，其他属性可做准确计算")
-                    +INDENT+_("  可以借助第三方工具获得[速度]副属性的精确值，")+INDENT+_("  并手动修改'relics_set.json'文件中相应的小数位，")+INDENT+_("  修改后的数据会永久保存，不影响遗器哈希值，可用于后续评估")),
+                    +INDENT+_("  可以借助第三方工具获得[速度]副属性的精确值，")+INDENT+_("  可在[编辑角色配装]中进行辅助修改，或手动修改'relics_set.json'文件中相应的小数位，")
+                    +INDENT+_("  修改后的数据会永久保存，不影响遗器哈希值，可用于后续评估")),
                 Choice(_("保存当前角色的配装"), value = 0,
                     description = INDENT+_("请使游戏保持在[角色]界面")+msg),
                 Choice(_("保存当前队伍的配装"), value = 1,
@@ -299,7 +300,7 @@ class Relic:
                 if tmp_hash not in self.relics_data:
                     self.add_relic_data(tmp_data, tmp_hash)
                     cnt += 1
-            rewrite_json_file(RELIC_FILE_NAME, self.relics_data)
+            # rewrite_json_file(RELIC_FILE_NAME, self.relics_data)  # 重复性动作
             log.info(_("共写入 {} 件新遗器至'{}'文件").format(cnt, RELIC_FILE_NAME))
         elif option_3 == 2:
             from datetime import datetime
@@ -322,16 +323,29 @@ class Relic:
             """
             option_3 = None
             options_3 = [
-                Choice(_("识别当前遗器"), value = 0,
+                Choice(_("识别当前遗器并替换"), value = 0,
                        description = INDENT+_("请使游戏保持在[角色]-[遗器]-[遗器替换]界面")+INDENT+_("建议识别前手动点击[对比]提高识别度")),
                 # 【待扩展】查询遗器数据库、推荐系统
                 Choice(_("<返回上一级>"), shortcut_key='z'),
                 Separator(" "),
             ]
+            if self.set_tag_of_speed_modified(self.relics_data[key_hash]) == 2:  
+                options_3[-2:-2] = [
+                    Choice(_("<<速度修正>>"), shortcut_key='s',
+                        description = INDENT+_("修正配装中的遗器[速度]副词条的小数位。可以借助第三方工具获得其的精确值")),
+                ]
             # [0]进行选择
-            option_3 = questionary.select(_("请选择替换方式:"), options_3, use_shortcuts=True, style=self.msg_style).ask()
+            option_3 = questionary.select(_("请选择编辑内容:"), options_3, use_shortcuts=True, style=self.msg_style).ask()
             if option_3 == _("<返回上一级>"):
-                return
+                return None
+            elif option_3 == _("<<速度修正>>"):
+                old_value = self.relics_data[key_hash]["subs_stats"][_("速度")]
+                new_value = questionary.text("请输入修正后的数值:", validate=FloatValidator(old_value, old_value+0.9)).ask()
+                self.relics_data[key_hash]["subs_stats"][_("速度")] = float(new_value)
+                self.relics_data[key_hash]["speed_decimal_modified"] = True
+                rewrite_json_file(RELIC_FILE_NAME, self.relics_data)
+                log.info(_("速度修正成功，并已自动保存"))
+                return None
             elif option_3 != 0:
                 ...  # 【待扩展】
             # [1]识别当前遗器
@@ -370,6 +384,7 @@ class Relic:
                 else:
                     log.info(_("录入遗器数据"))
                     self.add_relic_data(tmp_data, tmp_hash)
+                log.info(_("替换成功"))
                 return tmp_hash
             else:
                 return None
@@ -389,14 +404,16 @@ class Relic:
                     relic_text = self.print_relic(self.relics_data[new_hash], new_hash, char_weight, False)
                     relic_text = combine_styled_text(relic_text, indent=2)
                     msg.extend(relic_text)
-                    tag = _("[已更改]") if new_hash != old_hash else " "
+                    tag = ""
+                    tag += _("[已替换] ") if new_hash != old_hash else ""
+                    tag += _("[可速度修正] ") if self.set_tag_of_speed_modified(self.relics_data[new_hash]) == 2 else ""
                     # 使用本配装的队伍
                     teams_in_loadout = self.find_teams_in_loadout(character_name, loadout_name)
                     teams_msg = INDENT.join(
                         "   {}) {} ■ {}".format(i+1, str_just(team_name, 17), ", ".join(list(self.team_data[group_name][team_name]["team_members"].keys()))) 
                         for i, (group_name, team_name) in enumerate(teams_in_loadout)
                     ) if teams_in_loadout else _("  --空--")
-                    options_2.append(Choice(_("替换{} {}").format(equip_set_name, tag), value=(equip_index, new_hash), description=msg))
+                    options_2.append(Choice(_("编辑{} {}").format(equip_set_name, tag), value=(equip_index, new_hash), description=msg))
                 options_2.extend([
                     # 【待扩展】删除配装、更改权重、更改面板
                     Choice(_("<完成并更新配装 (可进行重命名)>"), shortcut_key='y', description=INDENT+_("使用本配装的队伍:")+INDENT+teams_msg),
@@ -404,8 +421,12 @@ class Relic:
                     Choice(_("<取消>"), shortcut_key='z'),
                     Separator(" "),
                 ])
+                # 处理上一次的选项作为默认选项
+                defualt_2 = None
+                if isinstance(option_2, tuple):
+                    defualt_2 = options_2[option_2[0]]
                 # 进行选择
-                option_2 = questionary.select(_("请选择要编辑的内容:"), options_2, use_shortcuts=True, style=self.msg_style).ask()
+                option_2 = questionary.select(_("请选择要编辑的内容:"), options_2, default=defualt_2, use_shortcuts=True, style=self.msg_style).ask()
                 character_data = self.loadout_data[character_name]
                 # 处理特殊选择
                 if option_2 == _("<取消>"):
@@ -1318,12 +1339,21 @@ class Relic:
         """
         说明：
             检查遗器数据是否发生手动修改 (应对json数据格式变动或手动矫正仪器数值)，
-            若发生修改，可选择更新仪器哈希值，并替换配装数据中相应的数值
+            若发生速度副词条的小数修改，将自动更新标识 (哈希值不受影响)
+            若发生其他修改，可选择更新仪器哈希值，并替换配装数据中相应的数值
         """
         equip_set_dict = Array2dict(EQUIP_SET_NAME)
         relics_data_copy = self.relics_data.copy()  # 字典迭代过程中不允许修改key
         cnt = 0
+        modified_cnt = [0, 0, 0]
         for old_hash, data in relics_data_copy.items():
+            # 校验速度修正标识
+            ret = self.set_tag_of_speed_modified(data)
+            if ret >= 0:
+                modified_cnt[ret] += 1
+            if ret > 0:  # 需进行数据更新
+                self.updata_relic_data(old_hash, old_hash)
+            # 校验哈希值
             new_hash = get_data_hash(data, RELIC_DATA_FILTER, speed_modified=True)
             if old_hash != new_hash:
                 equip_indx = equip_set_dict[data["equip_set"]]
@@ -1331,17 +1361,43 @@ class Relic:
                 if updata: 
                     self.updata_relic_data(old_hash, new_hash, equip_indx)
                 cnt += 1
+        if modified_cnt[1]:
+            log.info(_("共发现 {} 件遗器的速度副词条小数位经过修正，其中有 {} 件为本次手动修正，仍有 {} 件遗器未经修正").
+                 format(modified_cnt[0]+modified_cnt[1], modified_cnt[1], modified_cnt[2]))
+        else:
+            log.info(_("共发现 {} 件遗器的速度副词条小数位经过修正，仍有 {} 件遗器未经修正").
+                 format(modified_cnt[0], modified_cnt[2]))
         if not cnt:
             log.info(_("遗器哈希值校验成功"))
             return True
         if updata:
-            log.info(_(f"已更新 {cnt} 件遗器的哈希值"))
+            log.info(_("已更新 {} 件遗器的哈希值").format(cnt))
             return True
         else:
-            log.error(_(f"发现 {cnt} 件遗器的哈希值校验失败"))
+            log.error(_("共发现 {} 件遗器的哈希值校验失败"),format(cnt))
             return False
 
-    def updata_relic_data(self, old_hash: str, new_hash: str, equip_indx: int, new_data: Optional[Dict[str, Any]]=None, delete_old_data=False):
+    def set_tag_of_speed_modified(self, data: Dict[str, Any]) -> int:
+        """
+        说明：
+            判断该遗器是否具备手动修改速度副属性小数位的资格，并进行相应设置
+        返回：
+            :return flag:
+                -1: 无资格设标，0: 已手动修正并设标，1:已手动修正但未设标，2:杂糅其他情况的未设标
+        """
+        if data["rarity"] != 5 or _("速度") not in data["subs_stats"]:
+            return -1
+        if data.get("speed_decimal_modified", False):
+            return 0
+        value = data["subs_stats"][_("速度")]
+        if f"{value:.1f}"[-1] != "0":
+            data["speed_decimal_modified"] = True
+            return 1
+        else:
+            data["speed_decimal_modified"] = False
+            return 2
+
+    def updata_relic_data(self, old_hash: str, new_hash: str, equip_indx: Optional[int]=None, new_data: Optional[Dict[str, Any]]=None, delete_old_data=False):
         """
         说明：
             更改仪器数据，先后修改遗器与配装文件
@@ -1353,14 +1409,20 @@ class Relic:
             :parma delete_old_data: 是否删除旧的数据
         """
         # 修改遗器文件
-        if new_data is None:
+        if old_hash == new_hash:
+            pass
+        elif new_data is None:
             self.relics_data[new_hash] = self.relics_data.pop(old_hash)
         else:
             if delete_old_data:
                 self.relics_data.pop(old_hash)
+            self.set_tag_of_speed_modified(new_data)
             self.relics_data[new_hash] = new_data
         rewrite_json_file(RELIC_FILE_NAME, self.relics_data)
         # 修改配装文件
+        if old_hash == new_hash:
+            return
+        equip_indx = EQUIP_SET_NAME.index(self.relics_data[new_hash]["equip_set"]) if equip_indx is None else equip_indx
         for char_name, loadouts in self.loadout_data.items():
             for loadout_name, hash_list in loadouts.items():
                 if hash_list["relic_hash"][equip_indx] == old_hash:
@@ -1376,6 +1438,7 @@ class Relic:
         if not data_hash:
             data_hash = get_data_hash(data, RELIC_DATA_FILTER)
         if data_hash not in self.relics_data:
+            self.set_tag_of_speed_modified(data)
             self.relics_data = modify_json_file(RELIC_FILE_NAME, data_hash, data) # 返回更新后的字典
             return True
         else:
@@ -1570,6 +1633,7 @@ class Relic:
         max_level, max_idx = -1, -1   # 最大强化次数的副词条
         bad_num = 0     # 强化歪了的次数
         good_num = 0    # 强化中了的次数
+        speed_modified: bool = data.get("speed_decimal_modified", False)
         for idx, (name, value) in enumerate(data["subs_stats"].items()):
             pre = " " if name in NOT_PRE_STATS else "%"
             if not self.is_detail or rarity not in [4,5]:    # 不满足校验条件
@@ -1577,7 +1641,7 @@ class Relic:
                 continue
             stats_index = subs_stats_dict[name]
             # 增强信息并校验数据
-            ret = self.get_subs_stats_detail((name, value), rarity, stats_index)
+            ret = self.get_subs_stats_detail((name, value), rarity, stats_index, speed_modified=speed_modified)
             sub_data.append([name, value, ret])
             if ret:
                 total_level += ret[0]
@@ -1590,7 +1654,7 @@ class Relic:
             if name == _("速度") and rarity == 5:
                 # 2) 优化修正，采用重新计算
                 stats_index = subs_stats_dict[name]
-                sub_data[max_idx][-1] = self.get_subs_stats_detail((name, value), rarity, stats_index, set_level=level-1)
+                sub_data[max_idx][-1] = self.get_subs_stats_detail((name, value), rarity, stats_index, set_level=level-1, speed_modified=speed_modified)
             else:
                 # 1) 机械修正 (两种方法互斥，不可混用)
                 level, score, result = sub_data[max_idx][-1]
@@ -1838,10 +1902,11 @@ class Relic:
             tmp_data: Dict[str, Dict[str, float]] = self.relics_data[relic_hash]
             rarity = tmp_data["rarity"]
             level = tmp_data["level"]
+            speed_modified: bool = tmp_data.get("speed_decimal_modified", False)
             stats_list = [(key, self.get_base_stats_detail((key, value), rarity, level, base_stats_dict[key]))
                           for key, value in tmp_data["base_stats"].items()]           # 获取数值精度提高后的主词条
             for key, value in tmp_data["subs_stats"].items():
-                ret = self.get_subs_stats_detail((key, value), rarity, subs_stats_dict[key])
+                ret = self.get_subs_stats_detail((key, value), rarity, subs_stats_dict[key], speed_modified=speed_modified)
                 stats_list.append((key, ret[-1]))        # 获取数值精度提高后的副词条
                 num = self.get_num_of_stats(ret, rarity)   # 计算词条数
                 if char_weight and char_weight.get_weight(key) > 0 or not char_weight:
@@ -2077,7 +2142,10 @@ class Relic:
             return None
         return result
 
-    def get_subs_stats_detail(self, data: Tuple[str, float], rarity: int, stats_index: Optional[int]=None, set_level: int=None, check=True) -> Optional[Tuple[int, int, float]]:
+    def get_subs_stats_detail(
+        self, data: Tuple[str, float], rarity: int, stats_index: Optional[int]=None,
+        set_level: int=None, speed_modified=False, check=True
+    ) -> Optional[Tuple[int, int, float]]:
         """
         说明：
             计算副词条的详细信息 (如强化次数、档位积分，以及提高原数据的小数精度)
@@ -2085,20 +2153,19 @@ class Relic:
             可以作为副词条校验函数 (可以检测出大部分的OCR错误)
             支持五星遗器与四星遗器
             注意：
-                此方法挡位积分达到阈值会归为1次强化次数，例如 (4,8)=(5,0) (5,9)=(6,1) (6,12)=(7,4)
+                此方法8个挡位积分会归为1次强化次数，例如 (4,8)=(5,0) (5,9)=(6,1) (6,12)=(7,4)
                 五星'速度'词条与上述类似，但不完全满足上述规律，无法机械修正，需进行重新计算
-                可通过判断[1]个体强化次数是否达到7或[2]整体副词条强化次数是否超限来修正部分情况下的数值 
+                可通过判断[1]个体强化次数是否达到7或[2]整体副词条强化次数是否超限来修正部分情况下的数值
             缺陷：
-                初始3词条的情形无法通过上述方法修正 
+                初始3词条的情形无法通过上述方法修正
                 (基本无伤大雅，此时计算所得的修正数值与词条数为真实值，仅强化次数有二义性)
-                但是，初始3词条，五星'速度'词条在未精确小数位时，可能出现修正数值的二义性，
-                例如 13 既可以是 (6, 4, 13.2)，也可以是 (5, 10, 13.0)，这是较大的缺陷
-                在精确小数位后可解决该二义性，但需具备精确与否的标记【待扩展】
+                五星'速度'副词条，在relic_data具备'speed_decimal_modified'标识后可解决该问题
         参数：
             :param data: 遗器副词条键值对
             :param stats_index: 遗器副词条索引
             :param rarity: 遗器稀有度
             :param set_level: 设定指定的强化次数进行计算
+            :param speed_modified: 开启速度优化 (要求对速度小数位进行手动修正后)
             :param check: 开启校验
         返回：
             :return level: 强化次数: 0次强化记为1，最高5次强化为6
@@ -2135,6 +2202,11 @@ class Relic:
             return (level, score, result)
         # 校验数据
         check = result - value
+        # 对速度小数位手动修正后的数值进行纠正，以确保结果的精度要求
+        if speed_modified and name == _("速度") and rarity == 5 and check >= 0.1:
+            # 例如: 13.0 (6, 4, 13.2) 纠正为 (5, 10, 13.0)
+            #       10.1 (5, 1, 10.3) 纠正为 (4, 7 , 10.1)
+            return self.get_subs_stats_detail(data, rarity, stats_index, set_level=level-1, speed_modified=True)
         if check < -1.e-6 or \
             name in NOT_PRE_STATS and check >= 1 or \
             name not in NOT_PRE_STATS and check >= 0.1 or \
