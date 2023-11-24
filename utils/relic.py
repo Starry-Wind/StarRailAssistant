@@ -2111,7 +2111,7 @@ class Relic:
         stats_index = np.where(SUBS_STATS_NAME[:, -1] == name)[0][0] if stats_index is None else stats_index
         rarity_index = rarity - 4  # 0-四星，1-五星
         a, d = SUBS_STATS_TIER[rarity_index][stats_index]
-        if name in NOT_PRE_STATS:
+        if name in NOT_PRE_STATS and name != _("速度"):
             a_ = int(a)           # 从个分位截断小数
         else:
             a_ = int(a * 10)/10   # 从十分位截断小数
@@ -2121,11 +2121,13 @@ class Relic:
             level = int(value / a_)   # 向下取整
             if level == 7:   # 修正极端情况下的挡位积分进位
                 level = 6
-            a_ = a_ if name == _("速度") else a    # 给四星速度打补丁
-        score = (math.ceil((value - a_*level) / d - 1.e-6))  # 向上取整 (考虑浮点数运算的数值损失)
-        if score < 0:   # 总分小于零打补丁 (由于真实总分过大导致)
+        score = (math.ceil((value - a*level) / d - 1.e-6))  # 向上取整 (考虑浮点数运算的数值损失)
+        if score > level*2 and rarity == 4 and name == _("速度"):   # 给四星速度打补丁
+            level += 1
+            score = 0
+        elif score < 0:    # 总分小于零打补丁 (由于真实总分过大导致)
             level -= 1
-            score = math.ceil((value - a_*level) / d - 1.e-6)
+            score = math.ceil((value - a*level) / d - 1.e-6)
         result = round(a*level + d*score, 4)                 # 四舍五入 (考虑浮点数运算的数值损失)
         log.debug(f"({name}, {value}): [{a}, {d}], l={level}, s={score}, r={result}")
         # 不启用校验，用于统计词条使用
@@ -2133,7 +2135,7 @@ class Relic:
             return (level, score, result)
         # 校验数据
         check = result - value
-        if check < 0 or \
+        if check < -1.e-6 or \
             name in NOT_PRE_STATS and check >= 1 or \
             name not in NOT_PRE_STATS and check >= 0.1 or \
             level > 6 or level < 1 or \
