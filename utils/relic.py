@@ -14,7 +14,7 @@ from utils.questionary.questionary import Choice, Separator, Style
 from .relic_constants import *
 from .calculated import (calculated, Array2dict, StyledText, FloatValidator, ConflictValidator, 
                          get_data_hash, str_just, print_styled_text, combine_styled_text)
-from .config import (RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, CHAR_PANEL_FILE_NAME, CHAR_WEIGHT_FILE_NAME, USER_DATA_PREFIX,
+from .config import (RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, CHAR_PANEL_FILE_NAME, CHAR_WEIGHT_FILE_NAME, USER_DATA_DIR,
                      read_json_file, modify_json_file, rewrite_json_file, _, sra_config_obj)
 from .exceptions import Exception, RelicOCRException
 from .log import log
@@ -303,7 +303,7 @@ class Relic:
             log.info(_("共写入 {} 件新遗器至'{}'文件").format(cnt, RELIC_FILE_NAME))
         elif option_3 == 2:
             from datetime import datetime
-            file_name = "{}relics_set_{}.json".format(USER_DATA_PREFIX, str(int(datetime.timestamp(datetime.now()))))
+            file_name = "{}relics_set_{}.json".format(USER_DATA_DIR, str(int(datetime.timestamp(datetime.now()))))
             rewrite_json_file(file_name, relics_data)
             log.info(_("共写入 {} 件遗器至'{}'文件").format(len(relics_data), file_name))
         return self.batch_ocr_relics(stats_weight, weight_name)

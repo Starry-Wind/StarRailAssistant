@@ -14,15 +14,15 @@ from .log import log
 
 CONFIG_FILE_NAME = "config.json"
 
-USER_DATA_PREFIX = "data/user_data/"
-FIXED_DATA_PREFIX = "data/fixed_data/"
-os.makedirs(USER_DATA_PREFIX, exist_ok=True)
+USER_DATA_DIR = "data/user_data/"
+FIXED_DATA_DIR = "data/fixed_data/"
+os.makedirs(USER_DATA_DIR, exist_ok=True)
 
-RELIC_FILE_NAME = USER_DATA_PREFIX + "relics_set.json"
-LOADOUT_FILE_NAME = USER_DATA_PREFIX + "relics_loadout.json"
-TEAM_FILE_NAME = USER_DATA_PREFIX + "relics_team.json"
-CHAR_PANEL_FILE_NAME = USER_DATA_PREFIX + "char_panel.json"
-CHAR_WEIGHT_FILE_NAME = USER_DATA_PREFIX + "char_weight.json"
+RELIC_FILE_NAME = USER_DATA_DIR + "relics_set.json"
+LOADOUT_FILE_NAME = USER_DATA_DIR + "relics_loadout.json"
+TEAM_FILE_NAME = USER_DATA_DIR + "relics_team.json"
+CHAR_PANEL_FILE_NAME = USER_DATA_DIR + "char_panel.json"
+CHAR_WEIGHT_FILE_NAME = USER_DATA_DIR + "char_weight.json"
 
 
 def normalize_file_path(filename):
@@ -41,7 +41,7 @@ def normalize_file_path(filename):
         pre_filename = str(filename).rsplit('/', 1)[-1]
         file_path = os.path.join(current_dir, pre_filename)
         if os.path.exists(file_path):
-            if str(filename).rsplit('/', 1)[0] == USER_DATA_PREFIX[:-1]:
+            if str(filename).rsplit('/', 1)[0] == USER_DATA_DIR[:-1]:
                 # 判断为旧版本 (<=1.8.7) 数据文件位置
                 import shutil
                 shutil.move(file_path, pre_file_path)
