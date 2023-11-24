@@ -1585,10 +1585,17 @@ class Relic:
                     max_level = ret[0]
                     max_idx = idx
         # 通过判断整体副词条强化次数是否超限，来判断是否需要强化次数修正
-        if max_level >= 4 and total_level == relic_level // 3 + 4 + 1:  # 判断为8个挡位积分会归为1次强化次数导致，进行修正
-            level, score, result = sub_data[max_idx][-1]
-            sub_data[max_idx][-1] = (level-1, score+8, result)
-            log.debug(_("强化次数修正：{}").format(sub_data[max_idx]))
+        if max_level >= 4 and total_level == relic_level // 3 + 4 + 1:  # 判断为挡位积分达到阈值归为1次强化次数导致，进行修正
+            name, value, (level, score, result) = sub_data[max_idx]
+            if name == _("速度") and rarity == 5:
+                # 2) 优化修正，采用重新计算
+                stats_index = subs_stats_dict[name]
+                sub_data[max_idx][-1] = self.get_subs_stats_detail((name, value), rarity, stats_index, set_level=level-1)
+            else:
+                # 1) 机械修正 (两种方法互斥，不可混用)
+                level, score, result = sub_data[max_idx][-1]
+                sub_data[max_idx][-1] = (level-1, score+8, result)
+            log.debug(_("副词条修正：{}").format(sub_data[max_idx]))
         # 打印增强并修正后的数值
         for name, value, ret in sub_data:
             pre = " " if name in NOT_PRE_STATS else "%"
@@ -2070,7 +2077,7 @@ class Relic:
             return None
         return result
 
-    def get_subs_stats_detail(self, data: Tuple[str, float], rarity: int, stats_index: Optional[int]=None, check=True) -> Optional[Tuple[int, int, float]]:
+    def get_subs_stats_detail(self, data: Tuple[str, float], rarity: int, stats_index: Optional[int]=None, set_level: int=None, check=True) -> Optional[Tuple[int, int, float]]:
         """
         说明：
             计算副词条的详细信息 (如强化次数、档位积分，以及提高原数据的小数精度)
@@ -2078,12 +2085,20 @@ class Relic:
             可以作为副词条校验函数 (可以检测出大部分的OCR错误)
             支持五星遗器与四星遗器
             注意：
-                此方法8个挡位积分会归为1次强化次数，例如 (4,8)=(5,0) (5,9)=(6,1) (6,12)=(7,4)
-                可通过判断整体副词条强化次数是否超限来修正部分情况下的数值 (初始3词条的情形无法修正)
+                此方法挡位积分达到阈值会归为1次强化次数，例如 (4,8)=(5,0) (5,9)=(6,1) (6,12)=(7,4)
+                五星'速度'词条与上述类似，但不完全满足上述规律，无法机械修正，需进行重新计算
+                可通过判断[1]个体强化次数是否达到7或[2]整体副词条强化次数是否超限来修正部分情况下的数值 
+            缺陷：
+                初始3词条的情形无法通过上述方法修正 
+                (基本无伤大雅，此时计算所得的修正数值与词条数为真实值，仅强化次数有二义性)
+                但是，初始3词条，五星'速度'词条在未精确小数位时，可能出现修正数值的二义性，
+                例如 13 既可以是 (6, 4, 13.2)，也可以是 (5, 10, 13.0)，这是较大的缺陷
+                在精确小数位后可解决该二义性，但需具备精确与否的标记【待扩展】
         参数：
             :param data: 遗器副词条键值对
             :param stats_index: 遗器副词条索引
             :param rarity: 遗器稀有度
+            :param set_level: 设定指定的强化次数进行计算
             :param check: 开启校验
         返回：
             :return level: 强化次数: 0次强化记为1，最高5次强化为6
@@ -2100,16 +2115,21 @@ class Relic:
             a_ = int(a)           # 从个分位截断小数
         else:
             a_ = int(a * 10)/10   # 从十分位截断小数
-        level = int(value / a_)   # 向下取整
-        a_ = a_ if name == _("速度") else a    # 给四星速度打补丁
+        if set_level:
+            level = set_level
+        else:
+            level = int(value / a_)   # 向下取整
+            if level == 7:   # 修正极端情况下的挡位积分进位
+                level = 6
+            a_ = a_ if name == _("速度") else a    # 给四星速度打补丁
         score = (math.ceil((value - a_*level) / d - 1.e-6))  # 向上取整 (考虑浮点数运算的数值损失)
         if score < 0:   # 总分小于零打补丁 (由于真实总分过大导致)
             level -= 1
             score = math.ceil((value - a_*level) / d - 1.e-6)
         result = round(a*level + d*score, 4)                 # 四舍五入 (考虑浮点数运算的数值损失)
+        log.debug(f"({name}, {value}): [{a}, {d}], l={level}, s={score}, r={result}")
         # 不启用校验，用于统计词条使用
         if not check:
-            log.debug(f"({name}, {value}): [{a}, {d}], l={level}, s={score}, r={result}")
             return (level, score, result)
         # 校验数据
         check = result - value
@@ -2119,7 +2139,6 @@ class Relic:
             level > 6 or level < 1 or \
             score > level*2 or score < 0:
             log.error(_(f"校验失败，原数据或计算方法有误: {data}"))
-            log.debug(f"[{a}, {d}], l={level}, s={score}, r={result}")
             return None
         return (level, score, result)
     
