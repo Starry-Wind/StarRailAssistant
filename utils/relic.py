@@ -367,8 +367,10 @@ class Relic:
             # [3]打印对比信息
             tmp_text = self.print_relic(tmp_data, tmp_hash, char_weight, False)
             key_text = self.print_relic(key_data, key_hash, char_weight, False)
-            print("\n  {:>28}    {:<28}".format("<<<<<<< NEW", "OLD >>>>>>>"))
-            print_styled_text(combine_styled_text(tmp_text, key_text, sep=" "*4, indent=2), style=self.msg_style)
+            print_styled_text(StyledText([
+                ("", "\n  "), ("class:grey_reverse", "{:>28}".format("<<<<<<< OLD ")), ("", " "*4), ("class:grey_reverse", "{:<28}".format(" NEW >>>>>>>"))
+            ]), style=self.msg_style)
+            print_styled_text(combine_styled_text(key_text, tmp_text, sep=" "*4, indent=2), style=self.msg_style)
             # [4]模糊匹配
             if self.is_fuzzy_match and self.compare_relics(key_data, tmp_data):
                 log.info(_("模糊匹配成功！识别到新遗器为旧遗器升级后，自动更新数据库"))
@@ -1112,8 +1114,10 @@ class Relic:
                     # 打印对比信息
                     tmp_text = self.print_relic(tmp_data, tmp_hash, stats_weight, False)
                     key_text = self.print_relic(key_data, key_hash, stats_weight, False)
-                    print("\n  {:>28}    {:<28}".format("<<<<<<< NEW", "OLD >>>>>>>"))
-                    print_styled_text(combine_styled_text(tmp_text, key_text, sep=" "*4, indent=2), style=self.msg_style)
+                    print_styled_text(StyledText([
+                        ("", "\n  "), ("class:grey_reverse", "{:>28}".format("<<<<<<< OLD ")), ("", " "*4), ("class:grey_reverse", "{:<28}".format(" NEW >>>>>>>"))
+                    ]), style=self.msg_style)
+                    print_styled_text(combine_styled_text(key_text, tmp_text, sep=" "*4, indent=2), style=self.msg_style)
                     log.info(_("模糊匹配成功！识别到新遗器为旧遗器升级后，自动更新数据库"))
                     # 更新数据库 (录入新遗器数据，并将配装数据中的旧有哈希值替换)
                     tmp_data["pre_ver_hash"] = key_hash   # 建立后继关系
