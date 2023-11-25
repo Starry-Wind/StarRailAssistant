@@ -1700,7 +1700,7 @@ class Relic:
         if not self.is_detail or rarity not in [4,5]:
             token.append(" "*10+"\n")
         elif char_weight:
-            if good_num == 0:  # 未有副词条的强化次数
+            if good_num == 0 and bad_num == 0:  # 未有副词条的强化次数
                 token.append(_("  有效 "), "green")
             elif bad_num == 0:
                 token.append(_("  全中 "), "green")
