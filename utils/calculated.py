@@ -833,6 +833,7 @@ class calculated(CV_Tools):
             进入地图的时间
         """
         start_time = time.time()
+        time.sleep(2.0)   # 1.5版本点击传送后，会先返回到原地图页面再进入传送
         '''
         join1 = False
         join2 = False
