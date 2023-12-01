@@ -303,6 +303,9 @@ class SRA:
             if start:
                 if option == _("遗器模块"):     # 遗器模块此时不需要将游戏窗口激活
                     log.info(_("遗器模块初始化中..."))
+                    calculated(game_title, start=False)
+                    get_width(game_title)
+                    log.info(_("正在获取命令行界面的窗口名称，请保持命令行窗口激活"))
                     relic = Relic(game_title)
                     relic.relic_entrance()
                     return True

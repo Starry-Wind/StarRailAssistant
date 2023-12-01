@@ -14,7 +14,7 @@ from utils.questionary.questionary import Choice, Separator, Style
 from .relic_constants import *
 from .calculated import (calculated, Array2dict, StyledText, FloatValidator, ConflictValidator, 
                          get_data_hash, str_just, print_styled_text, combine_styled_text)
-from .config import (RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, CHAR_PANEL_FILE_NAME, CHAR_WEIGHT_FILE_NAME, USER_DATA_PREFIX,
+from .config import (RELIC_FILE_NAME, LOADOUT_FILE_NAME, TEAM_FILE_NAME, CHAR_PANEL_FILE_NAME, CHAR_WEIGHT_FILE_NAME, USER_DATA_DIR,
                      read_json_file, modify_json_file, rewrite_json_file, _, sra_config_obj)
 from .exceptions import Exception, RelicOCRException
 from .log import log
@@ -79,6 +79,10 @@ class Relic:
         if sra_config_obj.language != "zh_CN":
             raise Exception(_("暂不支持简体中文之外的语言"))
         self.calculated = calculated(title, rec_root="model/cnocr_for_relic")
+        log.info(_("命令行窗口：'{}'").format(self.calculated.cmd.title))
+        if self.calculated.cmd.title == title:
+            log.error(_("获取命令行窗口名称时，请勿点击游戏窗口"))   # 排除常见错误
+            raise Exception(_("命令行窗口获取失败"))
 
         self.is_fuzzy_match = sra_config_obj.fuzzy_match_for_relic
         """是否在遗器搜索时开启模糊匹配"""
@@ -138,11 +142,14 @@ class Relic:
 
         # 校验遗器哈希值
         if not self.check_relic_data_hash():
-            if questionary.confirm(_("是否依据当前遗器数据更新哈希值"), default=False).ask():
+            if questionary.confirm(_("是否依据当前遗器数据更新哈希值 (数据结构更新与功能测试使用)"), default=False).ask():
                 self.check_relic_data_hash(updata=True)
+            else:
+                raise Exception(_("json文件校验失败"))
         # 校验队伍配装规范
         if not self.check_team_data():
             log.error(_("怀疑为手动错误修改json文件导致"))
+            raise Exception(_("json文件校验失败"))
         # 首次启动权值进行选择
         if self.subs_stats_iter_weight == 0:
             msg = INDENT+_("仅首次启动进行选择")+INDENT+_("后续可在'config.json'中的'stats_weight_for_relic'选择设置[1,2,3]")
@@ -176,7 +183,8 @@ class Relic:
             options = [
                 Choice(_("识别遗器数据"), value = 4,
                     description = INDENT+_("支持批量识别、载入[属性权重]进行评估、导出数据\n")+INDENT+_("注：对于[速度]副属性只能做保守评估，其他属性可做准确计算")
-                    +INDENT+_("  可以借助第三方工具获得[速度]副属性的精确值，")+INDENT+_("  并手动修改'relics_set.json'文件中相应的小数位，")+INDENT+_("  修改后的数据会永久保存，不影响遗器哈希值，可用于后续评估")),
+                    +INDENT+_("  可以借助第三方工具获得[速度]副属性的精确值，")+INDENT+_("  可在[编辑角色配装]中进行辅助修改，或手动修改'relics_set.json'文件中相应的小数位，")
+                    +INDENT+_("  修改后的数据会永久保存，不影响遗器哈希值，可用于后续评估")),
                 Choice(_("保存当前角色的配装"), value = 0,
                     description = INDENT+_("请使游戏保持在[角色]界面")+msg),
                 Choice(_("保存当前队伍的配装"), value = 1,
@@ -292,11 +300,11 @@ class Relic:
                 if tmp_hash not in self.relics_data:
                     self.add_relic_data(tmp_data, tmp_hash)
                     cnt += 1
-            rewrite_json_file(RELIC_FILE_NAME, self.relics_data)
+            # rewrite_json_file(RELIC_FILE_NAME, self.relics_data)  # 重复性动作
             log.info(_("共写入 {} 件新遗器至'{}'文件").format(cnt, RELIC_FILE_NAME))
         elif option_3 == 2:
             from datetime import datetime
-            file_name = "{}relics_set_{}.json".format(USER_DATA_PREFIX, str(int(datetime.timestamp(datetime.now()))))
+            file_name = "{}relics_set_{}.json".format(USER_DATA_DIR, str(int(datetime.timestamp(datetime.now()))))
             rewrite_json_file(file_name, relics_data)
             log.info(_("共写入 {} 件遗器至'{}'文件").format(len(relics_data), file_name))
         return self.batch_ocr_relics(stats_weight, weight_name)
@@ -315,16 +323,29 @@ class Relic:
             """
             option_3 = None
             options_3 = [
-                Choice(_("识别当前遗器"), value = 0,
+                Choice(_("识别当前遗器并替换"), value = 0,
                        description = INDENT+_("请使游戏保持在[角色]-[遗器]-[遗器替换]界面")+INDENT+_("建议识别前手动点击[对比]提高识别度")),
                 # 【待扩展】查询遗器数据库、推荐系统
                 Choice(_("<返回上一级>"), shortcut_key='z'),
                 Separator(" "),
             ]
+            if self.set_tag_of_speed_modified(self.relics_data[key_hash]) == 2:  
+                options_3[-2:-2] = [
+                    Choice(_("<<速度修正>>"), shortcut_key='s',
+                        description = INDENT+_("修正配装中的遗器[速度]副词条的小数位。可以借助第三方工具获得其的精确值")),
+                ]
             # [0]进行选择
-            option_3 = questionary.select(_("请选择替换方式:"), options_3, use_shortcuts=True, style=self.msg_style).ask()
+            option_3 = questionary.select(_("请选择编辑内容:"), options_3, use_shortcuts=True, style=self.msg_style).ask()
             if option_3 == _("<返回上一级>"):
-                return
+                return None
+            elif option_3 == _("<<速度修正>>"):
+                old_value = self.relics_data[key_hash]["subs_stats"][_("速度")]
+                new_value = questionary.text("请输入修正后的数值:", validate=FloatValidator(old_value, old_value+0.9)).ask()
+                self.relics_data[key_hash]["subs_stats"][_("速度")] = float(new_value)
+                self.relics_data[key_hash]["speed_decimal_modified"] = True
+                rewrite_json_file(RELIC_FILE_NAME, self.relics_data)
+                log.info(_("速度修正成功，并已自动保存"))
+                return None
             elif option_3 != 0:
                 ...  # 【待扩展】
             # [1]识别当前遗器
@@ -346,8 +367,10 @@ class Relic:
             # [3]打印对比信息
             tmp_text = self.print_relic(tmp_data, tmp_hash, char_weight, False)
             key_text = self.print_relic(key_data, key_hash, char_weight, False)
-            print("\n  {:>28}    {:<28}".format("<<<<<<< NEW", "OLD >>>>>>>"))
-            print_styled_text(combine_styled_text(tmp_text, key_text, sep=" "*4, indent=2), style=self.msg_style)
+            print_styled_text(StyledText([
+                ("", "\n  "), ("class:grey_reverse", "{:>28}".format("<<<<<<< OLD ")), ("", " "*4), ("class:grey_reverse", "{:<28}".format(" NEW >>>>>>>"))
+            ]), style=self.msg_style)
+            print_styled_text(combine_styled_text(key_text, tmp_text, sep=" "*4, indent=2), style=self.msg_style)
             # [4]模糊匹配
             if self.is_fuzzy_match and self.compare_relics(key_data, tmp_data):
                 log.info(_("模糊匹配成功！识别到新遗器为旧遗器升级后，自动更新数据库"))
@@ -363,6 +386,7 @@ class Relic:
                 else:
                     log.info(_("录入遗器数据"))
                     self.add_relic_data(tmp_data, tmp_hash)
+                log.info(_("替换成功"))
                 return tmp_hash
             else:
                 return None
@@ -382,14 +406,16 @@ class Relic:
                     relic_text = self.print_relic(self.relics_data[new_hash], new_hash, char_weight, False)
                     relic_text = combine_styled_text(relic_text, indent=2)
                     msg.extend(relic_text)
-                    tag = _("[已更改]") if new_hash != old_hash else " "
+                    tag = ""
+                    tag += _("[已替换] ") if new_hash != old_hash else ""
+                    tag += _("[可速度修正] ") if self.set_tag_of_speed_modified(self.relics_data[new_hash]) == 2 else ""
                     # 使用本配装的队伍
                     teams_in_loadout = self.find_teams_in_loadout(character_name, loadout_name)
                     teams_msg = INDENT.join(
                         "   {}) {} ■ {}".format(i+1, str_just(team_name, 17), ", ".join(list(self.team_data[group_name][team_name]["team_members"].keys()))) 
                         for i, (group_name, team_name) in enumerate(teams_in_loadout)
                     ) if teams_in_loadout else _("  --空--")
-                    options_2.append(Choice(_("替换{} {}").format(equip_set_name, tag), value=(equip_index, new_hash), description=msg))
+                    options_2.append(Choice(_("编辑{} {}").format(equip_set_name, tag), value=(equip_index, new_hash), description=msg))
                 options_2.extend([
                     # 【待扩展】删除配装、更改权重、更改面板
                     Choice(_("<完成并更新配装 (可进行重命名)>"), shortcut_key='y', description=INDENT+_("使用本配装的队伍:")+INDENT+teams_msg),
@@ -397,8 +423,12 @@ class Relic:
                     Choice(_("<取消>"), shortcut_key='z'),
                     Separator(" "),
                 ])
+                # 处理上一次的选项作为默认选项
+                defualt_2 = None
+                if isinstance(option_2, tuple):
+                    defualt_2 = options_2[option_2[0]]
                 # 进行选择
-                option_2 = questionary.select(_("请选择要编辑的内容:"), options_2, use_shortcuts=True, style=self.msg_style).ask()
+                option_2 = questionary.select(_("请选择要编辑的内容:"), options_2, default=defualt_2, use_shortcuts=True, style=self.msg_style).ask()
                 character_data = self.loadout_data[character_name]
                 # 处理特殊选择
                 if option_2 == _("<取消>"):
@@ -649,6 +679,7 @@ class Relic:
             装备当前[角色]界面本队伍的遗器配装
         """
         char_pos_list = [(26,6),(31,6),(37,6),(42,6),...,(75,6)] if IS_PC else [(5,16),(5,27),(5,38),(5,49),...,(5,81)]
+        error_msg = []
         # 选择队伍
         option = questionary.select(
             _("请选择对当前队伍进行遗器装备的编队："),
@@ -674,8 +705,13 @@ class Relic:
                 log.error(_(f"编队错误：角色'{character_name}'不应在当前队伍中"))
                 return
             relic_hash = self.loadout_data[character_name][team_members[character_name]]["relic_hash"]
-            self.equip_loadout(relic_hash)
-        log.info(_("队伍配装完毕"))
+            error_logs = self.equip_loadout(relic_hash)
+            if error_logs:
+                error_msg.append("'{}'的[{}]遗器搜索失败\n".format(character_name, ",".join(error_logs)))
+        if error_msg:
+            log.error(_("配装装备失败：\n")+"".join(error_msg))
+        else:
+            log.info(_("配装装备成功"))
 
     def equip_loadout_for_char(self, character_name :Optional[str]=None):
         """
@@ -685,11 +721,7 @@ class Relic:
         # 识别当前人物名称
         self.calculated.switch_window()
         character_name = self.ocr_character_name() if character_name is None else character_name
-        character_data = self.loadout_data[character_name]
         # 选择配装
-        if not character_data:  # 字典为空
-            log.info(_("当前人物配装记录为空"))
-            return
         self.calculated.switch_cmd()
         option = self.ask_loadout_options(character_name, title=_("请选择要装备的配装:"))
         if option == _("<返回上一级>"):
@@ -699,9 +731,13 @@ class Relic:
         # 进行配装
         self.calculated.relative_click((12,40) if IS_PC else (16,48))  # 点击遗器，进入[角色]-[遗器]界面
         time.sleep(0.5)
-        self.equip_loadout(relic_hash)
+        error_logs = self.equip_loadout(relic_hash)
+        if error_logs:
+            log.error(_("配装装备失败：\n'{}'的[{}]遗器搜索失败").format(character_name, ",".join(error_logs)))
+        else:
+            log.info(_("配装装备成功"))
 
-    def equip_loadout(self, relics_hash:List[str]):
+    def equip_loadout(self, relics_hash:List[str]) -> List[str]:
         """
         说明：
             装备当前[角色]-[遗器]页面内的指定遗器配装。
@@ -712,6 +748,8 @@ class Relic:
         equip_pos_list = [(4,13),(9,13),(13,13),(18,13),(23,13),(27,13)] if IS_PC else [(5,14),(11,14),(17,14),(23,14),(28,14),(34,14)]
         relic_filter = self.Relic_filter(self.calculated)   # 遗器筛选器初始化
         relic_set_name_dict = Array2dict(RELIC_SET_NAME)
+        error_logs = []
+        # 进入遗器界面
         self.calculated.relative_click((38,26) if IS_PC else (36,21))  # 点击头部遗器，进入[角色]-[遗器]-[遗器替换]界面
         time.sleep(2)
         self.calculated.relative_click((82,12) if IS_PC else (78,12))  # 点击遗器[对比]，将遗器详情的背景由星空变为纯黑
@@ -736,6 +774,7 @@ class Relic:
                 pos = self.search_relic(equip_indx, key_hash=tmp_hash, key_data=tmp_data)
             if pos is None:
                 log.error(_(f"遗器搜索失败: {tmp_hash}"))
+                error_logs.append(EQUIP_SET_NAME[equip_indx])
                 continue
             # 点击装备
             # self.calculated.relative_click(pos)   # 重复性点击
@@ -754,6 +793,7 @@ class Relic:
         self.calculated.relative_click((97,6) if IS_PC else (96,5))   # 退出[遗器替换]界面，返回[角色]-[遗器]界面
         time.sleep(0.5)
         log.info(_("配装装备完毕"))
+        return error_logs
 
     def save_loadout_for_team(self):
         """
@@ -856,10 +896,6 @@ class Relic:
             instruction = _("(将同时作为角色的新建配装名称)"),
             validate = ConflictValidator(names),
         ).ask()
-        # team_name = input(_(">>>>命名编队名称 (将同时作为各人物新建配装的名称): "))
-        # while team_name in group_data or \
-        #     any([team_name in self.loadout_data[character_name] for character_name, loadout_name in zip(char_name_list, loadout_name_list) if loadout_name is None]):
-        #     team_name = input(_(">>>>命名冲突，请重命名: "))
         # [7]录入数据
         for i, (char_name, relics_hash, loadout_name) in enumerate(zip(char_name_list, relics_hash_list, loadout_name_list)):
             if loadout_name is None:
@@ -1078,8 +1114,10 @@ class Relic:
                     # 打印对比信息
                     tmp_text = self.print_relic(tmp_data, tmp_hash, stats_weight, False)
                     key_text = self.print_relic(key_data, key_hash, stats_weight, False)
-                    print("\n  {:>28}    {:<28}".format("<<<<<<< NEW", "OLD >>>>>>>"))
-                    print_styled_text(combine_styled_text(tmp_text, key_text, sep=" "*4, indent=2), style=self.msg_style)
+                    print_styled_text(StyledText([
+                        ("", "\n  "), ("class:grey_reverse", "{:>28}".format("<<<<<<< OLD ")), ("", " "*4), ("class:grey_reverse", "{:<28}".format(" NEW >>>>>>>"))
+                    ]), style=self.msg_style)
+                    print_styled_text(combine_styled_text(key_text, tmp_text, sep=" "*4, indent=2), style=self.msg_style)
                     log.info(_("模糊匹配成功！识别到新遗器为旧遗器升级后，自动更新数据库"))
                     # 更新数据库 (录入新遗器数据，并将配装数据中的旧有哈希值替换)
                     tmp_data["pre_ver_hash"] = key_hash   # 建立后继关系
@@ -1305,12 +1343,21 @@ class Relic:
         """
         说明：
             检查遗器数据是否发生手动修改 (应对json数据格式变动或手动矫正仪器数值)，
-            若发生修改，可选择更新仪器哈希值，并替换配装数据中相应的数值
+            若发生速度副词条的小数修改，将自动更新标识 (哈希值不受影响)
+            若发生其他修改，可选择更新仪器哈希值，并替换配装数据中相应的数值
         """
         equip_set_dict = Array2dict(EQUIP_SET_NAME)
         relics_data_copy = self.relics_data.copy()  # 字典迭代过程中不允许修改key
         cnt = 0
+        modified_cnt = [0, 0, 0]
         for old_hash, data in relics_data_copy.items():
+            # 校验速度修正标识
+            ret = self.set_tag_of_speed_modified(data)
+            if ret >= 0:
+                modified_cnt[ret] += 1
+            if ret > 0:  # 需进行数据更新
+                self.updata_relic_data(old_hash, old_hash)
+            # 校验哈希值
             new_hash = get_data_hash(data, RELIC_DATA_FILTER, speed_modified=True)
             if old_hash != new_hash:
                 equip_indx = equip_set_dict[data["equip_set"]]
@@ -1318,17 +1365,43 @@ class Relic:
                 if updata: 
                     self.updata_relic_data(old_hash, new_hash, equip_indx)
                 cnt += 1
+        if modified_cnt[1]:
+            log.info(_("共发现 {} 件遗器的速度副词条小数位经过修正，其中有 {} 件为本次手动修正，仍有 {} 件遗器未经修正").
+                 format(modified_cnt[0]+modified_cnt[1], modified_cnt[1], modified_cnt[2]))
+        else:
+            log.info(_("共发现 {} 件遗器的速度副词条小数位经过修正，仍有 {} 件遗器未经修正").
+                 format(modified_cnt[0], modified_cnt[2]))
         if not cnt:
             log.info(_("遗器哈希值校验成功"))
             return True
         if updata:
-            log.info(_(f"已更新 {cnt} 件遗器的哈希值"))
+            log.info(_("已更新 {} 件遗器的哈希值").format(cnt))
             return True
         else:
-            log.error(_(f"发现 {cnt} 件遗器的哈希值校验失败"))
+            log.error(_("共发现 {} 件遗器的哈希值校验失败"),format(cnt))
             return False
 
-    def updata_relic_data(self, old_hash: str, new_hash: str, equip_indx: int, new_data: Optional[Dict[str, Any]]=None, delete_old_data=False):
+    def set_tag_of_speed_modified(self, data: Dict[str, Any]) -> int:
+        """
+        说明：
+            判断该遗器是否具备手动修改速度副属性小数位的资格，并进行相应设置
+        返回：
+            :return flag:
+                -1: 无资格设标，0: 已手动修正并设标，1:已手动修正但未设标，2:杂糅其他情况的未设标
+        """
+        if data["rarity"] != 5 or _("速度") not in data["subs_stats"]:
+            return -1
+        if data.get("speed_decimal_modified", False):
+            return 0
+        value = data["subs_stats"][_("速度")]
+        if f"{value:.1f}"[-1] != "0":
+            data["speed_decimal_modified"] = True
+            return 1
+        else:
+            data["speed_decimal_modified"] = False
+            return 2
+
+    def updata_relic_data(self, old_hash: str, new_hash: str, equip_indx: Optional[int]=None, new_data: Optional[Dict[str, Any]]=None, delete_old_data=False):
         """
         说明：
             更改仪器数据，先后修改遗器与配装文件
@@ -1340,14 +1413,20 @@ class Relic:
             :parma delete_old_data: 是否删除旧的数据
         """
         # 修改遗器文件
-        if new_data is None:
+        if old_hash == new_hash:
+            pass
+        elif new_data is None:
             self.relics_data[new_hash] = self.relics_data.pop(old_hash)
         else:
             if delete_old_data:
                 self.relics_data.pop(old_hash)
+            self.set_tag_of_speed_modified(new_data)
             self.relics_data[new_hash] = new_data
         rewrite_json_file(RELIC_FILE_NAME, self.relics_data)
         # 修改配装文件
+        if old_hash == new_hash:
+            return
+        equip_indx = EQUIP_SET_NAME.index(self.relics_data[new_hash]["equip_set"]) if equip_indx is None else equip_indx
         for char_name, loadouts in self.loadout_data.items():
             for loadout_name, hash_list in loadouts.items():
                 if hash_list["relic_hash"][equip_indx] == old_hash:
@@ -1363,6 +1442,7 @@ class Relic:
         if not data_hash:
             data_hash = get_data_hash(data, RELIC_DATA_FILTER)
         if data_hash not in self.relics_data:
+            self.set_tag_of_speed_modified(data)
             self.relics_data = modify_json_file(RELIC_FILE_NAME, data_hash, data) # 返回更新后的字典
             return True
         else:
@@ -1377,6 +1457,9 @@ class Relic:
             :return character_name: 人物名称
         """
         str = self.calculated.ocr_pos_for_single_line(points=(10.4,6,18,9) if IS_PC else (13,4,22,9))   # 识别人物名称 (主角名称为玩家自定义，无法适用预选列表)
+        if not str:
+            log.error(_("未识别到角色名称，请确认游戏界面是否正确"))
+            return self.relic_entrance()
         character_name = re.sub(r"[.’,，。、·'-_——「」/|\[\]\"\\\s]", '', str)   # 删除由于背景光点造成的误判
         log.info(_(f"识别人物: {character_name}"))
         if character_name not in self.loadout_data:
@@ -1441,15 +1524,20 @@ class Relic:
             relic_set_index += RELIC_INNER_SET_INDEX    # 还原内圈遗器的真实索引
         relic_set_name = RELIC_SET_NAME[relic_set_index, -1]
         # [3]稀有度识别
-        hue, __, __ = self.calculated.get_relative_pix_hsv((43,55) if IS_PC else (41,55))   # 识别指定位点色相
+        hue, __, __ = self.calculated.get_relative_pix_hsv((48.2,70) if IS_PC else (41,55))   # 识别指定位点色相，PC端备选位点 (43,55)
         log.debug(f"hue = {hue}")
-        if hue < 40:     # [黄]模拟器测试结果的均值为 25
+        if hue < 40:     # [黄]模拟器测试结果的均值为 25，PC端为 15
             rarity = 5
         elif hue < 80:   # [绿]未有测试样本
             rarity = 2
         elif hue < 120:  # [蓝]模拟器测试结果的均值为 105
             rarity = 3
-        elif hue < 160:  # [紫]模拟器测试结果的均值为 140
+            self.calculated.switch_cmd()
+            questionary.print(_("警惕识别到三星遗器，很有可能由于误识别到背景蓝色导致"), "orange")
+            if not questionary.confirm(_("请确认是否尝试识别三星遗器"), default=False).ask():
+                raise RelicOCRException(_("遗器稀有度识别错误"))
+            self.calculated.switch_window()
+        elif hue < 160:  # [紫]模拟器测试结果的均值为 140，PC端为 132
             rarity = 4
         else:
             raise RelicOCRException(_("遗器稀有度识别错误"))
@@ -1501,7 +1589,7 @@ class Relic:
                 raise RelicOCRException(_("遗器副词条数值OCR错误"))
             total_level += check[0]
             subs_stats_dict[tmp_name] = tmp_value
-        if self.is_check_stats and rarity in [4,5] and total_level > level // 3 + 4:
+        if self.is_check_stats and rarity in [4,5] and total_level > level // 3 + 4 + 1:  # +1 是为了规避8个挡位积分归为1次强化次数的情形
             log.error(f"total_level: {total_level}")
             raise RelicOCRException(_("遗器副词条某一数值OCR错误"))
         # [7]生成结果数据包
@@ -1535,24 +1623,51 @@ class Relic:
             :param flag: 是-打印，否-返回文本
         """
         token = StyledText()
+        relic_level = data["level"]
         rarity = data["rarity"]
-        token.append("{:<3}".format("+"+str(data["level"])), "bold")
+        token.append("{:<3}".format("+"+str(relic_level)), "bold")
         token.append(" {}".format(str_just(data["equip_set"], 7)))
         token.append(" {star:>5}".format(star='★'*rarity), f"rarity_{rarity}")
         # 副词条
         sub_token = StyledText()
+        sub_data = []
         subs_stats_dict = Array2dict(SUBS_STATS_NAME)
         total_num = 0   # 总词条数或有效词条数
+        total_level = 0 # 总强化次数 (含基础本身)
+        max_level, max_idx = -1, -1   # 最大强化次数的副词条
         bad_num = 0     # 强化歪了的次数
         good_num = 0    # 强化中了的次数
-        for name, value in data["subs_stats"].items():
+        speed_modified: bool = data.get("speed_decimal_modified", False)
+        for idx, (name, value) in enumerate(data["subs_stats"].items()):
             pre = " " if name in NOT_PRE_STATS else "%"
             if not self.is_detail or rarity not in [4,5]:    # 不满足校验条件
                 sub_token.append(_("   ■ {name}      {value:>6.{nd}f}{pre}\n").format(name=str_just(name, 10), value=value, pre=pre, nd=self.ndigits))
                 continue
             stats_index = subs_stats_dict[name]
             # 增强信息并校验数据
-            ret = self.get_subs_stats_detail((name, value), rarity, stats_index)
+            ret = self.get_subs_stats_detail((name, value), rarity, stats_index, speed_modified=speed_modified)
+            sub_data.append([name, value, ret])
+            if ret:
+                total_level += ret[0]
+                if ret[0] > max_level:
+                    max_level = ret[0]
+                    max_idx = idx
+        # 通过判断整体副词条强化次数是否超限，来判断是否需要强化次数修正
+        if max_level >= 4 and total_level == relic_level // 3 + 4 + 1:  # 判断为挡位积分达到阈值归为1次强化次数导致，进行修正
+            name, value, (level, score, result) = sub_data[max_idx]
+            if name == _("速度") and rarity == 5:
+                # 2) 优化修正，采用重新计算
+                stats_index = subs_stats_dict[name]
+                sub_data[max_idx][-1] = self.get_subs_stats_detail((name, value), rarity, stats_index, set_level=level-1, speed_modified=speed_modified)
+            else:
+                # 1) 机械修正 (两种方法互斥，不可混用)
+                level, score, result = sub_data[max_idx][-1]
+                sub_data[max_idx][-1] = (level-1, score+8, result)
+            log.debug(_("副词条修正：{}").format(sub_data[max_idx]))
+        # 打印增强并修正后的数值
+        for name, value, ret in sub_data:
+            pre = " " if name in NOT_PRE_STATS else "%"
+            stats_index = subs_stats_dict[name]
             if ret:  # 数据校验成功
                 level, score, result = ret
                 num = self.get_num_of_stats(ret, rarity)  # 计算词条数
@@ -1585,7 +1700,7 @@ class Relic:
         if not self.is_detail or rarity not in [4,5]:
             token.append(" "*10+"\n")
         elif char_weight:
-            if good_num == 0:  # 未有副词条的强化次数
+            if good_num == 0 and bad_num == 0:  # 未有副词条的强化次数
                 token.append(_("  有效 "), "green")
             elif bad_num == 0:
                 token.append(_("  全中 "), "green")
@@ -1686,6 +1801,8 @@ class Relic:
                 :return value: 队员信息字典(key-人物名称，value-配装名称),
                 :return description: 队员配装的简要信息
         """
+        if not self.team_data:
+            return [(Choice(_(" --空--"), disabled=_("请先保存队伍配装")))]
         group_data = self.team_data["compatible"]    # 获取非互斥队组别信息
         group_data = sorted(group_data.items())      # 按键名即队伍名称排序
         ...  # 获取互斥队伍组别信息【待扩展】
@@ -1789,10 +1906,11 @@ class Relic:
             tmp_data: Dict[str, Dict[str, float]] = self.relics_data[relic_hash]
             rarity = tmp_data["rarity"]
             level = tmp_data["level"]
+            speed_modified: bool = tmp_data.get("speed_decimal_modified", False)
             stats_list = [(key, self.get_base_stats_detail((key, value), rarity, level, base_stats_dict[key]))
                           for key, value in tmp_data["base_stats"].items()]           # 获取数值精度提高后的主词条
             for key, value in tmp_data["subs_stats"].items():
-                ret = self.get_subs_stats_detail((key, value), rarity, subs_stats_dict[key])
+                ret = self.get_subs_stats_detail((key, value), rarity, subs_stats_dict[key], speed_modified=speed_modified)
                 stats_list.append((key, ret[-1]))        # 获取数值精度提高后的副词条
                 num = self.get_num_of_stats(ret, rarity)   # 计算词条数
                 if char_weight and char_weight.get_weight(key) > 0 or not char_weight:
@@ -1869,12 +1987,13 @@ class Relic:
             token = StyledText()
             pre = " " if name in NOT_PRE_STATS else "%"
             # 词条数量
-            subs_idx = subs_stats_dict[name]
+            subs_idx = subs_stats_dict.get(name, None)
             if subs_idx is not None or name == _("速度%") and value != 0 and char_panel:
                 tmp_name, tmp_value = name, value  # 修饰
                 if name == _("速度%"):  # 将速度大词条转化为小词条来计算
                     tmp_name = _("速度")
                     tmp_value = bs_and_en_value[3][0] * value / 100
+                    subs_idx = subs_stats_dict[_("速度")]
                 elif char_panel and name == _("暴击率"):    # 减去面板默认提供的
                     tmp_value = value - 5
                 elif char_panel and  name == _("暴击伤害"): # 减去面板默认提供的
@@ -2027,17 +2146,30 @@ class Relic:
             return None
         return result
 
-    def get_subs_stats_detail(self, data: Tuple[str, float], rarity: int, stats_index: Optional[int]=None, check=True) -> Optional[Tuple[int, int, float]]:
+    def get_subs_stats_detail(
+        self, data: Tuple[str, float], rarity: int, stats_index: Optional[int]=None,
+        set_level: int=None, speed_modified=False, check=True
+    ) -> Optional[Tuple[int, int, float]]:
         """
         说明：
             计算副词条的详细信息 (如强化次数、档位积分，以及提高原数据的小数精度)
             对于速度属性只能做保守估计，其他属性可做准确计算。
             可以作为副词条校验函数 (可以检测出大部分的OCR错误)
             支持五星遗器与四星遗器
+            注意：
+                此方法8个挡位积分会归为1次强化次数，例如 (4,8)=(5,0) (5,9)=(6,1) (6,12)=(7,4)
+                五星'速度'词条与上述类似，但不完全满足上述规律，无法机械修正，需进行重新计算
+                可通过判断[1]个体强化次数是否达到7或[2]整体副词条强化次数是否超限来修正部分情况下的数值
+            缺陷：
+                初始3词条的情形无法通过上述方法修正
+                (基本无伤大雅，此时计算所得的修正数值与词条数为真实值，仅强化次数有二义性)
+                五星'速度'副词条，在relic_data具备'speed_decimal_modified'标识后可解决该问题
         参数：
             :param data: 遗器副词条键值对
             :param stats_index: 遗器副词条索引
             :param rarity: 遗器稀有度
+            :param set_level: 设定指定的强化次数进行计算
+            :param speed_modified: 开启速度优化 (要求对速度小数位进行手动修正后)
             :param check: 开启校验
         返回：
             :return level: 强化次数: 0次强化记为1，最高5次强化为6
@@ -2050,30 +2182,41 @@ class Relic:
         stats_index = np.where(SUBS_STATS_NAME[:, -1] == name)[0][0] if stats_index is None else stats_index
         rarity_index = rarity - 4  # 0-四星，1-五星
         a, d = SUBS_STATS_TIER[rarity_index][stats_index]
-        if name in NOT_PRE_STATS:
+        if name in NOT_PRE_STATS and name != _("速度"):
             a_ = int(a)           # 从个分位截断小数
         else:
             a_ = int(a * 10)/10   # 从十分位截断小数
-        level = int(value / a_)   # 向下取整
-        a_ = a_ if name == _("速度") else a    # 给四星速度打补丁
-        score = (math.ceil((value - a_*level) / d - 1.e-6))  # 向上取整 (考虑浮点数运算的数值损失)
-        if score < 0:   # 总分小于零打补丁 (由于真实总分过大导致)
+        if set_level:
+            level = set_level
+        else:
+            level = int(value / a_)   # 向下取整
+            if level == 7:   # 修正极端情况下的挡位积分进位
+                level = 6
+        score = (math.ceil((value - a*level) / d - 1.e-6))  # 向上取整 (考虑浮点数运算的数值损失)
+        if score > level*2 and rarity == 4 and name == _("速度"):   # 给四星速度打补丁
+            level += 1
+            score = 0
+        elif score < 0:    # 总分小于零打补丁 (由于真实总分过大导致)
             level -= 1
-            score = math.ceil((value - a_*level) / d - 1.e-6)
+            score = math.ceil((value - a*level) / d - 1.e-6)
         result = round(a*level + d*score, 4)                 # 四舍五入 (考虑浮点数运算的数值损失)
+        log.debug(f"({name}, {value}): [{a}, {d}], l={level}, s={score}, r={result}")
         # 不启用校验，用于统计词条使用
         if not check:
-            log.debug(f"({name}, {value}): [{a}, {d}], l={level}, s={score}, r={result}")
             return (level, score, result)
         # 校验数据
         check = result - value
-        if check < 0 or \
+        # 对速度小数位手动修正后的数值进行纠正，以确保结果的精度要求
+        if speed_modified and name == _("速度") and rarity == 5 and check >= 0.1:
+            # 例如: 13.0 (6, 4, 13.2) 纠正为 (5, 10, 13.0)
+            #       10.1 (5, 1, 10.3) 纠正为 (4, 7 , 10.1)
+            return self.get_subs_stats_detail(data, rarity, stats_index, set_level=level-1, speed_modified=True)
+        if check < -1.e-6 or \
             name in NOT_PRE_STATS and check >= 1 or \
             name not in NOT_PRE_STATS and check >= 0.1 or \
             level > 6 or level < 1 or \
             score > level*2 or score < 0:
             log.error(_(f"校验失败，原数据或计算方法有误: {data}"))
-            log.debug(f"[{a}, {d}], l={level}, s={score}, r={result}")
             return None
         return (level, score, result)
     
@@ -2083,7 +2226,7 @@ class Relic:
             计算词条数量
         """
         if rarity not in [4,5]:
-            return None
+            return 0
         level, score, __ = stats_detail
         level_w, score_w, __ = SUBS_STATS_TIER_WEIGHT[self.subs_stats_iter_weight]
         num = level*level_w + score*score_w

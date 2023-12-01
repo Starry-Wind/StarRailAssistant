@@ -718,7 +718,9 @@ class calculated(CV_Tools):
         返回:
             :return rgb: 颜色
         """
-        return self.get_pix_rgb(game_pos=self.rp2ap(game_pos), points=points)
+        x, y = int(sra_config_obj.real_width / 100 * game_pos[0]), int(sra_config_obj.real_height / 100 * game_pos[1])
+        log.debug((x, y))
+        return self.get_pix_rgb(game_pos=(x, y), points=points)
     
     def get_relative_pix_hsv(self, game_pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
         """
@@ -729,7 +731,9 @@ class calculated(CV_Tools):
         返回:
             :return hsv: 颜色
         """
-        return self.get_pix_hsv(game_pos=self.rp2ap(game_pos), points=points)
+        x, y = int(sra_config_obj.real_width / 100 * game_pos[0]), int(sra_config_obj.real_height / 100 * game_pos[1])
+        log.debug((x, y))
+        return self.get_pix_hsv(game_pos=(x, y), points=points)
 
     def get_pix_rgb(self, desktop_pos: Union[tuple, None]=None, game_pos: Union[tuple, None]=None, points: tuple=(0, 0, 0, 0)):
         """
@@ -1019,7 +1023,12 @@ class Array2dict:
         # log.debug(self.data_dict)
 
     def __getitem__(self, key: Any) -> Any:
-        return self.data_dict.get(key, None)
+        if key not in self.data_dict:
+            raise ValueError(_("'{}'不在字典中\n{}").format(key, pprint.pformat(self.data_dict, sort_dicts=False)))
+        return self.data_dict[key]
+    
+    def get(self, key: Any, default: Any) -> Any:
+        return self.data_dict.get(key, default)
     
 
 class FloatValidator(Validator):

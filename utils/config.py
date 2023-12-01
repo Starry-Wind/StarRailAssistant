@@ -2,6 +2,8 @@ import gettext
 import inspect
 import os
 import sys
+import shutil
+import tempfile
 import jsonschema
 from pathlib import Path
 from typing import Any, Union, get_type_hints
@@ -9,20 +11,20 @@ from typing import Any, Union, get_type_hints
 import orjson
 from orjson import JSONDecodeError
 
-from .exceptions import TypeError
+from .exceptions import Exception, TypeError
 from .log import log
 
 CONFIG_FILE_NAME = "config.json"
 
-USER_DATA_PREFIX = "data/user_data/"
-FIXED_DATA_PREFIX = "data/fixed_data/"
-os.makedirs(USER_DATA_PREFIX, exist_ok=True)
+USER_DATA_DIR = "data/user_data/"
+FIXED_DATA_DIR = "data/fixed_data/"
+os.makedirs(USER_DATA_DIR, exist_ok=True)
 
-RELIC_FILE_NAME = USER_DATA_PREFIX + "relics_set.json"
-LOADOUT_FILE_NAME = USER_DATA_PREFIX + "relics_loadout.json"
-TEAM_FILE_NAME = USER_DATA_PREFIX + "relics_team.json"
-CHAR_PANEL_FILE_NAME = USER_DATA_PREFIX + "char_panel.json"
-CHAR_WEIGHT_FILE_NAME = USER_DATA_PREFIX + "char_weight.json"
+RELIC_FILE_NAME = USER_DATA_DIR + "relics_set.json"
+LOADOUT_FILE_NAME = USER_DATA_DIR + "relics_loadout.json"
+TEAM_FILE_NAME = USER_DATA_DIR + "relics_team.json"
+CHAR_PANEL_FILE_NAME = USER_DATA_DIR + "char_panel.json"
+CHAR_WEIGHT_FILE_NAME = USER_DATA_DIR + "char_weight.json"
 
 
 def normalize_file_path(filename):
@@ -41,9 +43,8 @@ def normalize_file_path(filename):
         pre_filename = str(filename).rsplit('/', 1)[-1]
         file_path = os.path.join(current_dir, pre_filename)
         if os.path.exists(file_path):
-            if str(filename).rsplit('/', 1)[0] == USER_DATA_PREFIX[:-1]:
+            if str(filename).rsplit('/', 1)[0] == USER_DATA_DIR[:-1]:
                 # 判断为旧版本 (<=1.8.7) 数据文件位置
-                import shutil
                 shutil.move(file_path, pre_file_path)
                 log.info(_("文件位置更改，由'{}'迁移至'{}'").format(pre_filename, filename))
                 return pre_file_path
@@ -102,23 +103,34 @@ def modify_json_file(filename:str, key:str, value:Any) -> dict:
 def rewrite_json_file(filename:str, data:dict) -> dict:
     """
     说明：
-        重写整个json文件
+        以安全的方式重写json文件 (防止写入异常导致原文件数据丢失)
     参数：
         :param filename: 文件名称
         :param data: json的完整字典
     返回：
         data: 修改后的json字典
     """
+    # 处理原文件
     file_path = normalize_file_path(filename)
     if file_path is None:
         file_path = filename   # 原文件不存在，则新建
+    # 创建临时文件
+    temp_dir = tempfile.mkdtemp()
+    temp_file_path = os.path.join(temp_dir, "temp_file.json")
     try:
-        with open(file_path, "wb") as f:
+        # 将数据写入临时文件
+        with open(temp_file_path, "wb") as f:
             f.write(orjson.dumps(data, option=orjson.OPT_PASSTHROUGH_DATETIME | orjson.OPT_SERIALIZE_NUMPY | orjson.OPT_INDENT_2))
-    except PermissionError as e:
+        # 移动临时文件到目标文件
+        shutil.move(temp_file_path, file_path)
+    except PermissionError:
         import time
         time.sleep(1)
         return rewrite_json_file(filename, data)
+    except Exception:
+        ...
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)  # 清理临时目录
     return data
 
 
