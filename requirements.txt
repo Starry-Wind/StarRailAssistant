@@ -24,7 +24,7 @@ tqdm
 ultralytics
 xpinyin
 httpx_socks
-flet
+flet==0.23.2
 cryptography
 pluggy
 httpcore
